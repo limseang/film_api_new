@@ -15,4 +15,6 @@ class Origin extends Model
 
     ];
 
+
+
 }

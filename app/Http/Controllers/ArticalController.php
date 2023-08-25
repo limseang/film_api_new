@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use App\Models\Origin;
 use Illuminate\Http\Request;
 
 class ArticalController extends Controller
@@ -13,10 +14,41 @@ class ArticalController extends Controller
     public function index()
     {
         try{
-            $artical = Artical::all();
+            $articals = Artical::with(['origin','category', 'type' ])->get();
+            $uploadController = new UploadController();
+               foreach($articals as $artical){
+                   if($artical->image != null) {
+                       $artical->image = $uploadController->getSignedUrl($artical->image);
+                   }
+                   else {
+                       $artical->image = null;
+                   }
+                }
+
+            $data = $articals->map(function($artical) {
+                return [
+                    'id' => $artical->id,
+                    'title' => $artical->title,
+                    'description' => $artical->description,
+                    'origin' => $artical->origin ? $artical->origin->name : '',
+                    'category' => $artical->category ? $artical->category->name : '',
+                    'type' => $artical->type ? $artical->type->name : '',
+                    'like' => $artical->like,
+                    'comment' => $artical->comment,
+                    'share' => $artical->share,
+                    'view' => $artical->view,
+                    'film' => $artical->film,
+                    'image' => $artical->image,
+                ];
+
+            });
+
+
             return response()->json([
                 'message' => 'Articals retrieved successfully',
-                'articals' => $artical
+                'data' => $data,
+//                'image' => $artical->image
+
             ], 200);
 
         }
@@ -35,6 +67,7 @@ class ArticalController extends Controller
     {
         try{
            //artical has relationship with origin
+            $cloudController = new UploadController();
             $artical = new Artical();
             $artical::with(['origin','category', 'type' ])->find($request->id);
             $artical->title = $request->title;
@@ -42,6 +75,7 @@ class ArticalController extends Controller
             $artical->origin()->associate($request->origin_id);
             $artical->category()->associate($request->category_id);
             $artical->type()->associate($request->type_id);
+            $artical->image = $cloudController->UploadFile($request->file('image'));
             $artical->save();
             return response()->json([
                 'message' => 'Artical created successfully',

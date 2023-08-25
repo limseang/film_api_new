@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\UploadController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,10 +12,10 @@ class Artical extends Model
     protected $fillable = [
         'title',
         'description',
-        'origin',
-        'category',
+        'origin_id',
+        'category_id',
         'image',
-        'type',
+        'type_id',
         'like',
         'comment',
         'share',
@@ -26,6 +27,7 @@ class Artical extends Model
     public function origin()
     {
         return $this->belongsTo(Origin::class);
+
     }
     public function category()
     {
@@ -35,13 +37,14 @@ class Artical extends Model
     {
         return $this->hasMany(Like::class);
     }
-    public function comment()
-    {
-        return $this->hasMany(Comment::class);
-    }
+//    public function comment()
+//    {
+//        return $this->hasMany(Com::class);
+//    }
 
     public function type()
     {
         return $this->belongsTo(Type::class);
     }
+
 }
