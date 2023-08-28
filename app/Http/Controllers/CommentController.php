@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class CommentController extends Controller
+{
+    public function index()
+    {
+        try {
+            $comment = Comment::all();
+            return response()->json([
+                'message' => 'comments retrieved successfully',
+                'comments' => $comment
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'comments retrieved failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
+    public function create(Request $request)
+    {
+        try {
+            $comment = new Comment();
+            $comment::with(['user', 'artical'])->get();
+            $comment->user_id = auth()->user()->id;
+            $request->validate([
+                'artical_id' => 'required|integer|exists:articals,id',
+                'comment' => 'required|string'
+            ]);
+            $comment->artical_id = $request->artical_id;
+            $comment->comment = $request->comment;
+            $comment->save();
+
+            $user = User::find(auth()->user()->id);
+            if ($comment->user_id != $user->id) {
+                $user->point = $user->point + 2;
+                $user->save();
+            }
+
+
+            return response()->json([
+                'message' => 'Comment created successfully',
+                'data' => $comment
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error in creating comment',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function edit(Request $request,  $id)
+    {
+        try{
+            $comment = Comment::find($id);
+            if($comment->user_id == auth()->user()->id)
+            {
+
+                $comment->comment = $request->comment;
+                $comment->save();
+                return response()->json([
+                    'message' => 'Comment successfully updated',
+                    'comment' => $comment
+                ], 200);
+            }
+            else{
+                return response()->json([
+                    'message' => 'You are not author',
+                ], 500);
+            }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Comment failed updated',
+                'error' => $e->getMessage()
+            ], 400);
+
+        }
+    }
+
+    public function destroy ($id)
+    {
+        try{
+            $comment = Comment::find($id);
+            if($comment->user_id == auth()->user()->id)
+            {
+                $comment->delete();
+                $user = User::find(auth()->user()->id);
+                $user->point = $user->point - 2;
+                $user->save();
+                return response()->json([
+                    'message' => 'Comment successfully deleted',
+                ], 200);
+
+
+            }
+            else{
+                return response()->json([
+                    'message' => 'You are not author',
+                ], 500);
+            }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Comment failed deleted',
+                'error' => $e->getMessage()
+            ], 400);
+
+        }
+    }
+
+    public function showByID ($id)
+    {
+        try{
+            $comment = Comment::find($id);
+            return response()->json([
+                'message' => 'Comment retrieved successfully',
+                'comment' => $comment
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Comment retrieved failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function showReply($id)
+    {
+        try{
+            $comment = Comment::find($id);
+            $comment::with('reply')->get();
+            $data = $comment->reply;
+            return response()->json([
+                'message' => 'Comment retrieved successfully',
+                'comment' => $comment,
+                'reply' => $data
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Comment retrieved failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+}

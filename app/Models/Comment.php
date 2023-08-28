@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Like extends Model
+class Comment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'artical_id'
-
+        'comment',
+        'user_id',
+        'artical_id',
+        'report_id',
+        'reply_id',
+        'status'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -19,5 +24,13 @@ class Like extends Model
     public function artical()
     {
         return $this->belongsTo(Artical::class);
+    }
+    public function report()
+    {
+        return $this->belongsTo(Report::class);
+    }
+    public function reply()
+    {
+        return $this->hasMany(ReplyComment::class);
     }
 }

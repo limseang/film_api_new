@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
+use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -86,15 +88,37 @@ Route::get('/article', [ArticalController::class, 'index']);
 Route::get('/article/{id}', [ArticalController::class, 'show']);
 Route::get('/article/category/{id}', [ArticalController::class, 'showByCategory']);
 Route::get('/article/origin/{id}', [ArticalController::class, 'showByOrigin']);
-Route::get('/article/like/{id}', [ArticalController::class, 'showByLike']);
-Route::get('/article/user/{id}', [ArticalController::class, 'showByUser']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/article/new', [ArticalController::class, 'create']);
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
-        Route::post('/article/update/image/{id}', [ArticalController::class, 'addImage']);
+        Route::post('/article/update/{id}', [ArticalController::class, 'update']);
+        Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
     });
 });
+
+/* Comment */
+Route::get('/comment', [CommentController::class, 'index']);
+Route::get('/comment/{id}', [CommentController::class, 'show']);
+Route::get('/comment/reply/{id}', [CommentController::class, 'showReply']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/comment/create', [CommentController::class, 'create']);
+    Route::post('/comment/edit/{id}', [CommentController::class, 'edit']);
+    Route::delete('/comment/delete/{id}', [CommentController::class, 'destroy']);
+    Route::get('/comment/{id}', [CommentController::class, 'showByID']);
+});
+
+/* Reply Comment */
+
+Route::get('/replycmt', [ReplyCommentController::class, 'index']);
+Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showReply']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/replycmt/create', [ReplyCommentController::class, 'create']);
+    Route::post('/replycmt/edit/{id}', [ReplyCommentController::class, 'editReply']);
+    Route::delete('/replycmt/delete/{id}', [ReplyCommentController::class, 'destroyReply']);
+//    Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showByIDReply']);
+});
+
 
 
 
