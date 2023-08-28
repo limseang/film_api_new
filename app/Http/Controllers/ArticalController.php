@@ -8,24 +8,20 @@ use Illuminate\Http\Request;
 
 class ArticalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        try{
-            $articals = Artical::with(['origin','category', 'type' ])->get();
+        try {
+            $articals = Artical::with(['origin', 'category', 'type'])->get();
             $uploadController = new UploadController();
-               foreach($articals as $artical){
-                   if($artical->image != null) {
-                       $artical->image = $uploadController->getSignedUrl($artical->image);
-                   }
-                   else {
-                       $artical->image = null;
-                   }
+            foreach ($articals as $artical) {
+                if ($artical->image != null) {
+                    $artical->image = $uploadController->getSignedUrl($artical->image);
+                } else {
+                    $artical->image = null;
                 }
+            }
 
-            $data = $articals->map(function($artical) {
+            $data = $articals->map(function ($artical) {
                 return [
                     'id' => $artical->id,
                     'title' => $artical->title,
@@ -51,25 +47,20 @@ class ArticalController extends Controller
 
             ], 200);
 
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Articals retrieved failed',
                 'error' => $e->getMessage()
             ], 400);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
-        try{
-           //artical has relationship with origin
+        try {
+            //artical has relationship with origin
             $cloudController = new UploadController();
             $artical = new Artical();
-            $artical::with(['origin','category', 'type' ])->find($request->id);
+            $artical::with(['origin', 'category', 'type'])->find($request->id);
             $artical->title = $request->title;
             $artical->description = $request->description;
             $artical->origin()->associate($request->origin_id);
@@ -81,8 +72,7 @@ class ArticalController extends Controller
                 'message' => 'Artical created successfully',
                 'data' => $artical
             ], 200);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error in creating artical',
                 'error' => $e->getMessage()
@@ -91,43 +81,138 @@ class ArticalController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function destroy($id)
     {
-        //
+        try{
+            $artical = Artical::find($id);
+            if(!$artical){
+                return response()->json([
+                    'message' => 'Artical not found'
+                ], 404);
+            }
+            $artical->delete();
+            return response()->json([
+                'message' => 'Artical deleted successfully'
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Error in deleting artical',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Artical $artical)
+    public function showByCategory($id)
     {
-        //
+        try {
+            $articals = Artical::with(['origin', 'category', 'type'])->where('category_id', $id)->get();
+            $uploadController = new UploadController();
+            foreach ($articals as $artical) {
+                if ($artical->image != null) {
+                    $artical->image = $uploadController->getSignedUrl($artical->image);
+                } else {
+                    $artical->image = null;
+                }
+            }
+
+            $data = $articals->map(function ($artical) {
+                return [
+                    'id' => $artical->id,
+                    'title' => $artical->title,
+                    'description' => $artical->description,
+                    'origin' => $artical->origin ? $artical->origin->name : '',
+                    'category' => $artical->category ? $artical->category->name : '',
+                    'type' => $artical->type ? $artical->type->name : '',
+                    'like' => $artical->like,
+                    'comment' => $artical->comment,
+                    'share' => $artical->share,
+                    'view' => $artical->view,
+                    'film' => $artical->film,
+                    'image' => $artical->image,
+                ];
+
+
+
+            });
+            return response()->json([
+                'message' => 'Articals retrieved successfully',
+                'data' => $data,
+//                'image' => $artical->image
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error in creating artical',
+                'error' => $e->getMessage()
+            ],
+                500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Artical $artical)
-    {
-        //
+    public function showByOrigin($id){
+        try {
+            $articals = Artical::with(['origin', 'category', 'type'])->where('origin_id', $id)->get();
+            $uploadController = new UploadController();
+            foreach ($articals as $artical) {
+                if ($artical->image != null) {
+                    $artical->image = $uploadController->getSignedUrl($artical->image);
+                } else {
+                    $artical->image = null;
+                }
+            }
+
+            $data = $articals->map(function ($artical) {
+                return [
+                    'id' => $artical->id,
+                    'title' => $artical->title,
+                    'description' => $artical->description,
+                    'origin' => $artical->origin ? $artical->origin->name : '',
+                    'category' => $artical->category ? $artical->category->name : '',
+                    'type' => $artical->type ? $artical->type->name : '',
+                    'like' => $artical->like,
+                    'comment' => $artical->comment,
+                    'share' => $artical->share,
+                    'view' => $artical->view,
+                    'film' => $artical->film,
+                    'image' => $artical->image,
+                ];
+
+            });
+            return response()->json([
+                'message' => 'Articals retrieved successfully',
+                'data' => $data,
+//                'image' => $artical->image
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error in creating artical',
+                'error' => $e->getMessage()
+            ],
+                500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Artical $artical)
+    public function update(Request $request, $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Artical $artical)
-    {
-        //
+        try {
+            $article = Artical::find($id);
+            if (!$article) {
+                return response()->json([
+                    'message' => 'Artical not found'
+                ], 404);
+            }
+            $article->update($request->all());
+            $article->save();
+            return response()->json([
+                'message' => 'Artical updated successfully',
+                'data' => $article
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error in updating artical',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

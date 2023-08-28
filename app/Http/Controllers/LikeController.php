@@ -36,11 +36,12 @@ class LikeController extends Controller
         try{
             $like = new Like();
             $user = auth()->user();
-            $this->validate($request, [
-                'user_id' => 'required | unique:likes',
-                'artical_id' => 'required | unique:likes'
-            ]);
-            //only authenticated user can like
+            $like = Like::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
+            if ($like) {
+                return response()->json([
+                    'message' => 'You already liked this artical'
+                ], 400);
+            }
             $like->user_id = auth()->user()->id;
             $like->artical_id = $request->artical_id;
             $like->save();

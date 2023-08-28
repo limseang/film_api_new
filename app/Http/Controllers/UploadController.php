@@ -17,7 +17,7 @@ class UploadController extends Controller
         $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
         $endpoint = env("ALIBABA_OSS_ENDPOINT");
         $bucket = env("ALIBABA_OSS_BUCKET");
-        
+
         $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->getRealPath();
@@ -41,11 +41,11 @@ class UploadController extends Controller
             return 0;
         }
     }
-    
+
     public function getSignedUrl($id): string
     {
         try {
-            
+
 
             $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
         $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
@@ -76,8 +76,10 @@ class UploadController extends Controller
         $bucket = env("ALIBABA_OSS_BUCKET");
         $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
         $ossClient->deleteObject($bucket, $storage->path);
+
         //delete file from database
         $storage->delete();
+
         }
 
     }

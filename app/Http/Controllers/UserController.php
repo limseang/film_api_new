@@ -42,10 +42,12 @@ class UserController extends Controller
 
     public function register(Request $request) {
         try {
+            $uploadController = new UploadController();
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
+//            $user->avatar = $uploadController->UploadFile($request->file('avatar'));
             $user->password = bcrypt($request->password);
             $user->save();
 
@@ -104,24 +106,55 @@ class UserController extends Controller
         ]);
     }
 
-    public function addAvatar(Request $request){
-        try{
-            $cloudController = new UploadController();
-            $user = User::find($request->user()->id);
-            $user->avatar = $cloudController->UploadFile($request->file('avatar'));
-            $user->save();
-            return response()->json([
-                'message' => 'User successfully add avatar',
-                'user' => $user
+//    public function addAvatar(Request $request){
+//        try{
+//            $cloudController = new UploadController();
+//            $user = auth()->user();
+//            $this->deleteAvatar($user->avatar!=null);
+//            $user->save();
+//            $user->avatar = $cloudController->UploadFile($request->file('image'));
+//            $user->save();
+//            return response()->json([
+//                'message' => 'User successfully add avatar',
+//                'user' => $user
+//
+//            ], 200);
+//        }
+//        catch(Exception $e){
+//            return response()->json([
+//                'message' => 'User failed add avatar',
+//                'error' => $e->getMessage()
+//            ], 500);
+//        }
+//    }
 
-            ], 200);
-        }
-        catch(Exception $e){
-            return response()->json([
-                'message' => 'User failed add avatar',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+//    public function deleteAvatar ($avatarId)
+//
+//    {
+//        try{
+//            $cloudController = new UploadController();
+//            $user = auth()->user();
+//            $user->avatar = $cloudController->delete($user->avatar);
+//            $user->save();
+//            return response()->json([
+//                'message' => 'User successfully delete avatar',
+//                'user' => $user
+//
+//            ], 200);
+//        }
+//        catch(Exception $e){
+//            return response()->json([
+//                'message' => 'User failed delete avatar',
+//                'error' => $e->getMessage()
+//            ], 500);
+//        }
+//
+//    }
+
+    public function forgetpwd (Request $request)
+    {
+
+
     }
 
     public function userinfo()
