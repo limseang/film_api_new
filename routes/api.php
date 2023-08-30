@@ -6,8 +6,10 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\ReplyCommentController;
+use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Models\ReportComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,12 +114,31 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::get('/replycmt', [ReplyCommentController::class, 'index']);
 Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showReply']);
+Route::get('/replycmt/show/{id}', [ReplyCommentController::class, 'showbyId']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/replycmt/create', [ReplyCommentController::class, 'create']);
-    Route::post('/replycmt/edit/{id}', [ReplyCommentController::class, 'editReply']);
-    Route::delete('/replycmt/delete/{id}', [ReplyCommentController::class, 'destroyReply']);
+    Route::post('/replycmt/edit/{id}', [ReplyCommentController::class, 'edit']);
+    Route::delete('/replycmt/delete/{id}', [ReplyCommentController::class, 'destroy']);
 //    Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showByIDReply']);
 });
+
+/* Report Cmt */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/reportcmt/create', [ReportCommentController::class, 'create']);
+    Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
+//    Route::get('/reportcmt/{id}', [ReportComment::class, 'showReport']);
+});
+
+/* Admin Report Cmt */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/reportcmt', [ReportCommentController::class, 'index']);
+        Route::get('/reportcmt/{id}', [ReportCommentController::class, 'showByID']);
+        Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
+    });
+});
+
+
 
 
 
