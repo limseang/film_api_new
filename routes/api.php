@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -26,6 +27,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+/* Admin Permission */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['admin']], function () {
+        Route::delete('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
+        Route::post('/user/add/role/{id}', [AdminController::class, 'changeRole']);
+        Route::post('/admin/user/changeStatus/{id}', [AdminController::class, 'changeStatus']);
+
+    });
+});
+
+/* Editor Permission */
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/all/user', [AdminController::class, 'allUser']);
+        Route::get('/admin/reportcmd/all', [AdminController::class, 'allReportComment']);
+        Route::post('/admin/reportcmd/changeStatus/{id}', [AdminController::class, 'changSatusforReport']);
+    });
 });
 
 Route::post('/register', [UserConTroller::class, 'register']);
@@ -135,8 +156,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('/reportcmt', [ReportCommentController::class, 'index']);
         Route::get('/reportcmt/{id}', [ReportCommentController::class, 'showByID']);
         Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
+        Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
     });
 });
+
+
 
 
 
