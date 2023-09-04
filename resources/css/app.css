@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+    @apply max-w-full h-screen flex p-0 m-0 box-border;
+    overflow: hidden;
+}
+
+#overlay-container {
+    @apply absolute left-0 top-0 pointer-events-none contents;
+    contain: layout;
+}
+
+.scrollbar-thin {
+    scrollbar-color: #e4e5e8 transparent;
+    scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+    width: 14px;
+    cursor: pointer;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    border: 5px solid transparent;
+    background-clip: content-box;
+    background-color: rgb(27, 41, 66);
+    cursor: pointer;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.scrollbar-thin::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
+
+.scrollbar-thin.--light::-webkit-scrollbar-thumb {
+    @apply bg-gray-300;
+}
+
+p,
+textarea {
+    @apply scrollbar-thin overflow-y-auto;
+}
+
+.overlay {
+    @apply fixed pointer-events-none top-0 right-0 bottom-0 left-0 flex items-center justify-center m-auto z-[2400]
+        backdrop-blur-sm;
+}
+
+.overlay::before {
+    @apply absolute top-0 right-0 bottom-0 left-0 opacity-50;
+    content: '';
+}
+
+.overlay-scrim {
+    @apply pointer-events-auto top-0 right-0 bottom-0 left-0 opacity-30 fixed;
+}
+
+.overlay-content {
+    @apply pointer-events-auto flex p-8 rounded-2xl;
+    background-color: rgba(16, 24, 39, 0.92);
+}
+
+button {
+    @apply h-auto px-6 py-2 rounded-xl;
+    transition: 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button span.btn-content {
+    @apply flex items-center justify-center gap-2 min-w-[auto] capitalize whitespace-nowrap;
+    transition: transform, opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(16, 24, 39);
+}
+
+button span.btn-content svg {
+    @apply w-6 h-6;
+}
+
+button:disabled {
+    @apply cursor-not-allowed opacity-90 pointer-events-none !bg-gray-500 !filter-none;
+}
+
+.btn-icon {
+    @apply bg-gray-400 rounded-full duration-150 cursor-pointer;
+}
+
+.btn-icon.icon-m {
+    @apply p-2 m-0;
+}
+
+.btn-icon.icon-m svg {
+    @apply w-4 h-4 text-white;
+}
+
+.btn-primary {
+    @apply bg-gray-900;
+    border: 1px solid transparent;
+    position: relative;
+    border-radius: 10px;
+}
+
+.btn-primary:active {
+    transform: unset;
+}
+
+.btn-primary:hover {
+    @apply bg-black;
+    box-shadow: rgba(0, 220, 130, 0.5) 0 0 10px 0,
+        rgba(54, 228, 218, 0.5) 0 0 20px 0;
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid #00dc82;
+    outline-offset: 2px;
+}
+
+.btn-primary:before {
+    border: 0 solid #e5e7eb;
+    box-sizing: border-box;
+    transition: all 0.2s ease 0s;
+    content: '';
+    position: absolute;
+    background: linear-gradient(
+        to right,
+        rgb(0, 220, 130),
+        rgb(54, 228, 218),
+        rgb(22, 167, 158)
+    );
+    inset: -3px;
+    z-index: -1;
+    border-radius: 10px;
+}
+
+.btn-primary span.btn-content {
+    @apply text-gray-100;
+}
+
+.btn-edit {
+    @apply hover:bg-violet-400 active:bg-violet-400;
+}
+
+.btn-remove {
+    @apply hover:bg-red-400 active:bg-red-400;
+}
+
+.btn-link {
+    @apply hover:bg-blue-400 active:bg-blue-400;
+}
+
+.error-messages {
+    @apply flex flex-col gap-1;
+}
+
+.error-message {
+    @apply text-sm text-red-500;
+}
+
+/* slide-fade-bottom transition */
+.slide-fade-bottom-enter-active {
+    @apply transition-all duration-150 ease-in-out delay-150;
+}
+.slide-fade-bottom-leave-active {
+    @apply transition-all duration-150 ease-in-out;
+}
+.slide-fade-bottom-enter-to {
+    @apply translate-y-0 opacity-100;
+}
+.slide-fade-bottom-enter {
+    @apply translate-y-[-20px] opacity-0;
+}
+.slide-fade-bottom-enter-from,
+.slide-fade-bottom-leave-to {
+    @apply translate-y-[20px] opacity-0;
+}
+
+/* fade transition */
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+/* fade-fast transition */
+.fade-fast-enter-from,
+.fade-fast-leave-to {
+    @apply opacity-0;
+}
+.fade-fast-enter-active,
+.fade-fast-leave-active {
+    @apply transition-opacity duration-150 ease-in-out;
+}
+
+/* list transition-group */
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+    @apply opacity-0 translate-x-[30px];
+}
