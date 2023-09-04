@@ -8,6 +8,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Models\ReportComment;
@@ -150,6 +151,19 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 //    Route::get('/reportcmt/{id}', [ReportComment::class, 'showReport']);
 });
 
+/* Tage */
+
+Route::get('/tag', [TagController::class, 'index']);
+Route::get('/tag/{id}', [TagController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/tag/new', [TagController::class, 'create']);
+        Route::delete('/tag/delete/{id}', [TagController::class, 'destroy']);
+        Route::post('/tag/update/status/{id}', [TagController::class, 'statusToTag']);
+    });
+});
+
+
 /* Admin Report Cmt */
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
@@ -157,8 +171,12 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('/reportcmt/{id}', [ReportCommentController::class, 'showByID']);
         Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
         Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
+
+        Route::post('/admin/change/status/{id}', [AdminController::class, 'ChangeStatusItem']);
     });
 });
+
+
 
 
 

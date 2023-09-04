@@ -3,7 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Artical;
+use App\Models\Category;
+use App\Models\Comment;
+use App\Models\Origin;
+use App\Models\ReplyComment;
 use App\Models\ReportComment;
+use App\Models\Tag;
+use App\Models\Type;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -178,6 +185,90 @@ class AdminController extends Controller
             }
    }
 
+   public function ChangeStatusItem(Request $request,$id)
+   {
+       try{
 
+              if($id == 1){
+                  $category = Category::find($request->item_id);
+                    $category->status = $request->status;
+                    $category->save();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'successfully',
+                        'data' => $category
+                    ], 200);
+              }
+              if($id == 2){
+                  $origin = Origin::find($request->item_id);
+                    $origin->status = $request->status;
+                    $origin->save();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'successfully',
+                        'data' => $origin
+                    ], 200);
+              }
 
+              if($id == 3){
+                  $artical = Artical::find($request->item_id);
+                    $artical->status = $request->status;
+                    $artical->save();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'successfully',
+                        'data' => $artical
+                    ], 200);
+              }
+          if($id == 4) {
+              $type = Type::find($request->item_id);
+                $type->status = $request->status;
+                $type->save();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $type
+                ], 200);
+          }
+
+          if($id == 5){
+              $comment = Comment::find($request->item_id);
+                $comment->status = $request->status;
+                $comment->save();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $comment
+                ], 200);
+          }
+          if($id == 6) {
+              $replyCmt = ReplyComment::find($request->item_id);
+                $replyCmt->status = $request->status;
+                $replyCmt->save();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $replyCmt
+                ], 200);
+          }
+          if($id == 7){
+              $tag = Tag::find($request->item_id);
+                $tag->status = $request->status;
+                $tag->save();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $tag
+                ], 200);
+          }
+
+       }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in changing status',
+                    'error' => $e->getMessage()
+                ], );
+            }
+   }
 }
