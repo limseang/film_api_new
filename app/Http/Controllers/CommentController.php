@@ -138,13 +138,19 @@ class CommentController extends Controller
     public function showReply($id)
     {
         try{
-            $comment = Comment::find($id);
-            $comment::with('reply')->get();
-            $data = $comment->reply;
+            $comment = Comment::with('reply')->find($id);
+             $data = [
+                'id' => $comment['id'],
+                 'comment' => $comment['comment'],
+                 'user_id' => $comment['user_id'],
+                 'artical_id' => $comment->artical_id,
+                 'reply' => $comment['reply']
+             ];
             return response()->json([
-                'message' => 'Comment retrieved successfully',
-                'comment' => $comment,
-                'reply' => $data
+                'status' => 200,
+                'message' => 'success',
+                'data' => $data,
+
             ], 200);
 
         }

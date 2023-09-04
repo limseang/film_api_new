@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('user_id');
             $table->string('comment_id');
             $table->string('reply_comment');
+            $table->string('status')->default('1'); // 1 for active and 0 for inactive
             $table->timestamps();
         });
     }

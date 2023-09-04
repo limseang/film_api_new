@@ -1,13 +1,17 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\ReplyCommentController;
+use App\Http\Controllers\ReportCommentController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Models\ReportComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +28,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+/* Admin Permission */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['admin']], function () {
+        Route::delete('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
+        Route::post('/user/add/role/{id}', [AdminController::class, 'changeRole']);
+        Route::post('/admin/user/changeStatus/{id}', [AdminController::class, 'changeStatus']);
+
+    });
+});
+
+/* Editor Permission */
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/all/user', [AdminController::class, 'allUser']);
+        Route::get('/admin/reportcmd/all', [AdminController::class, 'allReportComment']);
+        Route::post('/admin/reportcmd/changeStatus/{id}', [AdminController::class, 'changSatusforReport']);
+    });
 });
 
 Route::post('/register', [UserConTroller::class, 'register']);
@@ -112,12 +136,51 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::get('/replycmt', [ReplyCommentController::class, 'index']);
 Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showReply']);
+Route::get('/replycmt/show/{id}', [ReplyCommentController::class, 'showbyId']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/replycmt/create', [ReplyCommentController::class, 'create']);
-    Route::post('/replycmt/edit/{id}', [ReplyCommentController::class, 'editReply']);
-    Route::delete('/replycmt/delete/{id}', [ReplyCommentController::class, 'destroyReply']);
+    Route::post('/replycmt/edit/{id}', [ReplyCommentController::class, 'edit']);
+    Route::delete('/replycmt/delete/{id}', [ReplyCommentController::class, 'destroy']);
 //    Route::get('/replycmt/{id}', [ReplyCommentController::class, 'showByIDReply']);
 });
+
+/* Report Cmt */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/reportcmt/create', [ReportCommentController::class, 'create']);
+    Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
+//    Route::get('/reportcmt/{id}', [ReportComment::class, 'showReport']);
+});
+
+/* Tage */
+
+Route::get('/tag', [TagController::class, 'index']);
+Route::get('/tag/{id}', [TagController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/tag/new', [TagController::class, 'create']);
+        Route::delete('/tag/delete/{id}', [TagController::class, 'destroy']);
+        Route::post('/tag/update/status/{id}', [TagController::class, 'statusToTag']);
+    });
+});
+
+
+/* Admin Report Cmt */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/reportcmt', [ReportCommentController::class, 'index']);
+        Route::get('/reportcmt/{id}', [ReportCommentController::class, 'showByID']);
+        Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
+        Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
+
+        Route::post('/admin/change/status/{id}', [AdminController::class, 'ChangeStatusItem']);
+    });
+});
+
+
+
+
+
+
 
 
 

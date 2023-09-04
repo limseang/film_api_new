@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('share')->nullable()->default('0');
             $table->string('view')->nullable()->default('0');
             $table->string('film')->nullable();
+            $table->string('tag')->nullable();
+            $table->string('status')->default('1');
             $table->timestamps();
         });
     }
