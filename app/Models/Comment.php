@@ -16,7 +16,6 @@ class Comment extends Model
         'reply_id',
         'status'
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
