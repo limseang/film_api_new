@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,17 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('origins', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('logo');
-            $table->string('url');
+            $table->string('flag');
+            $table->string('nationality');
             $table->string('status')->default('1');
             $table->timestamps();
         });
-
-
+        DB::table('countries')->insert([
+            'code' => 'starter',
+            'name' => '1-100 points',
+            'flag' => '1-100 points',
+            'nationality' => '1-100 points',
+            'status' => '1'
+        ]);
     }
 
     /**
@@ -29,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('origins');
+        Schema::dropIfExists('countries');
     }
 };

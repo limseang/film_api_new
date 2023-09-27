@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('origins', function (Blueprint $table) {
+        Schema::create('category_articals', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('logo');
-            $table->string('url');
-            $table->string('status')->default('1');
+            $table->string('category_id');
+            $table->string('artical_id');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('origins');
+        Schema::dropIfExists('category_articals');
     }
 };

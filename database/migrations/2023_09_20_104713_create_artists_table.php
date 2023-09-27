@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('origins', function (Blueprint $table) {
+        Schema::create('artists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('logo');
-            $table->string('url');
+            $table->string('birth_date');
+            $table->string('death_date')->nullable();
+            $table->string('nationality');
+            $table->string('biography');
+            $table->a('known_for')->nullable();
+            $table->string('profile');
             $table->string('status')->default('1');
+            $table->string('film')->nullable();
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('origins');
+        Schema::dropIfExists('artists');
     }
 };

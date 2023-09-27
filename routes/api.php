@@ -2,8 +2,13 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\FilmController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\ReplyCommentController;
@@ -11,6 +16,7 @@ use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserTypeController;
 use App\Models\ReportComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('admin/user/type/{id}', [AdminController::class, 'allUserType']);
         Route::get('/all/user', [AdminController::class, 'allUser']);
         Route::get('/admin/reportcmd/all', [AdminController::class, 'allReportComment']);
         Route::post('/admin/reportcmd/changeStatus/{id}', [AdminController::class, 'changSatusforReport']);
@@ -57,6 +64,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
     Route::get('/user/info', [UserConTroller::class, 'userinfo']);
 });
+
+/* UserType */
+
+Route::get('/user/type', [UserTypeController::class, 'index']);
+
 
 /* For Post Permision (Admin and editor )*/
 Route::group(['middleware' => ['auth:sanctum']], function (){
@@ -105,11 +117,25 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 
+/* Country */
+
+Route::get('/country', [CountryController::class, 'index']);
+Route::get('/country/{id}', [CountryController::class, 'getById']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/country/new/tttt', [CountryController::class, 'create']);
+//        Route::post('/country/new', [CountryController::class, 'create']);
+        Route::delete('/country/delete/{id}', [CountryController::class, 'destroy']);
+    });
+});
+
 
 /* Articles */
 
 Route::get('/article', [ArticalController::class, 'index']);
 Route::get('/article/{id}', [ArticalController::class, 'show']);
+Route::get('/article/category/all', [CategoryArticalController::class, 'index']);
+Route::get('/article/detail/{id}', [ArticalController::class, 'articalDetail']);
 Route::get('/article/category/{id}', [ArticalController::class, 'showByCategory']);
 Route::get('/article/origin/{id}', [ArticalController::class, 'showByOrigin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
@@ -118,6 +144,12 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
         Route::post('/article/update/{id}', [ArticalController::class, 'update']);
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
+
+
+        /* CategoryArtical */
+
+        Route::post('/article/category/new', [CategoryArticalController::class, 'create']);
+        Route::delete('/article/category/delete/{id}', [CategoryArticalController::class, 'destroy']);
     });
 });
 
@@ -171,10 +203,59 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('/reportcmt/{id}', [ReportCommentController::class, 'showByID']);
         Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
         Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
-
         Route::post('/admin/change/status/{id}', [AdminController::class, 'ChangeStatusItem']);
     });
 });
+
+
+/* Artist */
+
+Route::get('/artist', [ArtistController::class, 'index']);
+Route::get('/artist/{id}', [ArtistController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/artist/new', [ArtistController::class, 'create']);
+        Route::delete('/artist/delete/{id}', [ArtistController::class, 'destroy']);
+        Route::post('/artist/update/{id}', [ArtistController::class, 'update']);
+    });
+});
+
+/* Director */
+
+Route::get('/director', [DirectorController::class, 'index']);
+Route::get('/director/{id}', [DirectorController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/director/new', [DirectorController::class, 'create']);
+        Route::delete('/director/delete/{id}', [DirectorController::class, 'destroy']);
+        Route::post('/director/update/{id}', [DirectorController::class, 'update']);
+    });
+});
+
+/* film */
+
+Route::get('/film', [FilmController::class, 'index']);
+Route::get('/film/{id}', [FilmController::class, 'showByID']);
+Route::get('/film/artist/{id}', [FilmController::class, 'showByArtist']);
+Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
+Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
+Route::get('/film/country/{id}', [FilmController::class, 'showByCountry']);
+Route::get('/film/origin/{id}', [FilmController::class, 'showByOrigin']);
+Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/film/new', [FilmController::class, 'create']);
+        Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
+        Route::post('/film/update/{id}', [FilmController::class, 'update']);
+    });
+});
+
+
+
+
+
+
+
 
 
 

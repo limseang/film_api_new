@@ -19,6 +19,7 @@ class Artical extends Model
         'like',
         'comment',
         'share',
+        'profile',
         'view',
         'film'
 
@@ -49,6 +50,11 @@ class Artical extends Model
     public function tag()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function categoryArtical()
+    {
+        return $this->hasMany(CategoryArtical::class);
     }
 
 }

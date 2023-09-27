@@ -11,7 +11,7 @@ class ArticalController extends Controller
     public function index()
     {
         try {
-            $articals = Artical::with(['origin', 'category', 'type'])->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical'])->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -27,7 +27,7 @@ class ArticalController extends Controller
                     'title' => $artical->title,
                     'description' => $artical->description,
                     'origin' => $artical->origin ? $artical->origin->name : '',
-                    'category' => $artical->category ? $artical->category->name : '',
+//                    'category' => $artical->category ? $artical->category->name : '',
                     'type' => $artical->type ? $artical->type->name : '',
                     'like' => $artical->like,
                     'comment' => $artical->comment,
@@ -35,6 +35,12 @@ class ArticalController extends Controller
                     'view' => $artical->view,
                     'film' => $artical->film,
                     'image' => $artical->image,
+                    'category' => $artical->categoryArtical->map(function ($categoryArtical) {
+                        return [
+                            'id' => $categoryArtical->id,
+                            'name' => $categoryArtical->categories->name,
+                        ];
+                    }),
                 ];
 
             });
@@ -107,7 +113,7 @@ class ArticalController extends Controller
     public function showByCategory($id)
     {
         try {
-            $articals = Artical::with(['origin', 'category', 'type'])->where('category_id', $id)->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical'])->where('category_id', $id)->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -123,7 +129,6 @@ class ArticalController extends Controller
                     'title' => $artical->title,
                     'description' => $artical->description,
                     'origin' => $artical->origin ? $artical->origin->name : '',
-                    'category' => $artical->category ? $artical->category->name : '',
                     'type' => $artical->type ? $artical->type->name : '',
                     'like' => $artical->like,
                     'comment' => $artical->comment,
@@ -131,6 +136,13 @@ class ArticalController extends Controller
                     'view' => $artical->view,
                     'film' => $artical->film,
                     'image' => $artical->image,
+                    'category' => $artical->categoryArtical->map(function ($categoryArtical) {
+                        return [
+                            'id' => $categoryArtical->id,
+                            'name' => $categoryArtical->categories->name,
+                        ];
+                    }),
+
                 ];
 
 
@@ -152,7 +164,7 @@ class ArticalController extends Controller
 
     public function showByOrigin($id){
         try {
-            $articals = Artical::with(['origin', 'category', 'type'])->where('origin_id', $id)->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical'])->where('origin_id', $id)->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -168,7 +180,6 @@ class ArticalController extends Controller
                     'title' => $artical->title,
                     'description' => $artical->description,
                     'origin' => $artical->origin ? $artical->origin->name : '',
-                    'category' => $artical->category ? $artical->category->name : '',
                     'type' => $artical->type ? $artical->type->name : '',
                     'like' => $artical->like,
                     'comment' => $artical->comment,
@@ -176,6 +187,12 @@ class ArticalController extends Controller
                     'view' => $artical->view,
                     'film' => $artical->film,
                     'image' => $artical->image,
+                    'category' => $artical->categoryArtical->map(function ($categoryArtical) {
+                        return [
+                            'id' => $categoryArtical->id,
+                            'name' => $categoryArtical->categories->name,
+                        ];
+                    }),
                 ];
 
             });
@@ -211,6 +228,52 @@ class ArticalController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error in updating artical',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function articalDetail($id){
+        try{
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical'])->find($id);
+            if(!$artical){
+                return response()->json([
+                    'message' => 'not found'
+                ], 404);
+            }
+            $uploadController = new UploadController();
+            if ($artical->image != null) {
+                $artical->image = $uploadController->getSignedUrl($artical->image);
+            } else {
+                $artical->image = null;
+            }
+            $data = [
+                'id' => $artical->id,
+                'title' => $artical->title,
+                'description' => $artical->description,
+                'origin' => $artical->origin ? $artical->origin->name : '',
+                'type' => $artical->type ? $artical->type->name : '',
+                'like' => $artical->like,
+                'comment' => $artical->comment,
+                'share' => $artical->share,
+                'view' => $artical->view,
+                'film' => $artical->film,
+                'image' => $artical->image,
+                'category' => $artical->categoryArtical->map(function ($categoryArtical) {
+                    return [
+                        'id' => $categoryArtical->id,
+                        'name' => $categoryArtical->categories->name,
+                    ];
+                }),
+            ];
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $data
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Error',
                 'error' => $e->getMessage()
             ], 500);
         }

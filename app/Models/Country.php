@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Country extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'code',
         'name',
-        'image'
-
+        'flag',
+        'nationality',
+        'status'
     ];
 
-    public function films()
+    public function artists()
     {
-        return $this->hasMany(Film::class);
+        return $this->hasMany(Artist::class);
     }
 
 

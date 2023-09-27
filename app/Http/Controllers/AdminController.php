@@ -12,6 +12,7 @@ use App\Models\ReportComment;
 use App\Models\Tag;
 use App\Models\Type;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -271,4 +272,103 @@ class AdminController extends Controller
                 ], );
             }
    }
-}
+
+   public function DeleteItem($id)
+   {
+       try{
+           if($id == 1){
+               $category = Category::find($id);
+               $category->delete();
+               return response()->json([
+                   'status' => 200,
+                   'message' => 'successfully',
+                   'data' => $category
+               ], 200);
+           }
+           if($id == 2){
+               $origin = Origin::find($id);
+               $origin->delete();
+               return response()->json([
+                   'status' => 200,
+                   'message' => 'successfully',
+                   'data' => $origin
+               ], 200);
+           }
+              if($id == 3){
+                $artical = Artical::find($id);
+                $artical->delete();
+                return response()->json([
+                     'status' => 200,
+                     'message' => 'successfully',
+                     'data' => $artical
+                ], 200);
+              }
+                if($id == 4){
+                    $type = Type::find($id);
+                    $type->delete();
+                    return response()->json([
+                         'status' => 200,
+                         'message' => 'successfully',
+                         'data' => $type
+                    ], 200);
+                }
+                if($id == 5){
+                    $comment = Comment::find($id);
+                    $comment->delete();
+                    return response()->json([
+                         'status' => 200,
+                         'message' => 'successfully',
+                         'data' => $comment
+                    ], 200);
+                }
+                if($id == 6){
+                    $replyCmt = ReplyComment::find($id);
+                    $replyCmt->delete();
+                    return response()->json([
+                         'status' => 200,
+                         'message' => 'successfully',
+                         'data' => $replyCmt
+                    ], 200);
+                }
+                if($id == 7){
+                    $tag = Tag::find($id);
+                    $tag->delete();
+                    return response()->json([
+                         'status' => 200,
+                         'message' => 'successfully',
+                         'data' => $tag
+                    ], 200);
+                }
+
+
+       }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in deleting item',
+                    'error' => $e->getMessage()
+                ], );
+            }
+
+   }
+
+   public function allUserType($id)
+   {
+       try{
+         //find all user has userType = $id
+            $user = User::where('user_type',$id)->get();
+            return response()->json([
+                'status' => 200,
+                'message' => 'successfully',
+                'data' => $user
+            ], 200);
+       }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in getting user type',
+                    'error' => $e->getMessage()
+                ], );
+            }
+   }
+   }

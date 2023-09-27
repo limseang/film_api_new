@@ -59,4 +59,8 @@ class User extends Model
     public function like(){
         return $this->hasMany(Like::class);
     }
+
+    public function Usertype (){
+        return $this->belongsTo(UserType::class);
+    }
 }

@@ -16,7 +16,12 @@ class CategoryController extends Controller
             $uploadController = new UploadController();
             $categories = Category::all();
             foreach($categories as $category){
-                $category->image = $uploadController->getSignedUrl($category->image);
+                if ($category->image != null) {
+                    $category->image = $uploadController->getSignedUrl($category->image);
+                }
+                else{
+                    $category->image = null;
+                }
             }
             return response()->json([
                 'message' => 'Categories retrieved successfully',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\role;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -166,12 +167,31 @@ class UserController extends Controller
          if(!empty($user['avatar'])){
              $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
          }
+         if($user['point'] >= 1 && $user['point'] <= 100){
+             $user['user_type'] = 1;
+         }
+         if($user['point'] >= 101 && $user['point'] <= 500){
+             $user['user_type'] = 2;
+         }
+         if($user['point'] >= 501 && $user['point'] <= 1000){
+             $user['user_type'] = 3;
+         }
+         if($user['point'] >= 1001 && $user['point'] <= 2000){
+             $user['user_type'] = 4;
+         }
          $role = role::find($user['role_id']);
+         $userType = UserType::find($user['user_type']);
          $user['role_id'] = $role['name'];
+            $user['user_type'] = $userType['name'];
+
+
+
          return response()->json([
              'message' => 'User successfully get info',
-             'user' => $user
+             'user' => $user,
          ], 200);
+
+
 
      }
      catch (Exception $e){

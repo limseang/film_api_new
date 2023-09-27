@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('role_id')->nullable()->default('3');
             $table->string('password');
             $table->string ('point')->nullable()->default('1');
+            $table->string('user_type')->nullable()->default('1');
             $table->string('status')->default('1');
 //            $table->string('google_id')->nullable();
             $table->rememberToken();
