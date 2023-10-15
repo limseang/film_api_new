@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
+use App\Models\Rate;
 use Illuminate\Http\Request;
 
 class FilmController extends Controller
@@ -12,23 +13,16 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types'])->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate'])->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
                     'title' => $film->title,
-                    'overview' => $film->overview,
                     'release_date' => $film->release_date,
-                    'category' => $film->categories->name,
-                    'tag' => $film->tags->name,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'trailer' => $film->trailer,
-                    'type' => $film->types->name,
-                    'director' => $film->directors->name ?? null,
-                    'running_time' => $film->running_time,
-                    'language' => $film->languages->name,
-                    'rating' => $film->rating,
-
+                    'rating' => $this->countRate($film->id),
+                    'rate_people' => $this->countRatePeople($film->id),
+                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
 
                 ];
         });
@@ -43,6 +37,35 @@ class FilmController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function getCategoryResource($data,){
+        $categories = [];
+
+        foreach ($data as $item){
+            $categories[] = $item->category_id;
+        }
+        return $categories;
+    }
+
+    public function countRate($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        $count = 0;
+        foreach ($rates as $rate){
+            $count += $rate->rate;
+        }
+        if (count($rates) > 0){
+            $count = $count / count($rates);
+        }
+        else{
+            $count = 0;
+        }
+        return $count;
+    }
+
+    public function countRatePeople ($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        return count($rates);
     }
 
 
@@ -99,21 +122,22 @@ class FilmController extends Controller
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types'])->find($id);
+            $film = Film::with([ 'languages','categories','directors','tags','types',])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title,
                 'overview' => $film->overview,
                 'release_date' => $film->release_date,
-                'category' => $film->categories->name,
+                'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name,
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer,
                 'type' => $film->types->name,
                 'director' => $film->directors->name ?? null,
                 'running_time' => $film->running_time,
-                'language' => $film->languages->name,
-                'rating' => $film->rating
+                'language' => $film->languages->name ?? null,
+                'rating' => $this->countRate($film->id),
+                'rate_people' => $this->countRatePeople($film->id),
 
             ];
             return response()->json([

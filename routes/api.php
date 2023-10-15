@@ -8,9 +8,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\TagController;
@@ -145,6 +147,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/article/update/{id}', [ArticalController::class, 'update']);
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
 
+        Route::get('/artical/share/{id}', [ArticalController::class, 'shareArtical']);
+
 
         /* CategoryArtical */
 
@@ -249,6 +253,24 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
     });
 });
+
+/* Rate */
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/rate/create', [RateController::class, 'create']);
+    Route::delete('/rate/delete/{id}', [RateController::class, 'destroy']);
+});
+
+Route::get('/film/category/all', [FilmCategoryController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/film/category/new', [FilmCategoryController::class, 'create']);
+        Route::post('/film/category/edit/{id}', [FilmCategoryController::class, 'edit']);
+    });
+});
+
+
+
 
 
 

@@ -38,10 +38,10 @@ class Artical extends Model
     {
         return $this->hasMany(Like::class);
     }
-//    public function comment()
-//    {
-//        return $this->hasMany(Com::class);
-//    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     public function type()
     {

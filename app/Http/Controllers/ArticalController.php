@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\Origin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ArticalController extends Controller
 {
     public function index()
     {
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical'])->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -25,22 +26,12 @@ class ArticalController extends Controller
                 return [
                     'id' => $artical->id,
                     'title' => $artical->title,
-                    'description' => $artical->description,
                     'origin' => $artical->origin ? $artical->origin->name : '',
-//                    'category' => $artical->category ? $artical->category->name : '',
-                    'type' => $artical->type ? $artical->type->name : '',
                     'like' => $artical->like,
-                    'comment' => $artical->comment,
+                    'comment' => $artical->comments->count(),
                     'share' => $artical->share,
-                    'view' => $artical->view,
-                    'film' => $artical->film,
                     'image' => $artical->image,
-                    'category' => $artical->categoryArtical->map(function ($categoryArtical) {
-                        return [
-                            'id' => $categoryArtical->id,
-                            'name' => $categoryArtical->categories->name,
-                        ];
-                    }),
+                    'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];
 
             });
@@ -60,6 +51,17 @@ class ArticalController extends Controller
             ], 400);
         }
     }
+
+    public function getCategoryResource($data){
+        $category = [];
+        foreach ($data as $item){
+            $category[] = $item->categories->name;
+        }
+        return $category;
+    }
+
+
+
     public function create(Request $request)
     {
         try {
@@ -235,7 +237,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->find($id);
             if(!$artical){
                 return response()->json([
                     'message' => 'not found'
@@ -254,17 +256,25 @@ class ArticalController extends Controller
                 'origin' => $artical->origin ? $artical->origin->name : '',
                 'type' => $artical->type ? $artical->type->name : '',
                 'like' => $artical->like,
-                'comment' => $artical->comment,
+                'comment_count' => $artical->comments->count() ,
                 'share' => $artical->share,
                 'view' => $artical->view,
                 'film' => $artical->film,
                 'image' => $artical->image,
+                'comment' => $artical->comments->map(function ($comment) {
+                    return [
+                        'id' => $comment->id,
+                        'content' => $comment->comment,
+                        'user' => $comment->user->name,
+                        'created_at' => $comment->created_at,
+                    ];
+                }),
                 'category' => $artical->categoryArtical->map(function ($categoryArtical) {
                     return [
                         'id' => $categoryArtical->id,
                         'name' => $categoryArtical->categories->name,
                     ];
-                }),
+                })
             ];
             return response()->json([
                 'message' => 'successfully',
@@ -272,6 +282,37 @@ class ArticalController extends Controller
             ], 200);
         }
         catch (\Exception $e){
+            return response()->json([
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function shareArtical($id)
+    {
+        try {
+            $artical = Artical::find($id);
+            if (!$artical) {
+                return response()->json([
+                    'message' => 'not found'
+                ], 404);
+            }
+           //check user login or not
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json([
+                    'message' => 'user not found'
+                ], 404);
+            }
+            $artical->share = $artical->share + 1;
+            $artical->save();
+            $user->point = $user->point + 1;
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+            ], 200);
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error',
                 'error' => $e->getMessage()

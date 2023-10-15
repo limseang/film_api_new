@@ -29,7 +29,7 @@ class Film extends Model
 
     public function categories()
     {
-        return $this->belongsTo(Category::class,'category','id');
+        return $this->belongsTo(Category::class);
     }
     public function tags()
     {
@@ -56,6 +56,15 @@ class Film extends Model
     public function directors()
     {
         return $this->belongsTo(Director::class,'director','id');
+    }
+
+    public function filmCategories()
+    {
+        return $this->hasMany(FilmCategory::class);
+    }
+
+    public function rate(){
+        return $this->hasMany(Rate::class);
     }
 
 }

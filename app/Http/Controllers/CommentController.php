@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -30,21 +31,11 @@ class CommentController extends Controller
         try {
             $comment = new Comment();
             $comment::with(['user', 'artical'])->get();
-            $comment->user_id = auth()->user()->id;
-            $request->validate([
-                'artical_id' => 'required|integer|exists:articals,id',
-                'comment' => 'required|string'
-            ]);
+            $user = Auth::user();
             $comment->artical_id = $request->artical_id;
             $comment->comment = $request->comment;
+            $comment->user_id = $user->id;
             $comment->save();
-
-            $user = User::find(auth()->user()->id);
-            if ($comment->user_id != $user->id) {
-                $user->point = $user->point + 2;
-                $user->save();
-            }
-
 
             return response()->json([
                 'message' => 'Comment created successfully',
