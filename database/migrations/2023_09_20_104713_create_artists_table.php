@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('artists', function (Blueprint $table) {
+        Schema::create('artists', function (Blueprint $table)
+       {
             $table->id();
             $table->string('name');
             $table->string('birth_date');
             $table->string('death_date')->nullable();
             $table->string('nationality');
             $table->string('biography');
-            $table->a('known_for')->nullable();
+            $table->string('known_for')->nullable();
             $table->string('profile');
             $table->string('status')->default('1');
             $table->string('film')->nullable();
