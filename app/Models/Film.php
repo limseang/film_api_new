@@ -60,7 +60,7 @@ class Film extends Model
 
     public function filmCategories()
     {
-        return $this->hasMany(FilmCategory::class);
+        return $this->belongsToMany(Category::class,'film_categories','film_id','category_id');
     }
 
     public function rate(){
