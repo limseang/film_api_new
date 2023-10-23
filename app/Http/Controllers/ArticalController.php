@@ -31,6 +31,7 @@ class ArticalController extends Controller
                     'comment' => $artical->comments->count(),
                     'share' => $artical->share,
                     'image' => $artical->image,
+                    'description' => $artical->description,
                     'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];
 
