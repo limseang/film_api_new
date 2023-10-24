@@ -67,9 +67,25 @@ class FilmController extends Controller
         return count($rates);
     }
 
-    public function typeForMovie($id)
+    public function typeForMovie($id,Request $request)
     {
-        
+        try{
+            $film = Film::find($id);
+            $film->type = $request->type;
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+
     }
 
 
