@@ -241,7 +241,6 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/film', [FilmController::class, 'index']);
 Route::get('/film/{id}', [FilmController::class, 'showByID']);
 Route::get('/film/artist/{id}', [FilmController::class, 'showByArtist']);
-Route::post('film/type/update/{id}', [FilmController::class, 'typeForMovie']);
 Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
 Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
 Route::get('/film/country/{id}', [FilmController::class, 'showByCountry']);
@@ -250,10 +249,12 @@ Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/new', [FilmController::class, 'create']);
+        Route::post('film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
     });
 });
+
 
 /* Rate */
 
