@@ -22,6 +22,7 @@ class FilmController extends Controller
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                     'rating' => $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
+                    'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
 
                 ];
