@@ -13,7 +13,7 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate'])->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate'])->orderBy('created_at', 'DESC')->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,

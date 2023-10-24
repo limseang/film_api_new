@@ -12,7 +12,7 @@ class ArticalController extends Controller
     public function index()
     {
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->orderBy('created_at', 'DESC')->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
