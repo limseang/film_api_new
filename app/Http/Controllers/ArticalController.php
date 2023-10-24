@@ -32,6 +32,7 @@ class ArticalController extends Controller
                     'share' => $artical->share,
                     'image' => $artical->image,
                     'description' => $artical->description,
+                    'type' => $artical->type ? $artical->type->name : '',
                     'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];
 

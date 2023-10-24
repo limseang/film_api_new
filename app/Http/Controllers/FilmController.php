@@ -67,6 +67,11 @@ class FilmController extends Controller
         return count($rates);
     }
 
+    public function typeForMovie($id)
+    {
+        
+    }
+
 
     public function create(Request $request)
     {
