@@ -249,7 +249,7 @@ Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/new', [FilmController::class, 'create']);
-        Route::post('film/type/update/{id}', [FilmController::class, 'typeForMovie']);
+        Route::post('/film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
     });
