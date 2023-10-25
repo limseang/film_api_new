@@ -21,7 +21,7 @@ class DirectorController extends Controller
                     'birth_date' => $director->birth_date,
                     'death_date' => $director->death_date,
                     'biography' => $director->biography,
-                    'nationality'=> $director->country->name,
+                    'nationality'=> $director->country,
                     'known_for' => $director->known_for,
                     'avatar' => $director->avatar ? $uploadController->getSignedUrl($director->avatar) : null,
                     'status' => $director->status,
