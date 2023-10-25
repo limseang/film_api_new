@@ -11,7 +11,7 @@ class DirectorController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $directors = Director::with(['country'])->get();
+            $directors = Director::with('country')->get();
            //map data
             $data = $directors->map(function ($director) use ($uploadController)
             {
@@ -21,7 +21,7 @@ class DirectorController extends Controller
                     'birth_date' => $director->birth_date,
                     'death_date' => $director->death_date,
                     'biography' => $director->biography,
-                    'nationality'=> $director->country,
+                    'nationality'=> $director->country->name,
                     'known_for' => $director->known_for,
                     'avatar' => $director->avatar ? $uploadController->getSignedUrl($director->avatar) : null,
                     'status' => $director->status,
