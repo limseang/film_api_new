@@ -24,7 +24,7 @@ class CastController extends Controller
             $cast = new Cast();
             $uploadController = new UploadController();
             $cast->film_id = $request->film_id;
-            $cast->artist_id = $request->artist_id;
+            $cast->actor_id = $request->actor_id;
             $cast->character = $request->character;
             $cast->position = $request->position;
             $cast->image = $uploadController->UploadFile($request->file('image'));
