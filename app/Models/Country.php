@@ -21,5 +21,10 @@ class Country extends Model
         return $this->hasMany(Artist::class);
     }
 
+    public function directors()
+    {
+        return $this->hasMany(Director::class);
+    }
+
 
 }

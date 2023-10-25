@@ -22,7 +22,7 @@ class Director extends Model
 
     public function country(){
 
-        return $this->belongsTo(Country::class,'nationality','id');
+        return $this->belongsTo(Country::class);
 
     }
 
