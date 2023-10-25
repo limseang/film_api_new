@@ -18,9 +18,31 @@ class CastController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try{
+            $cast = new Cast();
+            $uploadController = new UploadController();
+            $cast->film_id = $request->film_id;
+            $cast->artist_id = $request->artist_id;
+            $cast->character = $request->character;
+            $cast->position = $request->position;
+            $cast->image = $uploadController->UploadFile($request->file('image'));
+            $cast->status = $request->status;
+            $cast->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cast created successfully',
+                'data' => $cast
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cast created failed',
+                'data' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

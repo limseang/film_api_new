@@ -79,7 +79,7 @@ class DirectorController extends Controller
             $director = Director::with(['country'])->find($id);
             $director->nationality = $director->country->name;
            if($director->avatar =! null){
-               $director->avatar = $uploadController->getSignedUrl($director->avatar);
+               $director->avatar = $director->avatar ? $uploadController->getSignedUrl($director->avatar) : null;
            }
            else{
                $director->avatar = null;

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\CastController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -254,6 +255,18 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
     });
 });
+
+/* Cast for film */
+Route::get('/film/cast', [CastController::class, 'index']);
+Route::get('/film/cast/{id}', [CastController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/film/cast/new', [CastController::class, 'create']);
+        Route::delete('/film/cast/delete/{id}', [CastController::class, 'destroy']);
+        Route::post('/filmcast/update/{id}', [CastController::class, 'update']);
+    });
+});
+
 
 
 /* Rate */

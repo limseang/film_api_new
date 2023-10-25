@@ -25,5 +25,11 @@ class Artist extends Model
        return $this->belongsTo(Country::class,'nationality','id');
    }
 
+    public function films()
+    {
+         return $this->hasMany(Film::class);
+    }
+
+
 
 }
