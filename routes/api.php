@@ -301,11 +301,14 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::get('/available', [AvailableInController::class, 'index']);
 Route::get('/available/{id}', [AvailableInController::class, 'showByID']);
-Route::group(['middleware' => ['postpermission']], function () {
-    Route::post('/available/new', [AvailableInController::class, 'create']);
-    Route::delete('/available/delete/{id}', [AvailableInController::class, 'destroy']);
-    Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/available/new', [AvailableInController::class, 'create']);
+        Route::delete('/available/delete/{id}', [AvailableInController::class, 'destroy']);
+        Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
+    });
 });
+
 
 
 
