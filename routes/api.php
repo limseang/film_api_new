@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\LikeController;
@@ -269,13 +270,13 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Available in for film */
-Route::get('/film/available', [AvailableInController::class, 'index']);
-Route::get('/film/available/{id}', [AvailableInController::class, 'showByID']);
+Route::get('/film/available', [FilmAvailableController::class, 'index']);
+Route::get('/film/available/{id}', [FilmAvailableController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
-        Route::post('/film/available/new', [AvailableInController::class, 'create']);
-        Route::delete('/film/available/delete/{id}', [AvailableInController::class, 'destroy']);
-        Route::post('/film/available/update/{id}', [AvailableInController::class, 'update']);
+        Route::post('/film/available/new', [FilmAvailableController::class, 'create']);
+        Route::delete('/film/available/delete/{id}', [FilmAvailableController::class, 'destroy']);
+        Route::post('/film/available/update/{id}', [FilmAvailableController::class, 'update']);
     });
 });
 
