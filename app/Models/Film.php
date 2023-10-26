@@ -67,4 +67,8 @@ class Film extends Model
         return $this->hasMany(Rate::class);
     }
 
+    public function cast(){
+        return $this->hasMany(Cast::class,'film_id','id');
+    }
+
 }

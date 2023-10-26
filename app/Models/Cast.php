@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Cast extends Model
 {
     use HasFactory;
+    protected $table='casts';
     protected $fillable = [
         'film_id',
-        'artist_id',
+        'actor_id',
         'character',
         'position',
         'image',
@@ -20,7 +21,7 @@ class Cast extends Model
 
     public function films()
     {
-        return $this->belongsTo(Film::class,'film_id','id');
+        return $this->belongsToMany(Film::class,'film_id','id');
     }
     public function artists()
     {

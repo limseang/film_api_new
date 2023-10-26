@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cast;
+use App\Models\FilmAvailable;
 use Illuminate\Http\Request;
 
-class CastController extends Controller
+class FilmAvailableController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,20 +13,23 @@ class CastController extends Controller
     public function index()
     {
         try{
-
-            $uploadController = new UploadController();
-            $casts = Cast::All();
-
+            $filmAvailable = FilmAvailable::with(['film', 'available'])->get();
+            $data = $filmAvailable->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'film' => $item->film->title,
+                    'available' => $item->available->name,
+                    'url' => $item->url
+                ];
+            });
             return response()->json([
-                'message' => 'Casts retrieved successfully',
-                'data' => $casts
+                'message' => 'FilmAvailable retrieved successfully',
+                'data' => $data
             ], 200);
-
-
         }
         catch (\Exception $e){
             return response()->json([
-                'message' => 'error',
+                'message' => 'FilmAvailable retrieved failed',
                 'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
             ], 400);
         }
@@ -38,25 +41,21 @@ class CastController extends Controller
     public function create(Request $request)
     {
         try{
-            $cast = new Cast();
-            $uploadController = new UploadController();
-            $cast->film_id = $request->film_id;
-            $cast->actor_id = $request->actor_id;
-            $cast->character = $request->character;
-            $cast->position = $request->position;
-            $cast->image = $uploadController->UploadFile($request->file('image'));
-            $cast->status = $request->status;
-            $cast->save();
+            $filmAvailable = new FilmAvailable();
+            $filmAvailable->film_id = $request->film_id;
+            $filmAvailable->available_id = $request->available_id;
+            $filmAvailable->url = $request->url;
+            $filmAvailable->save();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Cast created successfully',
-                'data' => $cast
+                'message' => 'FilmAvailable created successfully',
+                'data' => $filmAvailable
             ]);
         }
         catch(\Exception $e){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Cast created failed',
+                'message' => 'FilmAvailable created failed',
                 'data' => $e->getMessage()
             ]);
         }
@@ -73,7 +72,7 @@ class CastController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cast $cast)
+    public function show(FilmAvailable $filmAvailable)
     {
         //
     }
@@ -81,7 +80,7 @@ class CastController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cast $cast)
+    public function edit(FilmAvailable $filmAvailable)
     {
         //
     }
@@ -89,7 +88,7 @@ class CastController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cast $cast)
+    public function update(Request $request, FilmAvailable $filmAvailable)
     {
         //
     }
@@ -97,7 +96,7 @@ class CastController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cast $cast)
+    public function destroy(FilmAvailable $filmAvailable)
     {
         //
     }

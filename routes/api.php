@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\AvailableInController;
 use App\Http\Controllers\CastController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
@@ -268,7 +269,6 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 
-
 /* Rate */
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
@@ -282,7 +282,21 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/category/new', [FilmCategoryController::class, 'create']);
         Route::post('/film/category/edit/{id}', [FilmCategoryController::class, 'edit']);
     });
+
+
+
 });
+/* Available in */
+
+Route::get('/available', [AvailableInController::class, 'index']);
+Route::get('/available/{id}', [AvailableInController::class, 'showByID']);
+Route::group(['middleware' => ['postpermission']], function () {
+    Route::post('/available/new', [AvailableInController::class, 'create']);
+    Route::delete('/available/delete/{id}', [AvailableInController::class, 'destroy']);
+    Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
+});
+
+
 
 
 

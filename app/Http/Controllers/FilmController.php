@@ -13,7 +13,7 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate'])->orderBy('created_at', 'DESC')->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -24,6 +24,7 @@ class FilmController extends Controller
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                    'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
 
                 ];
         });
@@ -35,7 +36,7 @@ class FilmController extends Controller
         catch (\Exception $e){
             return response()->json([
                 'message' => 'Artists retrieved failed',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
             ], 400);
         }
     }
@@ -44,8 +45,17 @@ class FilmController extends Controller
         $categories = [];
         foreach ($data as $item){
             $categories[] = $item->name;
+            
         }
         return $categories;
+    }
+
+    public function getCastResource($data){
+        $casts = [];
+        foreach ($data as $item){
+            $casts[] = $item;
+        }
+        return $casts;
     }
 
     public function countRate($film_id){
