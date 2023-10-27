@@ -78,8 +78,8 @@ class FilmController extends Controller
         return count($rates);
     }
 
-    public function filmAvailable($film_id){
-        $availables = Film::find($film_id)->availables->name;
+    public function filmAvailables($film_id){
+        $availables = Film::find($film_id)->availables;
         return response()->json([
             'message' => 'Film Available retrieved successfully',
             'data' => $availables
@@ -177,7 +177,7 @@ class FilmController extends Controller
                 'language' => $film->languages->name ?? null,
                 'rating' => $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
-                'available' => $film->filmAvailable,
+                'available' => $this->filmAvailables($film->id),
 
             ];
             return response()->json([
