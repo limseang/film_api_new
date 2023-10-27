@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
+use App\Models\FilmAvailable;
 use App\Models\Rate;
 use Illuminate\Http\Request;
 
@@ -79,7 +80,7 @@ class FilmController extends Controller
     }
 
     public function filmAvailables($film_id){
-        $availables = Film::find($film_id)->availables;
+        $availables = FilmAvailable::with(['availables'])->where('film_id',$film_id)->get();
         return response()->json([
             'message' => 'Film Available retrieved successfully',
             'data' => $availables
