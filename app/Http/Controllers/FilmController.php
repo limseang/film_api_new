@@ -81,9 +81,9 @@ class FilmController extends Controller
 
     public function filmAvailables($film_id){
         $availables = FilmAvailable::where('film_id',$film_id)->get();
-        $filmAvailable = [];
+
         foreach ($availables as $available){
-            $filmAvailable[] = [
+            $filmAvailable = [
                 'available' =>$available->availables->name,
                 'url' => $available->url ?? $available->availables->url,
                 'logo' => $available->availables->logo
