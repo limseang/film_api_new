@@ -86,7 +86,9 @@ class FilmController extends Controller
             $filmAvailable[] = $available->availables->name;
         }
 
-        return $filmAvailable;
+        return response()->json([
+            'available' => $filmAvailable
+        ], 200);
     }
 
     public function typeForMovie($id,Request $request)
