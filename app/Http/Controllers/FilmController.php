@@ -79,7 +79,7 @@ class FilmController extends Controller
     }
 
     public function filmAvailable($film_id){
-        $availables = Film::find($film_id)->availables;
+        $availables = Film::find($film_id)->availables->name;
         return response()->json([
             'message' => 'Film Available retrieved successfully',
             'data' => $availables
