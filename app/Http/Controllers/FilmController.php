@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cast;
 use App\Models\Film;
 use App\Models\FilmAvailable;
 use App\Models\Rate;
@@ -93,6 +94,24 @@ class FilmController extends Controller
         }
 
         return $filmAvailable;
+    }
+
+    public function filmCast($film_id){
+        $casts = Cast::with('artists')->where('film_id',$film_id)->get();
+        $filmCast = [];
+
+        foreach ($casts as $cast){
+            $uploadController = new UploadController();
+
+            $filmCast[] = [
+                'name' =>$cast->artists->name,
+                'position' =>$cast->position,
+                'character' => $cast->character,
+                'image' => $cast->image ? $uploadController->getSignedUrl($cast->image) : null,
+            ];
+        }
+
+        return $filmCast;
     }
 
     public function typeForMovie($id,Request $request)
@@ -187,6 +206,7 @@ class FilmController extends Controller
                 'rating' => $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id),
+                'cast' => $this->filmCast($film->id),
 
             ];
             return response()->json([

@@ -25,6 +25,6 @@ class Cast extends Model
     }
     public function artists()
     {
-        return $this->belongsTo(Artist::class,'artist_id','id');
+        return $this->belongsTo(Artist::class,'actor_id','id');
     }
 }

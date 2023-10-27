@@ -259,7 +259,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Cast for film */
-Route::get('/film/cast', [CastController::class, 'index']);
+Route::get('/all/cast', [CastController::class, 'index']);
 Route::get('/film/cast/{id}', [CastController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
