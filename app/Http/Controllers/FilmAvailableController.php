@@ -17,8 +17,8 @@ class FilmAvailableController extends Controller
             $data = $filmAvailable->map(function ($filmAvailable) {
                 return [
                     'id' => $filmAvailable->id,
-                    'film_id' => $filmAvailable->films->title,
-                    'available_id' => $filmAvailable->availables->name,
+                    'film' => $filmAvailable->films->title,
+                    'available' => $filmAvailable->availables->name,
                     'url' => $filmAvailable->url ?? $filmAvailable->availables->url,
 
                 ];

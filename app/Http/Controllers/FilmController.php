@@ -45,7 +45,7 @@ class FilmController extends Controller
         $categories = [];
         foreach ($data as $item){
             $categories[] = $item->name;
-            
+
         }
         return $categories;
     }
@@ -76,6 +76,14 @@ class FilmController extends Controller
     public function countRatePeople ($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
         return count($rates);
+    }
+
+    public function filmAvailable($film_id){
+        $availables = Film::find($film_id)->availables;
+        return response()->json([
+            'message' => 'Film Available retrieved successfully',
+            'data' => $availables
+        ], 200);
     }
 
     public function typeForMovie($id,Request $request)
@@ -153,7 +161,7 @@ class FilmController extends Controller
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types',])->find($id);
+            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable'])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title,
@@ -169,6 +177,7 @@ class FilmController extends Controller
                 'language' => $film->languages->name ?? null,
                 'rating' => $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
+                'available' => $film->filmAvailable,
 
             ];
             return response()->json([
@@ -183,4 +192,6 @@ class FilmController extends Controller
             ], 400);
         }
     }
+
+
 }
