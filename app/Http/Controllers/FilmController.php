@@ -91,9 +91,7 @@ class FilmController extends Controller
             ];
         }
 
-        return response()->json([
-            'available' => $filmAvailable
-        ], 200);
+        return $filmAvailable;
     }
 
     public function typeForMovie($id,Request $request)
