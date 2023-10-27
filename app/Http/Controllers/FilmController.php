@@ -83,7 +83,12 @@ class FilmController extends Controller
         $availables = FilmAvailable::where('film_id',$film_id)->get();
         $filmAvailable = [];
         foreach ($availables as $available){
-            $filmAvailable[] = $available->availables->name;
+            $filmAvailable[] = [
+                'available' =>$available->availables->name,
+                'url' => $available->url ?? $available->availables->url,
+                'logo' => $available->availables->logo
+
+            ];
         }
 
         return response()->json([
