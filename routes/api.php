@@ -270,7 +270,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Available in for film */
-Route::get('/film/available', [FilmAvailableController::class, 'index']);
+Route::get('/film/available/in', [FilmAvailableController::class, 'index']);
 Route::get('/film/available/{id}', [FilmAvailableController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
@@ -279,6 +279,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/available/update/{id}', [FilmAvailableController::class, 'update']);
     });
 });
+
+
 
 
 /* Rate */
@@ -309,6 +311,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
     });
 });
+
 
 
 

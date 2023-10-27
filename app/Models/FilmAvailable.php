@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class FilmAvailable extends Model
 {
     use HasFactory;
-    protected $table='film_availables';
     protected $fillable = [
         'film_id',
         'available_id',
