@@ -80,12 +80,13 @@ class FilmController extends Controller
     }
 
     public function filmAvailables($film_id){
-        $availables = FilmAvailable::with(['available_id'])->where('film_id',$film_id)->get();
-        $availables_name = $availables->availables->name;
-        return response()->json([
-            'message' => 'Film Available retrieved successfully',
-            'data' => $availables_name
-        ], 200);
+        $availables = FilmAvailable::where('film_id',$film_id)->get();
+        $filmAvailable = [];
+        foreach ($availables as $available){
+            $filmAvailable[] = $available->availables->name;
+        }
+
+        return $filmAvailable;
     }
 
     public function typeForMovie($id,Request $request)
