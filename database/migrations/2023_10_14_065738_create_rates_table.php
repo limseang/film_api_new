@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('film_id');
-            $table->string('rate');
+            $table->double('rate')->default(0.0);
             $table->timestamps();
         });
     }

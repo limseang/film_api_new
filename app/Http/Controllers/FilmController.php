@@ -62,11 +62,11 @@ class FilmController extends Controller
 
     public function countRate($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
-        $count = 0;
+        $count = 0.0;
         foreach ($rates as $rate){
             $count += $rate->rate;
         }
-        if (count($rates) > 0){
+        if (count($rates) > 0.0){
             $count = $count / count($rates);
         }
         else{
