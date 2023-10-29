@@ -87,7 +87,7 @@ class FilmController extends Controller
             $uploadController = new UploadController();
             $filmAvailable[] = [
                 'available' =>$available->availables->name ?? null,
-                'url' => $available->url ?? $available->availables->url,
+                'url' => $available->url ?? $available->availables->url ?? null,
                 'logo' => $available->availables->logo ? $uploadController->getSignedUrl($available->availables->logo) : null,
 
             ];
