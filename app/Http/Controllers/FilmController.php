@@ -25,7 +25,7 @@ class FilmController extends Controller
                     'rating' => $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
-                    'category' => $this->getCategoryResource($film->filmCategories) ?? null,
+                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
 
                 ];
@@ -62,11 +62,11 @@ class FilmController extends Controller
 
     public function countRate($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
-        $count = 0.0;
+        $count = 0;
         foreach ($rates as $rate){
             $count += $rate->rate;
         }
-        if (count($rates) > 0.0){
+        if (count($rates) > 0){
             $count = $count / count($rates);
         }
         else{
@@ -195,19 +195,18 @@ class FilmController extends Controller
                 'title' => $film->title,
                 'overview' => $film->overview,
                 'release_date' => $film->release_date,
-                'category' =>  $this->getCategoryResource($film->filmCategories) ?? null,
-                'tag' => $film->tags->name ?? null,
+                'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
+                'tag' => $film->tags->name,
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer,
-                'type' => $film->types->name ?? null,
+                'type' => $film->types->name,
                 'director' => $film->directors->name ?? null,
                 'running_time' => $film->running_time,
                 'language' => $film->languages->name ?? null,
-                'rating' => $this->countRate($film->id) ?? null,
-                'rate_people' => $this->countRatePeople($film->id) ?? null,
-                'available' => $this->filmAvailables($film->id) ?? null,
-                'cast' => $this->filmCast($film->id) ?? null,
-                'review' => $film->review ?? null,
+                'rating' => $this->countRate($film->id),
+                'rate_people' => $this->countRatePeople($film->id),
+                'available' => $this->filmAvailables($film->id),
+                'cast' => $this->filmCast($film->id),
 
             ];
             return response()->json([
