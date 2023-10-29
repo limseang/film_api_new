@@ -46,7 +46,7 @@ class FilmController extends Controller
     public function getCategoryResource($data){
         $categories = [];
         foreach ($data as $item){
-            $categories[] = $item->name ?? null;
+            $categories[] = $item->name;
 
         }
         return $categories;
@@ -86,8 +86,8 @@ class FilmController extends Controller
         foreach ($availables as $available){
             $uploadController = new UploadController();
             $filmAvailable[] = [
-                'available' =>$available->availables->name ?? null,
-                'url' => $available->url ?? $available->availables->url ?? null,
+                'available' =>$available->availables->name,
+                'url' => $available->url ?? $available->availables->url,
                 'logo' => $available->availables->logo ? $uploadController->getSignedUrl($available->availables->logo) : null,
 
             ];
@@ -104,7 +104,7 @@ class FilmController extends Controller
             $uploadController = new UploadController();
 
             $filmCast[] = [
-                'name' =>$cast->artists->name ?? null,
+                'name' =>$cast->artists->name,
                 'position' =>$cast->position,
                 'character' => $cast->character,
                 'image' => $cast->image ? $uploadController->getSignedUrl($cast->image) : null,
