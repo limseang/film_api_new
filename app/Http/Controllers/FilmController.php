@@ -190,6 +190,7 @@ class FilmController extends Controller
         try{
             $uploadController = new UploadController();
             $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable'])->find($id);
+            dd($film);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title,
