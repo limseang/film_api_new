@@ -196,17 +196,17 @@ class FilmController extends Controller
                 'overview' => $film->overview,
                 'release_date' => $film->release_date,
                 'category' =>  $this->getCategoryResource($film->filmCategories) ?? null,
-                'tag' => $film->tags->name,
+                'tag' => $film->tags->name ?? null,
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer,
                 'type' => $film->types->name ?? null,
                 'director' => $film->directors->name ?? null,
                 'running_time' => $film->running_time,
                 'language' => $film->languages->name ?? null,
-                'rating' => $this->countRate($film->id),
-                'rate_people' => $this->countRatePeople($film->id),
-                'available' => $this->filmAvailables($film->id),
-                'cast' => $this->filmCast($film->id),
+                'rating' => $this->countRate($film->id) ?? null,
+                'rate_people' => $this->countRatePeople($film->id) ?? null,
+                'available' => $this->filmAvailables($film->id) ?? null,
+                'cast' => $this->filmCast($film->id) ?? null,
 
             ];
             return response()->json([
