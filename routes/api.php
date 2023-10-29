@@ -242,7 +242,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 /* film */
 
 Route::get('/film', [FilmController::class, 'index']);
-Route::get('/film/{id}', [FilmController::class, 'showByID']);
+Route::get('/film/detail/{id}', [FilmController::class, 'showByID']);
 Route::get('/film/artist/{id}', [FilmController::class, 'showByArtist']);
 Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
 Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
