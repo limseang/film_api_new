@@ -204,7 +204,7 @@ class FilmController extends Controller
                 'director' => $film->directors->name,
                 'running_time' => $film->running_time,
                 'language' => $film->languages->name,
-                'rating' => $this->countRate($film->id),
+                'rating' => (string) $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id),
                 'cast' => $this->filmCast($film->id),
