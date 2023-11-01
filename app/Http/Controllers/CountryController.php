@@ -11,10 +11,11 @@ class CountryController extends Controller
     public function index()
     {
       try{
-          $path = public_path('countries.json'); // Path to your JSON file.
-          $countries = json_decode(file_get_contents($path), true);
-
-          return response()->json($countries);
+        $countries = Country::all();
+        return response()->json([
+            'message' => 'successfully',
+            'data' => $countries
+        ], 200);
       }
         catch (\Exception $e){
             return response()->json([
