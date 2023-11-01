@@ -13,11 +13,11 @@ class FilmAvailableController extends Controller
     public function index()
     {
         try{
-            $filmAvailable = FilmAvailable::with(['films','availables'])->get();
+            $filmAvailable = FilmAvailable::with(['film','availables'])->get();
             $data = $filmAvailable->map(function ($filmAvailable) {
                 return [
                     'id' => $filmAvailable->id,
-                    'film' => $filmAvailable->films->title,
+                    'film' => $this->getFilm($filmAvailable->film),
                     'available' => $filmAvailable->availables->name,
                     'url' => $filmAvailable->url ?? $filmAvailable->availables->url,
 
@@ -35,6 +35,11 @@ class FilmAvailableController extends Controller
                 'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
             ], 400);
         }
+    }
+
+    public function getFilm($film){
+        $filmtitle = $film->title;
+        return $filmtitle;
     }
 
     /**
@@ -98,8 +103,22 @@ class FilmAvailableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(FilmAvailable $filmAvailable)
+    public function destroy($id)
     {
-        //
+        try{
+            $filmAvailable = FilmAvailable::find($id);
+            $filmAvailable->delete();
+
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $filmAvailable
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 }

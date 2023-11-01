@@ -9,6 +9,7 @@ class Film extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'title',
         'overview',
         'director',

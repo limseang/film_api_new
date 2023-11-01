@@ -129,7 +129,6 @@ Route::get('/country/{id}', [CountryController::class, 'getById']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/country/new/tttt', [CountryController::class, 'create']);
-//        Route::post('/country/new', [CountryController::class, 'create']);
         Route::delete('/country/delete/{id}', [CountryController::class, 'destroy']);
     });
 });
