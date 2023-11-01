@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cast;
+use App\Models\Country;
 use App\Models\Film;
 use App\Models\FilmAvailable;
 use App\Models\Rate;
@@ -79,6 +80,12 @@ class FilmController extends Controller
     public function countRatePeople ($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
         return count($rates);
+    }
+
+    public function getCountry($id){
+        $country = Country::find($id);
+        return $country->name;
+
     }
 
     public function filmAvailables($film_id){
@@ -204,7 +211,7 @@ class FilmController extends Controller
                 'type' => $film->types->name ?? $film->type,
                 'director' => $film->directors->name ?? $film->director,
                 'running_time' => $film->running_time,
-                'language' => $film->languages->name ?? $film->language,
+                'language' => $this->getCountry($film->language),
                 'rating' => (string) $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id),
