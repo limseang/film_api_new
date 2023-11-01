@@ -191,6 +191,7 @@ class FilmController extends Controller
         try{
             $uploadController = new UploadController();
             $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable'])->find($id);
+
             $data = [
                 'id' => $film->id,
                 'title' => $film->title,
@@ -200,10 +201,10 @@ class FilmController extends Controller
                 'tag' => $film->tags->name,
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer,
-                'type' => $film->types->name,
-                'director' => $film->directors->name,
+                'type' => $film->types->name ?? $film->type,
+                'director' => $film->directors->name ?? $film->director,
                 'running_time' => $film->running_time,
-                'language' => $film->languages->name,
+                'language' => $film->languages->name ?? $film->language,
                 'rating' => (string) $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id),
