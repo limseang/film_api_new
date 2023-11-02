@@ -22,7 +22,7 @@ class FilmController extends Controller
                     'title' => $film->title,
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => $this->countRate($film->id),
+                    'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
