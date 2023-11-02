@@ -5,6 +5,7 @@
         "name": "Afghanistan",
         "flag": "🇦🇫",
         "nationality": "Afghan",
+        "language": "Pashto, Dari",
         "status": "1"
     },
     {
@@ -13,6 +14,7 @@
         "name": "Albania",
         "flag": "🇦🇱",
         "nationality": "Albanian",
+        "language": "Albanian",
         "status": "1"
     },
     {
@@ -21,6 +23,7 @@
         "name": "Algeria",
         "flag": "🇩🇿",
         "nationality": "Algerian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -29,6 +32,7 @@
         "name": "Andorra",
         "flag": "🇦🇩",
         "nationality": "Andorran",
+        "language": "Catalan",
         "status": "1"
     },
     {
@@ -37,6 +41,7 @@
         "name": "Angola",
         "flag": "🇦🇴",
         "nationality": "Angolan",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -45,6 +50,7 @@
         "name": "Antigua and Barbuda",
         "flag": "🇦🇬",
         "nationality": "Antiguan",
+        "language": "English",
         "status": "1"
     },
     {
@@ -53,6 +59,7 @@
         "name": "Argentina",
         "flag": "🇦🇷",
         "nationality": "Argentinian",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -61,6 +68,7 @@
         "name": "Armenia",
         "flag": "🇦🇲",
         "nationality": "Armenian",
+        "language": "Armenian",
         "status": "1"
     },
     {
@@ -69,6 +77,7 @@
         "name": "Australia",
         "flag": "🇦🇺",
         "nationality": "Australian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -77,6 +86,7 @@
         "name": "Austria",
         "flag": "🇦🇹",
         "nationality": "Austrian",
+        "language": "German",
         "status": "1"
     },
     {
@@ -85,6 +95,7 @@
         "name": "Azerbaijan",
         "flag": "🇦🇿",
         "nationality": "Azerbaijani",
+        "language": "Azerbaijani",
         "status": "1"
     },
     {
@@ -93,6 +104,7 @@
         "name": "Bahamas",
         "flag": "🇧🇸",
         "nationality": "Bahamian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -101,6 +113,7 @@
         "name": "Bahrain",
         "flag": "🇧🇭",
         "nationality": "Bahraini",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -109,6 +122,7 @@
         "name": "Bangladesh",
         "flag": "🇧🇩",
         "nationality": "Bangladeshi",
+        "language": "Bengali",
         "status": "1"
     },
     {
@@ -117,6 +131,7 @@
         "name": "Barbados",
         "flag": "🇧🇧",
         "nationality": "Barbadian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -125,6 +140,7 @@
         "name": "Belarus",
         "flag": "🇧🇾",
         "nationality": "Belarusian",
+        "language": "Belarusian",
         "status": "1"
     },
     {
@@ -133,6 +149,7 @@
         "name": "Belgium",
         "flag": "🇧🇪",
         "nationality": "Belgian",
+        "language": "Dutch, French, German",
         "status": "1"
     },
     {
@@ -141,6 +158,7 @@
         "name": "Belize",
         "flag": "🇧🇿",
         "nationality": "Belizean",
+        "language": "English",
         "status": "1"
     },
     {
@@ -149,6 +167,7 @@
         "name": "Benin",
         "flag": "🇧🇯",
         "nationality": "Beninese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -157,6 +176,7 @@
         "name": "Bhutan",
         "flag": "🇧🇹",
         "nationality": "Bhutanese",
+        "language": "Dzongkha",
         "status": "1"
     },
     {
@@ -165,6 +185,7 @@
         "name": "Bolivia",
         "flag": "🇧🇴",
         "nationality": "Bolivian",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -173,6 +194,7 @@
         "name": "Bosnia and Herzegovina",
         "flag": "🇧🇦",
         "nationality": "Bosnian",
+        "language": "Bosnian, Croatian, Serbian",
         "status": "1"
     },
     {
@@ -181,6 +203,7 @@
         "name": "Botswana",
         "flag": "🇧🇼",
         "nationality": "Botswanan",
+        "language": "English, Tswana",
         "status": "1"
     },
     {
@@ -189,6 +212,7 @@
         "name": "Brazil",
         "flag": "🇧🇷",
         "nationality": "Brazilian",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -197,6 +221,7 @@
         "name": "Brunei",
         "flag": "🇧🇳",
         "nationality": "Bruneian",
+        "language": "Malay",
         "status": "1"
     },
     {
@@ -205,6 +230,7 @@
         "name": "Bulgaria",
         "flag": "🇧🇬",
         "nationality": "Bulgarian",
+        "language": "Bulgarian",
         "status": "1"
     },
     {
@@ -213,6 +239,7 @@
         "name": "Burkina Faso",
         "flag": "🇧🇫",
         "nationality": "Burkinabe",
+        "language": "French",
         "status": "1"
     },
     {
@@ -221,6 +248,7 @@
         "name": "Burundi",
         "flag": "🇧🇮",
         "nationality": "Burundian",
+        "language": "Kirundi, French",
         "status": "1"
     },
     {
@@ -229,6 +257,7 @@
         "name": "Cabo Verde",
         "flag": "🇨🇻",
         "nationality": "Cape Verdean",
+        "language": "Portuguese",
         "status": "1"
 
     },
@@ -238,6 +267,7 @@
         "name": "Cambodia",
         "flag": "🇰🇭",
         "nationality": "Cambodian",
+        "language": "Khmer",
         "status": "1"
     },
     {
@@ -246,6 +276,7 @@
         "name": "Cameroon",
         "flag": "🇨🇲",
         "nationality": "Cameroonian",
+        "language": "English, French",
         "status": "1"
     },
     {
@@ -254,6 +285,7 @@
         "name": "Canada",
         "flag": "🇨🇦",
         "nationality": "Canadian",
+        "language": "English, French",
         "status": "1"
     },
     {
@@ -262,6 +294,7 @@
         "name": "Central African Republic",
         "flag": "🇨🇫",
         "nationality": "Central African",
+        "language": "Sango, French",
         "status": "1"
     },
     {
@@ -270,6 +303,7 @@
         "name": "Chad",
         "flag": "🇹🇩",
         "nationality": "Chadian",
+        "language": "French, Arabic",
         "status": "1"
     },
     {
@@ -278,6 +312,7 @@
         "name": "Chile",
         "flag": "🇨🇱",
         "nationality": "Chilean",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -286,6 +321,7 @@
         "name": "China",
         "flag": "🇨🇳",
         "nationality": "Chinese",
+        "language": "Standard Chinese",
         "status": "1"
     },
     {
@@ -294,6 +330,7 @@
         "name": "Colombia",
         "flag": "🇨🇴",
         "nationality": "Colombian",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -302,6 +339,7 @@
         "name": "Comoros",
         "flag": "🇰🇲",
         "nationality": "Comoran",
+        "language": "Arabic, French",
         "status": "1"
     },
     {
@@ -310,6 +348,7 @@
         "name": "Congo (Congo-Brazzaville)",
         "flag": "🇨🇬",
         "nationality": "Congolese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -318,6 +357,7 @@
         "name": "Congo (Congo-Kinshasa)",
         "flag": "🇨🇩",
         "nationality": "Congolese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -326,6 +366,7 @@
         "name": "Costa Rica",
         "flag": "🇨🇷",
         "nationality": "Costa Rican",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -334,6 +375,7 @@
         "name": "Croatia",
         "flag": "🇭🇷",
         "nationality": "Croatian",
+        "language": "Croatian",
         "status": "1"
     },
     {
@@ -342,6 +384,7 @@
         "name": "Cuba",
         "flag": "🇨🇺",
         "nationality": "Cuban",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -350,6 +393,7 @@
         "name": "Cyprus",
         "flag": "🇨🇾",
         "nationality": "Cypriot",
+        "language": "Greek, Turkish",
         "status": "1"
     },
     {
@@ -358,6 +402,7 @@
         "name": "Czechia (Czech Republic)",
         "flag": "🇨🇿",
         "nationality": "Czech",
+        "language": "Czech",
         "status": "1"
     },
     {
@@ -366,6 +411,7 @@
         "name": "Denmark",
         "flag": "🇩🇰",
         "nationality": "Danish",
+        "language": "Danish",
         "status": "1"
     },
     {
@@ -374,6 +420,7 @@
         "name": "Djibouti",
         "flag": "🇩🇯",
         "nationality": "Djiboutian",
+        "language": "Arabic, French",
         "status": "1"
     },
     {
@@ -382,6 +429,7 @@
         "name": "Dominica",
         "flag": "🇩🇲",
         "nationality": "Dominican",
+        "language": "English",
         "status": "1"
     },
     {
@@ -390,6 +438,7 @@
         "name": "Dominican Republic",
         "flag": "🇩🇴",
         "nationality": "Dominican",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -398,6 +447,7 @@
         "name": "Ecuador",
         "flag": "🇪🇨",
         "nationality": "Ecuadorean",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -406,6 +456,7 @@
         "name": "Egypt",
         "flag": "🇪🇬",
         "nationality": "Egyptian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -414,6 +465,7 @@
         "name": "El Salvador",
         "flag": "🇸🇻",
         "nationality": "Salvadoran",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -422,6 +474,7 @@
         "name": "Equatorial Guinea",
         "flag": "🇬🇶",
         "nationality": "Equatorial Guinean",
+        "language": "Spanish, French, Portuguese",
         "status": "1"
     },
     {
@@ -430,6 +483,7 @@
         "name": "Eritrea",
         "flag": "🇪🇷",
         "nationality": "Eritrean",
+        "language": "Arabic, Tigrinya",
         "status": "1"
     },
     {
@@ -438,6 +492,7 @@
         "name": "Estonia",
         "flag": "🇪🇪",
         "nationality": "Estonian",
+        "language": "Estonian",
         "status": "1"
     },
     {
@@ -446,6 +501,7 @@
         "name": "Ethiopia",
         "flag": "🇪🇹",
         "nationality": "Ethiopian",
+        "language": "Amharic",
         "status": "1"
     },
     {
@@ -454,6 +510,7 @@
         "name": "Fiji",
         "flag": "🇫🇯",
         "nationality": "Fijian",
+        "language": "English, Fijian, Hindi",
         "status": "1"
     },
     {
@@ -462,6 +519,7 @@
         "name": "Finland",
         "flag": "🇫🇮",
         "nationality": "Finnish",
+        "language": "Finnish, Swedish",
         "status": "1"
     },
     {
@@ -470,6 +528,7 @@
         "name": "France",
         "flag": "🇫🇷",
         "nationality": "French",
+        "language": "French",
         "status": "1"
     },
     {
@@ -478,6 +537,7 @@
         "name": "Gabon",
         "flag": "🇬🇦",
         "nationality": "Gabonese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -486,6 +546,7 @@
         "name": "Gambia",
         "flag": "🇬🇲",
         "nationality": "Gambian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -494,6 +555,7 @@
         "name": "Georgia",
         "flag": "🇬🇪",
         "nationality": "Georgian",
+        "language": "Georgian",
         "status": "1"
     },
     {
@@ -502,6 +564,7 @@
         "name": "Germany",
         "flag": "🇩🇪",
         "nationality": "German",
+        "language": "German",
         "status": "1"
     },
     {
@@ -510,6 +573,7 @@
         "name": "Ghana",
         "flag": "🇬🇭",
         "nationality": "Ghanaian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -518,6 +582,7 @@
         "name": "Greece",
         "flag": "🇬🇷",
         "nationality": "Greek",
+        "language": "Greek",
         "status": "1"
     },
     {
@@ -526,6 +591,7 @@
         "name": "Grenada",
         "flag": "🇬🇩",
         "nationality": "Grenadian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -534,6 +600,7 @@
         "name": "Guatemala",
         "flag": "🇬🇹",
         "nationality": "Guatemalan",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -542,6 +609,7 @@
         "name": "Guinea",
         "flag": "🇬🇳",
         "nationality": "Guinean",
+        "language": "French",
         "status": "1"
     },
     {
@@ -550,6 +618,7 @@
         "name": "Guinea-Bissau",
         "flag": "🇬🇼",
         "nationality": "Guinean",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -558,6 +627,7 @@
         "name": "Guyana",
         "flag": "🇬🇾",
         "nationality": "Guyanese",
+        "language": "English",
         "status": "1"
     },
     {
@@ -566,6 +636,7 @@
         "name": "Haiti",
         "flag": "🇭🇹",
         "nationality": "Haitian",
+        "language": "French, Haitian Creole",
         "status": "1"
     },
     {
@@ -574,6 +645,7 @@
         "name": "Honduras",
         "flag": "🇭🇳",
         "nationality": "Honduran",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -582,6 +654,7 @@
         "name": "Hungary",
         "flag": "🇭🇺",
         "nationality": "Hungarian",
+        "language": "Hungarian",
         "status": "1"
     },
     {
@@ -590,6 +663,7 @@
         "name": "Iceland",
         "flag": "🇮🇸",
         "nationality": "Icelandic",
+        "language": "Icelandic",
         "status": "1"
     },
     {
@@ -598,6 +672,7 @@
         "name": "India",
         "flag": "🇮🇳",
         "nationality": "Indian",
+        "language": "Hindi, English",
         "status": "1"
     },
     {
@@ -606,6 +681,7 @@
         "name": "Indonesia",
         "flag": "🇮🇩",
         "nationality": "Indonesian",
+        "language": "Indonesian",
         "status": "1"
     },
     {
@@ -614,6 +690,7 @@
         "name": "Iran",
         "flag": "🇮🇷",
         "nationality": "Iranian",
+        "language": "Persian",
         "status": "1"
     },
     {
@@ -622,6 +699,7 @@
         "name": "Iraq",
         "flag": "🇮🇶",
         "nationality": "Iraqi",
+        "language": "Arabic, Kurdish",
         "status": "1"
     },
     {
@@ -630,6 +708,7 @@
         "name": "Ireland",
         "flag": "🇮🇪",
         "nationality": "Irish",
+        "language": "Irish",
         "status": "1"
     },
     {
@@ -638,6 +717,7 @@
         "name": "Israel",
         "flag": "🇮🇱",
         "nationality": "Israeli",
+        "language": "Hebrew",
         "status": "1"
     },
     {
@@ -646,6 +726,7 @@
         "name": "Italy",
         "flag": "🇮🇹",
         "nationality": "Italian",
+        "language": "Italian",
         "status": "1"
     },
     {
@@ -654,6 +735,7 @@
         "name": "Jamaica",
         "flag": "🇯🇲",
         "nationality": "Jamaican",
+        "language": "English",
         "status": "1"
     },
     {
@@ -662,6 +744,7 @@
         "name": "Japan",
         "flag": "🇯🇵",
         "nationality": "Japanese",
+        "language": "Japanese",
         "status": "1"
     },
     {
@@ -670,6 +753,7 @@
         "name": "Jordan",
         "flag": "🇯🇴",
         "nationality": "Jordanian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -678,6 +762,7 @@
         "name": "Kazakhstan",
         "flag": "🇰🇿",
         "nationality": "Kazakhstani",
+        "language": "Kazakh",
         "status": "1"
     },
     {
@@ -686,6 +771,7 @@
         "name": "Kenya",
         "flag": "🇰🇪",
         "nationality": "Kenyan",
+        "language": "English, Swahili",
         "status": "1"
     },
     {
@@ -694,6 +780,7 @@
         "name": "Kiribati",
         "flag": "🇰🇮",
         "nationality": "I-Kiribati",
+        "language": "English",
         "status": "1"
     },
     {
@@ -702,6 +789,7 @@
         "name": "Korea, North",
         "flag": "🇰🇵",
         "nationality": "North Korean",
+        "language": "Korean",
         "status": "1"
     },
     {
@@ -710,6 +798,7 @@
         "name": "Korea, South",
         "flag": "🇰🇷",
         "nationality": "South Korean",
+        "language": "Korean",
         "status": "1"
     },
     {
@@ -718,6 +807,7 @@
         "name": "Kuwait",
         "flag": "🇰🇼",
         "nationality": "Kuwaiti",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -726,6 +816,7 @@
         "name": "Kyrgyzstan",
         "flag": "🇰🇬",
         "nationality": "Kyrgyzstani",
+        "language": "Kyrgyz, Russian",
         "status": "1"
     },
     {
@@ -734,6 +825,7 @@
         "name": "Laos",
         "flag": "🇱🇦",
         "nationality": "Laotian",
+        "language": "Lao",
         "status": "1"
     },
     {
@@ -742,6 +834,7 @@
         "name": "Latvia",
         "flag": "🇱🇻",
         "nationality": "Latvian",
+        "language": "Latvian",
         "status": "1"
     },
     {
@@ -750,6 +843,7 @@
         "name": "Lebanon",
         "flag": "🇱🇧",
         "nationality": "Lebanese",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -758,6 +852,7 @@
         "name": "Lesotho",
         "flag": "🇱🇸",
         "nationality": "Basotho",
+        "language": "English, Sesotho",
         "status": "1"
     },
     {
@@ -766,6 +861,7 @@
         "name": "Liberia",
         "flag": "🇱🇷",
         "nationality": "Liberian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -774,6 +870,7 @@
         "name": "Libya",
         "flag": "🇱🇾",
         "nationality": "Libyan",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -782,6 +879,7 @@
         "name": "Liechtenstein",
         "flag": "🇱🇮",
         "nationality": "Liechtensteiner",
+        "language": "German",
         "status": "1"
     },
     {
@@ -790,6 +888,7 @@
         "name": "Lithuania",
         "flag": "🇱🇹",
         "nationality": "Lithuanian",
+        "language": "Lithuanian",
         "status": "1"
     },
     {
@@ -798,6 +897,7 @@
         "name": "Luxembourg",
         "flag": "🇱🇺",
         "nationality": "Luxembourger",
+        "language": "Luxembourgish, French, German",
         "status": "1"
     },
     {
@@ -806,6 +906,7 @@
         "name": "Macedonia (Macedonia, North)",
         "flag": "🇲🇰",
         "nationality": "Macedonian",
+        "language": "Macedonian",
         "status": "1"
     },
     {
@@ -814,6 +915,7 @@
         "name": "Madagascar",
         "flag": "🇲🇬",
         "nationality": "Malagasy",
+        "language": "Malagasy, French",
         "status": "1"
     },
     {
@@ -822,6 +924,7 @@
         "name": "Malawi",
         "flag": "🇲🇼",
         "nationality": "Malawian",
+        "language": "English, Chichewa",
         "status": "1"
     },
     {
@@ -830,6 +933,7 @@
         "name": "Malaysia",
         "flag": "🇲🇾",
         "nationality": "Malaysian",
+        "language": "Malay",
         "status": "1"
     },
     {
@@ -838,6 +942,7 @@
         "name": "Maldives",
         "flag": "🇲🇻",
         "nationality": "Maldivian",
+        "language": "Dhivehi",
         "status": "1"
     },
     {
@@ -846,6 +951,7 @@
         "name": "Mali",
         "flag": "🇲🇱",
         "nationality": "Malian",
+        "language": "French",
         "status": "1"
     },
     {
@@ -854,6 +960,7 @@
         "name": "Malta",
         "flag": "🇲🇹",
         "nationality": "Maltese",
+        "language": "Maltese, English",
         "status": "1"
     },
     {
@@ -862,6 +969,7 @@
         "name": "Marshall Islands",
         "flag": "🇲🇭",
         "nationality": "Marshallese",
+        "language": "Marshallese, English",
         "status": "1"
     },
     {
@@ -870,6 +978,7 @@
         "name": "Mauritania",
         "flag": "🇲🇷",
         "nationality": "Mauritanian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -878,6 +987,7 @@
         "name": "Mauritius",
         "flag": "🇲🇺",
         "nationality": "Mauritian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -886,6 +996,7 @@
         "name": "Mexico",
         "flag": "🇲🇽",
         "nationality": "Mexican",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -894,6 +1005,7 @@
         "name": "Micronesia",
         "flag": "🇫🇲",
         "nationality": "Micronesian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -902,6 +1014,7 @@
         "name": "Moldova",
         "flag": "🇲🇩",
         "nationality": "Moldovan",
+        "language": "Romanian",
         "status": "1"
     },
     {
@@ -910,6 +1023,7 @@
         "name": "Monaco",
         "flag": "🇲🇨",
         "nationality": "Monacan",
+        "language": "French",
         "status": "1"
     },
     {
@@ -918,6 +1032,7 @@
         "name": "Mongolia",
         "flag": "🇲🇳",
         "nationality": "Mongolian",
+        "language": "Mongolian",
         "status": "1"
     },
     {
@@ -926,6 +1041,7 @@
         "name": "Montenegro",
         "flag": "🇲🇪",
         "nationality": "Montenegrin",
+        "language": "Montenegrin",
         "status": "1"
     },
     {
@@ -934,6 +1050,7 @@
         "name": "Morocco",
         "flag": "🇲🇦",
         "nationality": "Moroccan",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -942,6 +1059,7 @@
         "name": "Mozambique",
         "flag": "🇲🇿",
         "nationality": "Mozambican",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -950,6 +1068,7 @@
         "name": "Myanmar (Burma)",
         "flag": "🇲🇲",
         "nationality": "Burmese",
+        "language": "Burmese",
         "status": "1"
     },
     {
@@ -958,6 +1077,7 @@
         "name": "Namibia",
         "flag": "🇳🇦",
         "nationality": "Namibian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -966,6 +1086,7 @@
         "name": "Nauru",
         "flag": "🇳🇷",
         "nationality": "Nauruan",
+        "language": "Nauruan",
         "status": "1"
     },
     {
@@ -974,6 +1095,7 @@
         "name": "Nepal",
         "flag": "🇳🇵",
         "nationality": "Nepali",
+        "language": "Nepali",
         "status": "1"
     },
     {
@@ -982,6 +1104,7 @@
         "name": "Netherlands",
         "flag": "🇳🇱",
         "nationality": "Dutch",
+        "language": "Dutch",
         "status": "1"
     },
     {
@@ -990,6 +1113,7 @@
         "name": "New Zealand",
         "flag": "🇳🇿",
         "nationality": "New Zealander",
+        "language": "English",
         "status": "1"
     },
     {
@@ -998,6 +1122,7 @@
         "name": "Nicaragua",
         "flag": "🇳🇮",
         "nationality": "Nicaraguan",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1006,6 +1131,7 @@
         "name": "Niger",
         "flag": "🇳🇪",
         "nationality": "Nigerien",
+        "language": "French",
         "status": "1"
     },
     {
@@ -1014,6 +1140,7 @@
         "name": "Nigeria",
         "flag": "🇳🇬",
         "nationality": "Nigerian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1022,6 +1149,7 @@
         "name": "Norway",
         "flag": "🇳🇴",
         "nationality": "Norwegian",
+        "language": "Norwegian",
         "status": "1"
     },
     {
@@ -1030,6 +1158,7 @@
         "name": "Oman",
         "flag": "🇴🇲",
         "nationality": "Omani",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1038,6 +1167,7 @@
         "name": "Pakistan",
         "flag": "🇵🇰",
         "nationality": "Pakistani",
+        "language": "Urdu",
         "status": "1"
     },
     {
@@ -1046,6 +1176,7 @@
         "name": "Palau",
         "flag": "🇵🇼",
         "nationality": "Palauan",
+        "language": "Palauan",
         "status": "1"
     },
     {
@@ -1054,6 +1185,7 @@
         "name": "Panama",
         "flag": "🇵🇦",
         "nationality": "Panamanian",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1062,6 +1194,7 @@
         "name": "Papua New Guinea",
         "flag": "🇵🇬",
         "nationality": "Papua New Guinean",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1070,6 +1203,7 @@
         "name": "Paraguay",
         "flag": "🇵🇾",
         "nationality": "Paraguayan",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1078,6 +1212,7 @@
         "name": "Peru",
         "flag": "🇵🇪",
         "nationality": "Peruvian",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1086,6 +1221,7 @@
         "name": "Philippines",
         "flag": "🇵🇭",
         "nationality": "Filipino",
+        "language": "Filipino",
         "status": "1"
     },
     {
@@ -1094,6 +1230,7 @@
         "name": "Poland",
         "flag": "🇵🇱",
         "nationality": "Polish",
+        "language": "Polish",
         "status": "1"
     },
     {
@@ -1102,6 +1239,7 @@
         "name": "Portugal",
         "flag": "🇵🇹",
         "nationality": "Portuguese",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -1110,6 +1248,7 @@
         "name": "Qatar",
         "flag": "🇶🇦",
         "nationality": "Qatari",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1118,6 +1257,7 @@
         "name": "Romania",
         "flag": "🇷🇴",
         "nationality": "Romanian",
+        "language": "Romanian",
         "status": "1"
     },
     {
@@ -1126,6 +1266,7 @@
         "name": "Russia",
         "flag": "🇷🇺",
         "nationality": "Russian",
+        "language": "Russian",
         "status": "1"
     },
     {
@@ -1134,6 +1275,7 @@
         "name": "Rwanda",
         "flag": "🇷🇼",
         "nationality": "Rwandan",
+        "language": "Kinyarwanda",
         "status": "1"
     },
     {
@@ -1142,6 +1284,7 @@
         "name": "Saint Kitts and Nevis",
         "flag": "🇰🇳",
         "nationality": "Kittian and Nevisian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1150,6 +1293,7 @@
         "name": "Saint Lucia",
         "flag": "🇱🇨",
         "nationality": "Saint Lucian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1158,6 +1302,7 @@
         "name": "Saint Vincent and the Grenadines",
         "flag": "🇻🇨",
         "nationality": "Saint Vincentian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1166,6 +1311,7 @@
         "name": "Samoa",
         "flag": "🇼🇸",
         "nationality": "Samoan",
+        "language": "Samoan",
         "status": "1"
     },
     {
@@ -1174,6 +1320,7 @@
         "name": "San Marino",
         "flag": "🇸🇲",
         "nationality": "San Marinese",
+        "language": "Italian",
         "status": "1"
     },
     {
@@ -1182,6 +1329,7 @@
         "name": "Sao Tome and Principe",
         "flag": "🇸🇹",
         "nationality": "Sao Tomean",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -1190,6 +1338,7 @@
         "name": "Saudi Arabia",
         "flag": "🇸🇦",
         "nationality": "Saudi Arabian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1198,6 +1347,7 @@
         "name": "Senegal",
         "flag": "🇸🇳",
         "nationality": "Senegalese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -1206,6 +1356,7 @@
         "name": "Serbia",
         "flag": "🇷🇸",
         "nationality": "Serbian",
+        "language": "Serbian",
         "status": "1"
     },
     {
@@ -1214,6 +1365,7 @@
         "name": "Seychelles",
         "flag": "🇸🇨",
         "nationality": "Seychellois",
+        "language": "French",
         "status": "1"
     },
     {
@@ -1222,6 +1374,7 @@
         "name": "Sierra Leone",
         "flag": "🇸🇱",
         "nationality": "Sierra Leonean",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1230,6 +1383,7 @@
         "name": "Singapore",
         "flag": "🇸🇬",
         "nationality": "Singaporean",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1238,6 +1392,7 @@
         "name": "Slovakia",
         "flag": "🇸🇰",
         "nationality": "Slovak",
+        "language": "Slovak",
         "status": "1"
     },
     {
@@ -1246,6 +1401,7 @@
         "name": "Slovenia",
         "flag": "🇸🇮",
         "nationality": "Slovenian",
+        "language": "Slovene",
         "status": "1"
     },
     {
@@ -1254,6 +1410,7 @@
         "name": "Solomon Islands",
         "flag": "🇸🇧",
         "nationality": "Solomon Islander",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1262,6 +1419,7 @@
         "name": "Somalia",
         "flag": "🇸🇴",
         "nationality": "Somali",
+        "language": "Somali",
         "status": "1"
     },
     {
@@ -1270,6 +1428,7 @@
         "name": "South Africa",
         "flag": "🇿🇦",
         "nationality": "South African",
+        "language": "Afrikaans",
         "status": "1"
     },
     {
@@ -1278,6 +1437,7 @@
         "name": "South Sudan",
         "flag": "🇸🇸",
         "nationality": "South Sudanese",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1286,6 +1446,7 @@
         "name": "Spain",
         "flag": "🇪🇸",
         "nationality": "Spanish",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1294,6 +1455,7 @@
         "name": "Sri Lanka",
         "flag": "🇱🇰",
         "nationality": "Sri Lankan",
+        "language": "Sinhalese",
         "status": "1"
     },
     {
@@ -1302,6 +1464,7 @@
         "name": "Sudan",
         "flag": "🇸🇩",
         "nationality": "Sudanese",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1310,6 +1473,7 @@
         "name": "Suriname",
         "flag": "🇸🇷",
         "nationality": "Surinamese",
+        "language": "Dutch",
         "status": "1"
     },
     {
@@ -1318,6 +1482,7 @@
         "name": "Swaziland",
         "flag": "🇸🇿",
         "nationality": "Swazi",
+        "language": "Swati",
         "status": "1"
     },
     {
@@ -1326,6 +1491,7 @@
         "name": "Sweden",
         "flag": "🇸🇪",
         "nationality": "Swedish",
+        "language": "Swedish",
         "status": "1"
     },
     {
@@ -1334,6 +1500,7 @@
         "name": "Switzerland",
         "flag": "🇨🇭",
         "nationality": "Swiss",
+        "language": "German",
         "status": "1"
     },
     {
@@ -1342,6 +1509,7 @@
         "name": "Syria",
         "flag": "🇸🇾",
         "nationality": "Syrian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1350,6 +1518,7 @@
         "name": "Taiwan",
         "flag": "🇹🇼",
         "nationality": "Taiwanese",
+        "language": "Chinese",
         "status": "1"
     },
     {
@@ -1358,6 +1527,7 @@
         "name": "Tajikistan",
         "flag": "🇹🇯",
         "nationality": "Tajik",
+        "language": "Tajik",
         "status": "1"
     },
     {
@@ -1366,6 +1536,7 @@
         "name": "Tanzania",
         "flag": "🇹🇿",
         "nationality": "Tanzanian",
+        "language": "Swahili",
         "status": "1"
     },
     {
@@ -1374,6 +1545,7 @@
         "name": "Thailand",
         "flag": "🇹🇭",
         "nationality": "Thai",
+        "language": "Thai",
         "status": "1"
     },
     {
@@ -1382,6 +1554,7 @@
         "name": "Timor-Leste",
         "flag": "🇹🇱",
         "nationality": "East Timorese",
+        "language": "Portuguese",
         "status": "1"
     },
     {
@@ -1390,6 +1563,7 @@
         "name": "Togo",
         "flag": "🇹🇬",
         "nationality": "Togolese",
+        "language": "French",
         "status": "1"
     },
     {
@@ -1398,6 +1572,7 @@
         "name": "Tonga",
         "flag": "🇹🇴",
         "nationality": "Tongan",
+        "language": "Tongan",
         "status": "1"
     },
     {
@@ -1406,6 +1581,7 @@
         "name": "Trinidad and Tobago",
         "flag": "🇹🇹",
         "nationality": "Trinidadian and Tobagonian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1414,6 +1590,7 @@
         "name": "Tunisia",
         "flag": "🇹🇳",
         "nationality": "Tunisian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1422,6 +1599,7 @@
         "name": "Turkey",
         "flag": "🇹🇷",
         "nationality": "Turkish",
+        "language": "Turkish",
         "status": "1"
     },
     {
@@ -1430,6 +1608,7 @@
         "name": "Turkmenistan",
         "flag": "🇹🇲",
         "nationality": "Turkmen",
+        "language": "Turkmen",
         "status": "1"
     },
     {
@@ -1438,6 +1617,7 @@
         "name": "Tuvalu",
         "flag": "🇹🇻",
         "nationality": "Tuvaluan",
+        "language": "Tuvaluan",
         "status": "1"
     },
     {
@@ -1446,6 +1626,7 @@
         "name": "Uganda",
         "flag": "🇺🇬",
         "nationality": "Ugandan",
+        "language": "Swahili",
         "status": "1"
     },
     {
@@ -1454,6 +1635,7 @@
         "name": "Ukraine",
         "flag": "🇺🇦",
         "nationality": "Ukrainian",
+        "language": "Ukrainian",
         "status": "1"
     },
     {
@@ -1462,6 +1644,7 @@
         "name": "United Arab Emirates",
         "flag": "🇦🇪",
         "nationality": "Emirian",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1470,6 +1653,7 @@
         "name": "United Kingdom",
         "flag": "🇬🇧",
         "nationality": "British",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1478,6 +1662,7 @@
         "name": "United States of America",
         "flag": "🇺🇸",
         "nationality": "American",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1486,6 +1671,7 @@
         "name": "Uruguay",
         "flag": "🇺🇾",
         "nationality": "Uruguayan",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1494,6 +1680,7 @@
         "name": "Uzbekistan",
         "flag": "🇺🇿",
         "nationality": "Uzbekistani",
+        "language": "Uzbek",
         "status": "1"
     },
     {
@@ -1502,6 +1689,7 @@
         "name": "Vanuatu",
         "flag": "🇻🇺",
         "nationality": "Ni-Vanuatu",
+        "language": "Bislama",
         "status": "1"
     },
     {
@@ -1510,6 +1698,7 @@
         "name": "Vatican City",
         "flag": "🇻🇦",
         "nationality": "Vatican",
+        "language": "Latin",
         "status": "1"
     },
     {
@@ -1518,6 +1707,7 @@
         "name": "Venezuela",
         "flag": "🇻🇪",
         "nationality": "Venezuelan",
+        "language": "Spanish",
         "status": "1"
     },
     {
@@ -1526,6 +1716,7 @@
         "name": "Vietnam",
         "flag": "🇻🇳",
         "nationality": "Vietnamese",
+        "language": "Vietnamese",
         "status": "1"
     },
     {
@@ -1534,6 +1725,7 @@
         "name": "Yemen",
         "flag": "🇾🇪",
         "nationality": "Yemeni",
+        "language": "Arabic",
         "status": "1"
     },
     {
@@ -1542,6 +1734,7 @@
         "name": "Zambia",
         "flag": "🇿🇲",
         "nationality": "Zambian",
+        "language": "English",
         "status": "1"
     },
     {
@@ -1550,6 +1743,7 @@
         "name": "Zimbabwe",
         "flag": "🇿🇼",
         "nationality": "Zimbabwean",
+        "language": "English",
         "status": "1"
     }
 ]

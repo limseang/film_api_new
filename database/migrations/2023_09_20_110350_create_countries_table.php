@@ -18,16 +18,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('flag');
             $table->string('nationality');
+            $table->string('language');
             $table->string('status')->default('1');
             $table->timestamps();
         });
-        DB::table('countries')->insert([
-            'code' => 'starter',
-            'name' => '1-100 points',
-            'flag' => '1-100 points',
-            'nationality' => '1-100 points',
-            'status' => '1'
-        ]);
+
     }
 
     /**

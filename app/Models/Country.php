@@ -13,6 +13,7 @@ class Country extends Model
         'name',
         'flag',
         'nationality',
+        'language',
         'status'
     ];
 
