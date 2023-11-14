@@ -10,10 +10,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReplyCommentController;
@@ -241,6 +243,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 /* film */
 
 Route::get('/film', [FilmController::class, 'index']);
+Route::get('/film/episode', [EpisodeController::class, 'index']);
 Route::get('/film/detail/{id}', [FilmController::class, 'showByID']);
 Route::get('/film/artist/{id}', [FilmController::class, 'showByArtist']);
 Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
@@ -254,6 +257,10 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
+
+/* Episode */
+        Route::post('/film/episode/new/{id}', [EpisodeController::class, 'create']);
+        Route::delete('/film/episode/delete/{id}', [EpisodeController::class, 'destroy']);
     });
 });
 
@@ -310,6 +317,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
     });
 });
+
+/* Movie */
+
 
 
 

@@ -76,4 +76,8 @@ class Film extends Model
         return $this->hasMany(FilmAvailable::class,'film_id','id');
     }
 
+    public function episode(){
+        return $this->hasMany(Episode::class,'film_id','id');
+    }
+
 }

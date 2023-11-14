@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cast;
+use App\Models\Episode;
 use App\Models\Film;
 use App\Models\FilmAvailable;
 use App\Models\Rate;
@@ -81,6 +82,26 @@ class FilmController extends Controller
         return count($rates);
     }
 
+    public function getEpisode($film_id)
+    {
+        $episode = Episode::where('film_id',$film_id)->get();
+        $uploadController = new UploadController();
+        $filmEpisode = [];
+        foreach ($episode as $item){
+            $filmEpisode[] = [
+                'id' => $item->id,
+                'title' => $item->title,
+                'description' => $item->description,
+                'episode' => $item->episode,
+                'season' => $item->season,
+                'release_date' => $item->release_date,
+                'file' => $uploadController->getSignedUrl($item->file),
+                'poster' => $uploadController->getSignedUrl($item->poster),
+            ];
+        }
+        return $filmEpisode;
+    }
+
     public function filmAvailables($film_id){
         $availables = FilmAvailable::where('film_id',$film_id)->get();
         $filmAvailable = [];
@@ -148,7 +169,10 @@ class FilmController extends Controller
             $film->rating = '0';
             $film->category = $request->category;
             $film->tag = $request->tag;
-            $film->poster =  $uploadController->uploadFile($request->poster, 'avatar');
+            $film->poster =  $uploadController->UploadFilm(
+                $request->poster('avatar'),
+                $request->title
+            );
             $film->trailer = $request->trailer;
             $film->type = $request->type;
             $film->director = $request->director;
@@ -208,6 +232,7 @@ class FilmController extends Controller
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id),
                 'cast' => $this->filmCast($film->id),
+                'episode' => $this->getEpisode($film->id) ?? null,
 
             ];
             return response()->json([
