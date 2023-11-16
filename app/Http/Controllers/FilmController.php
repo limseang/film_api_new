@@ -88,7 +88,7 @@ class FilmController extends Controller
         $uploadController = new UploadController();
         $filmEpisode = [];
         //short by episode name
-        $episode = $episode->sortBy('title');
+        $episode = $episode->sortByDesc('episode');
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
