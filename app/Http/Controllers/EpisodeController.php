@@ -18,7 +18,6 @@ class EpisodeController extends Controller
             $episodes = Episode::all();
             $uploadController = new UploadController();
             foreach ($episodes as $episode) {
-                $episode['file'] = $uploadController->getSignedUrl($episode['file']);
                 $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
             }
             return response()->json([
@@ -60,10 +59,7 @@ class EpisodeController extends Controller
                 $request->file('poster'),
                 'a'
             );
-            $episode->file = $uploadController->UploadFilm(
-                $request->file('file'),
-                'a',
-            );
+            $episode->file = $request->file;
             $episode->save();
             return response()->json([
                 'message' => 'successfully',
