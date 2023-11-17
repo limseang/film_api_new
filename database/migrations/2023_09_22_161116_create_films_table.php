@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('tag')->nullable();
             $table->double('rating')->default(0.0);
             $table->string('poster');
+            $table->string('cover');
             $table->string('trailer');
             $table->string('type');
             $table->string('running_time');

@@ -98,6 +98,7 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
+                'cover' => $uploadController->getSignedUrl($item->cover),
                 'poster' => $uploadController->getSignedUrl($item->poster),
             ];
         }

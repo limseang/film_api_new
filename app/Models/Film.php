@@ -24,6 +24,7 @@ class Film extends Model
         'language',
         'movie',
         'poster',
+        'cover',
         'trailer',
         'release_date'
     ];
