@@ -98,7 +98,6 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
-                'cover' => $uploadController->getSignedUrl($item->cover),
                 'poster' => $uploadController->getSignedUrl($item->poster),
             ];
         }
@@ -233,6 +232,7 @@ class FilmController extends Controller
                 'available' => $this->filmAvailables($film->id),
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
+                'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
 
             ];
             return response()->json([
