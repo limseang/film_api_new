@@ -58,7 +58,7 @@ class UploadController extends Controller
             $params = [
                 'path' => $object,
                 'extension' => $file->getClientOriginalExtension(),
-                'size' => $file->getSize()
+//                'size' => $file->getSize()
             ];
             $storage = Storages::query()->create($params);
             return $storage->id;
