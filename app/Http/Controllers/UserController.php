@@ -71,10 +71,10 @@ class UserController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
-            'fcm_token' => 'required|string',
         ]);
         $model = User::query()->where('email', $request->email)->first();
         $model->fcm_token = $request->fcm_token;
+        $model->save();
         if(!empty($model['avatar'])){
             $cloudController = new UploadController();
             $model['avatar'] = $cloudController->getSignedUrl($model['avatar']);
@@ -98,11 +98,7 @@ class UserController extends Controller
             'user' => $model,
             'token' => $token,
         ]);
-        $model->save(
-            [
-                'fcm_token' => $request->fcm_token,
-            ]
-        );
+
 
     }
     public function logout(Request $request){
