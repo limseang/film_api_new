@@ -75,7 +75,6 @@ class UserController extends Controller
         ]);
         $model = User::query()->where('email', $request->email)->first();
         $model->fcm_token = $request->fcm_token;
-        $model->save();
         if(!empty($model['avatar'])){
             $cloudController = new UploadController();
             $model['avatar'] = $cloudController->getSignedUrl($model['avatar']);
@@ -99,9 +98,11 @@ class UserController extends Controller
             'user' => $model,
             'token' => $token,
         ]);
-
-        //save fcm token to user
-
+        $model->save(
+            [
+                'fcm_token' => $request->fcm_token,
+            ]
+        );
 
     }
     public function logout(Request $request){
