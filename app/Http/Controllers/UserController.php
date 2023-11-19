@@ -73,8 +73,6 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
         $model = User::query()->where('email', $request->email)->first();
-        $model->fcm_token = $request->fcm_token;
-        $model->save();
         if(!empty($model['avatar'])){
             $cloudController = new UploadController();
             $model['avatar'] = $cloudController->getSignedUrl($model['avatar']);
@@ -92,6 +90,7 @@ class UserController extends Controller
             ]);
         }
         $token =$model->createToken(config('app.name'))->plainTextToken;
+        $this->updateFCM($request->fcm_token);
         return response()->json([
             'status' => 200,
             'message' => 'Sucess',
@@ -216,6 +215,24 @@ class UserController extends Controller
     {
         $user = Socialite::driver("sign-in-with-apple")->user();
         dd($user);
+    }
+
+    public function updateFCM(Request $request){
+        try{
+            $user = auth()->user();
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+                'user' => $user
+            ], 200);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }
