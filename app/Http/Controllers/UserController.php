@@ -217,10 +217,10 @@ class UserController extends Controller
         dd($user);
     }
 
-    public function updateFCM(Request $request){
+    public function updateFCM($fcm_token){
         try{
             $user = auth()->user();
-            $user->fcm_token = $request->fcm_token;
+            $user->fcm_token = $fcm_token;
             $user->save();
             return response()->json([
                 'message' => 'successfully',
