@@ -69,7 +69,7 @@ Route::post('/login', [UserConTroller::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/logout', [UserConTroller::class, 'logout']);
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
-    Route::get('/user/info', [UserConTroller::class, 'userinfo']);
+    Route::post('/user/info', [UserConTroller::class, 'userinfo']);
 });
 
 /* UserType */
