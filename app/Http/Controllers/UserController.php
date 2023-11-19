@@ -90,7 +90,6 @@ class UserController extends Controller
             ]);
         }
         $token =$model->createToken(config('app.name'))->plainTextToken;
-        $this->updateFCM($request->fcm_token);
         return response()->json([
             'status' => 200,
             'message' => 'Sucess',
@@ -159,12 +158,14 @@ class UserController extends Controller
 
     }
 
-    public function userinfo()
+    public function userinfo(Request $request)
     {
      try{
          //show avatar as link
          $cloudController = new UploadController();
          $user = auth()->user();
+         $user->fcm_token = $request->fcm_token;
+         $user->save();
          if(!empty($user['avatar'])){
              $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
          }
