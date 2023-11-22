@@ -237,6 +237,8 @@ class UserController extends Controller
         }
     }
 
+
+
     public function sendNotification(Request $request)
     {
         $request->validate([
@@ -248,6 +250,28 @@ class UserController extends Controller
             'body' => 'New Artical has been created'
         ];
         PushNotificationService::pushNotification($data);
+
+    }
+
+    public function sendNotificationGlobe(Request $request)
+    {
+        try{
+            $user = User::all();
+            foreach ($user as $item){
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => $request->title,
+                    'body' => $request->body
+                ];
+                PushNotificationService::pushNotification($data);
+            }
+        }
+        catch (Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
 
     }
 

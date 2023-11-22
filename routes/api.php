@@ -321,6 +321,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 /* send Notification */
 
 Route::post('/send/notification', [UserController::class, 'sendNotification']);
+Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
 
 
 
