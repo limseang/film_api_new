@@ -239,10 +239,13 @@ class UserController extends Controller
 
     public function sendNotification(Request $request)
     {
+        $request->validate([
+            'fcm_token' => 'required',
+        ]);
         $data = [
             'token' => $request->fcm_token,
-            'title' => 'Notification title',
-            'body' => 'Notification body',
+            'title' => 'New Artical',
+            'body' => 'New Artical has been created'
         ];
         PushNotificationService::pushNotification($data);
 
