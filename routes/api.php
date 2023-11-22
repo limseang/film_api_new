@@ -318,7 +318,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 
-/* Movie */
+/* send Notification */
+
+Route::post('/send/notification', [UserController::class, 'sendNotification']);
 
 
 

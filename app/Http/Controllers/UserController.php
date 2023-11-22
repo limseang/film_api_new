@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\role;
 use App\Models\User;
 use App\Models\UserType;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -234,6 +235,18 @@ class UserController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function sendNotification(Request $request)
+    {
+        $data = [
+            'token' => $request->fcm_token,
+            'title' => 'Notification title',
+            'body' => 'Notification body',
+        ];
+        $pushNotificationService = new PushNotificationService();
+        $pushNotificationService->pushNotification($data);
+
     }
 
 }
