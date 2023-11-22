@@ -27,6 +27,7 @@ namespace App\Services;
             $messaging->send($notification);
             }catch (Exception $e){
               log::error($e->getMessage());
+              throw new Exception($e->getMessage());
             }
 
         }
