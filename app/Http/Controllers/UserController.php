@@ -244,8 +244,7 @@ class UserController extends Controller
             'title' => 'Notification title',
             'body' => 'Notification body',
         ];
-        $pushNotificationService = new PushNotificationService();
-        $pushNotificationService->pushNotification($data);
+        PushNotificationService::pushNotification($data);
 
     }
 
