@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\role;
 use App\Models\User;
+use App\Models\UserLogin;
 use App\Models\UserType;
 use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
@@ -256,7 +257,7 @@ class UserController extends Controller
     public function sendNotificationGlobe(Request $request)
     {
         try{
-            $user = UserLoginController::all();
+            $user = UserLogin::all();
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
