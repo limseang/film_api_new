@@ -68,12 +68,11 @@ class EpisodeController extends Controller
             foreach ($user as $item) {
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => $episode->title. $episode->season . $episode->episode,
+                    'title' => 'dfs',
                     'body' => 'New Episode has been created'
                 ];
-                PushNotificationService::pushNotification($data);
             }
-
+            PushNotificationService::pushNotification($data);
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode
