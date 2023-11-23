@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Episode;
 use App\Models\Film;
+use App\Models\UserLogin;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 
 
@@ -61,6 +63,17 @@ class EpisodeController extends Controller
             );
             $episode->file = $request->file;
             $episode->save();
+
+            $user = UserLogin::all();
+            foreach ($user as $item) {
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => $episode->title. $episode->season . $episode->episode,
+                    'body' => 'New Episode has been created'
+                ];
+                PushNotificationService::pushNotification($data);
+            }
+
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode
