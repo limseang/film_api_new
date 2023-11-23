@@ -23,6 +23,7 @@ use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserTypeController;
 use App\Models\ReportComment;
 use Illuminate\Http\Request;
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/logout', [UserConTroller::class, 'logout']);
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
     Route::post('/user/info', [UserConTroller::class, 'userinfo']);
+    Route::post('/user/login/info', [UserLoginController::class, 'create']);
 });
 
 /* UserType */
