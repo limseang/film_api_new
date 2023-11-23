@@ -65,14 +65,14 @@ class EpisodeController extends Controller
             $episode->save();
 
             $user = UserLogin::all();
-            foreach ($user as $item) {
+            foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => 'dfs',
-                    'body' => 'New Episode has been created'
+                    'title' => $request->title,
+                    'body' => $request->body
                 ];
+                PushNotificationService::pushNotification($data);
             }
-            PushNotificationService::pushNotification($data);
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode
