@@ -256,7 +256,7 @@ class UserController extends Controller
     public function sendNotificationGlobe(Request $request)
     {
         try{
-            $user = User::all();
+            $user = UserLoginController::all();
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
