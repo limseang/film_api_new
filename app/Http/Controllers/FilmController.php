@@ -7,6 +7,8 @@ use App\Models\Episode;
 use App\Models\Film;
 use App\Models\FilmAvailable;
 use App\Models\Rate;
+use App\Models\UserLogin;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 
 class FilmController extends Controller
@@ -178,6 +180,15 @@ class FilmController extends Controller
             $film->running_time = $request->running_time;
             $film->language = $request->language;
             $film->save();
+            $user = UserLogin::all();
+            foreach ($user as $item){
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => $film->title,
+                    'body' => $film->type . ' ' . 'has been created'
+                ];
+                PushNotificationService::pushNotification($data);
+            }
             return response()->json([
                 'message' => 'Film created successfully',
                 'data' => $film
