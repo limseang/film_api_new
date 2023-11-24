@@ -187,7 +187,7 @@ class FilmController extends Controller
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => $film->title,
-                    'body' => $type->name,
+                    'body' => $type->description,
                 ];
                 PushNotificationService::pushNotification($data);
             }
