@@ -38,27 +38,27 @@ return new class extends Migration
         ]);
         DB::table('types')->insert([
             'name' => 'shortfilm',
-            'description' => 'វីដេអូ Short Film',
+            'description' => 'Short Film',
         ]);
         DB::table('types')->insert([
             'name' => 'tvshow',
-            'description' => 'វីដេអូ TV Show',
+            'description' => 'ខ្សែភាពយន្តភាគ',
         ]);
         DB::table('types')->insert([
             'name' => 'movie',
-            'description' => 'វីដេអូ Movie',
+            'description' => 'ខ្សែភាពយន្តខ្នាតធំ',
         ]);
         DB::table('types')->insert([
             'name' => 'series',
-            'description' => 'វីដេអូ Series',
+            'description' => 'ខ្សែភាពយន្តភាគ',
         ]);
         DB::table('types')->insert([
             'name' => 'nowshowing',
-            'description' => 'Now Showing',
+            'description' => 'កំពុងចាក់បញ្ចាំងនៅក្នុងរោងកុន',
         ]);
         DB::table('types')->insert([
             'name' => 'comingsoon',
-            'description' => 'Coming Soon',
+            'description' => 'ឆាប់ៗនេះ',
         ]);
         DB::table('types')->insert([
             'name' => 'promotion',
