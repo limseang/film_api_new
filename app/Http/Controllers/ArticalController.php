@@ -275,6 +275,7 @@ class ArticalController extends Controller
                         'id' => $comment->id,
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
+                        'avatar' => $comment->user->avatar,
                         'created_at' => $comment->created_at,
                     ];
                 }),
