@@ -113,7 +113,6 @@ class UserController extends Controller
         try{
             $cloudController = new UploadController();
             $user = auth()->user();
-            $this->deleteAvatar($user->avatar!=null);
             $user->save();
             $user->avatar = $cloudController->UploadFile($request->file('image'));
             $user->save();
