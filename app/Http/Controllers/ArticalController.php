@@ -276,7 +276,7 @@ class ArticalController extends Controller
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
                         'avatar' => $uploadController->getSignedUrl($comment->user->avatar),
-                        'created_at' => $comment->created_at,
+                        'created_at' => $comment->created_at->format('dd/mm/YYYY'),
                     ];
                 }),
                 'category' => $artical->categoryArtical->map(function ($categoryArtical) {
