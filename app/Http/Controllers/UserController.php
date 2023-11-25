@@ -113,18 +113,17 @@ class UserController extends Controller
         try{
             $cloudController = new UploadController();
             $user = auth()->user();
-            $user->save();
             $user->avatar = $cloudController->UploadFile($request->file('image'));
             $user->save();
             return response()->json([
-                'message' => 'User successfully add avatar',
+                'message' => 'successfully',
                 'user' => $user
 
             ], 200);
         }
         catch(Exception $e){
             return response()->json([
-                'message' => 'User failed add avatar',
+                'message' => 'failed',
                 'error' => $e->getMessage()
             ], 500);
         }
