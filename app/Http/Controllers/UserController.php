@@ -113,12 +113,11 @@ class UserController extends Controller
         try{
             $cloudController = new UploadController();
             $user = auth()->user();
-            $user->avatar = $cloudController->UploadFile($request->file('image'));
+            $user->avatar = $cloudController->uploadFile($request->avatar, 'avatar');
             $user->save();
             return response()->json([
                 'message' => 'successfully',
                 'user' => $user
-
             ], 200);
         }
         catch(Exception $e){
