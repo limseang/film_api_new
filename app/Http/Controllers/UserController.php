@@ -83,14 +83,14 @@ class UserController extends Controller
             if(!$user){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'Unauthorized',
+                    'message' => 'Account not much',
                 ]);
             }
             // check password
             if(!Hash::check($request->password, $user->password)){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'Unauthorized',
+                    'message' => 'Account not much',
                 ]);
             }
             // create token
