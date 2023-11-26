@@ -122,27 +122,24 @@ class UserController extends Controller
         ]);
     }
 
-//    public function addAvatar(Request $request){
-//        try{
-//            $cloudController = new UploadController();
-//            $user = auth()->user();
-//            $this->deleteAvatar($user->avatar!=null);
-//            $user->save();
-//            $user->avatar = $cloudController->UploadFile($request->file('image'));
-//            $user->save();
-//            return response()->json([
-//                'message' => 'User successfully add avatar',
-//                'user' => $user
-//
-//            ], 200);
-//        }
-//        catch(Exception $e){
-//            return response()->json([
-//                'message' => 'User failed add avatar',
-//                'error' => $e->getMessage()
-//            ], 500);
-//        }
-//    }
+    public function addAvatar(Request $request){
+        try{
+            $cloudController = new UploadController();
+            $user = auth()->user();
+            $user->avatar = $cloudController->uploadFile($request->avatar, 'avatar');
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+                'user' => $user
+            ], 200);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 //    public function deleteAvatar ($avatarId)
 //

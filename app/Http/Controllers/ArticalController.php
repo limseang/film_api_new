@@ -270,12 +270,13 @@ class ArticalController extends Controller
                 'view' => $artical->view,
                 'film' => $artical->film,
                 'image' => $artical->image,
-                'comment' => $artical->comments->map(function ($comment) {
+                'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
                     return [
                         'id' => $comment->id,
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
-                        'created_at' => $comment->created_at,
+                        'avatar' => $uploadController->getSignedUrl($comment->user->avatar),
+                        'created_at' => $comment->created_at->format('d/m/Y'),
                     ];
                 }),
                 'category' => $artical->categoryArtical->map(function ($categoryArtical) {
