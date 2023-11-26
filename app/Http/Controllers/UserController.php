@@ -78,17 +78,28 @@ class UserController extends Controller
                 'email' => 'required|email',
                 'password' => 'required|string',
             ]);
-            $model = User::query()->where('email', $request->email)->first();
-            if(!empty($model['avatar'])){
-                $cloudController = new UploadController();
-                $model['avatar'] = $cloudController->getSignedUrl($model['avatar']);
+            // check user
+            $user = User::where('email', $request->email)->first();
+            if(!$user){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Unauthorized',
+                ]);
             }
-            $token =$model->createToken(config('app.name'))->plainTextToken;
+            // check password
+            if(!Hash::check($request->password, $user->password)){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Unauthorized',
+                ]);
+            }
+            // create token
+            $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'status' => 200,
-                'message' => 'Sucess',
-                'user' => $model,
+                'message' => 'Success',
                 'token' => $token,
+                'user' => $user
             ]);
         }
         catch(Exception $e){
