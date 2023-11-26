@@ -27,7 +27,6 @@ class UserController extends Controller
                 if ($item->avatar != null) {
                     $item->avatar = $cloudController->getSignedUrl($item->avatar);
                 }
-
            }
             return response()->json([
                 'message' => 'users retrieved successfully',
@@ -84,18 +83,6 @@ class UserController extends Controller
                 $cloudController = new UploadController();
                 $model['avatar'] = $cloudController->getSignedUrl($model['avatar']);
             }
-            if(empty($model)){
-                return request()->json([
-                    'status' => 500,
-                    'message' => 'Error',
-                ]);
-            }
-            if(!Hash::check($request->password, $model->password)){
-                return request()->json([
-                    'status' => 500,
-                    'message' => 'Password or Email incorrect',
-                ]);
-            }
             $token =$model->createToken(config('app.name'))->plainTextToken;
             return response()->json([
                 'status' => 200,
@@ -106,7 +93,7 @@ class UserController extends Controller
         }
         catch(Exception $e){
             return response()->json([
-                'status' => 500,
+                'status' => 501,
                 'message' => 'Error',
                 'error' => $e->getMessage()
             ]);
