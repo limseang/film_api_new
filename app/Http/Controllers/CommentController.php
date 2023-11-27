@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\UserLogin;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +27,33 @@ class CommentController extends Controller
         }
     }
 
-
+    public function PushNotificationToAdmin(array $data = [
+        'token' => "",
+        'title' => "",
+        'body' => "",
+        'image' => "",
+    ])
+    {
+        try {
+            $user = User::where('role_id', 1 & 2)->get();
+            foreach ($user as $item) {
+                $token = UserLogin::where('user_id', $item->id)->get();
+                foreach ($token as $tokenItem) {
+                    $token = $tokenItem->token;
+                    $data['token'] = $token;
+                    PushNotificationService::pushNotification($data);
+                }
+            }
+            return response()->json([
+                'message' => 'Push Notification successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error in Push Notification',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     public function create(Request $request)
     {
         try {
@@ -36,6 +64,26 @@ class CommentController extends Controller
             $comment->comment = $request->comment;
             $comment->user_id = $user->id;
             $comment->save();
+
+
+            $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
+            if (!$check){
+                $user->point = $user->point + 2;
+                $user->save();
+            }
+            else {
+                $user->point = $user->point + 0;
+                $user->save();
+            }
+
+            $data = [
+                'title' => 'New Comment',
+                'body' => 'New Comment has been created',
+                'image' => $request->image,
+            ];
+
+           $this->PushNotificationToAdmin($data);
+
 
             return response()->json([
                 'message' => 'Comment created successfully',
@@ -48,6 +96,8 @@ class CommentController extends Controller
             ], 500);
         }
     }
+
+
 
     public function edit(Request $request,  $id)
     {
