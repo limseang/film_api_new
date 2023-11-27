@@ -26,7 +26,7 @@ class FilmController extends Controller
                     'title' => $film->title,
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => (string) $this->countRateaverageRatePerPerson($film->id),
+                    'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
@@ -65,19 +65,31 @@ class FilmController extends Controller
     }
 
     public function countRate($film_id){
-        $rates = Rate::where('film_id',$film_id)->get();
-        $count = 0;
-        foreach ($rates as $rate){
-            $count += $rate->rate;
-        }
-        if (count($rates) > 0){
-            $count = $count / count($rates);
+        $totalRate = $this->countRate($film_id);
+        $totalPeople = $this->countRatePeople($film_id);
+        if ($totalPeople > 0){
+            $averageRatePerPerson = $totalRate / $totalPeople;
         }
         else{
-            $count = 0;
+            $averageRatePerPerson = 0;
         }
-        return $count;
+        return $averageRatePerPerson;
     }
+
+//    public function countRate($film_id){
+//        $rates = Rate::where('film_id',$film_id)->get();
+//        $count = 0;
+//        foreach ($rates as $rate){
+//            $count += $rate->rate;
+//        }
+//        if (count($rates) > 0){
+//            $count = $count / count($rates);
+//        }
+//        else{
+//            $count = 0;
+//        }
+//        return $count;
+//    }
 
     public function averageRatePerPerson($film_id){
         $totalRate = $this->countRate($film_id);
