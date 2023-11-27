@@ -69,7 +69,6 @@ class FilmController extends Controller
         $count = 0;
         foreach ($rates as $rate){
             $count += $rate->rate;
-            $count = (string) $count;
         }
         if (count($rates) > 0){
             $count = $count / count($rates);
