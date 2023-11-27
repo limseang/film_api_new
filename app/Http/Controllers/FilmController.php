@@ -66,28 +66,29 @@ class FilmController extends Controller
     }
 
 
-    public function countRatePeople ($film_id){
-        $rates = Rate::where('film_id',$film_id)->get();
-        return count($rates);
-    }
+
     public function countRate($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
-        $people = $this->countRatePeople($film_id);
-        foreach ($rates as $rate){
-            $count += $rate->rate;
+        $people = count($rates);
+        if ($people == 0){
+            return 0;
         }
-        if (count($rates) > 0){
-            $count = $count / $people;
-        }
-        else{
+        else {
             $count = 0;
+            foreach ($rates as $rate){
+                $count += $rate->rate;
+            }
+            $count = $count / $people;
         }
         return $count;
     }
 
 
 
-
+    public function countRatePeople ($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        return count($rates);
+    }
 
     public function getEpisode($film_id)
     {
