@@ -275,7 +275,7 @@ class ArticalController extends Controller
                         'id' => $comment->id,
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
-                        'avatar' => $uploadController->getSignedUrl($comment->user->avatar) ? $uploadController->getSignedUrl($comment->user->avatar) : null,
+                        'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                         'created_at' => $comment->created_at->format('d/m/Y'),
                     ];
                 }),
