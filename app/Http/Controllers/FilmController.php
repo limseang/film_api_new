@@ -74,13 +74,12 @@ class FilmController extends Controller
             return 0;
         }
         else {
-            $count = 0;
-            foreach ($rates as $rate){
-                $count += $rate->rate;
-            }
-            $count = $count / $people;
+          //  $total = 0;
+            $total = $rates->sum('rate');
+            $rate = $total / $people;
+            return $rate;
         }
-        return $count;
+
     }
 
 
