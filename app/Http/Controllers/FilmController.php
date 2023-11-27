@@ -26,7 +26,7 @@ class FilmController extends Controller
                     'title' => $film->title,
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => (string) $this->countRate($film->id),
+                    'rating' => (string) $this->countRateaverageRatePerPerson($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
@@ -77,6 +77,18 @@ class FilmController extends Controller
             $count = 0;
         }
         return $count;
+    }
+
+    public function averageRatePerPerson($film_id){
+        $totalRate = $this->countRate($film_id);
+        $totalPeople = $this->countRatePeople($film_id);
+        if ($totalPeople > 0){
+            $averageRatePerPerson = $totalRate / $totalPeople;
+        }
+        else{
+            $averageRatePerPerson = 0;
+        }
+        return $averageRatePerPerson;
     }
 
     public function countRatePeople ($film_id){
