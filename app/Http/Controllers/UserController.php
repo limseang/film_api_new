@@ -191,10 +191,10 @@ class UserController extends Controller
          if($user['point'] >= 1001 && $user['point'] <= 2000){
              $user['user_type'] = 4;
          }
-         $role = role::find($user['role_id']);
-         $userType = UserType::find($user['user_type']);
-         $user['role_id'] = $role['name'];
-            $user['user_type'] = $userType['name'];
+//         $role = role::find($user['role_id']);
+//         $userType = UserType::find($user['user_type']);
+//         $user['role_id'] = $role['name'];
+//            $user['user_type'] = $userType['name'];
 
 
          return response()->json([
