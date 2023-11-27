@@ -265,7 +265,7 @@ class ArticalController extends Controller
                 'origin' => $artical->origin ? $artical->origin->name : '',
                 'type' => $artical->type ? $artical->type->name : '',
                 'like' => $artical->like,
-                'comment_count' => $artical->comments->count() ,
+                'comment_count' => $artical->comments->count() ? $artical->comments->count() : 0 ,
                 'share' => $artical->share,
                 'view' => $artical->view,
                 'film' => $artical->film,
@@ -275,7 +275,7 @@ class ArticalController extends Controller
                         'id' => $comment->id,
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
-                        'avatar' => $uploadController->getSignedUrl($comment->user->avatar),
+                        'avatar' => $uploadController->getSignedUrl($comment->user->avatar) ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                         'created_at' => $comment->created_at->format('d/m/Y'),
                     ];
                 }),
