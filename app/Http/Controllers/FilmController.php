@@ -11,6 +11,7 @@ use App\Models\Type;
 use App\Models\UserLogin;
 use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Constraint\Count;
 
 class FilmController extends Controller
 {
@@ -64,44 +65,26 @@ class FilmController extends Controller
         return $casts;
     }
 
+
+
     public function countRate($film_id){
-        $totalRate = $this->countRate($film_id);
-        $totalPeople = $this->countRatePeople($film_id);
-        if ($totalPeople > 0){
-            $averageRatePerPerson = $totalRate / $totalPeople;
+        $rates = Rate::where('film_id',$film_id)->get();
+        $people = count($rates);
+
+        $count = 0;
+        foreach ($rates as $rate){
+            $count += $rate->rate;
+        }
+        if (count($rates) > 0){
+            $count = $count / $people;
         }
         else{
-            $averageRatePerPerson = 0;
+            $count = 0;
         }
-        return $averageRatePerPerson;
+        return $count;
     }
 
-//    public function countRate($film_id){
-//        $rates = Rate::where('film_id',$film_id)->get();
-//        $count = 0;
-//        foreach ($rates as $rate){
-//            $count += $rate->rate;
-//        }
-//        if (count($rates) > 0){
-//            $count = $count / count($rates);
-//        }
-//        else{
-//            $count = 0;
-//        }
-//        return $count;
-//    }
 
-    public function averageRatePerPerson($film_id){
-        $totalRate = $this->countRate($film_id);
-        $totalPeople = $this->countRatePeople($film_id);
-        if ($totalPeople > 0){
-            $averageRatePerPerson = $totalRate / $totalPeople;
-        }
-        else{
-            $averageRatePerPerson = 0;
-        }
-        return $averageRatePerPerson;
-    }
 
     public function countRatePeople ($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
