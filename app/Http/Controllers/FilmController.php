@@ -76,6 +76,7 @@ class FilmController extends Controller
         else {
           //  $total = 0;
             $total = $rates->sum('rate');
+            dd($total);
             $rate = $total / $people;
             return $rate;
         }
