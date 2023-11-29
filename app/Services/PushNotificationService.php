@@ -7,7 +7,7 @@ namespace App\Services;
 
     class PushNotificationService {
 
-       final public static function pushNotification(array $businessParams=[
+       public static function pushNotification(array $businessParams=[
             'token' => "",
             'title' => "",
             'body' => "",

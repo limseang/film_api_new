@@ -35,13 +35,15 @@ class CommentController extends Controller
     ])
     {
         try {
-            $user = User::where('role_id', 2)->get();
-            foreach ($user as $item) {
-                $token = UserLogin::where('user_id', $item->id)->get();
-                foreach ($token as $tokenItem) {
-                    $token = $tokenItem->token;
-                    $data['token'] = $token;
-                    PushNotificationService::pushNotification($data);
+            $user = User::where('role_id', 1 & 2)->get();
+            if (!empty($user)) {
+                foreach ($user as $item) {
+                    $token = UserLogin::where('user_id', $item->id)->get();
+                    foreach ($token as $tokenItem) {
+                        $token = $tokenItem->token;
+                        $data['token'] = $token;
+                        PushNotificationService::pushNotification($data);
+                    }
                 }
             }
             return response()->json([
