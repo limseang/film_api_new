@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Artical;
 use App\Models\Origin;
+use App\Models\UserLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PushNotificationService;
@@ -79,12 +80,17 @@ class ArticalController extends Controller
             $artical->type()->associate($request->type_id);
             $artical->image = $cloudController->UploadFile($request->file('image'));
             $artical->save();
-            $data =[
-                'token' => 'hel',
-                'title' => 'New Artical',
-                'body' => 'New Artical has been created'
-            ];
-            PushNotificationService::pushNotification($data);
+
+            //push notification
+            $user = UserLogin::all();
+            foreach ($user as $item){
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => $request->title,
+                    'body' => $request->body
+                ];
+                PushNotificationService::pushNotification($data);
+            }
             return response()->json([
                 'message' => 'Artical created successfully',
                 'data' => $artical
