@@ -86,7 +86,7 @@ class ArticalController extends Controller
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => 'New'. $artical->type->name .'Artical',
+                    'title' => 'New '. $artical->type->name.' Artical',
                     'body' => $artical->title,
                 ];
                 PushNotificationService::pushNotification($data);
