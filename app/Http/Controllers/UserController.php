@@ -128,7 +128,7 @@ class UserController extends Controller
             $user->save();
             return response()->json([
                 'message' => 'successfully',
-                'user' => $user
+                'avatar' => $cloudController->getSignedUrl($user->avatar)
             ], 200);
         }
         catch(Exception $e){
