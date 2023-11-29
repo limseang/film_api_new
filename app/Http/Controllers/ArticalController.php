@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Artical;
 use App\Models\Origin;
+use App\Models\Type;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -82,11 +83,12 @@ class ArticalController extends Controller
             $artical->save();
 
             //push notification
+            $type = $artical->type->name;
             $user = UserLogin::all();
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => 'New '. $artical->type->name.' Artical',
+                    'title' => 'New '. $type .' Artical',
                     'body' => $artical->title,
                 ];
                 PushNotificationService::pushNotification($data);
@@ -95,6 +97,19 @@ class ArticalController extends Controller
                 'message' => 'Artical created successfully',
                 'data' => $artical
             ], 200);
+//            $user = UserLogin::all();
+//            foreach ($user as $item){
+//                $data = [
+//                    'token' => $item->fcm_token,
+//                    'title' => 'New '. .' Artical',
+//                    'body' => $artical->title,
+//                ];
+//                PushNotificationService::pushNotification($data);
+//            }
+//            return response()->json([
+//                'message' => 'Artical created successfully',
+//                'data' => $artical
+//            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error in creating artical',
