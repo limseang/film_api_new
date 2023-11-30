@@ -292,7 +292,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 
 /* Rate */
-
+Route::get('/rate', [RateController::class, 'index']);
+Route::delete('/rate/delete/all', [RateController::class, 'deleteAll']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/rate/create', [RateController::class, 'create']);
     Route::delete('/rate/delete/{id}', [RateController::class, 'destroy']);

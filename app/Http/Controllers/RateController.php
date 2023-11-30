@@ -30,6 +30,27 @@ class RateController extends Controller
         }
     }
 
+    public function deleteAll(){
+        try{
+            $rates = Rate::all();
+            foreach ($rates as $rate){
+                $rate->delete();
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Rates deleted successfully',
+                'data' => $rates
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Rates deleted failed',
+                'data' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */
