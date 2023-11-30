@@ -69,15 +69,14 @@ class FilmController extends Controller
 
     public function countRate($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
-        $people = count($rates);
-        if ($people == 0){
+        $total = 0;
+        foreach ($rates as $rate){
+            $total += $rate->rate;
+        }
+        if(count($rates) == 0){
             return 0;
         }
-        else {
-            $total = $rates->sum('rate');
-            $rate = $total / $people;
-            return $rate;
-        }
+        return $total/count($rates);
 
     }
 
