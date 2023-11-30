@@ -57,7 +57,7 @@ class RateController extends Controller
             }
             $rate->user_id = auth()->user()->id;
             $rate->film_id = $request->film_id;
-            $rate->rate = $request->rate;
+            $rate->rate = (string)$request->rate;
             $rate->save();
             //update film rate
 

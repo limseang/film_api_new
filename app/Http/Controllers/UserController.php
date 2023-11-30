@@ -48,7 +48,7 @@ class UserController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users',
                 'phone' => 'required|numeric|unique:users',
-                'password' => 'required|string|confirmed',
+                'password' => 'required|string',
             ]);
             $user = new User();
             $user->name = $request->name;

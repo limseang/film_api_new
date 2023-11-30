@@ -18,7 +18,7 @@ class FilmAvailableController extends Controller
                 return [
                     'id' => $filmAvailable->id,
                     'film' => $this->getFilm($filmAvailable->film) ?? null,
-                    'available' => $filmAvailable->availables->name,
+                    'available' => $filmAvailable->availables->name ,
                     'url' => $filmAvailable->url ?? $filmAvailable->availables->url,
 
                 ];
