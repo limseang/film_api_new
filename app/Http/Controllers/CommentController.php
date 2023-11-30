@@ -42,12 +42,12 @@ class CommentController extends Controller
 
             $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
             if (!$check){
-                $user->point = $user->point + 2;
-                $user->save();
+                auth()->user()->point = auth()->user()->point + 10;
+                auth()->user()->save();
             }
             else {
-                $user->point = $user->point + 0;
-                $user->save();
+                auth()->user()->point = auth()->user()->point + 0;
+                auth()->user()->save();
             }
 
 
