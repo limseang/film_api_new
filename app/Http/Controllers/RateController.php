@@ -49,6 +49,8 @@ class RateController extends Controller
          //check user rate this film or not
             $check = Rate::where('user_id',auth()->user()->id)->where('film_id',$request->film_id)->first();
             if($check != null){
+                auth()->user()->point = auth()->user()->point + 10;
+                auth()->user()->save();
                 return response()->json([
                     'status' => 'error',
                     'message' => 'You rated this film',
