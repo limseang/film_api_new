@@ -76,7 +76,7 @@ class FilmController extends Controller
         if(count($rates) == 0){
             return 0;
         }
-        return $total/count($rates);
+        return number_format($total/count($rates), 2);
 
     }
 
