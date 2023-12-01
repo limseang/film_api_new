@@ -23,6 +23,7 @@ namespace App\Services;
                     'title' => $businessParams['title'] ?? "",
                     'body' => $businessParams['body'] ?? "",
                     'image' => $businessParams['image'] ?? "",
+                    'sound' => 'default',
                 ]);
             $messaging->send($notification);
             }catch (Exception $e){
