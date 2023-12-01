@@ -69,7 +69,7 @@ class EpisodeController extends Controller
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => $episode->title . ' ' .'Season'. $episode->season . ' ' .'Ep'. $episode->episode,
-                    'body' => 'New Episode has been created'
+                    'body' => 'New Episode has been post'
                 ];
                 PushNotificationService::pushNotification($data);
             }
@@ -94,6 +94,33 @@ class EpisodeController extends Controller
         try{
             $episode = Episode::find($id);
             $episode->delete();
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $episode
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function update($id, Request $request)
+    {
+        try{
+            $episode = Episode::find($id);
+            $uploadController = new UploadController();
+            $episode->title = $request->title ?? $episode->title;
+            $episode->description = $request->description ?? $episode->description;
+            $episode->episode = $request->episode ?? $episode->episode;
+            $episode->season = $request->season ?? $episode->season;
+            $episode->release_date = $request->release_date ?? $episode->release_date;
+            $episode->poster = $uploadController->UploadFilm( $request->file('poster'),
+                'a')?? $episode->poster;
+            $episode->file = $request->file ?? $episode->file;
+            $episode->save();
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode
