@@ -261,6 +261,10 @@ class UserController extends Controller
             'id' => '1',
         ];
         PushNotificationService::pushNotification($data);
+        return response()->json([
+            'message' => 'successfully',
+            'notification' => $data
+        ], 200);
 
     }
 

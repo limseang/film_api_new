@@ -30,6 +30,11 @@ namespace App\Services;
                     'sound' => 'default',
                 ]);
             $messaging->send($notification);
+
+
+
+
+
             }catch (Exception $e){
               log::error($e->getMessage());
               throw new Exception($e->getMessage());
