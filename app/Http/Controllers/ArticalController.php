@@ -36,7 +36,7 @@ class ArticalController extends Controller
                     'image' => $artical->image,
                     'description' => $artical->description,
                     'type' => $artical->type ? $artical->type->name : '',
-                    'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : $artical->categoryArtical,
+                    'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];
 
             });
@@ -89,7 +89,7 @@ class ArticalController extends Controller
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => 'New '. $type .' Artical' .','. $artical->id,
-                    'body' => $artical->title .','. '1',
+                    'body' => $artical->title .','. '1'
                 ];
                 PushNotificationService::pushNotification($data);
             }
@@ -302,12 +302,12 @@ class ArticalController extends Controller
                         'created_at' => $comment->created_at->format('d/m/Y'),
                     ];
                 }),
-                'category' => $artical->categoryArtical->map(function ($categoryArtical) {
+                'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
                     return [
                         'id' => $categoryArtical->id,
                         'name' => $categoryArtical->categories->name,
                     ];
-                })
+                }) : null,
             ];
             return response()->json([
                 'message' => 'successfully',
