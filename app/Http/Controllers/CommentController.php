@@ -37,18 +37,34 @@ class CommentController extends Controller
             $comment->artical_id = $request->artical_id;
             $comment->comment = $request->comment;
             $comment->user_id = $user->id;
-            $comment->save();
-
-
             $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
             if (!$check){
-                $user->point = $user->point + 2;
+                $user = User::find(auth()->user()->id);
+                $user->point = $user->point + 10;
                 $user->save();
             }
             else {
+                $user = User::find(auth()->user()->id);
                 $user->point = $user->point + 0;
                 $user->save();
+
             }
+            $comment->save();
+
+
+
+//            $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
+//            if (!$check){
+//                $user = User::find(auth()->user()->id);
+//                $user->point = $user->point + 0;
+//                $user->save();
+//            }
+//            else {
+//                $user = User::find(auth()->user()->id);
+//                $user->point = $user->point + 10;
+//                $user->save();
+////
+//            }
 
 
 
