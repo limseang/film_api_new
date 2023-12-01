@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use App\Models\CategoryArtical;
 use App\Models\Origin;
 use App\Models\Type;
 use App\Models\UserLogin;
@@ -82,7 +83,11 @@ class ArticalController extends Controller
             $artical->image = $cloudController->UploadFile($request->file('image'));
             $artical->save();
 
-            //push notification
+            $categoryArtical = new CategoryArtical();
+            $categoryArtical->artical_id = $artical->id;
+            $categoryArtical->category_id = $request->category_id;
+            $categoryArtical->save();
+
             $type = $artical->type->name;
             $user = UserLogin::all();
             foreach ($user as $item){
