@@ -90,6 +90,8 @@ class ArticalController extends Controller
                     'token' => $item->fcm_token,
                     'title' => 'New '. $type .' Artical',
                     'body' => $artical->title,
+                    'type' => '1',
+                    'id' => $artical->id,
                 ];
                 PushNotificationService::pushNotification($data);
             }

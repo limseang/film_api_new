@@ -12,6 +12,8 @@ namespace App\Services;
             'title' => "",
             'body' => "",
             'image' => "",
+            'type' => '',
+            'id' => '',
         ]): void
         {
             try{
@@ -23,6 +25,8 @@ namespace App\Services;
                     'title' => $businessParams['title'] ?? "",
                     'body' => $businessParams['body'] ?? "",
                     'image' => $businessParams['image'] ?? "",
+                    'type' => $businessParams['type'] ?? '',
+                    'id' => $businessParams['id'] ?? '',
                     'sound' => 'default',
                 ]);
             $messaging->send($notification);
