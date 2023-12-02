@@ -25,7 +25,10 @@ class UserController extends Controller
                     }
                 }
                 if ($item->avatar != null) {
-                    $item->avatar = $cloudController->getSignedUrl($item->avatar);
+                    if (filter_var($item->avatar, FILTER_VALIDATE_URL)) {
+                    } else {
+                        $item->avatar = $cloudController->getSignedUrl($item->avatar);
+                    }
                 }
            }
             return response()->json([
