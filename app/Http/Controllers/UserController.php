@@ -225,6 +225,14 @@ class UserController extends Controller
                 $user->save();
             }
             $user = User::where('userUUID',$request->userUUID)->first();
+            $name = $request->name;
+            $email = $request->email;
+            $phone = $request->phone;
+
+            $user->name = $name;
+            $user->email = $email;
+            $user->phone = $phone;
+            $user->save();
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'status' => 200,
