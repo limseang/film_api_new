@@ -222,14 +222,12 @@ class UserController extends Controller
             $userUUID = User::where('userUUID',$request->userUUID)->first();
             if(!$userUUID){
                 $user->userUUID = $request->userUUID;
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->phone = $request->phone;
                 $user->save();
             }
-            $user = User::where(
-                'userUUID',$request->userUUID,
-                'name', $request->name,
-                'email', $request->email,
-                'phone', $request->phone
-            )->first();
+            $user = User::where('userUUID',$request->userUUID,)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
