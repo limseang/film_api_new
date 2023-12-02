@@ -328,6 +328,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::post('/send/notification', [UserController::class, 'sendNotification']);
 Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
 
+/* login with Social Medai */
+Route::post('/login/apple', [UserConTroller::class, 'appleLogin']);
+
 
 
 

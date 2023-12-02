@@ -214,11 +214,32 @@ class UserController extends Controller
 
     }
 
- public function appleLogin()
+ public function appleLogin(Request $request)
     {
-        return Socialite::driver("sign-in-with-apple")
-            ->scopes(["name", "email"])
-            ->redirect();
+        try{
+            $user = new User();
+            //check userUUID has or not
+            $userUUID = User::where('userUUID',$request->userUUID)->first();
+            if(!$userUUID){
+                $user->userUUID = $request->userUUID;
+                $user->save();
+            }
+            $user = User::where('userUUID',$request->userUUID)->first();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success',
+                'token' => $token,
+                'user' => $user
+            ]);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 501,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ]);
+        }
 
     }
 
