@@ -225,6 +225,7 @@ class UserController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->phone = $request->phone;
+                $user->avatar = $request->avatar;
                 $user->comeFrom = $request->comeFrom;
                 $user->save();
             }
