@@ -177,7 +177,12 @@ class UserController extends Controller
          $user->fcm_token = $request->fcm_token;
          $user->save();
          if(!empty($user['avatar'])){
-             $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
+            //if avatar is link then show link
+             if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
+             }
+             else{
+                 $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
+             }
          }
          if($user['point'] >= 1 && $user['point'] <= 100){
              $user['user_type'] = 1;
