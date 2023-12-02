@@ -214,7 +214,7 @@ class UserController extends Controller
 
     }
 
- public function appleLogin(Request $request)
+ public function socialLogin(Request $request)
     {
         try{
             $user = new User();
@@ -225,6 +225,7 @@ class UserController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->phone = $request->phone;
+                $user->comeFrom = $request->comeFrom;
                 $user->save();
             }
             $user = User::where('userUUID',$request->userUUID,)->first();

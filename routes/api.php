@@ -67,6 +67,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::post('/register', [UserConTroller::class, 'register']);
 Route::post('/login', [UserConTroller::class, 'login']);
+/* login with Social Medai */
+Route::post('/login/social', [UserConTroller::class, 'socialLogin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/logout', [UserConTroller::class, 'logout']);
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
@@ -328,8 +330,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::post('/send/notification', [UserController::class, 'sendNotification']);
 Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
 
-/* login with Social Medai */
-Route::post('/login/apple', [UserConTroller::class, 'appleLogin']);
+
 
 
 
