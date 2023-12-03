@@ -40,7 +40,7 @@ class CommentController extends Controller
             $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
             if (!$check){
                 $user = User::find(auth()->user()->id);
-                $user->point = $user->point + 10;
+                $user->point = $user->point + 3;
                 $user->save();
             }
             else {
