@@ -26,6 +26,7 @@ class ShareLinkController extends Controller
        $content = $artical->description;
          $image = $cloudController->getSignedUrl($artical->image);
 
+
         return view('screenshot', compact('title', 'content','image'));
 
 

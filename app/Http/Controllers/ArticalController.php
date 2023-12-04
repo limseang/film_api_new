@@ -91,13 +91,10 @@ class ArticalController extends Controller
             $type = $artical->type->name;
             $user = UserLogin::all();
             foreach ($user as $item){
-                if(!$item->fcm_token){
-                    continue;
-                }
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => 'New '. $type .' Artical' .','. $artical->id,
-                    'body' => $artical->title .','. '1'
+                    'title' => 'New '.$type.' Artical',
+                    'body' => $artical->title,
                 ];
                 PushNotificationService::pushNotification($data);
             }
