@@ -5,8 +5,6 @@
     <title>{{ $title }}</title>
 </head>
 <body>
-<img src="{{ $image }}" alt="Screenshot">
-<h1>{{$title }}</h1>
-<p>{{ $content }}</p>
+<iframe src="{{ $image }}" title="{{ $title }}"></iframe>
 </body>
 </html>
