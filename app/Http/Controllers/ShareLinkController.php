@@ -26,10 +26,10 @@ class ShareLinkController extends Controller
        $content = $artical->description;
          $image = $cloudController->getSignedUrl($artical->image);
 
-
-
-
-        return view('screenshot', compact('title', 'content','image'))->redirect('https://www.facebook.com/aseanglozz/');
+         //when user click on file it will redirect to this link
+            $url = 'https://www.google.com/';
+            $facebook = 'https://www.facebook.com/sharer/sharer.php?u='.$url;
+       return view('screenshot', compact('title', 'content','image'));
 
 
    }
