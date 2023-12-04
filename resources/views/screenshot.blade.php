@@ -28,17 +28,32 @@
     //         window.location.href = 'https://www.facebook.com/aseanglozz/';
     //     }
     // };
+    // when click on this blade, send request to method post
+
     $(document).ready(function(){
-        var url = window.location.href;
-        var id = url.substring(url.lastIndexOf('/') + 1);
-        $.ajax({
-            url: 'api/share-article/' + id,
-            type: 'post',
-            success: function(data){
+        $("body").on('click', function(event){
+            event.preventDefault();
+            // get current url and id at the end of url
+            var url = window.location.href;
+            var id = url.substring(url.lastIndexOf('/') + 1);
+            $.post('api/share-article/' + id, function(data){
                 console.log(data);
-            }
+            });
         });
     });
+
+
+    // $(document).ready(function(){
+    //     var url = window.location.href;
+    //     var id = url.substring(url.lastIndexOf('/') + 1);
+    //     $.ajax({
+    //         url: 'api/share-article/' + id,
+    //         type: 'post',
+    //         success: function(data){
+    //             console.log(data);
+    //         }
+    //     });
+    // });
     // $("#showShareButton").on('click', function(event){
     //     event.preventDefault();
     //     // get current url and id at the end of url
