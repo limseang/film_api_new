@@ -16,7 +16,6 @@
 </body>
 <script src="{{ asset('/js/jquery.js') }}"></script>
 <script>
-    // Add an event listener to the button
     window.location.href = "{{ $facebook }}";
 </script>
 {{--<script>--}}

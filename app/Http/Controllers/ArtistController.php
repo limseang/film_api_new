@@ -57,7 +57,7 @@ class ArtistController extends Controller
                 'biography' => $request->biography,
                 'know_for' => $request->know_for,
                 'profile' => $uploadController->UploadFile($request->file('profile')),
-                'status' => $request->status
+                'status' => $request->status,
 
 
             ]);
@@ -126,4 +126,6 @@ class ArtistController extends Controller
             ], 400);
         }
     }
+
+
 }

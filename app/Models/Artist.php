@@ -32,4 +32,5 @@ class Artist extends Model
 
 
 
+
 }
