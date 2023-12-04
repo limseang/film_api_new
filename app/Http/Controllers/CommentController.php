@@ -54,27 +54,45 @@ class CommentController extends Controller
             $comment->save();
             $artical = Artical::find($request->artical_id);
             $title = $artical->title;
+            $pushNotificationService = new PushNotificationService();
             $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
             //show all user id
             $user_id = [];
             foreach ($bookmarks as $bookmark) {
                 $user_id = $bookmark->user_id;
+                $userLogin = UserLogin::where('user_id', $user_id)->get();
+//
+
+
+                foreach ($userLogin as $item){
+                    $token = $item->fcm_token;
+                }
+                $data = [
+                    'token' => $token,
+                    'title' => $title,
+                    'body' => '1',
+                ];
+                $pushNotificationService->pushNotification($data);
+//                foreach ($userLogin as $item){
+//                    $token = $item->fcm_token;
+//                }
+//                $data = [
+//                    'token' => $token,
+//                    'title' => $title,
+//                    'body' => '1',
+//                ];
+//                $pushNotificationService->pushNotification($data);
             }
+
             //send notification to all uses_id
-            $pushNotificationService = new PushNotificationService();
-           $userLogin = UserLogin::whereIn('user_id', $user_id)->get();
+
+
            //get user token to send notification
             $token = [];
-            foreach ($userLogin as $item){
-                $token = $item->fcm_token;
-            }
-            $data = [
-                'token' => $token,
-                'title' => $title,
-                'body' => '1',
-            ];
 
-            $pushNotificationService->pushNotification($data);
+
+
+
 
             return response()->json([
                 'message' => 'successfully',
