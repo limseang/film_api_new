@@ -27,7 +27,7 @@ class ShareLinkController extends Controller
        $content = $artical->description;
        $image = $cloudController->getSignedUrl($artical->image);
        $url = 'https://www.google.com/';
-       $facebook = 'https://www.facebook.com/aseanglozz/'.urlencode($url);
+       $facebook = 'https://onelink.to/vnm8vv'.urlencode($url);
 
        return view('screenshot', compact('title', 'content', 'image', 'facebook'));
 
