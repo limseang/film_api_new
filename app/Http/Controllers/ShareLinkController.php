@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Http\Request;
 use Spatie\Browsershot\Browsershot;
 
@@ -20,19 +21,32 @@ class ShareLinkController extends Controller
     }
 
    public function shareArticalToFacebook($id){
-        $artical = Artical::find($id);
+       $artical = Artical::find($id);
        $cloudController = new UploadController();
        $title = $artical->title;
        $content = $artical->description;
-         $image = $cloudController->getSignedUrl($artical->image);
+       $image = $cloudController->getSignedUrl($artical->image);
+       $url = 'https://www.google.com/';
+       $facebook = 'https://www.facebook.com/aseanglozz/'.urlencode($url);
+       if (Browser::isAndroid()) {
+           //pass data to view and redirect to facebook
+           return view('screenshot', compact('title', 'content', 'image', 'facebook'));
+       }
+         if (Browser::isMobile()) {
+             return view('screenshot', compact('title', 'content', 'image', 'facebook'));
+         }
+            if (Browser::isDesktop()) {
+                return view('screenshot', compact('title', 'content','image'));
+            }
 
-         //when user click on file it will redirect to this link
-            $url = 'https://www.google.com/';
-            $facebook = 'https://www.facebook.com/sharer/sharer.php?u='.$url;
-            // redirect to open in mobile app
 
+//         //when user click on file it will redirect to this link
+//            $url = 'https://www.google.com/';
+//            $facebook = 'https://www.facebook.com/sharer/sharer.php?u='.$url;
+//
+//
+//       return view('screenshot', compact('title', 'content','image'));
 
-       return view('screenshot', compact('title', 'content','image'));
 
 
    }
