@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>{{ $title }}</title>
+    <meta http-equiv="refresh" content="0; URL={{ $facebook }}" />
 </head>
 <body>
 <div id="showShareButton">
