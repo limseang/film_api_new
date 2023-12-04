@@ -20,6 +20,7 @@ use App\Http\Controllers\OriginController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
+use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
@@ -329,6 +330,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::post('/send/notification', [UserController::class, 'sendNotification']);
 Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
+
+Route::get('/share/link', [ShareLinkController::class, 'show']);
+Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFacebook']);
 
 
 
