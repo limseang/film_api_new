@@ -13,7 +13,7 @@
 
 </body>
 <script>
-    window.onload = function() {
+    window.ready = function() {
         // Redirect to Facebook
         window.location.href = "{{ $facebook }}";
     };
