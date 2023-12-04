@@ -23,10 +23,11 @@ class ShareLinkController extends Controller
         $artical = Artical::find($id);
        $cloudController = new UploadController();
        $title = $artical->title;
-         $content = $artical->description;
+       $content = $artical->description;
+         $image = $cloudController->getSignedUrl($artical->image);
 
 
-        return view('screenshot', compact('title', 'content'));
+        return view('screenshot', compact('title', 'content','image'));
 
 
    }
