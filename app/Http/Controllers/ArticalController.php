@@ -300,6 +300,8 @@ class ArticalController extends Controller
                 'film' => $artical->film,
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
+                //if user login has been bookmarked this artical or not
+                'is_bookmark' => $artical->BookMark->where('user_id', Auth::user()->id)->where('post_type', 1)->where('status', 1)->count() ? true : false,
                 'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
                     return [
                         'id' => $comment->id,
