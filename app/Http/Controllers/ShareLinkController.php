@@ -26,6 +26,7 @@ class ShareLinkController extends Controller
        $title = $artical->title;
        $content = $artical->description;
        $image = $cloudController->getSignedUrl($artical->image);
+
        $facebook = 'https://apps.apple.com/kh/app/film-library/id1582162598';
 
        return view('screenshot', compact('title', 'content', 'image', 'facebook'));
@@ -53,7 +54,19 @@ class ShareLinkController extends Controller
 
    }
     public function viewShare($id){
-        echo 'here';
+        // Find the article by id
+        $article = Artical::find($id);
+
+        // Check if article exists
+        if (!$article) {
+            return response()->json(['message' => 'Article not found'], 404);
+        }
+
+        // Increment the share count
+        $article->increment('share_count');
+
+        // Return a success response
+        return response()->json(['message' => 'Article shared successfully']);
     }
 
     public function takeScreenshot(Request $request)

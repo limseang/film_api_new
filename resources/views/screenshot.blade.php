@@ -5,18 +5,41 @@
     <title>{{ $title }}</title>
 </head>
 <body>
-    <div id="showShareButton">
-        <img src="{{ $image }}" alt="Screenshot">
-        <h1>{{$title }}</h1>
-        <p>{{ $content }}</p>
-    </div>
+<div id="showShareButton">
+    <img src="{{ $image }}" alt="Screenshot">
+    <h1>{{$title }}</h1>
+    <p>{{ $content }}</p>
+    <button id="shareButton">Share on Facebook</button>
+</div>
 
 </body>
+<script src="{{ asset('/js/jquery.js') }}"></script>
 <script>
-    window.onload = function() {
-        window.location.href = "{{ $facebook }}";
-    };
+    // Add an event listener to the button
+    window.location.href = "{{ $facebook }}";
 </script>
+{{--<script>--}}
+{{--    window.onload = function() {--}}
+{{--        --}}
+{{--        //redirect to home page --}}
+{{--        window.location.href = "http://localhost:8000";--}}
+{{--        var url = window.location.href;--}}
+{{--        var id = url.substring(url.lastIndexOf('/') + 1);--}}
+{{--        --}}
+{{--        --}}
+{{--        --}}
+{{--        // get current url and id at the end of url--}}
+{{--        // var url = window.location.href;--}}
+{{--        // var id = url.substring(url.lastIndexOf('/') + 1);--}}
+{{--        // $.ajax({--}}
+{{--        //     url: + id,--}}
+{{--        //     type: 'post',--}}
+{{--        //     success: function(data){--}}
+{{--        //         console.log(data);--}}
+{{--        //     }--}}
+{{--        // });--}}
+{{--    };--}}
+{{--</script>--}}
 
 
     // $(document).ready(function(){
