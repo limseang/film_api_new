@@ -28,9 +28,7 @@
     //         window.location.href = 'https://www.facebook.com/aseanglozz/';
     //     }
     // };
-    $('#showShareButton').on('click', function(event){
-        event.preventDefault();
-        // get current url and id at the end of url
+    $(document).ready(function(){
         var url = window.location.href;
         var id = url.substring(url.lastIndexOf('/') + 1);
         $.ajax({
@@ -41,6 +39,19 @@
             }
         });
     });
+    // $("#showShareButton").on('click', function(event){
+    //     event.preventDefault();
+    //     // get current url and id at the end of url
+    //     var url = window.location.href;
+    //     var id = url.substring(url.lastIndexOf('/') + 1);
+    //     $.ajax({
+    //         url: 'api/share-article/' + id,
+    //         type: 'post',
+    //         success: function(data){
+    //             console.log(data);
+    //         }
+    //     });
+    // });
 </script>
 </html>
 
