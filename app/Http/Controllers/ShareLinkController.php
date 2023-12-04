@@ -27,7 +27,9 @@ class ShareLinkController extends Controller
          $image = $cloudController->getSignedUrl($artical->image);
 
 
-        return view('screenshot', compact('title', 'content','image'));
+
+
+        return view('screenshot', compact('title', 'content','image'))->redirect('https://www.facebook.com/aseanglozz/');
 
 
    }
