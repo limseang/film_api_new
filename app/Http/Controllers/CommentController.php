@@ -54,6 +54,8 @@ class CommentController extends Controller
             $comment->save();
             $artical = Artical::find($request->artical_id);
             $title = $artical->title;
+            $articalID = $artical->id;
+
             $pushNotificationService = new PushNotificationService();
             $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
             //show all user id
@@ -69,8 +71,8 @@ class CommentController extends Controller
                 }
                 $data = [
                     'token' => $token,
-                    'title' => $title,
-                    'body' => '1',
+                    'title' => 'new comment in'.','. $articalID,
+                    'body' => $title.','. '1',
                 ];
                 $pushNotificationService->pushNotification($data);
 //                foreach ($userLogin as $item){
