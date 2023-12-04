@@ -29,10 +29,16 @@ class ShareLinkController extends Controller
          //when user click on file it will redirect to this link
             $url = 'https://www.google.com/';
             $facebook = 'https://www.facebook.com/sharer/sharer.php?u='.$url;
+            // redirect to open in mobile app
+
+
        return view('screenshot', compact('title', 'content','image'));
 
 
    }
+    public function viewShare($id){
+        echo 'here';
+    }
 
     public function takeScreenshot(Request $request)
     {

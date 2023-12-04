@@ -333,6 +333,7 @@ Route::post('/send/notification/global ', [UserController::class, 'sendNotificat
 
 Route::get('/share/link', [ShareLinkController::class, 'show']);
 Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFacebook']);
+Route::post('/share-article/{id}', [ShareLinkController::class, 'viewShare']);
 
 
 
