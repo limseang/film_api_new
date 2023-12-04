@@ -8,6 +8,8 @@
 <img src="{{ $image }}" alt="Screenshot">
 <h1>{{$title }}</h1>
 <p>{{ $content }}</p>
+
+</body>
 <script>
     document.getElementById('shareLink').onclick = function(e) {
         e.preventDefault();
@@ -25,5 +27,5 @@
         }
     };
 </script>
-</body>
 </html>
+
