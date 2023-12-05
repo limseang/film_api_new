@@ -34,7 +34,7 @@ class Artical extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function like()
+    public function likes()
     {
         return $this->hasMany(Like::class);
     }
@@ -61,5 +61,7 @@ class Artical extends Model
     {
         return $this->hasMany(BookMark::class,'post_id','id');
     }
+
+
 
 }

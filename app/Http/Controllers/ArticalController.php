@@ -262,7 +262,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments','BookMark'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments','BookMark','likes'])->find($id);
             if(!$artical){
                 return response()->json([
                     'message' => 'not found'
@@ -282,7 +282,7 @@ class ArticalController extends Controller
                 'originLogo' => $artical->origin ? $uploadController->getSignedUrl($artical->origin->logo) : null,
                 'originLink' => $artical->origin ? $artical->origin->url : '',
                 'type' => $artical->type ? $artical->type->name : '',
-                'like' => $artical->like,
+                'like' => $artical->likes->count() ? $artical->likes->count() : 0,
                 'comment_count' => $artical->comments->count() ? $artical->comments->count() : 0 ,
                 'share' => $artical->share,
                 'view' => $artical->view,
