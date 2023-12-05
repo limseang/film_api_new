@@ -58,23 +58,19 @@ class CommentController extends Controller
 
             $pushNotificationService = new PushNotificationService();
             $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
-            //show all user id
-            $user_id = [];
             foreach ($bookmarks as $bookmark) {
                 $user_id = $bookmark->user_id;
                 $userLogin = UserLogin::where('user_id', $user_id)->get();
-//
-
-
                 foreach ($userLogin as $item){
-                    $token = $item->fcm_token;
+
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => 'new comment in'.','. $articalID,
+                        'body' => $title.','. '1',
+                    ];
+                    $pushNotificationService->pushNotification($data);
                 }
-                $data = [
-                    'token' => $token,
-                    'title' => 'new comment in'.','. $articalID,
-                    'body' => $title.','. '1',
-                ];
-                $pushNotificationService->pushNotification($data);
+
 //                foreach ($userLogin as $item){
 //                    $token = $item->fcm_token;
 //                }
