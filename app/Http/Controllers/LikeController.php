@@ -34,7 +34,7 @@ class LikeController extends Controller
     public function create(Request $request)
     {
         try{
-            $like = new Like();
+
             $user = auth()->user();
             $like = Like::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
             if ($like) {
@@ -42,7 +42,8 @@ class LikeController extends Controller
                     'message' => 'You already liked this artical'
                 ], 400);
             }
-            $like->user_id = auth()->user()->id;
+            $like = new Like();
+            $like->user_id = $user->id;
             $like->artical_id = $request->artical_id;
             $like->save();
             $user->point = $user->point + 1;
