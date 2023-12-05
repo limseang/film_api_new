@@ -71,27 +71,8 @@ class CommentController extends Controller
                     $pushNotificationService->pushNotification($data);
                 }
 
-//                foreach ($userLogin as $item){
-//                    $token = $item->fcm_token;
-//                }
-//                $data = [
-//                    'token' => $token,
-//                    'title' => $title,
-//                    'body' => '1',
-//                ];
-//                $pushNotificationService->pushNotification($data);
+//            }
             }
-
-            //send notification to all uses_id
-
-
-           //get user token to send notification
-            $token = [];
-
-
-
-
-
             return response()->json([
                 'message' => 'successfully',
                 'data' => $comment
