@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AvailableInController;
+use App\Http\Controllers\BookMarkController;
 use App\Http\Controllers\CastController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
@@ -334,6 +335,17 @@ Route::post('/send/notification/global ', [UserController::class, 'sendNotificat
 Route::get('/share/link', [ShareLinkController::class, 'show']);
 Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFacebook']);
 Route::post('/share-article/{id}', [ShareLinkController::class, 'viewShare']);
+
+
+/* BookMark */
+Route::get('/bookmark', [BookMarkController::class, 'index']);
+Route::get('/bookmark/detail/{id}', [BookMarkController::class, 'detail']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/bookmark/create', [BookMarkController::class, 'create']);
+    Route::post('/check/user/bookmark/{id}', [ArticalController::class, 'checkUserBookMark']);
+    Route::delete('/bookmark/delete/{id}', [BookMarkController::class, 'destroy']);
+});
+
 
 
 

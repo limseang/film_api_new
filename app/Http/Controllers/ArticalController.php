@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use App\Models\BookMark;
 use App\Models\CategoryArtical;
 use App\Models\Origin;
 use App\Models\Type;
@@ -260,7 +261,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments','BookMark'])->find($id);
             if(!$artical){
                 return response()->json([
                     'message' => 'not found'
@@ -286,6 +287,7 @@ class ArticalController extends Controller
                 'view' => $artical->view,
                 'film' => $artical->film,
                 'image' => $artical->image,
+                'bookmark' => $this->countBookmark($artical->id) ?? 0,
                 'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
                     return [
                         'id' => $comment->id,
@@ -345,4 +347,32 @@ class ArticalController extends Controller
             ], 500);
         }
     }
+
+    public function countBookmark($id)
+    {
+        $bookmark = BookMark::where('post_id', $id)->where('post_type', 1)->where('status', 1)->count();
+        return $bookmark;
+
+    }
+    public function checkUserBookMark($id)
+    {
+        $user = Auth::user();
+        if(!$user){
+            return response()->json([
+                'message' => 'user not found'
+            ], 404);
+        }
+        $bookmark = BookMark::where('post_id', $id)->where('post_type', 1)->where('status', 1)->where('user_id', $user->id)->first();
+        if ($bookmark) {
+            return response()->json([
+                'message' => true,
+            ], 200);
+        }
+        return response()->json([
+            'message' => false,
+        ], 200);
+
+    }
+
+
 }

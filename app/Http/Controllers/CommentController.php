@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artical;
+use App\Models\BookMark;
 use App\Models\Comment;
 use App\Models\User;
 use App\Models\UserLogin;
@@ -50,32 +52,57 @@ class CommentController extends Controller
 
             }
             $comment->save();
+            $artical = Artical::find($request->artical_id);
+            $title = $artical->title;
+            $articalID = $artical->id;
+
+            $pushNotificationService = new PushNotificationService();
+            $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
+            //show all user id
+            $user_id = [];
+            foreach ($bookmarks as $bookmark) {
+                $user_id = $bookmark->user_id;
+                $userLogin = UserLogin::where('user_id', $user_id)->get();
+//
 
 
+                foreach ($userLogin as $item){
+                    $token = $item->fcm_token;
+                }
+                $data = [
+                    'token' => $token,
+                    'title' => 'new comment in'.','. $articalID,
+                    'body' => $title.','. '1',
+                ];
+                $pushNotificationService->pushNotification($data);
+//                foreach ($userLogin as $item){
+//                    $token = $item->fcm_token;
+//                }
+//                $data = [
+//                    'token' => $token,
+//                    'title' => $title,
+//                    'body' => '1',
+//                ];
+//                $pushNotificationService->pushNotification($data);
+            }
 
-//            $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
-//            if (!$check){
-//                $user = User::find(auth()->user()->id);
-//                $user->point = $user->point + 0;
-//                $user->save();
-//            }
-//            else {
-//                $user = User::find(auth()->user()->id);
-//                $user->point = $user->point + 10;
-//                $user->save();
-////
-//            }
+            //send notification to all uses_id
+
+
+           //get user token to send notification
+            $token = [];
+
 
 
 
 
             return response()->json([
-                'message' => 'Comment created successfully',
+                'message' => 'successfully',
                 'data' => $comment
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in creating comment',
+                'message' => 'Error',
                 'error' => $e->getMessage()
             ], 500);
         }

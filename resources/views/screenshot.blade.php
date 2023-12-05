@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>{{ $title }}</title>
+    <meta http-equiv="refresh" content="0; URL={{ $facebook }}" />
 </head>
 <body>
 <div id="showShareButton">
@@ -15,7 +16,6 @@
 </body>
 <script src="{{ asset('/js/jquery.js') }}"></script>
 <script>
-    // Add an event listener to the button
     window.location.href = "{{ $facebook }}";
 </script>
 {{--<script>--}}

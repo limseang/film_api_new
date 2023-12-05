@@ -57,4 +57,9 @@ class Artical extends Model
         return $this->hasMany(CategoryArtical::class);
     }
 
+    public function BookMark()
+    {
+        return $this->hasMany(BookMark::class,'post_id','id');
+    }
+
 }
