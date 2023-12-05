@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\CategoryArtical;
+use App\Models\Like;
 use App\Models\Origin;
 use App\Models\Type;
 use App\Models\UserLogin;
@@ -354,7 +355,7 @@ class ArticalController extends Controller
         return $bookmark;
 
     }
-    public function checkUserBookMark($id)
+    public function checkUserLikeOrBookMark($id)
     {
         $user = Auth::user();
         if(!$user){
@@ -363,14 +364,34 @@ class ArticalController extends Controller
             ], 404);
         }
         $bookmark = BookMark::where('post_id', $id)->where('post_type', 1)->where('status', 1)->where('user_id', $user->id)->first();
-        if ($bookmark) {
+        $like = Like::where('user_id', $user->id)->where('artical_id', $id)->first();
+        if ($like) {
+
+           if($bookmark){
+               return response()->json([
+                   'BookMark' => true,
+                   'Like' => true,
+               ], 200);
+           }
             return response()->json([
-                'message' => true,
+                'Like' => true,
+                'BookMark' => false,
             ], 200);
         }
-        return response()->json([
-            'message' => false,
-        ], 200);
+        if (!$like) {
+            if($bookmark){
+                return response()->json([
+                    'BookMark' => true,
+                    'Like' => false,
+                ], 200);
+            }
+            return response()->json([
+                'Like' => false,
+                'BookMark' => false,
+            ], 200);
+
+
+        }
 
     }
 
