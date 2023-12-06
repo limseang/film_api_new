@@ -27,7 +27,7 @@ namespace App\Services;
                     'data' => $businessParams['data'] ?? [],
                     'id' => $businessParams['id'] ?? '',
                     'sound' => 'default',
-                ]);
+                ])->withData($businessParams['data'] ?? []);
             $messaging->send($notification);
 
 
