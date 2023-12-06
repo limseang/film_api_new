@@ -293,7 +293,7 @@ class UserController extends Controller
             'title' => 'New Artical'.','.$request->id,
             'body' => 'New Artical has been created',
             'data' => [
-                'id' => $request->id,
+                'id' => '39',
                 'type' => '1',
             ]
         ];
