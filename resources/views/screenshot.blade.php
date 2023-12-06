@@ -14,7 +14,6 @@
 </div>
 
 </body>
-<script src="{{ asset('/js/jquery.js') }}"></script>
 <script>
     window.location.href = "{{ $facebook }}";
 </script>
