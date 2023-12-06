@@ -11,9 +11,7 @@ namespace App\Services;
             'token' => "",
             'title' => "",
             'body' => "",
-            'image' => "",
-            'type' => '',
-            'id' => '',
+           'data' => [],
         ]): void
         {
             try{
@@ -26,6 +24,7 @@ namespace App\Services;
                     'body' => $businessParams['body'] ?? "",
                     'image' => $businessParams['image'] ?? "",
                     'type' => $businessParams['type'] ?? '',
+                    'data' => $businessParams['data'] ?? [],
                     'id' => $businessParams['id'] ?? '',
                     'sound' => 'default',
                 ]);

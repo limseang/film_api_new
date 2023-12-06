@@ -291,7 +291,11 @@ class UserController extends Controller
         $data = [
             'token' => $request->fcm_token,
             'title' => 'New Artical'.','.$request->id,
-            'body' => 'New Artical has been created'.','.$request->type,
+            'body' => 'New Artical has been created',
+            'data' => [
+                'id' => $request->id,
+                'type' => '1',
+            ]
         ];
         PushNotificationService::pushNotification($data);
         return response()->json([
