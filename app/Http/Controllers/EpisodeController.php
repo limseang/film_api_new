@@ -68,8 +68,12 @@ class EpisodeController extends Controller
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => $episode->title . ' ' .'Season'. $episode->season . ' ' .'Ep'. $episode->episode . ',' . $episode->film_id,
-                    'body' => 'New Episode has been post' . ',' . '2',
+                    'title' => $episode->title . ' ' .'Season'. $episode->season . ' ' .'Ep'. $episode->episode ,
+                    'body' => 'New Episode has been post',
+                    'data' => [
+                        'id' => $episode->film_id,
+                        'type' => '2',
+                    ]
                 ];
                 PushNotificationService::pushNotification($data);
             }

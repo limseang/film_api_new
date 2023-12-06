@@ -65,8 +65,12 @@ class CommentController extends Controller
 
                     $data = [
                         'token' => $item->fcm_token,
-                        'title' => 'new comment in'.','. $articalID,
-                        'body' => $title.','. '1',
+                        'title' => 'new comment in',
+                        'body' => $title,
+                        'data' => [
+                            'id' => $articalID,
+                            'type' => '1',
+                        ]
                     ];
                     $pushNotificationService->pushNotification($data);
                 }

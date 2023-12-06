@@ -188,8 +188,12 @@ class FilmController extends Controller
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => $film->title.','. $film->id,
-                    'body' => $type->description. ','. '2',
+                    'title' => $film->title,
+                    'body' => $type->description,
+                    'data' => [
+                        'id' => $film->id,
+                        'type' => '2',
+                    ]
                 ];
                 PushNotificationService::pushNotification($data);
             }
