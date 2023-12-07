@@ -55,12 +55,9 @@ class CommentController extends Controller
                     $user->save();
                 }
                 $comment->save();
-                $artical = Artical::find($request->artical_id);
-                $title = $artical->title;
-                $articalID = $artical->id;
-
+                $artical = Artical::find($request->item_id);
                 $pushNotificationService = new PushNotificationService();
-                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
+                $bookmarks = BookMark::where('post_id', $request->item_id)->where('post_type', '1')->get();
                 foreach ($bookmarks as $bookmark) {
                     $user_id = $bookmark->user_id;
                     $userLogin = UserLogin::where('user_id', $user_id)->get();
@@ -69,9 +66,9 @@ class CommentController extends Controller
                         $data = [
                             'token' => $item->fcm_token,
                             'title' => 'new comment in',
-                            'body' => $title,
+                            'body' => $artical->title,
                             'data' => [
-                                'id' => $articalID,
+                                'id' => $artical->id,
                                 'type' => '1',
                             ]
                         ];

@@ -40,7 +40,7 @@ class Artical extends Model
     }
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class,'item_id','id')->where('type',1);
     }
 
     public function type()

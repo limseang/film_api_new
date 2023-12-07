@@ -305,15 +305,15 @@ class ArticalController extends Controller
                 'film' => $artical->film,
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
-//                'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
-//                    return [
-//                        'id' => $comment->id,
-//                        'content' => $comment->comment,
-//                        'user' => $comment->user->name,
-//                        'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
-//                        'created_at' => $comment->created_at->format('d/m/Y'),
-//                    ];
-//                }),
+                'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
+                    return [
+                        'id' => $comment->id,
+                        'content' => $comment->comment,
+                        'user' => $comment->user->name,
+                        'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
+                        'created_at' => $comment->created_at->format('d/m/Y'),
+                    ];
+                }),
                 'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
                     return [
                         'id' => $categoryArtical->id,
