@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\Comment;
+use App\Models\Film;
 use App\Models\User;
 use App\Models\UserLogin;
 use App\Services\PushNotificationService;
@@ -36,47 +37,76 @@ class CommentController extends Controller
             $comment = new Comment();
             $comment::with(['user', 'artical'])->get();
             $user = Auth::user();
-            $comment->artical_id = $request->artical_id;
+            $comment->item_id = $request->artical_id;
             $comment->comment = $request->comment;
             $comment->user_id = $user->id;
-            $check = Comment::where('user_id', $user->id)->where('artical_id', $request->artical_id)->first();
-            if (!$check){
-                $user = User::find(auth()->user()->id);
-                $user->point = $user->point + 3;
-                $user->save();
-            }
-            else {
-                $user = User::find(auth()->user()->id);
-                $user->point = $user->point + 0;
-                $user->save();
-
-            }
+            $comment->type = $request->type;
             $comment->save();
-            $artical = Artical::find($request->artical_id);
-            $title = $artical->title;
-            $articalID = $artical->id;
-
-            $pushNotificationService = new PushNotificationService();
-            $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
-            foreach ($bookmarks as $bookmark) {
-                $user_id = $bookmark->user_id;
-                $userLogin = UserLogin::where('user_id', $user_id)->get();
-                foreach ($userLogin as $item){
-
-                    $data = [
-                        'token' => $item->fcm_token,
-                        'title' => 'new comment in',
-                        'body' => $title,
-                        'data' => [
-                            'id' => $articalID,
-                            'type' => '1',
-                        ]
-                    ];
-                    $pushNotificationService->pushNotification($data);
+            if($request->type == 1){
+                $check = Comment::where('user_id', $user->id)->where('artical_id', $request->item_id)->first();
+                if (!$check){
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 3;
+                    $user->save();
                 }
+                else {
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 0;
+                    $user->save();
+                }
+                $comment->save();
+                $artical = Artical::find($request->artical_id);
+                $title = $artical->title;
+                $articalID = $artical->id;
+
+                $pushNotificationService = new PushNotificationService();
+                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '1')->get();
+                foreach ($bookmarks as $bookmark) {
+                    $user_id = $bookmark->user_id;
+                    $userLogin = UserLogin::where('user_id', $user_id)->get();
+                    foreach ($userLogin as $item){
+
+                        $data = [
+                            'token' => $item->fcm_token,
+                            'title' => 'new comment in',
+                            'body' => $title,
+                            'data' => [
+                                'id' => $articalID,
+                                'type' => '1',
+                            ]
+                        ];
+                        $pushNotificationService->pushNotification($data);
+                    }
 
 //            }
+                }
             }
+            else{
+                $pushNotificationService = new PushNotificationService();
+                $film = Film::find($request->item_id);
+                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
+                foreach ($bookmarks as $bookmark) {
+                    $user_id = $bookmark->user_id;
+                    $userLogin = UserLogin::where('user_id', $user_id)->get();
+                    foreach ($userLogin as $item){
+
+                        $data = [
+                            'token' => $item->fcm_token,
+                            'title' => 'new comment in',
+                            'body' => $film->title,
+                            'data' => [
+                                'id' => $film->id,
+                                'type' => '2',
+                            ]
+                        ];
+                        $pushNotificationService->pushNotification($data);
+                    }
+
+
+            }
+
+
+
             return response()->json([
                 'message' => 'successfully',
                 'data' => $comment

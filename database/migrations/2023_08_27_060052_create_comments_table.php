@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('comment');
             $table->string('user_id');
-            $table->string('artical_id');
+            $table->string('item_id');
+            $table->string('type');
             $table->string('report_id')->nullable();
             $table->string('reply_id')->nullable();
             $table->string('status')->default('1'); // 1 for active and 0 for inactive
