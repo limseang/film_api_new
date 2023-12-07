@@ -81,4 +81,8 @@ class Film extends Model
         return $this->hasMany(Episode::class,'film_id','id');
     }
 
+    public function filmComment(){
+        return $this->hasMany(Comment::class,'item_id','id')->where('type',2);
+    }
+
 }

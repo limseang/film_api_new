@@ -77,8 +77,8 @@ class CommentController extends Controller
 
 //            }
                 }
-            }
-            else {
+            } else if  ($request->type == 2)
+            {
                 $pushNotificationService = new PushNotificationService();
                 $film = Film::find($request->item_id);
                 $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();

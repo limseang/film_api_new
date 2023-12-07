@@ -232,7 +232,7 @@ class FilmController extends Controller
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable'])->find($id);
+            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment'])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title,
@@ -252,6 +252,24 @@ class FilmController extends Controller
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
+                'comment' => $film->filmComment->map(function ($comment) use ($uploadController) {
+                    return [
+                        'id' => $comment->id,
+                        'comment' => $comment->comment,
+                        'user' => $comment->user->name,
+                        'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
+                        'created_at' => $comment->created_at,
+                        'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                            return [
+                                'id' => $reply->id,
+                                'comment' => $reply->comment,
+                                'user' => $reply->user->name,
+                                'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+                                'created_at' => $reply->created_at,
+                            ];
+                        })
+                    ];
+                }),
 
             ];
             return response()->json([
