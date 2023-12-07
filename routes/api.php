@@ -346,6 +346,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::delete('/bookmark/delete/{id}', [BookMarkController::class, 'destroy']);
 });
 
+Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);
+
 
 
 

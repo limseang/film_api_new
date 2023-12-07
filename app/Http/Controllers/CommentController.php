@@ -194,4 +194,24 @@ class CommentController extends Controller
             ], 400);
         }
     }
+
+    public function createFromCommand(){
+        try{
+            $comment = new Comment();
+            $comment->artical_id = 1;
+            $comment->comment = 'test';
+            $comment->user_id = 1;
+            $comment->save();
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $comment
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

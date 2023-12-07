@@ -400,5 +400,43 @@ class ArticalController extends Controller
 
     }
 
+    public function schedulePost()
+    {
+        $artical = new Artical();
+        $artical->title = 'test';
+        $artical->description = 'test';
+        $artical->origin_id = 1;
+        $artical->category_id = 1;
+        $artical->image = 'test';
+        $artical->type_id = 1;
+        $artical->like = 1;
+        $artical->comment = 1;
+        $artical->share = 1;
+        $artical->profile = 1;
+        $artical->view = 1;
+        $artical->film = 1;
+        $artical->save();
+        return response()->json([
+            'message' => 'successfully',
+            'data' => $artical
+        ], 200);
+
+
+
+    }
+
+    public function createFromCommand()
+    {
+        $artical = new Artical();
+        $artical->title = 'test';
+        $artical->description = 'test';
+        $artical->origin_id = 1;
+        $artical->category_id = 1;
+        $artical->image = 'test';
+        $artical->type_id = 1;
+        $artical->save();
+
+    }
+
 
 }
