@@ -360,7 +360,7 @@ class ArticalController extends Controller
         return $bookmark;
 
     }
-    public function checkUserLikeOrBookMark($id,$type_id)
+    public function checkUserLikeOrBookMark($id,Request $request)
     {
         $user = Auth::user();
         if(!$user){
@@ -368,7 +368,7 @@ class ArticalController extends Controller
                 'message' => 'user not found'
             ], 404);
         }
-        $bookmark = BookMark::where('post_id', $id)->where('post_type', $type_id)->where('status', 1)->where('user_id', $user->id)->first();
+        $bookmark = BookMark::where('post_id', $id)->where('post_type', $request->type_id)->where('status', 1)->where('user_id', $user->id)->first();
         $like = Like::where('user_id', $user->id)->where('artical_id', $id)->first();
         if ($like) {
 

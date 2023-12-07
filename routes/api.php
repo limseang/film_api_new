@@ -343,7 +343,7 @@ Route::get('/bookmark', [BookMarkController::class, 'index']);
 Route::get('/bookmark/detail/{id}', [BookMarkController::class, 'detail']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/bookmark/create', [BookMarkController::class, 'create']);
-    Route::post('/check/user/bookmark/{id}/{type_id}', [ArticalController::class, 'checkUserLikeOrBookMark']);
+    Route::post('/check/user/bookmark/{id}', [ArticalController::class, 'checkUserLikeOrBookMark']);
     Route::delete('/bookmark/delete/{id}', [BookMarkController::class, 'destroy']);
 });
 
