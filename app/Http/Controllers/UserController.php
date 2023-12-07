@@ -313,7 +313,11 @@ class UserController extends Controller
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => $request->title,
-                    'body' => $request->body
+                    'body' => $request->body,
+                    'data' => [
+                    'id' => '',
+                    'type' => '1',
+                ]
                 ];
                 PushNotificationService::pushNotification($data);
             }
