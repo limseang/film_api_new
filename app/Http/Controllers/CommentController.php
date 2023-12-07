@@ -81,14 +81,14 @@ class CommentController extends Controller
 //            }
                 }
             }
-            else{
+            else {
                 $pushNotificationService = new PushNotificationService();
                 $film = Film::find($request->item_id);
                 $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
                 foreach ($bookmarks as $bookmark) {
                     $user_id = $bookmark->user_id;
                     $userLogin = UserLogin::where('user_id', $user_id)->get();
-                    foreach ($userLogin as $item){
+                    foreach ($userLogin as $item) {
 
                         $data = [
                             'token' => $item->fcm_token,
@@ -103,6 +103,7 @@ class CommentController extends Controller
                     }
 
 
+                }
             }
 
 
