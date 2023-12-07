@@ -37,7 +37,7 @@ class CommentController extends Controller
             $comment = new Comment();
             $comment::with(['user', 'artical'])->get();
             $user = Auth::user();
-            $comment->item_id = $request->artical_id;
+            $comment->item_id = $request->item_id;
             $comment->comment = $request->comment;
             $comment->user_id = $user->id;
             $comment->type = $request->type;
