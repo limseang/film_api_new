@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use App\Models\Film;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Http\Request;
 use Spatie\Browsershot\Browsershot;
@@ -21,8 +22,8 @@ class ShareLinkController extends Controller
     }
 
    public function shareArticalToFacebook($id){
-       $artical = Artical::find($id);
        $cloudController = new UploadController();
+       $artical = Artical::find($id);
        $title = $artical->title;
        $content = $artical->description;
        $image = $cloudController->getSignedUrl($artical->image);
@@ -33,6 +34,19 @@ class ShareLinkController extends Controller
 
 
    }
+
+   public function shareFilm($id){
+         $cloudController = new UploadController();
+         $film = Film::find($id);
+         $title = $film->title;
+         $content = $film->overview. '  '.'ចាក់បញ្ចាំងថ្ងៃទី' .' '. $film->release_date;
+         $image = $cloudController->getSignedUrl($film->poster);
+
+         $facebook = 'https://apps.apple.com/kh/app/film-library/id1582162598';
+
+         return view('screenshot', compact('title', 'content','image', 'facebook'));
+   }
+
     public function viewShare($id){
         // Find the article by id
         $article = Artical::find($id);
@@ -49,25 +63,7 @@ class ShareLinkController extends Controller
         return response()->json(['message' => 'Article shared successfully']);
     }
 
-    public function takeScreenshot(Request $request)
-    {
-        $data = [
-            'title' => 'Example Title',
-            'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        ];
 
-        $html = (string) view('screenshot', $data);
-
-        // Use Browsershot to take a screenshot
-        $screenshotPath = public_path('screenshots/example.png');
-
-        Browsershot::html($html)->save($screenshotPath);
-
-        return response()->json([
-            'success' => true,
-            'screenshot_path' => $screenshotPath,
-        ]);
-    }
 }
 
 
