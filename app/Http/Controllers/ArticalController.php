@@ -278,7 +278,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','comments','BookMark','likes'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes'])->find($id);
             if(!$artical){
                 return response()->json([
                     'message' => 'not found'
@@ -299,7 +299,7 @@ class ArticalController extends Controller
                 'originLink' => $artical->origin ? $artical->origin->url : '',
                 'type' => $artical->type ? $artical->type->name : '',
                 'like' => $artical->likes->count() ? $artical->likes->count() : 0,
-                'comment_count' => $artical->comments->count() ? $artical->comments->count() : 0 ,
+                'comment_count' => $this->countCmt($artical->id),
                 'share' => $artical->share,
                 'view' => $artical->view,
                 'film' => $artical->film,
