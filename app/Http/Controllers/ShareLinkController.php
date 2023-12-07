@@ -39,7 +39,7 @@ class ShareLinkController extends Controller
          $cloudController = new UploadController();
          $film = Film::find($id);
          $title = $film->title;
-         $content = $film->overview. '  '.'ចាក់បញ្ចាំងថ្ងៃទី' .' '. $film->release_date;
+         $content = $film->overview;
          $image = $cloudController->getSignedUrl($film->poster);
 
          $facebook = 'https://apps.apple.com/kh/app/film-library/id1582162598';
