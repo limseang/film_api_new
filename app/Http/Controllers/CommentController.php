@@ -43,7 +43,7 @@ class CommentController extends Controller
             $comment->type = $request->type;
             $comment->save();
             if($request->type == 1){
-                $check = Comment::where('user_id', $user->id)->where('artical_id', $request->item_id)->first();
+                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
                 if (!$check){
                     $user = User::find(auth()->user()->id);
                     $user->point = $user->point + 3;
