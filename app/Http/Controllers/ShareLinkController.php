@@ -31,26 +31,6 @@ class ShareLinkController extends Controller
 
        return view('screenshot', compact('title', 'content', 'image', 'facebook'));
 
-//       if (Browser::isAndroid()) {
-//           //pass data to view and redirect to facebook
-//           return view('screenshot', compact('title', 'content', 'image', 'facebook'));
-//       }
-//         if (Browser::isMobile()) {
-//             return view('screenshot', compact('title', 'content', 'image', 'facebook'));
-//         }
-//            if (Browser::isDesktop()) {
-//                return view('screenshot', compact('title', 'content','image'));
-//            }
-
-
-//         //when user click on file it will redirect to this link
-//            $url = 'https://www.google.com/';
-//            $facebook = 'https://www.facebook.com/sharer/sharer.php?u='.$url;
-//
-//
-//       return view('screenshot', compact('title', 'content','image'));
-
-
 
    }
     public function viewShare($id){
