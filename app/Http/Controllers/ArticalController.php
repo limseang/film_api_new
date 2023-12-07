@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\CategoryArtical;
+use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Origin;
 use App\Models\Type;
@@ -18,7 +19,7 @@ class ArticalController extends Controller
     public function index()
     {
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical','comments'])->orderBy('created_at', 'DESC')->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -34,7 +35,7 @@ class ArticalController extends Controller
                     'title' => $artical->title,
                     'origin' => $artical->origin ? $artical->origin->name : '',
                     'like' => $artical->like,
-                    'comment' => $artical->comments->count(),
+                    'comment' => $this->countCmt($artical->id),
                     'share' => $artical->share,
                     'image' => $artical->image,
                     'description' => $artical->description,
@@ -58,6 +59,16 @@ class ArticalController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function countCmt($id)
+    {
+        $comment = Comment::where('item_id', $id)->where('type', 1)->count();
+        if($comment == null){
+            return 0;
+        }
+        return $comment;
+
     }
 
     public function getCategoryResource($data){

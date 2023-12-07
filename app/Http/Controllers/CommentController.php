@@ -89,6 +89,11 @@ class CommentController extends Controller
         }
     }
 
+    public function cmtFilm(Request $request)
+    {
+
+    }
+
 
 
     public function edit(Request $request,  $id)
