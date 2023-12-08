@@ -327,7 +327,7 @@ class UserController extends Controller
             $user->save();
             return response()->json([
                 'message' => 'successfully',
-                'user' => $user
+                'name' => $user->name
             ], 200);
         }
         catch (Exception $e){
