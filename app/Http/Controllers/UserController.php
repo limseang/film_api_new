@@ -120,6 +120,7 @@ class UserController extends Controller
     {
         try{
             $request->user()->currentAccessToken()->delete();
+            UserLogin::where('user_id', auth()->user()->id)->first()->delete();
             return response()->json([
                 'message' => 'User successfully signed out'
             ], 200);
