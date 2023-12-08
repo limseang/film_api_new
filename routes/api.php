@@ -76,6 +76,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
     Route::post('/user/info', [UserConTroller::class, 'userinfo']);
     Route::post('/user/login/info', [UserLoginController::class, 'create']);
+    Route::post('/user/update/name', [UserConTroller::class, 'editName']);
+    Route::post('/user/update/password', [UserConTroller::class, 'editPassword']);
 });
 
 /* UserType */

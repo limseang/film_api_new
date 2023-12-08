@@ -270,31 +270,6 @@ class UserController extends Controller
 
     }
 
-    public function appleRedirect()
-    {
-        $user = Socialite::driver("sign-in-with-apple")->user();
-        dd($user);
-    }
-
-    public function updateFCM($fcm_token){
-        try{
-            $user = auth()->user();
-            $user->fcm_token = $fcm_token;
-            $user->save();
-            return response()->json([
-                'message' => 'successfully',
-                'user' => $user
-            ], 200);
-        }
-        catch(Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-
 
     public function sendNotification(Request $request)
     {
@@ -334,6 +309,46 @@ class UserController extends Controller
                 ];
                 PushNotificationService::pushNotification($data);
             }
+        }
+        catch (Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
+    public function editName(Request $request)
+    {
+        try{
+            $user = auth()->user();
+            $user->name = $request->name;
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+                'user' => $user
+            ], 200);
+        }
+        catch (Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
+    public function editPassword(Request $request)
+    {
+        try{
+            $user = auth()->user();
+            $user->password = bcrypt($request->password);
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+                'user' => $user
+            ], 200);
         }
         catch (Exception $e){
             return response()->json([
