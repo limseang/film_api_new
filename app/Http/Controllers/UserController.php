@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserLogin;
 use App\Models\UserType;
 use App\Services\PushNotificationService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -115,23 +116,20 @@ class UserController extends Controller
 
 
     }
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         try{
-            auth()->user()->tokens()->delete();
-            UserLogin::find(auth()->user()->id)->delete();
+            $request->user()->currentAccessToken()->delete();
             return response()->json([
-                'message' => 'User successfully logout',
+                'message' => 'User successfully signed out'
             ], 200);
-        }
-        catch(Exception $e){
+        }catch(Exception $e){
             return response()->json([
-                'message' => 'User failed logout',
+                'message' => 'User failed signed out',
                 'error' => $e->getMessage()
             ], 500);
         }
-
     }
-
     public function addAvatar(Request $request){
         try{
             $cloudController = new UploadController();
