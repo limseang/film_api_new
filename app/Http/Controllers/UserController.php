@@ -118,7 +118,7 @@ class UserController extends Controller
     public function logout(Request $request){
         $user = auth()->user();
         UserLogin::find($user->id)->delete();
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->token()->delete();
         return response()->json([
             'status' => 200,
             'message' => 'Success',
