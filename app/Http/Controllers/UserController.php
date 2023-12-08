@@ -116,13 +116,19 @@ class UserController extends Controller
 
     }
     public function logout(Request $request){
-        $user = auth()->user();
-        UserLogin::find($user->id)->delete();
-        $request->user()->token()->delete();
-        return response()->json([
-            'status' => 200,
-            'message' => 'Success',
-        ]);
+        try{
+            auth()->user()->tokens()->delete();
+            UserLogin::find(auth()->user()->id)->delete();
+            return response()->json([
+                'message' => 'User successfully logout',
+            ], 200);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'message' => 'User failed logout',
+                'error' => $e->getMessage()
+            ], 500);
+        }
 
     }
 
