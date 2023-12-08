@@ -116,11 +116,14 @@ class UserController extends Controller
 
     }
     public function logout(Request $request){
-        $request->user()->tokens()->delete();
+        $user = auth()->user();
+        UserLogin::find($user->id)->delete();
+        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'status' => 200,
             'message' => 'Success',
         ]);
+
     }
 
     public function addAvatar(Request $request){
@@ -330,5 +333,7 @@ class UserController extends Controller
         }
 
     }
+
+
 
 }
