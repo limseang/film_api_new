@@ -265,7 +265,7 @@ class FilmController extends Controller
                                 'comment' => $reply->comment,
                                 'user' => $reply->user->name,
                                 'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
-                                'created_at' => $reply->created_at,
+                                'created_at' => $reply->created_at->format('d/m/Y'),
                             ];
                         })
                     ];
