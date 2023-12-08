@@ -190,6 +190,7 @@ class UserController extends Controller
          if(!empty($user['avatar'])){
             //if avatar is link then show link
              if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
+                 $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
              }
              else{
                  $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
