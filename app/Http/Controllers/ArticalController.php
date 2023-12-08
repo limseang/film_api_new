@@ -311,7 +311,7 @@ class ArticalController extends Controller
                         'content' => $comment->comment,
                         'user' => $comment->user->name,
                         'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
-                        'created_at' => $comment->created_at->format('d/m/Y'),
+                        'created_at' => $comment->created_at,
                     ];
                 }),
                 'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
