@@ -79,7 +79,7 @@ class RequestFilmController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => $requestFilm,
+                'message' => 'Thank you for your request film',
             ]);
 
 
