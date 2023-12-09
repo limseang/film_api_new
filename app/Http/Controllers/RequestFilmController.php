@@ -58,10 +58,11 @@ class RequestFilmController extends Controller
             $requestFilm->save();
 
             //find all user has role_id = 1 & 2
-            $user = User::where('role_id', 1)->orWhere('role_id', 2)->get();
+            $user = User::where('role_id', 2)->get();
 
             foreach ($user as $item) {
-                $userLogin = UserLogin::where('user_id', $item->id)->get();
+                $userID = $item->id;
+                $userLogin = UserLogin::where('user_id', $userID)->get();
                 foreach ($userLogin as $item) {
                    $data = [
                        'token' => $item->fcm_token,
