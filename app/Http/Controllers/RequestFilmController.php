@@ -160,7 +160,10 @@ class RequestFilmController extends Controller
                         'title' => 'your request film accepted',
                         'body' => $requestFilm->film_name,
                         'type' => 2,
-                        'data' => $requestFilm->id
+                        'data' => [
+                            'id' => $requestFilm->id,
+                            'type' => '5',
+                        ]
                     ];
                     $pushNotificationService = new PushNotificationService();
                     $pushNotificationService->pushNotification($data);
