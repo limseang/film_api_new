@@ -57,7 +57,7 @@ class RequestFilmController extends Controller
             ]);
             $requestFilm->save();
 
-            //find all user has role_id = 1 & 2
+            $pushNotificationService = new PushNotificationService();
             $user = User::where('role_id', 2)->get();
 
             foreach ($user as $item) {
@@ -71,7 +71,7 @@ class RequestFilmController extends Controller
                         'type' => 1,
                         'data' => $requestFilm->id
                     ];
-                    $pushNotificationService = new PushNotificationService();
+
                     $pushNotificationService->pushNotification($data);
                 }
             }
