@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('view_count')->default(0);
             $table->integer('like_count')->default(0);
             $table->string('cover_image_url');
-            $table->integer('status')->default(1);
             $table->integer('film_id')->nullable();
             $table->integer('article_id')->nullable();
             $table->string('type_id');

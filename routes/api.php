@@ -21,6 +21,7 @@ use App\Http\Controllers\OriginController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
+use App\Http\Controllers\RequestFilmController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
@@ -339,6 +340,20 @@ Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFa
 Route::get('/share-film/{id}', [ShareLinkController::class, 'shareFilm']);
 Route::post('/share-article/{id}', [ShareLinkController::class, 'viewShare']);
 
+/* Request Film */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/request/film', [RequestFilmController::class, 'create']);
+    Route::delete('/request/film/delete/{id}', [RequestFilmController::class, 'destroy']);
+});
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/request/film/all', [RequestFilmController::class, 'index']);
+        Route::get('/request/film/{id}', [RequestFilmController::class, 'showByID']);
+        Route::post('/request/film/update/{id}', [RequestFilmController::class, 'update']);
+    });
+});
+
 
 /* BookMark */
 Route::get('/bookmark', [BookMarkController::class, 'index']);
@@ -350,6 +365,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);
+
 
 
 
