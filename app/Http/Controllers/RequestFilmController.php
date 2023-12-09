@@ -21,7 +21,7 @@ class RequestFilmController extends Controller
             foreach ($requestFilms as $requestFilm){
                 $user = User::where('id', $requestFilm->user_id)->first();
                 $requestFilm->user_name = $user->name;
-                $requestFilm->user_avatar = $uploadController->getSignedUrl($user->avatar);
+                $requestFilm->user_avatar = $user->avatar ? $uploadController->getSignedUrl($user->avatar) : null;
                 $requestFilm->film_image = $uploadController->getSignedUrl($requestFilm->film_image);
             }
             return response()->json([
@@ -30,11 +30,12 @@ class RequestFilmController extends Controller
             ]);
 
         }
-        catch(\Exception $e){
+        catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Something went wrong',
-            ]);
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ],
+                500);
         }
     }
 
