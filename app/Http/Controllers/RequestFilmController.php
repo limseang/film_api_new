@@ -21,7 +21,7 @@ class RequestFilmController extends Controller
             foreach ($requestFilms as $requestFilm){
                 $user = User::where('id', $requestFilm->user_id)->first();
                 $requestFilm->user_name = $user->name;
-                $requestFilm->user_avatar = $user->avatar;
+                $requestFilm->user_avatar = $uploadController->getSignedUrl($user->avatar);
                 $requestFilm->film_image = $uploadController->getSignedUrl($requestFilm->film_image);
             }
             return response()->json([
