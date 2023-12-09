@@ -58,18 +58,21 @@ class RequestFilmController extends Controller
             $requestFilm->save();
 
             $pushNotificationService = new PushNotificationService();
-            $user = User::where('role_id', 2)->get();
-
+            $user = User::where('role_id', 1)->orWhere('role_id', 2)->get();
             foreach ($user as $item) {
                 $userID = $item->id;
                 $userLogin = UserLogin::where('user_id', $userID)->get();
                 foreach ($userLogin as $item) {
+//                    dd($item->fcm_token);
                    $data = [
                        'token' => $item->fcm_token,
                         'title' => 'new request film',
                         'body' => $requestFilm->film_name,
                         'type' => 1,
-                        'data' => $requestFilm->id
+                        'data' => [
+                            'id' => $requestFilm->id,
+                            'type' => '4',
+                        ]
                     ];
 
                     $pushNotificationService->pushNotification($data);
