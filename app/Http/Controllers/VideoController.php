@@ -87,6 +87,7 @@ class VideoController extends Controller
                'type' => $video->types->name,
                'film' => $video->film ?? null,
                'article' => $video->article ?? null,
+               'tag' => $video->tags->id ?? 'null',
            ];
            return response()->json([
                'message' => 'successfully',
