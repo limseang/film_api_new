@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('type_id');
             $table->string('category_id');
             $table->string('tag_id');
+            $table->string('running_time');
             $table->integer('status')->default(1);
             $table->timestamps();
         });

@@ -21,6 +21,7 @@ class video extends Model
         'type_id',
         'category_id',
         'tag_id',
+        'running_time',
         'status'
     ];
 
@@ -56,12 +57,12 @@ class video extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'video_category', 'video_id', 'category_id');
+        return $this->belongsTo(Category::class, 'category_id'  , 'id' );
     }
 
     public function types()
     {
-        return $this->belongsToMany(Type::class, 'video_type', 'video_id', 'type_id');
+        return $this->belongsTo(Type::class,  'type_id', 'id');
     }
 
 }

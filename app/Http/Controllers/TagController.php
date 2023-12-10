@@ -32,6 +32,7 @@ class TagController extends Controller
             $tag = new Tag();
             $tag->name = $request->name;
             $tag->description = $request->description;
+            $tag->type = $request->type;
             $tag->save();
             return response()->json([
                 'status' => 200,

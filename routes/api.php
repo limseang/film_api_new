@@ -28,6 +28,7 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserTypeController;
+use App\Http\Controllers\VideoController;
 use App\Models\ReportComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -332,8 +333,12 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 /* send Notification */
 
-Route::post('/send/notification', [UserController::class, 'sendNotification']);
-Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/send/notification', [UserController::class, 'sendNotification']);
+        Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
+    });
+});
 
 Route::get('/share/link', [ShareLinkController::class, 'show']);
 Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFacebook']);
@@ -352,6 +357,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('/request/film/{id}', [RequestFilmController::class, 'showByID']);
         Route::post('/request/film/update/{id}', [RequestFilmController::class, 'update']);
     });
+});
+
+/* Video */
+Route::get('/video', [VideoController::class, 'index']);
+Route::get('/video/{id}', [VideoController::class, 'detail']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+   Route::group(['middleware' => ['postpermission']], function () {
+       Route::post('/video/new', [VideoController::class, 'create']);
+       Route::delete('/video/delete/{id}', [VideoController::class, 'destroy']);
+       Route::post('/video/update/{id}', [VideoController::class, 'update']);
+   });
 });
 
 
