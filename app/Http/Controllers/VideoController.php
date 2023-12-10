@@ -14,7 +14,7 @@ class VideoController extends Controller
     {
         try {
             $uploadController = new UploadController();
-            $videos = video::with('film', 'article', 'categories','types')->get();
+            $videos = video::with('film', 'article', 'categories','types','tags')->get();
             $data = $videos->map(function ($video) use ($uploadController) {
                 return [
                     'id' => $video->id,
@@ -24,6 +24,7 @@ class VideoController extends Controller
                     'status' => $video->status,
                     'categories' => $video->categories->name,
                     'running_time' => $video->running_time,
+                    'tag' => $video->tags->id ?? 'null',
 
                 ];
             });

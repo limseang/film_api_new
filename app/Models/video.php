@@ -52,7 +52,7 @@ class video extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'video_tag', 'video_id', 'tag_id');
+        return $this->belongsTo(Tag::class, 'tag_id', 'id');
     }
 
     public function categories()
