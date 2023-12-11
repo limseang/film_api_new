@@ -18,5 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/login', function (){
+    return view('login');
+});
 //Route::get('api/apple/login',[UserController::class, 'appleLogin']);
 //Route::post('api/apple/login/callback',[UserController::class, 'appleRedirect']);

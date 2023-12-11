@@ -107,6 +107,24 @@ class BookMarkController extends Controller
 
     }
 
+    public function destroy($id){
+        try{
+            $bookMark = BookMark::where('id', $id)->first();
+            $bookMark->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delete success',
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong',
+            ]);
+        }
+    }
+
+
 
 
 
