@@ -102,5 +102,23 @@ class VideoController extends Controller
        }
    }
 
+   public function destroy($id){
+        try{
+            $video = video::where('id', $id)->first();
+            $video->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => $video,
+            ]);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ],
+                500);
+        }
+   }
+
 
 }
