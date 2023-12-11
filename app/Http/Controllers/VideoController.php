@@ -75,7 +75,7 @@ class VideoController extends Controller
    {
        try {
            $uploadController = new UploadController();
-           $video = video::with('film', 'article', 'categories', 'types')->where('id', $id)->first();
+           $video = video::with('film', 'article', 'categories', 'types','videoComments')->where('id', $id)->first();
            $data = [
                'id' => $video->id,
                'title' => $video->title,
@@ -89,6 +89,24 @@ class VideoController extends Controller
                'film' => $video->film ?? null,
                'article' => $video->article ?? null,
                'tag' => $video->tags->id ?? 'null',
+               'comment' => $video->videoComments->map(function ($comment) use ($uploadController)  {
+                   return [
+                       'id' => $comment->id,
+                       'comment' => $comment->comment,
+                       'user' => $comment->user->name,
+                       'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
+                       'created_at' => $comment->created_at,
+                       'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                           return [
+                               'id' => $reply->id,
+                               'comment' => $reply->comment,
+                               'user' => $reply->user->name,
+                               'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+                               'created_at' => $reply->created_at->format('d/m/Y'),
+                           ];
+                       })
+                   ];
+               }),
            ];
            return response()->json([
                'message' => 'successfully',

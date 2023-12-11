@@ -113,6 +113,23 @@ class CommentController extends Controller
 
                 }
             }
+            else if($request->type == 3){
+                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
+                if (!$check){
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 3;
+                    $user->save();
+                }
+                else {
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 0;
+                    $user->save();
+                }
+//                $pushNotificationService = new PushNotificationService();
+//                $film = Film::find($request->item_id);
+//                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
+//
+            }
 
 
 
