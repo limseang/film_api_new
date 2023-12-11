@@ -24,7 +24,7 @@ class VideoController extends Controller
                     'status' => $video->status,
                     'categories' => $video->categories->name,
                     'running_time' => $video->running_time,
-                    'tag' => $video->tags->id ?? 'null',
+                    'tag' => $video->tags->name ?? 'null',
 
                 ];
             });
