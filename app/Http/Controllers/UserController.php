@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artical;
+use App\Models\Film;
 use App\Models\role;
 use App\Models\User;
 use App\Models\UserLogin;
@@ -14,6 +16,8 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {
+
+
     public  function  index(){
         try{
             $cloudController = new UploadController();
@@ -87,14 +91,14 @@ class UserController extends Controller
             if(!$user){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'Account not much',
+                    'message' => 'email Account not much',
                 ]);
             }
             // check password
             if(!Hash::check($request->password, $user->password)){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'Account not much',
+                    'message' => 'passwordAccount not much',
                 ]);
             }
             // create token
@@ -357,6 +361,61 @@ class UserController extends Controller
             ], 500);
         }
 
+    }
+
+
+    /* Todo: Blade Method */
+    public function loginBlade(Request $request)
+
+    {
+        try{
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
+            // check user
+            $user = User::where('email', $request->email)->first();
+            if(!$user){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'email Account not much',
+                ]);
+            }
+            // check password
+            if(!Hash::check($request->password, $user->password)){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'passwordAccount not much',
+                ]);
+            }
+            // create token
+            $token = $user->createToken('auth_token')->plainTextToken;
+            $count = User::all()->count();
+            $article = Artical::all()->count();
+            $film = Film::all()->count();
+            return view('home', compact('token','count','article','film'));
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 501,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function countAllUser(){
+        try{
+            $user = User::all();
+            $count = count($user);
+            return view('home', compact('count'));
+        }
+        catch (Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 

@@ -19,8 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function (){
+Route::get('/login', function (UserController $userController,){
     return view('login');
 });
 //Route::get('api/apple/login',[UserController::class, 'appleLogin']);
-//Route::post('api/apple/login/callback',[UserController::class, 'appleRedirect']);
+Route::post('/login',[UserController::class, 'loginBlade']) -> name('login');
