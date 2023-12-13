@@ -83,6 +83,8 @@ class CinemBranchController extends Controller
             $cinemBranch->address = $request->address;
             $cinemBranch->phone = $request->phone;
             $cinemBranch->link = $request->link;
+            $cinemBranch->map_link = $request->map_link;
+            $cinemBranch->ticket_price = $request->ticket_price;
             $cinemBranch->show_type = $request->show_type;
             $cinemBranch->email = $request->email;
             $cinemBranch->facebook = $request->facebook;
