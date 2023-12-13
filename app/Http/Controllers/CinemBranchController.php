@@ -21,9 +21,12 @@ class CinemBranchController extends Controller
                     'cinema_id' => $cinemBranch->cinema_id,
                     'name' => $cinemBranch->name,
                     'show_type' => $cinemBranch->show_type,
+                    'phone' => $cinemBranch->phone,
                     'image' => $uploadController->getSignedUrl($cinemBranch->image),
                     'status' => $cinemBranch->status,
+                    'map_link' => $cinemBranch->map_link,
                     'cinema_name' => $cinemBranch->cinemas->name ?? 'null',
+                    'facebook' => $cinemBranch->facebook,
                 ];
             });
             return response()->json([
