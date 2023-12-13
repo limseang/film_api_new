@@ -67,7 +67,7 @@ class VideoController extends Controller
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => $video->title,
-                    'body' => $type->description,
+                    'body' => $video->description,
                     'data' => [
                         'id' => $video->id,
                         'type' => '3',
