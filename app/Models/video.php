@@ -9,6 +9,7 @@ class video extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'title',
         'description',
         'video_url',
@@ -63,6 +64,11 @@ class video extends Model
     public function types()
     {
         return $this->belongsTo(Type::class,  'type_id', 'id');
+    }
+
+    public function videoComments()
+    {
+        return $this->hasMany(Comment::class,'item_id','id')->where('type',3);
     }
 
 }
