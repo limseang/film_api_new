@@ -28,6 +28,7 @@ class CinemBranchController extends Controller
                     'cinema_name' => $cinemBranch->cinemas->name ?? 'null',
                     'facebook' => $cinemBranch->facebook,
                     'link' => $cinemBranch->link,
+                    'ticket_price' => $cinemBranch->ticket_price,
                 ];
             });
             return response()->json([
