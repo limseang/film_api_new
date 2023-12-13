@@ -8,6 +8,7 @@ use App\Http\Controllers\BookMarkController;
 use App\Http\Controllers\CastController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CinemBranchController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
@@ -370,6 +371,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
    });
 });
 
+/* CinemaBranch */
+Route::get('/cinema/branch', [CinemBranchController::class, 'index']);
+Route::get('/cinema/branch/{id}', [CinemBranchController::class, 'branchDetail']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+   Route::group(['middleware' => ['postpermission']], function () {
+       Route::post('/cinema/branch/new', [CinemBranchController::class, 'create']);
+       Route::delete('/cinema/branchs/delete/{id}', [CinemBranchController::class, 'destroy']);
+       Route::post('/cinema/branch/update/{id}', [CinemBranchController::class, 'update']);
+   });
+});
+
 
 /* BookMark */
 Route::get('/bookmark', [BookMarkController::class, 'index']);
@@ -381,6 +393,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);
+
+
 
 
 
