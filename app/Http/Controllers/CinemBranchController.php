@@ -21,9 +21,14 @@ class CinemBranchController extends Controller
                     'cinema_id' => $cinemBranch->cinema_id,
                     'name' => $cinemBranch->name,
                     'show_type' => $cinemBranch->show_type,
+                    'phone' => $cinemBranch->phone,
                     'image' => $uploadController->getSignedUrl($cinemBranch->image),
                     'status' => $cinemBranch->status,
+                    'map_link' => $cinemBranch->map_link,
                     'cinema_name' => $cinemBranch->cinemas->name ?? 'null',
+                    'facebook' => $cinemBranch->facebook,
+                    'link' => $cinemBranch->link,
+                    'ticket_price' => $cinemBranch->ticket_price,
                 ];
             });
             return response()->json([
@@ -79,6 +84,8 @@ class CinemBranchController extends Controller
             $cinemBranch->address = $request->address;
             $cinemBranch->phone = $request->phone;
             $cinemBranch->link = $request->link;
+            $cinemBranch->map_link = $request->map_link;
+            $cinemBranch->ticket_price = $request->ticket_price;
             $cinemBranch->show_type = $request->show_type;
             $cinemBranch->email = $request->email;
             $cinemBranch->facebook = $request->facebook;

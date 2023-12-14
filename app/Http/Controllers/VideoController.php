@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Type;
+use App\Models\UserLogin;
 use App\Models\video;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -57,6 +60,21 @@ class VideoController extends Controller
             $video->category_id = $request->category_id;
             $video->tag_id = $request->tag_id;
             $video->save();
+
+            $user = UserLogin::all();
+            $type = Type::find($request->type);
+            foreach ($user as $item){
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => $video->title,
+                    'body' => $video->description,
+                    'data' => [
+                        'id' => $video->id,
+                        'type' => '3',
+                    ]
+                ];
+                PushNotificationService::pushNotification($data);
+            }
             return response()->json([
                 'status' => 'success',
                 'message' => $video,
