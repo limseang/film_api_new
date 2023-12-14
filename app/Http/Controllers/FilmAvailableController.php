@@ -20,7 +20,7 @@ class FilmAvailableController extends Controller
                     'film_id' => $filmAvailable->film_id,
                     'available_id' => $filmAvailable->available_id,
 //                    'url' => $filmAvailable->url,
-                    'film_title' => $this->getFilm($filmAvailable->film),
+                    'film_title' => $filmAvailable->film->title ?? 'null',
                     'available_name' => $filmAvailable->availables->name ?? 'null',
                 ];
             });
