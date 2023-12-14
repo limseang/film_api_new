@@ -28,10 +28,6 @@ class FilmAvailableController extends Controller
                 'message' => 'FilmAvailable retrieved successfully',
                 'data' => $data
             ], 200);
-//            return response()->json([
-//                'message' => 'FilmAvailable retrieved successfully',
-//                'data' => $data
-//            ], 200);
 
         }
         catch (\Exception $e){
@@ -57,7 +53,6 @@ class FilmAvailableController extends Controller
             $filmAvailable->film_id = $request->film_id;
             $filmAvailable->available_id = $request->available_id;
             $filmAvailable->url = $request->url;
-//            $filmAvailable->type = $request->type;
             $filmAvailable->save();
             return response()->json([
                 'status' => 'success',
