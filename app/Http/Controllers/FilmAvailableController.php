@@ -52,7 +52,7 @@ class FilmAvailableController extends Controller
             $filmAvailable->film_id = $request->film_id;
             $filmAvailable->available_id = $request->available_id;
             $filmAvailable->url = $request->url;
-            $filmAvailable->type = $request->type;
+//            $filmAvailable->type = $request->type;
             $filmAvailable->save();
             return response()->json([
                 'status' => 'success',

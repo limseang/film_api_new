@@ -14,10 +14,10 @@ class AvailableInController extends Controller
     {
         try{
             $AvailibleIn = AvailableIn::All();
-            $uploadController = new UploadController();
-            foreach ($AvailibleIn as $item){
-                $item->logo = $uploadController->getSignedUrl($item->logo);
-            }
+//            $uploadController = new UploadController();
+//            foreach ($AvailibleIn as $item){
+//                $item->logo = $uploadController->getSignedUrl($item->logo);
+//            }
             return response()->json([
                 'message' => 'AvailableIn retrieved successfully',
                 'data' => $AvailibleIn
