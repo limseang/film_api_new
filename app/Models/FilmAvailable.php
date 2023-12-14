@@ -14,7 +14,7 @@ class FilmAvailable extends Model
         'url'
     ];
 
-    public function film()
+    public function films()
     {
         return $this->belongsTo(Film::class,'film_id','id');
     }

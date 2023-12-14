@@ -13,14 +13,14 @@ class FilmAvailableController extends Controller
     public function index()
     {
         try{
-            $filmAvailable = FilmAvailable::with('film')->with('availables')->get();
+            $filmAvailable = FilmAvailable::with('films')->with('availables')->get();
             $data = $filmAvailable->map(function ($filmAvailable) {
                 return [
                     'id' => $filmAvailable->id,
                     'film_id' => $filmAvailable->film_id,
                     'available_id' => $filmAvailable->available_id,
 //                    'url' => $filmAvailable->url,
-                    'film_title' => $filmAvailable->film->title ?? 'null',
+                    'film_title' => $filmAvailable->films->title ?? 'null',
                     'available_name' => $filmAvailable->availables->name ?? 'null',
                 ];
             });
