@@ -13,20 +13,15 @@ class FilmAvailableController extends Controller
     public function index()
     {
         try{
-            $filmAvailable = FilmAvailable::with(['film'])->get();
-            $data = $filmAvailable->map(function ($filmAvailable) {
-                return [
-                    'id' => $filmAvailable->id,
-//                    'film' => $this->getFilm($filmAvailable->film) ?? null,
-//                    'available' => $filmAvailable->availables->name ?? '' ,
-                    'url' => $filmAvailable->url ?? $filmAvailable->availables->url,
-
-                ];
-            });
+            $filmAvailable = FilmAvailable::All();
             return response()->json([
                 'message' => 'FilmAvailable retrieved successfully',
-                'data' => $data
+                'data' => $filmAvailable
             ], 200);
+//            return response()->json([
+//                'message' => 'FilmAvailable retrieved successfully',
+//                'data' => $data
+//            ], 200);
 
         }
         catch (\Exception $e){
