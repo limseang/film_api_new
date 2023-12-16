@@ -290,7 +290,9 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('rating', 'DESC')->get();
+            //total rate
+
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -302,12 +304,11 @@ class FilmController extends Controller
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
-
                 ];
             });
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'data' => $data
+                'data' => $data->sortByDesc('rating')->values()->all()
             ], 200);
         }
         catch (\Exception $e){
