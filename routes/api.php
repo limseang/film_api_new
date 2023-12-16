@@ -264,6 +264,7 @@ Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
 Route::get('/film/country/{id}', [FilmController::class, 'showByCountry']);
 Route::get('/film/origin/{id}', [FilmController::class, 'showByOrigin']);
 Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
+Route::get('/film/show/rate', [FilmController::class, 'showByRate']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/new', [FilmController::class, 'create']);

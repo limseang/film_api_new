@@ -42,9 +42,7 @@ class EpisodeController extends Controller
         return $film_name;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create(Request $request, $id)
     {
         try{
@@ -136,5 +134,27 @@ class EpisodeController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function showByRate ()
+    {
+        try{
+            $episodes = Episode::orderBy('rate', 'desc')->get();
+            $uploadController = new UploadController();
+            foreach ($episodes as $episode) {
+                $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
+            }
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $episodes
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
     }
 }
