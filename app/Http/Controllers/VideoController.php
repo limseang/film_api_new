@@ -17,7 +17,7 @@ class VideoController extends Controller
     {
         try {
             $uploadController = new UploadController();
-            $videos = video::with('film', 'article', 'categories','types','tags')->get();
+            $videos = video::with('film', 'article', 'categories','types','tags')->orderBy('id', 'desc')->get();
             $data = $videos->map(function ($video) use ($uploadController) {
                 return [
                     'id' => $video->id,
