@@ -115,7 +115,7 @@ class FilmController extends Controller
         foreach ($availables as $available){
             $uploadController = new UploadController();
             $filmAvailable[] = [
-                'id' => $available->id,
+                'id' => $available->availables->id,
                 'available' =>$available->availables->name,
                 'url' => $available->url ?? $available->availables->url,
                 'logo' => $available->availables->logo ? $uploadController->getSignedUrl($available->availables->logo) : null,
