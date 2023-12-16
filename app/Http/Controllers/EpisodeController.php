@@ -136,25 +136,5 @@ class EpisodeController extends Controller
         }
     }
 
-    public function showByRate ()
-    {
-        try{
-            $episodes = Episode::orderBy('rate', 'desc')->get();
-            $uploadController = new UploadController();
-            foreach ($episodes as $episode) {
-                $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
-            }
-            return response()->json([
-                'message' => 'successfully',
-                'data' => $episodes
-            ], 200);
-        }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 400);
-        }
 
-    }
 }
