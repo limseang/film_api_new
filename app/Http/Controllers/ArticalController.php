@@ -442,30 +442,17 @@ class ArticalController extends Controller
         try{
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
             $film = Film::with(['origin', 'category', 'type','categoryFilm']);
+
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
             }
 
+            $data = [
+                'artical' => $this->addImageUrls($artical->get()),
+                'film' => $this->addImageUrls($film->get())
+            ];
 
-            $data ['artical'] = $artical->get();
-            $data ['film'] = $film->get();
-
-            $uploadController = new UploadController();
-            foreach ($data['artical'] as $artical) {
-                if ($artical->image != null) {
-                    $artical->image = $uploadController->getSignedUrl($artical->image);
-                } else {
-                    $artical->image = null;
-                }
-            }
-            foreach ($data['film'] as $film) {
-                if ($film->image != null) {
-                    $film->image = $uploadController->getSignedUrl($film->image);
-                } else {
-                    $film->image = null;
-                }
-            }
             return response()->json([
                 'message' => 'successfully',
                 'data' => $data
@@ -477,6 +464,20 @@ class ArticalController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function addImageUrls($items) {
+        $uploadController = new UploadController();
+
+        return $items->map(function ($item) use ($uploadController) {
+            if ($item->image != null) {
+                $item->image = $uploadController->getSignedUrl($item->image);
+            } else {
+                $item->image = null;
+            }
+
+            return $item;
+        });
     }
 
 
