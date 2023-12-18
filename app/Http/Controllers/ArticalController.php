@@ -441,7 +441,7 @@ class ArticalController extends Controller
     public function searchAll(Request $request){
         try{
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
-            $film = Film::with(['category', 'type','categoryFilm']);
+            $film = Film::with(['types','filmCategories']);
 
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
