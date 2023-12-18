@@ -115,6 +115,7 @@ class FilmController extends Controller
         foreach ($availables as $available){
             $uploadController = new UploadController();
             $filmAvailable[] = [
+                'id' => $available->availables->id,
                 'available' =>$available->availables->name,
                 'url' => $available->url ?? $available->availables->url,
                 'logo' => $available->availables->logo ? $uploadController->getSignedUrl($available->availables->logo) : null,
@@ -283,6 +284,40 @@ class FilmController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function showByRate()
+    {
+        try{
+            $uploadController = new UploadController();
+            //total rate
+
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
+            $data = $films->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'release_date' => $film->release_date,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'rating' => (string) $this->countRate($film->id),
+                    'rate_people' => $this->countRatePeople($film->id),
+                    'type' => $film->types ? $film->types->name : null,
+                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                    'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                ];
+            });
+            return response()->json([
+                'message' => 'Films retrieved successfully',
+                'data' => $data->sortByDesc('rating')->values()->all()
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Artists retrieved failed',
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
+            ], 400);
+        }
+
     }
 
 

@@ -22,6 +22,7 @@ class FilmAvailableController extends Controller
 //                    'url' => $filmAvailable->url,
                     'film_title' => $filmAvailable->film_id->films->title ?? 'null',
                     'available_name' => $filmAvailable->availables->name ?? 'null',
+                    'page_id' => $filmAvailable->page_id,
                 ];
             });
             return response()->json([
@@ -53,6 +54,7 @@ class FilmAvailableController extends Controller
             $filmAvailable->film_id = $request->film_id;
             $filmAvailable->available_id = $request->available_id;
             $filmAvailable->url = $request->url;
+            $filmAvailable->page_id = $request->page_id;
             $filmAvailable->save();
             return response()->json([
                 'status' => 'success',

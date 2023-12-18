@@ -42,9 +42,7 @@ class EpisodeController extends Controller
         return $film_name;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create(Request $request, $id)
     {
         try{
@@ -137,4 +135,6 @@ class EpisodeController extends Controller
             ], 400);
         }
     }
+
+
 }
