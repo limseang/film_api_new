@@ -41,6 +41,7 @@ class CommentController extends Controller
             $comment->comment = $request->comment;
             $comment->user_id = $user->id;
             $comment->type = $request->type;
+            $comment->confess = $request->confess;
             $comment->save();
             if($request->type == 1){
                 $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();

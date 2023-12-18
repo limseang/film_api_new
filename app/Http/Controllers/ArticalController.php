@@ -308,13 +308,25 @@ class ArticalController extends Controller
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
                 'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
-                    return [
-                        'id' => $comment->id,
-                        'content' => $comment->comment,
-                        'user' => $comment->user->name,
-                        'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
-                        'created_at' => $comment->created_at,
-                    ];
+                    if($comment->confess == 1){
+                        return [
+                            'id' => $comment->id,
+                            'content' => $comment->comment,
+                            'user' => 'Anonymous',
+                            'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+                            'created_at' => $comment->created_at,
+                        ];
+                    }
+                    else{
+                        return [
+                            'id' => $comment->id,
+                            'content' => $comment->comment,
+                            'user' => $comment->user->name,
+                            'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
+                            'created_at' => $comment->created_at,
+                        ];
+
+                    }
                 }),
                 'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
                     return [
