@@ -6,6 +6,7 @@ use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\CategoryArtical;
 use App\Models\Comment;
+use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
 use App\Models\Type;
@@ -440,49 +441,31 @@ class ArticalController extends Controller
     public function searchAll(Request $request){
         try{
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
+            $film = Film::with(['origin', 'category', 'type','categoryFilm']);
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%');
             }
-            if($request->origin_id){
-                $artical->where('origin_id', $request->origin_id);
-            }
-            if($request->category_id){
-                $artical->where('category_id', $request->category_id);
-            }
-            if($request->type_id){
-                $artical->where('type_id', $request->type_id);
-            }
-            $artical = $artical->get();
+
+
+            $data ['artical'] = $artical->get();
+            $data ['film'] = $film->get();
+
             $uploadController = new UploadController();
-            foreach ($artical as $item){
-                if ($item->image != null) {
-                    $item->image = $uploadController->getSignedUrl($item->image);
+            foreach ($data['artical'] as $artical) {
+                if ($artical->image != null) {
+                    $artical->image = $uploadController->getSignedUrl($artical->image);
                 } else {
-                    $item->image = null;
+                    $artical->image = null;
                 }
             }
-            $data = $artical->map(function ($artical) {
-                return [
-                    'id' => $artical->id,
-                    'title' => $artical->title,
-                    'description' => $artical->description,
-                    'origin' => $artical->origin ? $artical->origin->name : '',
-                    'type' => $artical->type ? $artical->type->name : '',
-                    'like' => $artical->like,
-                    'comment' => $artical->comment,
-                    'share' => $artical->share,
-                    'view' => $artical->view,
-                    'film' => $artical->film,
-                    'image' => $artical->image,
-                    'category' => $artical->categoryArtical->map(function ($categoryArtical) {
-                        return [
-                            'id' => $categoryArtical->id,
-                            'name' => $categoryArtical->categories->name,
-                        ];
-                    }),
-                ];
-
-            });
+            foreach ($data['film'] as $film) {
+                if ($film->image != null) {
+                    $film->image = $uploadController->getSignedUrl($film->image);
+                } else {
+                    $film->image = null;
+                }
+            }
             return response()->json([
                 'message' => 'successfully',
                 'data' => $data
