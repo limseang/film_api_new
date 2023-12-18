@@ -46,8 +46,7 @@ class OriginController extends Controller
             $origin->description = $request->description;
             $origin->logo = $uploadController->UploadFile($request->file('logo'));
             $origin->url = $request->url;
-
-
+            $origin->page_id = $request->page_id;
             $origin->save();
             return response()->json([
                 'message' => 'Origin created successfully',
