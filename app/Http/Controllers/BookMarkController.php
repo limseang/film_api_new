@@ -113,8 +113,9 @@ class BookMarkController extends Controller
             $bookMark->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Delete success',
+                'message' => 'Delete successfully',
             ]);
+
         }
         catch(\Exception $e){
             return response()->json([
