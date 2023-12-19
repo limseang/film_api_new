@@ -110,7 +110,8 @@ class BookMarkController extends Controller
     public function delete($id)
     {
         try{
-            $bookMark = BookMark::where('id', $id)->first();
+            $article = Artical::where('id', $id)->first();
+            $bookMark = BookMark::where('post_id', $article->id)->where('post_type', 1)->first();
             $bookMark->delete();
             return response()->json([
                 'status' => 'success',
