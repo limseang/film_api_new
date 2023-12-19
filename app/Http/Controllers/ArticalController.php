@@ -311,21 +311,22 @@ class ArticalController extends Controller
                     if($comment->confess == 1){
                         return [
                             'id' => $comment->id,
-                            'content' => $comment->comment,
+                            'comment' => $comment->comment,
                             'user' => 'Anonymous',
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
+
                         ];
                     }
-                    else if ($comment->confess == 0){
+                    else {
                         return [
                             'id' => $comment->id,
-                            'content' => $comment->comment,
+                            'comment' => $comment->comment,
                             'user' => $comment->user->name,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
-                        ];
 
+                        ];
                     }
                 }),
                 'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
