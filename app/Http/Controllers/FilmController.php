@@ -261,6 +261,7 @@ class FilmController extends Controller
                             'user' => 'Anonymous',
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
+                            'confess' => $comment->confess,
                             'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
                                 return [
                                     'id' => $reply->id,

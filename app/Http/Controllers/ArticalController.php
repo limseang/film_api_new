@@ -313,6 +313,7 @@ class ArticalController extends Controller
                             'id' => $comment->id,
                             'content' => $comment->comment,
                             'user' => 'Anonymous',
+                            'confess' => $comment->confess,
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
                             'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
@@ -331,6 +332,7 @@ class ArticalController extends Controller
                             'id' => $comment->id,
                             'content' => $comment->comment,
                             'user' => $comment->user->name,
+                            'confess' => $comment->confess,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
                             'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
