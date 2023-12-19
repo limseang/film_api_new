@@ -107,7 +107,8 @@ class BookMarkController extends Controller
 
     }
 
-    public function destroy($id){
+    public function delete($id)
+    {
         try{
             $bookMark = BookMark::where('id', $id)->first();
             $bookMark->delete();
@@ -123,6 +124,7 @@ class BookMarkController extends Controller
                 'message' => 'Something went wrong',
             ]);
         }
+
     }
 
 
