@@ -311,22 +311,39 @@ class ArticalController extends Controller
                     if($comment->confess == 1){
                         return [
                             'id' => $comment->id,
-                            'comment' => $comment->comment,
+                            'content' => $comment->comment,
                             'user' => 'Anonymous',
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
-
+                            'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                                return [
+                                    'id' => $reply->id,
+                                    'comment' => $reply->comment,
+                                    'user' => $reply->user->name,
+                                    'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+                                    'created_at' => $reply->created_at->format('d/m/Y'),
+                                ];
+                            })
                         ];
                     }
-                    else {
+                    else if ($comment->confess == 0){
                         return [
                             'id' => $comment->id,
-                            'comment' => $comment->comment,
+                            'content' => $comment->comment,
                             'user' => $comment->user->name,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
-
+                            'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                                return [
+                                    'id' => $reply->id,
+                                    'comment' => $reply->comment,
+                                    'user' => $reply->user->name,
+                                    'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+                                    'created_at' => $reply->created_at->format('d/m/Y'),
+                                ];
+                            })
                         ];
+
                     }
                 }),
                 'category' =>  $artical->categoryArtical ? $artical->categoryArtical->map(function ($categoryArtical) {
