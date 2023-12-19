@@ -317,7 +317,7 @@ class ArticalController extends Controller
                             'created_at' => $comment->created_at,
                         ];
                     }
-                    else{
+                    else if ($comment->confess == 0){
                         return [
                             'id' => $comment->id,
                             'content' => $comment->comment,
@@ -464,6 +464,8 @@ class ArticalController extends Controller
                 'artical' => $this->addImageUrls($artical->get()),
                 'film' => $this->addImageUrls($film->get())
             ];
+
+
 
             return response()->json([
                 'message' => 'successfully',
