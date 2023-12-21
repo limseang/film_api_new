@@ -160,7 +160,8 @@ class BookMarkController extends Controller
     public function changeStatus(Request $request)
     {
         try{
-            $bookMark = BookMark::where('user_id', $request->user_id)->where('post_id', $request->post_id)->where('post_type', $request->post_type)->first();
+            $user = User::find(auth()->user()->id);
+            $bookMark = BookMark::where('user_id', $user)->where('post_id', $request->post_id)->where('post_type', $request->post_type)->first();
             if($bookMark){
               $bookMark->status = $request->status;
                 $bookMark->save();
