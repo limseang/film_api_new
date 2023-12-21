@@ -312,7 +312,7 @@ class ArticalController extends Controller
                         return [
                             'id' => $comment->id,
                             'content' => $comment->comment,
-                            'user_id' => $comment->user_id,
+                            'user_id' => (string)$comment->user_id,
                             'user' => 'Anonymous',
                             'confess' => $comment->confess,
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
@@ -321,7 +321,7 @@ class ArticalController extends Controller
                                 return [
                                     'id' => $reply->id,
                                     'comment' => $reply->comment,
-                                    'user_id' => $reply->user_id,
+                                    'user_id' => (string)$reply->user_id,
                                     'user' => $reply->user->name,
                                     'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
                                     'created_at' => $reply->created_at->format('d/m/Y'),
@@ -334,7 +334,7 @@ class ArticalController extends Controller
                             'id' => $comment->id,
                             'content' => $comment->comment,
                             'user' => $comment->user->name,
-                            'user_id' => $comment->user_id,
+                            'user_id' => (string)$comment->user_id,
                             'confess' => $comment->confess,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
@@ -342,7 +342,7 @@ class ArticalController extends Controller
                                 return [
                                     'id' => $reply->id,
                                     'comment' => $reply->comment,
-                                    'user_id' => $reply->user_id,
+                                    'user_id' =>  (string)$reply->user_id,
                                     'user' => $reply->user->name,
                                     'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
                                     'created_at' => $reply->created_at->format('d/m/Y'),

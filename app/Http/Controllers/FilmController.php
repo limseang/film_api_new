@@ -258,7 +258,7 @@ class FilmController extends Controller
                         return [
                             'id' => $comment->id,
                             'comment' => $comment->comment,
-                            'user_id' => $comment->user_id,
+                            'user_id' => (string)$comment->user_id,
                             'user' => 'Anonymous',
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
@@ -266,7 +266,7 @@ class FilmController extends Controller
                             'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
                                 return [
                                     'id' => $reply->id,
-                                    'user_id' => $reply->user_id,
+                                    'user_id' =>  (string)$reply->user_id,
                                     'comment' => $reply->comment,
                                     'user' => $reply->user->name,
                                     'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
@@ -279,7 +279,7 @@ class FilmController extends Controller
                         return [
                             'id' => $comment->id,
                             'comment' => $comment->comment,
-                            'user_id' => $comment->user_id,
+                            'user_id' => (string)$comment->user_id,
                             'user' => $comment->user->name,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
