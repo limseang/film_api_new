@@ -391,6 +391,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/bookmark/create', [BookMarkController::class, 'create']);
     Route::post('/check/user/bookmark/{id}', [ArticalController::class, 'checkUserLikeOrBookMark']);
     Route::post('/bookmark/delete/{id}', [BookMarkController::class, 'delete']);
+    Route::put('/bookmark/update', [BookMarkController::class, 'changeStatus']);
 });
 
 Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);

@@ -307,6 +307,7 @@ class ArticalController extends Controller
                 'film' => $artical->film,
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
+                'bookmark_id' => $artical->BookMark ? $artical->BookMark->id : null,
                 'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
                     if($comment->confess == 1){
                         return [

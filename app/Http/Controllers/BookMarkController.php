@@ -112,11 +112,40 @@ class BookMarkController extends Controller
         try{
             $article = Artical::where('id', $id)->first();
             $bookMark = BookMark::where('post_id', $article->id)->where('post_type', 1)->first();
-            $bookMark->delete();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Delete successfully',
-            ]);
+            if($bookMark->type == 1){
+                $bookMark->delete();
+                $data = [
+                    'id' => $article->id,
+                    'type' => '1',
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $data,
+                ]);
+            }
+            else if ($bookMark->type == 2){
+                $bookMark->delete();
+                $data = [
+                    'id' => $article->id,
+                    'type' => '2',
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $data,
+                ]);
+            }
+            else {
+                $bookMark->delete();
+                $data = [
+                    'id' => $article->id,
+                    'type' => '3',
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $data,
+                ]);
+            }
+
 
         }
         catch(\Exception $e){
@@ -127,6 +156,33 @@ class BookMarkController extends Controller
         }
 
     }
+
+    public function changeStatus(Request $request)
+    {
+        try{
+            $bookMark = BookMark::where('user_id', $request->user_id)->where('post_id', $request->post_id)->where('post_type', $request->post_type)->first();
+            if($bookMark){
+              $bookMark->status = $request->status;
+                $bookMark->save();
+                }
+                else {
+                    $bookMark->status = 1;
+                    $bookMark->save();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => $bookMark,
+                    ]);
+                }
+            }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Something went wrong',
+                ]);
+            }
+
+    }
+
 
 
 
