@@ -112,12 +112,12 @@ class BookMarkController extends Controller
         try{
             $user = User::find(auth()->user()->id);
             $bookMark = BookMark::where('user_id', $user)->where('post_id', $request->post_id)->where('post_type', $request->post_type)->first();
-            if(!$bookMark){
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Something went wrong',
-                ]);
-            }
+//            if(!$bookMark){
+//                return response()->json([
+//                    'status' => 'error',
+//                    'message' => 'Something went wrong',
+//                ]);
+//            }
             $bookMark->delete();
             return response()->json([
                 'status' => 'success',
