@@ -107,44 +107,22 @@ class BookMarkController extends Controller
 
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
         try{
-            $article = Artical::where('id', $id)->first();
-            $bookMark = BookMark::where('post_id', $article->id)->where('post_type', 1)->first();
-            if($bookMark->type == 1){
-                $bookMark->delete();
-                $data = [
-                    'id' => $article->id,
-                    'type' => '1',
-                ];
+            $user = User::find(auth()->user()->id);
+            $bookMark = BookMark::where('user_id', $user)->where('post_id', $request->post_id)->where('post_type', $request->post_type)->first();
+            if(!$bookMark){
                 return response()->json([
-                    'status' => 'success',
-                    'message' => $data,
+                    'status' => 'error',
+                    'message' => 'Something went wrong',
                 ]);
             }
-            else if ($bookMark->type == 2){
-                $bookMark->delete();
-                $data = [
-                    'id' => $article->id,
-                    'type' => '2',
-                ];
-                return response()->json([
-                    'status' => 'success',
-                    'message' => $data,
-                ]);
-            }
-            else {
-                $bookMark->delete();
-                $data = [
-                    'id' => $article->id,
-                    'type' => '3',
-                ];
-                return response()->json([
-                    'status' => 'success',
-                    'message' => $data,
-                ]);
-            }
+            $bookMark->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delete successfully',
+            ]);
 
 
         }
