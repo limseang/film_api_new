@@ -204,6 +204,9 @@ class UserController extends Controller
          else{
              $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
          }
+         if(is_numeric($user['point']) && substr($user['point'], 0 ,1) === '-'){
+                $user['point'] = 0;
+         }
          if($user['point'] >= 1 && $user['point'] <= 100){
              $user['user_type'] = 1;
          }
