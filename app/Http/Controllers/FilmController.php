@@ -32,12 +32,13 @@ class FilmController extends Controller
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                    'created_at' => $film->created_at->format('d/m/Y'),
 
                 ];
         });
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'data' => $data
+                'data' => $data->sortByDesc('created_at')->values()->all()
             ], 200);
         }
         catch (\Exception $e){
