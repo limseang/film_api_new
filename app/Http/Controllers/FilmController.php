@@ -348,7 +348,7 @@ class FilmController extends Controller
 
     public function ChangeType(Request $request, $id)
     {
-        try{
+        try {
             $film = Film::find($id);
             $film->type = $request->type;
             $film->save();
@@ -356,13 +356,13 @@ class FilmController extends Controller
                 'message' => 'Film updated successfully',
                 'data' => $film
             ], 200);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Film updated failed',
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
 
 
 }
