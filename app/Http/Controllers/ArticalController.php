@@ -487,6 +487,11 @@ class ArticalController extends Controller
 
     }
 
+    public function countRatePeople ($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        return count($rates);
+    }
+
     public function searchAll(Request $request){
         try {
             $artical = Artical::with(['origin', 'category', 'type', 'categoryArtical']);
@@ -517,7 +522,7 @@ class ArticalController extends Controller
                         'title' => $film->title,
                         'description' => $film->description,
                         'rating' => (string) $this->countRate($film->id),
-                        'rate_people' => $film->rates->count(),
+                        'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
 //                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
