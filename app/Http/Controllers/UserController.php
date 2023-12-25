@@ -312,14 +312,13 @@ class UserController extends Controller
                     'title' => $request->title,
                     'body' => $request->body,
                     'data' => [
-                        'id' => '',
-                        'type' => '',
+                        'id' => '10',
+                        'type' => '4',
                     ]
                 ];
                 PushNotificationService::pushNotification($data);
                 return response()->json([
                     'message' => 'successfully',
-                    'notification' => $data
                 ], 200);
 
             }
