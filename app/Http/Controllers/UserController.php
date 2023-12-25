@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\Film;
 use App\Models\role;
+use App\Models\Type;
 use App\Models\User;
 use App\Models\UserLogin;
 use App\Models\UserType;
@@ -311,9 +312,9 @@ class UserController extends Controller
                     'title' => $request->title,
                     'body' => $request->body,
                     'data' => [
-                    'id' => '',
-                    'type' => '1',
-                ]
+                        'id' => '',
+                        'type' => '',
+                    ]
                 ];
                 PushNotificationService::pushNotification($data);
                 return response()->json([
