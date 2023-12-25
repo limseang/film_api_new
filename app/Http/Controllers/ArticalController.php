@@ -475,11 +475,11 @@ class ArticalController extends Controller
     }
 
     public function searchAll(Request $request){
-        try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
-            $film = Film::with(['types','filmCategories']);
+        try {
+            $artical = Artical::with(['origin', 'category', 'type', 'categoryArtical']);
+            $film = Film::with(['types', 'filmCategories']);
 
-            if($request->title){
+            if ($request->title) {
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
             }
@@ -493,12 +493,8 @@ class ArticalController extends Controller
                         'description' => $artical->description,
                         'origin' => $artical->origin ? $artical->origin->name : '',
                         'type' => $artical->type ? $artical->type->name : '',
-                        'like' => $artical->like,
-                        'comment' => $artical->comment,
-                        'share' => $artical->share,
-                        'view' => $artical->view,
-                        'film' => $artical->film,
-                        'image' =>  $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
+                        'category' =>$artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
+                        'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
 
                     ];
                 }),
@@ -507,13 +503,12 @@ class ArticalController extends Controller
                         'id' => $film->id,
                         'title' => $film->title,
                         'description' => $film->description,
+                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : '',
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
 
                     ];
                 }),
             ];
-
-
 
             return response()->json([
                 'message' => 'successfully',
