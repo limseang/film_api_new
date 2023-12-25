@@ -485,7 +485,7 @@ class ArticalController extends Controller
 
             if ($request->title) {
                 $artical->where('title', 'like', '%' . $request->title . '%')->orWhere('description', 'like', '%' . $request->title . '%');
-                $film->where('title', 'like', '%' . $request->title . '%')->orWhere('types', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%');
 
 
             }
