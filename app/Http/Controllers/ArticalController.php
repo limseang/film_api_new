@@ -493,7 +493,7 @@ class ArticalController extends Controller
                         'description' => $artical->description,
                         'origin' => $artical->origin ? $artical->origin->name : '',
                         'type' => $artical->type ? $artical->type->name : '',
-                        'category' =>$artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
+                        'category' =>$artical->categoryArtical ? $artical->category->name : '',
                         'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
 
                     ];
