@@ -484,11 +484,25 @@ class ArticalController extends Controller
             if ($request->title) {
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
+
             }
+            if(!$artical->get()->count() && !$film->get()->count()){
+                return response()->json([
+                    'message' => 'not found'
+                ], 404);
+            }
+
             $uploadController = new UploadController();
             $filmController = new FilmController();
-            $data = [
 
+            if(!$artical){
+                $artical = null;
+            }
+            if(!$film){
+                $film = null;
+            }
+
+            $data = [
                 'artical' => $artical->get()->map(function ($artical) use ($uploadController) {
                     return [
                         'id' => $artical->id,
