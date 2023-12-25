@@ -10,6 +10,7 @@ use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
 use App\Models\Rate;
+use App\Models\Tag;
 use App\Models\Type;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
@@ -481,9 +482,11 @@ class ArticalController extends Controller
             $artical = Artical::with(['origin', 'category', 'type', 'categoryArtical']);
             $film = Film::with(['types', 'filmCategories']);
 
+
             if ($request->title) {
-                $artical->where('title', 'like', '%' . $request->title . '%');
-                $film->where('title', 'like', '%' . $request->title . '%');
+                $artical->where('title', 'like', '%' . $request->title . '%')->orWhere('description', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%')->orWhere('type', 'like', '%' . $request->title . '%');
+
 
             }
             if(!$artical->get()->count() && !$film->get()->count()){
