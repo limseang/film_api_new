@@ -301,7 +301,7 @@ class UserController extends Controller
 
     }
 
-    public function sendNotificationGlobe(Request $request)
+    public function sendNotificationGlobeAll(Request $request)
     {
         try{
             $user = UserLogin::all();
