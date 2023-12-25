@@ -502,6 +502,7 @@ class ArticalController extends Controller
                 $film->where('title', 'like', '%' . $request->title . '%');
             }
             $uploadController = new UploadController();
+            $filmController = new FilmController();
             $data = [
 
                 'artical' => $artical->get()->map(function ($artical) use ($uploadController) {
@@ -516,7 +517,7 @@ class ArticalController extends Controller
 
                     ];
                 }),
-                'film' => $film->get()->map(function ($film) use ($uploadController) {
+                'film' => $film->get()->map(function ($film) use ($filmController, $uploadController) {
                     return [
                         'id' => $film->id,
                         'title' => $film->title,
@@ -524,6 +525,7 @@ class ArticalController extends Controller
                         'rating' => (string) $this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
+                        'available' => $availables = $filmController->filmAvailables($film->id),
 //                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
 
