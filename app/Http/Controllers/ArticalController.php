@@ -503,7 +503,7 @@ class ArticalController extends Controller
                         'id' => $film->id,
                         'title' => $film->title,
                         'description' => $film->description,
-                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+//                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
 
                     ];
