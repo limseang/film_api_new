@@ -483,10 +483,34 @@ class ArticalController extends Controller
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
             }
-
+            $uploadController = new UploadController();
             $data = [
-                'artical' => $this->addImageUrls($artical->get()),
-                'film' => $this->addImageUrls($film->get())
+
+                'artical' => $artical->get()->map(function ($artical) use ($uploadController) {
+                    return [
+                        'id' => $artical->id,
+                        'title' => $artical->title,
+                        'description' => $artical->description,
+                        'origin' => $artical->origin ? $artical->origin->name : '',
+                        'type' => $artical->type ? $artical->type->name : '',
+                        'like' => $artical->like,
+                        'comment' => $artical->comment,
+                        'share' => $artical->share,
+                        'view' => $artical->view,
+                        'film' => $artical->film,
+                        'image' =>  $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
+
+                    ];
+                }),
+                'film' => $film->get()->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'description' => $film->description,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+
+                    ];
+                }),
             ];
 
 
