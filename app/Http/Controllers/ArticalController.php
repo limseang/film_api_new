@@ -498,12 +498,8 @@ class ArticalController extends Controller
             if(!$artical){
                 $artical = null;
             }
-            if(!$film){
-                $film = null;
-            }
-
-            $data = [
-                'artical' => $artical->get()->map(function ($artical) use ($uploadController) {
+            else {
+                $artical = $artical->get()->map(function ($artical) use ($uploadController){
                     return [
                         'id' => $artical->id,
                         'title' => $artical->title,
@@ -514,8 +510,13 @@ class ArticalController extends Controller
                         'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
 
                     ];
-                }),
-                'film' => $film->get()->map(function ($film) use ($filmController, $uploadController) {
+                });
+            }
+            if(!$film){
+                $film = null;
+            }
+            else{
+                $film = $film->get()->map(function ($film) use ($filmController, $uploadController) {
                     return [
                         'id' => $film->id,
                         'title' => $film->title,
@@ -530,7 +531,13 @@ class ArticalController extends Controller
                         'created_at' => $film->created_at,
 
                     ];
-                }),
+            }
+
+            );
+            }
+            $data = [
+                'artical' => $artical,
+                'film' => $film,
             ];
 
             return response()->json([
