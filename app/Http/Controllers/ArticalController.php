@@ -520,7 +520,7 @@ class ArticalController extends Controller
                     return [
                         'id' => $film->id,
                         'title' => $film->title,
-                        'description' => $film->description,
+                        'description' => $film->overview,
                         'rating' => (string) $this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
