@@ -474,23 +474,7 @@ class ArticalController extends Controller
 
 
     }
-    public function countRate($film_id){
-        $rates = Rate::where('film_id',$film_id)->get();
-        $total = 0;
-        foreach ($rates as $rate){
-            $total += $rate->rate;
-        }
-        if(count($rates) == 0){
-            return 0;
-        }
-        return number_format($total/count($rates), 1);
 
-    }
-
-    public function countRatePeople ($film_id){
-        $rates = Rate::where('film_id',$film_id)->get();
-        return count($rates);
-    }
 
     public function searchAll(Request $request){
         try {
@@ -522,12 +506,14 @@ class ArticalController extends Controller
                         'id' => $film->id,
                         'title' => $film->title,
                         'description' => $film->overview,
-                        'rating' => (string) $this->countRate($film->id),
-                        'rate_people' => $this->countRatePeople($film->id),
+                        'release_date' => $film->release_date,
+                        'rating' => (string) $filmController->countRate($film->id),
+                        'rate_people' => $filmController->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
-                        'available' => $availables = $filmController->filmAvailables($film->id),
+                        'available' =>  $filmController->filmAvailables($film->id),
 //                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'created_at' => $film->created_at,
 
                     ];
                 }),
