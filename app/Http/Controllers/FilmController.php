@@ -32,12 +32,13 @@ class FilmController extends Controller
                     'type' => $film->types ? $film->types->name : null,
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                    'created_at' => $film->created_at,
 
                 ];
         });
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'data' => $data
+                'data' => $data->sortByDesc('created_at')->values()->all()
             ], 200);
         }
         catch (\Exception $e){
@@ -343,6 +344,24 @@ class FilmController extends Controller
             ], 400);
         }
 
+    }
+
+    public function ChangeType(Request $request, $id)
+    {
+        try {
+            $film = Film::find($id);
+            $film->type = $request->type;
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
 

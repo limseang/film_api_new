@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\Film;
 use App\Models\role;
+use App\Models\Type;
 use App\Models\User;
 use App\Models\UserLogin;
 use App\Models\UserType;
@@ -301,7 +302,7 @@ class UserController extends Controller
 
     }
 
-    public function sendNotificationGlobe(Request $request)
+    public function sendNotificationGlobeAll(Request $request)
     {
         try{
             $user = UserLogin::all();
@@ -311,11 +312,15 @@ class UserController extends Controller
                     'title' => $request->title,
                     'body' => $request->body,
                     'data' => [
-                    'id' => '',
-                    'type' => '1',
-                ]
+                        'id' => '10',
+                        'type' => '4',
+                    ]
                 ];
                 PushNotificationService::pushNotification($data);
+                return response()->json([
+                    'message' => 'successfully',
+                ], 200);
+
             }
         }
         catch (Exception $e){

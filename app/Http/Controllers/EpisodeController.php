@@ -66,7 +66,7 @@ class EpisodeController extends Controller
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => $episode->title . ' ' .'Season'. $episode->season . ' ' .'Ep'. $episode->episode ,
+                    'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
                     'body' => 'New Episode has been post',
                     'data' => [
                         'id' => $episode->film_id,
@@ -75,6 +75,9 @@ class EpisodeController extends Controller
                 ];
                 PushNotificationService::pushNotification($data);
             }
+            $film = Film::find($episode->film_id);
+            $film->created_at = $episode->created_at;
+            $film->save();
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode

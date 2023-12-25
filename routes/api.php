@@ -270,6 +270,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/new', [FilmController::class, 'create']);
         Route::post('/film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
+        Route::post('/film/update/type/{id}', [FilmController::class, 'ChangeType']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
 
 /* Episode */
@@ -338,7 +339,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/send/notification', [UserController::class, 'sendNotification']);
-        Route::post('/send/notification/global ', [UserController::class, 'sendNotificationGlobe']);
+        Route::post('/send/notification/global/all', [UserController::class, 'sendNotificationGlobeAll']);
     });
 });
 
