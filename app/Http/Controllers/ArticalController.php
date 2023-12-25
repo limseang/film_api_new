@@ -485,7 +485,7 @@ class ArticalController extends Controller
 
             if ($request->title) {
                 $artical->where('title', 'like', '%' . $request->title . '%')->orWhere('description', 'like', '%' . $request->title . '%');
-                $film->where('title', 'like', '%' . $request->title . '%')->orWhere('type', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%')->orWhere('types', 'like', '%' . $request->title . '%');
 
 
             }
@@ -507,6 +507,7 @@ class ArticalController extends Controller
                         'id' => $artical->id,
                         'title' => $artical->title,
                         'description' => $artical->description,
+
                         'origin' => $artical->origin ? $artical->origin->name : '',
                         'type' => $artical->type ? $artical->type->name : '',
                         'category' =>$artical->categoryArtical ? $artical->category->name : '',
