@@ -495,7 +495,7 @@ class ArticalController extends Controller
             $uploadController = new UploadController();
             $filmController = new FilmController();
 
-            if(!$artical){
+            if(!$artical->get()->count()){
                 $artical = null;
             }
             else {
@@ -512,7 +512,7 @@ class ArticalController extends Controller
                     ];
                 });
             }
-            if(!$film){
+            if(!$film->get()->count()){
                 $film = null;
             }
             else{
