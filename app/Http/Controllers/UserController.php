@@ -205,26 +205,6 @@ class UserController extends Controller
          else{
              $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
          }
-         if(is_numeric($user['point']) && substr($user['point'], 0 ,1) === '-'){
-              //return point in string
-                $user['point'] = '1';
-         }
-         if($user['point'] >= 1 && $user['point'] <= 100){
-             $user['user_type'] = 1;
-         }
-         if($user['point'] >= 101 && $user['point'] <= 500){
-             $user['user_type'] = 2;
-         }
-         if($user['point'] >= 501 && $user['point'] <= 1000){
-             $user['user_type'] = 3;
-         }
-         if($user['point'] >= 1001 && $user['point'] <= 2000){
-             $user['user_type'] = 4;
-         }
-//         $role = role::find($user['role_id']);
-//         $userType = UserType::find($user['user_type']);
-//         $user['role_id'] = $role['name'];
-//            $user['user_type'] = $userType['name'];
 
 
          return response()->json([
@@ -426,6 +406,8 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
 
 
 
