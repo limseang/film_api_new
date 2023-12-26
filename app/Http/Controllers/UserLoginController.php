@@ -61,6 +61,30 @@ class UserLoginController extends Controller
         }
     }
 
+    public function updateFcm(Request $request)
+    {
+        try{
+            $userLogin = UserLogin::where('user_id', auth()->user()->id)->where('device_id', $request->device_id)->first();
+            $userLogin->fcm_token = $request->fcm_token;
+            $userLogin->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User login updated successfully',
+                'data' => $userLogin
+            ], 200);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User login updation failed',
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
     /**
      * Store a newly created resource in storage.
      */
