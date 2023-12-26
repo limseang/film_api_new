@@ -353,7 +353,24 @@ class FilmController extends Controller
         try {
             $film = Film::find($id);
             $film->type = $request->type;
-            $film->save();
+            if($request->type == 9){
+                $film->created_at = now();
+                $film->save();
+                $user = UserLogin::all();
+                $type = Type::find($request->type);
+                foreach ($user as $item){
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => $film->title,
+                        'body' => $type->description,
+                        'data' => [
+                            'id' => $film->id,
+                            'type' => '2',
+                        ]
+                    ];
+                    PushNotificationService::pushNotification($data);
+                }
+            }
             return response()->json([
                 'message' => 'Film updated successfully',
                 'data' => $film
