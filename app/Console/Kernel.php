@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('post:article')->everyMinute();
+//
+        $schedule->job(new \App\Jobs\CommingSoonFilm)->everyFiveSeconds();
     }
 
     /**
