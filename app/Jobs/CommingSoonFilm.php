@@ -44,7 +44,7 @@ class CommingSoonFilm implements ShouldQueue
               $user = UserLogin::all();
               foreach ($user as $items){
                   $data = [
-                      'token' => $items->title,
+                      'token' => $items->fcm_token,
                       'title' => $film->title,
                       'body' => 'Now Showing',
                       'data' => [
