@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/update/fcm', [UserLoginController::class, 'updateFcm']);
     Route::post('/user/update/name', [UserConTroller::class, 'editName']);
     Route::post('/user/update/password', [UserConTroller::class, 'editPassword']);
+    Route::delete('/user/delete/', [UserConTroller::class, 'deleteAccount']);
 });
 
 /* UserType */
