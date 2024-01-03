@@ -112,6 +112,15 @@ class FilmController extends Controller
 
     public function filmAvailables($film_id){
         $availables = FilmAvailable::where('film_id',$film_id)->get();
+        if(!$availables){
+            $data = [
+                'id' => null,
+                'available' => null,
+                'url' => null,
+                'logo' => null,
+            ];
+            return $data;
+        }
         $filmAvailable = [];
         foreach ($availables as $available){
             $uploadController = new UploadController();
@@ -252,7 +261,7 @@ class FilmController extends Controller
                 'language' => $film->languages->language ?? $film->language,
                 'rating' => (string) $this->countRate($film->id),
                 'rate_people' => $this->countRatePeople($film->id),
-                'available' => $this->filmAvailables($film->id),
+                'available' => $this->filmAvailables($film->id) ,
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
