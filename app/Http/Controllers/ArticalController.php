@@ -12,6 +12,7 @@ use App\Models\Origin;
 use App\Models\Rate;
 use App\Models\Type;
 use App\Models\UserLogin;
+use App\Models\video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PushNotificationService;
@@ -480,10 +481,13 @@ class ArticalController extends Controller
             $uploadController = new UploadController();
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
             $film = Film::with(['languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
+            $video = video::with(['film', 'article', 'categories','types','tags']);
 
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
+                $video->where('title', 'like', '%' . $request->title . '%');
+
             }
 
             $data = [
@@ -500,6 +504,18 @@ class ArticalController extends Controller
                         'type' => $film->types ? $film->types->name : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'created_at' => $film->created_at,
+                    ];
+                }),
+                'video' => $video->get()->map(function ($video) use ($uploadController) {
+                    return [
+                        'id' => $video->id,
+                        'title' => $video->title,
+                        'description' => $video->description,
+                        'cover_image_url' => $uploadController->getSignedUrl($video->cover_image_url),
+                        'status' => $video->status,
+                        'categories' => $video->categories->name,
+                        'running_time' => $video->running_time,
+                        'tag' => $video->tags->name ?? 'null',
                     ];
                 }),
             ];
