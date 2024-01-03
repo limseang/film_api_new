@@ -487,7 +487,7 @@ class ArticalController extends Controller
 
             $data = [
                 'artical' => $this->addImageUrls($artical->get()),
-                'film' =>  $uploadController->getSignedUrl($film->poster),
+                'film' => $this->addImageUrls($film->get())
             ];
 
 
@@ -511,8 +511,11 @@ class ArticalController extends Controller
         return $items->map(function ($item) use ($uploadController) {
             if ($item->image != null) {
                 $item->image = $uploadController->getSignedUrl($item->image);
+            } else if ($item->poster != null) {
+                $item->poster = $uploadController->getSignedUrl($item->poster);
             } else {
                 $item->image = null;
+                $item->poster = null;
             }
 
             return $item;
