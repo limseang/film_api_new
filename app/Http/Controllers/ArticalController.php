@@ -487,7 +487,28 @@ class ArticalController extends Controller
 
             $data = [
                 'artical' => $this->addImageUrls($artical->get()),
-                'film' => $this->addImageUrls($film->get())
+                //map film data
+                'film' => $film->get()->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'description' => $film->overview,
+                        'origin' => $film->origin ? $film->origin->name : '',
+                        'type' => $film->type ? $film->type->name : '',
+                        'like' => $film->like,
+                        'comment' => $film->comment,
+                        'share' => $film->share,
+                        'view' => $film->view,
+                        'film' => $film->film,
+                        'image' => $film->image ? $uploadController->getSignedUrl($film->image) : null,
+                        'category' => $film->filmCategories->map(function ($filmCategory) {
+                            return [
+                                'id' => $filmCategory->id,
+                                'name' => $filmCategory->categories->name,
+                            ];
+                        }),
+                    ];
+                }),
             ];
 
 
@@ -507,13 +528,10 @@ class ArticalController extends Controller
 
     private function addImageUrls($items) {
         $uploadController = new UploadController();
-
         return $items->map(function ($item) use ($uploadController) {
             if ($item->image != null) {
-//                $item->rate = (string) $item->rate;
                 $item->image = $uploadController->getSignedUrl($item->image);
             } else if ($item->poster != null) {
-                $item->rate = (string) $item->rate;
                 $item->poster = $uploadController->getSignedUrl($item->poster);
             } else {
                 $item->image = null;
