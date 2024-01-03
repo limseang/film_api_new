@@ -497,7 +497,6 @@ class ArticalController extends Controller
                         'overview' => $film->overview,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                         'rating' => (string) $this->countRate($film->id),
-                        'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
