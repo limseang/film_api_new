@@ -492,15 +492,15 @@ class ArticalController extends Controller
                     return [
                         'id' => $film->id,
                         'title' => $film->title,
-                        'description' => $film->overview,
-                        'origin' => $film->origin ? $film->origin->name : '',
+                        'release_date' => $film->release_date,
+                        'overview' => $film->overview,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'rating' => (string) $this->countRate($film->id),
+                        'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
-                        'like' => $film->like,
-                        'comment' => $film->comment,
-                        'share' => $film->share,
-                        'view' => $film->view,
-                        'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-
+                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                        'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                        'created_at' => $film->created_at,
                     ];
                 }),
             ];
