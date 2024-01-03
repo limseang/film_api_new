@@ -499,7 +499,6 @@ class ArticalController extends Controller
                         'rating' => (string) $this->countRate($film->id),
                         'type' => $film->types ? $film->types->name : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                        'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                         'created_at' => $film->created_at,
                     ];
                 }),
