@@ -478,7 +478,7 @@ class ArticalController extends Controller
         try{
             $uploadController = new UploadController();
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
-            $film = Film::with(['types','filmCategories']);
+            $film = Film::with(['languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
 
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
@@ -486,62 +486,8 @@ class ArticalController extends Controller
             }
 
             $data = [
-                'artical' => $artical->get()->map(function ($artical) use ($uploadController) {
-                    if ($artical->image != null) {
-                        $artical->image = $uploadController->getSignedUrl($artical->image);
-                    } else {
-                        $artical->image = null;
-                    }
-                    return [
-                        'id' => $artical->id,
-                        'title' => $artical->title,
-                        'description' => $artical->description,
-                        'origin' => $artical->origin ? $artical->origin->name : '',
-                        'type' => $artical->type ? $artical->type->name : '',
-                        'like' => $artical->like,
-                        'comment' => $artical->comment,
-                        'share' => $artical->share,
-                        'view' => $artical->view,
-                        'film' => $artical->film,
-                        'image' => $artical->image,
-                        'category' => $artical->categoryArtical->map(function ($categoryArtical) {
-                            return [
-                                'id' => $categoryArtical->id,
-                                'name' => $categoryArtical->categories->name,
-                            ];
-                        }),
-                    ];
-                }),
-                'film' => $film->get()->map(function ($film) use ($uploadController) {
-                    if ($film->image != null) {
-                        $film->image = $uploadController->getSignedUrl($film->image);
-                    } else {
-                        $film->image = null;
-                    }
-                    return [
-                        'id' => $film->id,
-                        'title' => $film->title,
-                        'description' => $film->description,
-                        'origin' => $film->origin ? $film->origin->name : '',
-                        'type' => $film->types->map(function ($type) {
-                            return [
-                                'id' => $type->id,
-                                'name' => $type->name,
-                            ];
-                        }),
-                        'like' => $film->like,
-                        'comment' => $film->comment,
-                        'share' => $film->share,
-                        'view' => $film->view,
-                        'image' => $film->image,
-                        'category' => $film->filmCategories->map(function ($filmCategory) {
-                            return [
-                                'id' => $filmCategory->id,
-                                'name' => $filmCategory->categories->name,
-                            ];
-                        }),
-                    ];
-                }),
+                'artical' => $this->addImageUrls($artical->get()),
+                'film' => $this->addImageUrls($film->get())
             ];
 
 
