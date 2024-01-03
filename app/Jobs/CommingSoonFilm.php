@@ -39,12 +39,12 @@ class CommingSoonFilm implements ShouldQueue
             var_dump($item->release_date, $today);
           if($item->release_date == $today){
               $item->type = 9;
-//              $item->created_at = now();
+              $item->created_at = now();
               $item->save();
               $user = UserLogin::all();
               foreach ($user as $items){
                   $data = [
-                      'token' => $items->title,
+                      'token' => $items->fcm_token,
                       'title' => $film->title,
                       'body' => 'Now Showing',
                       'data' => [

@@ -406,19 +406,23 @@ class UserController extends Controller
         }
     }
 
-    public function countAllUser(){
-        try{
-            $user = User::all();
-            $count = count($user);
-            return view('home', compact('count'));
-        }
-        catch (Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
+   public function deleteAccount()
+   {
+       try{
+           $user = auth()->user();
+           $user->delete();
+           return response()->json([
+               'message' => 'successfully',
+           ], 200);
+       }
+       catch (Exception $e){
+           return response()->json([
+               'message' => 'failed',
+               'error' => $e->getMessage()
+           ], 500);
+       }
+
+   }
 
 
 

@@ -9,8 +9,6 @@ use App\Models\Comment;
 use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
-use App\Models\Rate;
-use App\Models\Tag;
 use App\Models\Type;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
@@ -476,73 +474,22 @@ class ArticalController extends Controller
 
     }
 
-
     public function searchAll(Request $request){
-        try {
-            $artical = Artical::with(['origin', 'category', 'type', 'categoryArtical']);
-            $film = Film::with(['types', 'filmCategories']);
+        try{
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
+            $film = Film::with(['types','filmCategories']);
 
-
-            if ($request->title) {
-                $artical->where('title', 'like', '%' . $request->title . '%')->orWhere('description', 'like', '%' . $request->title . '%');
-                $film->where('title', 'like', '%' . $request->title . '%')->orWhere('overview', 'like', '%' . $request->title . '%');
-
-
-            }
-            if(!$artical->get()->count() && !$film->get()->count()){
-                return response()->json([
-                    'message' => 'not found'
-                ], 404);
+            if($request->title){
+                $artical->where('title', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%');
             }
 
-            $uploadController = new UploadController();
-            $filmController = new FilmController();
-
-            if(!$artical->get()->count()){
-                $artical = null;
-            }
-            else {
-                $artical = $artical->get()->map(function ($artical) use ($uploadController){
-                    return [
-                        'id' => $artical->id,
-                        'title' => $artical->title,
-                        'description' => $artical->description,
-
-                        'origin' => $artical->origin ? $artical->origin->name : '',
-                        'type' => $artical->type ? $artical->type->name : '',
-                        'category' =>$artical->categoryArtical ? $artical->category->name : '',
-                        'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
-
-                    ];
-                });
-            }
-            if(!$film->get()->count()){
-                $film = null;
-            }
-            else{
-                $film = $film->get()->map(function ($film) use ($filmController, $uploadController) {
-                    return [
-                        'id' => $film->id,
-                        'title' => $film->title,
-                        'description' => $film->overview,
-                        'release_date' => $film->release_date,
-                        'rating' => (string) $filmController->countRate($film->id),
-                        'rate_people' => $filmController->countRatePeople($film->id),
-                        'type' => $film->types ? $film->types->name : null,
-                        'available' =>  $filmController->filmAvailables($film->id),
-//                        'category' =>  $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                        'created_at' => $film->created_at,
-
-                    ];
-            }
-
-            );
-            }
             $data = [
-                'artical' => $artical,
-                'film' => $film,
+                'artical' => $this->addImageUrls($artical->get()),
+                'film' => $this->addImageUrls($film->get())
             ];
+
+
 
             return response()->json([
                 'message' => 'successfully',
@@ -569,8 +516,6 @@ class ArticalController extends Controller
 
             return $item;
         });
-
-
     }
 
 

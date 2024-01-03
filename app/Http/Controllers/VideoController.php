@@ -104,7 +104,7 @@ class VideoController extends Controller
                'categories' => $video->categories->name,
                'running_time' => $video->running_time,
                'type' => $video->types->name,
-               'film' => $video->film ?? null,
+//               'film' => $video->film ?? null,
                'article' => $video->article ?? null,
                'tag' => $video->tags->id ?? 'null',
                'comment' => $video->videoComments->map(function ($comment) use ($uploadController)  {
