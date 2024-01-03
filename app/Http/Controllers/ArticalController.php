@@ -500,13 +500,8 @@ class ArticalController extends Controller
                         'share' => $film->share,
                         'view' => $film->view,
                         'film' => $film->film,
-                        'image' => $film->image ? $uploadController->getSignedUrl($film->image) : null,
-                        'category' => $film->filmCategories->map(function ($filmCategory) {
-                            return [
-                                'id' => $filmCategory->id,
-                                'name' => $filmCategory->categories->name,
-                            ];
-                        }),
+                        'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+
                     ];
                 }),
             ];
