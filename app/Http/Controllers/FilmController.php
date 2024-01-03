@@ -33,7 +33,7 @@ class FilmController extends Controller
                     'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                     'created_at' => $film->created_at,
-                    'description' => $film->overview,
+
 
                 ];
         });
