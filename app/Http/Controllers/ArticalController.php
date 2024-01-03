@@ -494,12 +494,11 @@ class ArticalController extends Controller
                         'title' => $film->title,
                         'description' => $film->overview,
                         'origin' => $film->origin ? $film->origin->name : '',
-                        'type' => $film->type ? $film->type->name : '',
+                        'type' => $film->types ? $film->types->name : null,
                         'like' => $film->like,
                         'comment' => $film->comment,
                         'share' => $film->share,
                         'view' => $film->view,
-                        'film' => $film->film,
                         'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
 
                     ];
