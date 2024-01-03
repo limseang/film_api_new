@@ -487,7 +487,7 @@ class ArticalController extends Controller
 
             $data = [
                 'artical' => $this->addImageUrls($artical->get()),
-                'film' => $this->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                'film' =>  $uploadController->getSignedUrl($film->poster),
             ];
 
 
