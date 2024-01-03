@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
+use App\Models\Rate;
 use App\Models\Type;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
@@ -518,6 +519,19 @@ class ArticalController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function countRate($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        $total = 0;
+        foreach ($rates as $rate){
+            $total += $rate->rate;
+        }
+        if(count($rates) == 0){
+            return 0;
+        }
+        return number_format($total/count($rates), 1);
+
     }
 
     private function addImageUrls($items) {
