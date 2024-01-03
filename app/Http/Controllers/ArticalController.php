@@ -510,8 +510,10 @@ class ArticalController extends Controller
 
         return $items->map(function ($item) use ($uploadController) {
             if ($item->image != null) {
+//                $item->rate = (string) $item->rate;
                 $item->image = $uploadController->getSignedUrl($item->image);
             } else if ($item->poster != null) {
+                $item->rate = (string) $item->rate;
                 $item->poster = $uploadController->getSignedUrl($item->poster);
             } else {
                 $item->image = null;
