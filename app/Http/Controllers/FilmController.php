@@ -363,6 +363,7 @@ class FilmController extends Controller
         try {
             $film = Film::find($id);
             $film->type = $request->type;
+            $film->save();
             if($request->type == 9){
                 $film->created_at = now();
                 $film->save();
