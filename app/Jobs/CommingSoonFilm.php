@@ -34,7 +34,7 @@ class CommingSoonFilm implements ShouldQueue
     {
         try{
         $film = Film::where('type', 10)->get();
-        $today = date('d/m/Y');
+        $today = now()->format('d/m/Y');
         foreach ($film as $item) {
             var_dump($item->release_date, $today);
           if($item->release_date == $today){
