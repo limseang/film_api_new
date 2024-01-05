@@ -310,10 +310,6 @@ class UserController extends Controller
                     ]
                 ];
                 PushNotificationService::pushNotification($data);
-                return response()->json([
-                    'message' => 'successfully',
-                ], 200);
-
             }
         }
         catch (Exception $e){
