@@ -42,13 +42,13 @@ class CommingSoonFilm implements ShouldQueue
               $item->created_at = now();
               $item->save();
               $user = UserLogin::all();
-              foreach ($user as $items){
+              foreach ($user as $item){
                   $data = [
-                      'token' => $items->fcm_token,
+                      'token' => $item->fcm_token,
                       'title' => $film->title,
                       'body' => 'Now Showing',
                       'data' => [
-                          'id' => $item->id,
+                          'id' => $film->id,
                           'type' => '2',
                       ]
                   ];
