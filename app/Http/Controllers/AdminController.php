@@ -352,6 +352,26 @@ class AdminController extends Controller
 
    }
 
+   public function CountAllUser()
+   {
+         try{
+              $user = User::all();
+              $count = $user->count();
+              return response()->json([
+                'status' => 200,
+                'message' => 'successfully',
+                'data' => $count
+              ], 200);
+         }
+                catch(\Exception $e){
+                 return response()->json([
+                      'status' => 400,
+                      'message' => 'Error in counting user',
+                      'error' => $e->getMessage()
+                 ], );
+                }
+
+   }
    public function allUserType($id)
    {
        try{

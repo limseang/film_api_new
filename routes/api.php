@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('admin/user/type/{id}', [AdminController::class, 'allUserType']);
+        Route::get('/admin/user/count', [AdminController::class, 'CountAllUser']);
         Route::get('/all/user', [AdminController::class, 'allUser']);
         Route::get('/admin/reportcmd/all', [AdminController::class, 'allReportComment']);
         Route::post('/admin/reportcmd/changeStatus/{id}', [AdminController::class, 'changSatusforReport']);
