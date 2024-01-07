@@ -58,6 +58,9 @@ class CommingSoonFilm implements ShouldQueue
 //                  PushNotificationService::pushNotification($data);
 //              }
           }
+          else {
+              var_dump('no');
+          }
 
         }
         }catch (Exception $e){
