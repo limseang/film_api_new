@@ -62,12 +62,12 @@ class VideoController extends Controller
             $video->save();
 
             $user = UserLogin::all();
-            $type = Type::find($request->type);
+            $tag = $video->tags->name ?? null;
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,
-                    'title' => $video->title,
-                    'body' => $video->description,
+                    'title' => "New" . $tag . "video",
+                    'body' => $video->title,
                     'data' => [
                         'id' => $video->id,
                         'type' => '3',
