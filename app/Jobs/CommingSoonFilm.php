@@ -39,6 +39,8 @@ class CommingSoonFilm implements ShouldQueue
             //show only film release_date = today
 
             var_dump($item->release_date, $today);
+            var_dump('----------');
+            var_dump($today);
           if($item->release_date == $today){
               var_dump($item->title);
               $item->type = 9;
