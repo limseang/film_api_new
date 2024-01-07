@@ -41,19 +41,19 @@ class CommingSoonFilm implements ShouldQueue
               $item->type = 9;
               $item->created_at = now();
               $item->save();
-              $user = UserLogin::all();
-              foreach ($user as $item){
-                  $data = [
-                      'token' => $item->fcm_token,
-                      'title' => $film->title,
-                      'body' => 'Now Showing',
-                      'data' => [
-                          'id' => $film->id,
-                          'type' => '2',
-                      ]
-                  ];
-                  PushNotificationService::pushNotification($data);
-              }
+//              $user = UserLogin::all();
+//              foreach ($user as $item){
+//                  $data = [
+//                      'token' => $item->fcm_token,
+//                      'title' => $film->title,
+//                      'body' => 'Now Showing',
+//                      'data' => [
+//                          'id' => $film->id,
+//                          'type' => '2',
+//                      ]
+//                  ];
+//                  PushNotificationService::pushNotification($data);
+//              }
           }
 
         }
