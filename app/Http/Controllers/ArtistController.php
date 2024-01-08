@@ -53,6 +53,7 @@ class ArtistController extends Controller
                 'name' => $request->name,
                 'birth_date' => $request->birth_date,
                 'death_date' => $request->death_date,
+                'gender' => $request->gender,
                 'nationality' => $request->nationality,
                 'biography' => $request->biography,
                 'know_for' => $request->know_for,
