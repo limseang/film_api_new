@@ -9,8 +9,8 @@
 <h1>{{$title }}</h1>
 <p>{{ $content }}</p>
 </body>
-<script>
-    window.location.href = "{{ $facebook }}";
-</script>
+{{--<script>--}}
+{{--    --}}{{--window.location.href = "{{ $facebook }}";--}}
+{{--</script>--}}
 </html>
 
