@@ -349,7 +349,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/share/link', [ShareLinkController::class, 'show']);
 Route::get('/share-article/{id}', [ShareLinkController::class, 'shareArticalToFacebook']);
 Route::get('/share-film/{id}', [ShareLinkController::class, 'shareFilm']);
-Route::post('/share-article/{id}', [ShareLinkController::class, 'viewShare']);
+Route::post('/share-article/?d={id}', [ShareLinkController::class, 'viewShare']);
 
 /* Request Film */
 Route::group(['middleware' => ['auth:sanctum']], function (){
