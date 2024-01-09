@@ -25,10 +25,10 @@ class Artist extends Model
        return $this->belongsTo(Country::class,'nationality','id');
    }
 
-    public function films()
-    {
-         return $this->hasMany(Film::class);
-    }
+ public function casts()
+ {
+        return $this->hasMany(Cast::class,'actor_id','id');
+ }
 
 
 

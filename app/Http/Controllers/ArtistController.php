@@ -76,7 +76,7 @@ class ArtistController extends Controller
         try{
 
             $uploadController = new UploadController();
-            $artist = Artist::with('country')->find($id);
+            $artist = Artist::with('country','casts')->find($id);
             if(!$artist){
                 return response()->json([
                     'message' => 'Artist not found',
@@ -93,7 +93,7 @@ class ArtistController extends Controller
                     'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                     'biography' => $artist->biography,
                     'know_for' => $artist->know_for,
-                    'film' => $artist->films,
+                    'film' => $artist->cast ? $artist->cast : '',
                     'status' => $artist->status,
 
                 ];
