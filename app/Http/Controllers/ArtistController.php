@@ -22,7 +22,7 @@ class ArtistController extends Controller
                     'birth_date' => $artical->birth_date,
                     'death_date' => $artical->death_date,
                     'nationality' => $artical->country ? $artical->country->nationality : '',
-                    'nationality_logo' => $artical->country ? $uploadController->getSignedUrl($artical->country->logo) : '',
+                    'nationality_logo' => $artical->country ? $artical->country->flag : '',
                     'biography' => $artical->biography,
                     'known_for' => $artical->known_for,
                     'profile' => $artical->profile ? $uploadController->getSignedUrl($artical->profile) : null,
