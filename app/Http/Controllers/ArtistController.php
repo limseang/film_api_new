@@ -76,18 +76,14 @@ class ArtistController extends Controller
         try{
             $uploadController = new UploadController();
             $artist = Artist::with('country')->find($id);
-
             $data = [
-//                'id' => $artist->id,
+                'id' => $artist->id,
                 'name' => $artist->name,
-                'nationality' => $artist->country ? $artist->country->nationality : '',
-                'birth_date' => $artist->birth_date,
-                'death_date' => $artist->death_date,
-                'biography' => $artist->biography,
-                'know_for' => $artist->know_for,
+                'bob' => $artist->birth_date,
+                'dod' => $artist->death_date,
+                'nationality' => $artist->country->nationality,
                 'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
-                'film' => $artist->film,
-                'status' => $artist->status
+
             ];
             return response()->json([
                 'message' => 'Artist retrieved successfully',
