@@ -74,9 +74,30 @@ class ArtistController extends Controller
 
    public function showByID($id){
         try{
+
             $uploadController = new UploadController();
             $artist = Artist::with('country')->find($id);
-            dd($artist);
+            if(!$artist){
+                return response()->json([
+                    'message' => 'Artist not found',
+                ], 404);
+            }
+            else {
+                $data = [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'bob' => $artist->birth_date,
+                    'dod' => $artist->death_date,
+                    'nationality' => $artist->country->nationality,
+                    'nationality_logo' => $artist->country->flag,
+                    'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                    'biography' => $artist->biography,
+                    'know_for' => $artist->know_for,
+                    'film' => $artist->films,
+                    'status' => $artist->status,
+
+                ];
+            }
             return response()->json([
                 'message' => 'Artist retrieved successfully',
                 'data' => $data,
