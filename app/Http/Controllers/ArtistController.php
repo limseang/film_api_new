@@ -78,7 +78,7 @@ class ArtistController extends Controller
             $artist = Artist::with('country')->find($id);
 
             $data = [
-                'id' => $artist->id,
+//                'id' => $artist->id,
                 'name' => $artist->name,
                 'nationality' => $artist->country->name,
                 'birth_date' => $artist->birth_date,
