@@ -19,15 +19,10 @@ class ArtistController extends Controller
                 return [
                     'id' => $artical->id,
                     'name' => $artical->name,
-                    'birth_date' => $artical->birth_date,
-                    'death_date' => $artical->death_date,
                     'nationality' => $artical->country ? $artical->country->nationality : '',
                     'nationality_logo' => $artical->country ? $artical->country->flag : '',
-                    'biography' => $artical->biography,
-                    'known_for' => $artical->known_for,
                     'profile' => $artical->profile ? $uploadController->getSignedUrl($artical->profile) : null,
                     'status' => $artical->status,
-                    'film' => $artical->film,
                 ];
 
 
@@ -95,7 +90,8 @@ class ArtistController extends Controller
                 'death_date' => $artist->death_date,
                 'biography' => $artist->biography,
                 'know_for' => $artist->know_for,
-'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                'film' => $artist->film,
                 'status' => $artist->status
             ];
             return response()->json([
