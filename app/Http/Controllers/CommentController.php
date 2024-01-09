@@ -196,8 +196,14 @@ class CommentController extends Controller
                     'message' => 'Comment successfully deleted',
                 ], 200);
 
-
             }
+            else if(auth()->user()->role_id == 1 || auth()->user()->role_id == 2){
+                $comment->delete();
+                return response()->json([
+                    'message' => 'Comment successfully deleted',
+                ], 200);
+            }
+
             else{
                 return response()->json([
                     'message' => 'You are not author',

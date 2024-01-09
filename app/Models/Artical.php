@@ -21,7 +21,8 @@ class Artical extends Model
         'share',
         'profile',
         'view',
-        'film'
+        'film_id',
+        'tag_id',
 
     ];
 
