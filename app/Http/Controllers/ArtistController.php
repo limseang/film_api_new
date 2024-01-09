@@ -80,7 +80,7 @@ class ArtistController extends Controller
             $data = [
 //                'id' => $artist->id,
                 'name' => $artist->name,
-                'nationality' => $artist->country->name,
+                'nationality' => $artist->country ? $artist->country->nationality : '',
                 'birth_date' => $artist->birth_date,
                 'death_date' => $artist->death_date,
                 'biography' => $artist->biography,
