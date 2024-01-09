@@ -90,7 +90,7 @@ class ArtistController extends Controller
                 'death_date' => $artist->death_date,
                 'biography' => $artist->biography,
                 'know_for' => $artist->know_for,
-                'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+//                'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                 'film' => $artist->film,
                 'status' => $artist->status
             ];
