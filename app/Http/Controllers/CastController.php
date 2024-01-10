@@ -140,8 +140,23 @@ class CastController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cast $cast)
+    public function destroy($id)
     {
-        //
+        try{
+            $cast = Cast::find($id);
+            $cast->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cast deleted successfully',
+                'data' => $cast
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cast deleted failed',
+                'data' => $e->getMessage()
+            ]);
+        }
     }
 }
