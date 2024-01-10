@@ -82,6 +82,7 @@ class ArtistController extends Controller
                     'message' => 'Artist not found',
                 ], 404);
             }
+
             else {
                 $data = [
                     'id' => $artist->id,
@@ -93,7 +94,7 @@ class ArtistController extends Controller
                     'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                     'biography' => $artist->biography,
                     'know_for' => $artist->know_for,
-                    'film' => $artist->cast ? $artist->cast : '',
+                    'film' => $artist->casts ? $artist->casts : '',
                     'status' => $artist->status,
 
                 ];

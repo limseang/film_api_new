@@ -15,11 +15,22 @@ class CastController extends Controller
         try{
 
             $uploadController = new UploadController();
-            $casts = Cast::All();
+            $casts = Cast::with('artists')->get();
+            $data = $casts->map(function ($artical) use ($uploadController) {
+                return [
+                    'id' => $artical->id,
+                    'film_id' => $artical->film_id,
+                    'actor_id' => $artical->actor_id ? $artical->artists : '',
+                    'character' => $artical->character,
+                    'position' => $artical->position,
+                    'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
+                    'status' => $artical->status,
+                ];
+            });
 
             return response()->json([
                 'message' => 'Casts retrieved successfully',
-                'data' => $casts
+                'data' => $data
             ], 200);
 
 
