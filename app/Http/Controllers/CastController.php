@@ -18,9 +18,10 @@ class CastController extends Controller
             $casts = Cast::with('artists')->get();
             $data = $casts->map(function ($artical) use ($uploadController) {
                 return [
+//
                     'id' => $artical->id,
                     'film_id' => $artical->film_id,
-                    'actor_id' => $artical->actor_id ? $artical->artists : '',
+                    'actor_id' =>  $artical->artists->name ?? '',
                     'character' => $artical->character,
                     'position' => $artical->position,
                     'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
