@@ -146,7 +146,7 @@ class FilmController extends Controller
 
             $filmCast[] = [
                 'id' => $cast->actor_id,
-                'name' =>$cast->artists->name,
+                'name' =>$cast->artists->name ?? '',
                 'position' =>$cast->position,
                 'character' => $cast->character,
                 'image' => $cast->image ? $uploadController->getSignedUrl($cast->image) : null,
