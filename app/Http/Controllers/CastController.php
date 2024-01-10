@@ -84,7 +84,8 @@ class CastController extends Controller
 //
                     'id' => $artical->id,
                     'film_id' => $artical->film_id,
-                    'actor_id' => $artical->artists->name ?? '',
+                    'actor_id' => $artical->artists->id ?? '',
+                    'actor_name' => $artical->artists->name ?? '',
                     'character' => $artical->character,
                     'position' => $artical->position,
                     'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
