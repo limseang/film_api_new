@@ -74,6 +74,36 @@ class CastController extends Controller
         }
     }
 
+    public function showByFilm($id)
+    {
+        try {
+            $uploadController = new UploadController();
+            $casts = Cast::with('artists')->where('film_id', $id)->get();
+            $data = $casts->map(function ($artical) use ($uploadController) {
+                return [
+//
+                    'id' => $artical->id,
+                    'film_id' => $artical->film_id,
+                    'actor_id' => $artical->artists->name ?? '',
+                    'character' => $artical->character,
+                    'position' => $artical->position,
+                    'image' => $artical->image ? $uploadController->getSignedUrl($artical->image) : null,
+                    'status' => $artical->status,
+                ];
+            });
+            return response()->json([
+                'message' => 'Casts retrieved successfully',
+                'data' => $data
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'error',
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
+            ], 400);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
