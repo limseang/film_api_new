@@ -54,9 +54,7 @@ class ArtistController extends Controller
                 'biography' => $request->biography,
                 'know_for' => $request->know_for,
                 'profile' => $uploadController->UploadFile($request->file('profile')),
-                'status' => $request->status,
-
-
+                'status' => $request->status
             ]);
 
             return response()->json([
@@ -74,31 +72,37 @@ class ArtistController extends Controller
 
    public function showByID($id){
         try{
-
             $uploadController = new UploadController();
-            $artist = Artist::with('country','casts')->find($id);
+            $artist = Artist::with('country','casts','films')->find($id);
             if(!$artist){
                 return response()->json([
                     'message' => 'Artist not found',
                 ], 404);
             }
 
-            else {
-                $data = [
-                    'id' => $artist->id,
-                    'name' => $artist->name,
-                    'bob' => $artist->birth_date,
-                    'dod' => $artist->death_date,
-                    'nationality' => $artist->country->nationality,
-                    'nationality_logo' => $artist->country->flag,
-                    'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
-                    'biography' => $artist->biography,
-                    'know_for' => $artist->know_for,
-                    'film' => $artist->casts ? $artist->casts : '',
-                    'status' => $artist->status,
+            $data = [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'bob' => $artist->birth_date,
+                'dod' => $artist->death_date,
+                'nationality' => $artist->country->nationality,
+                'nationality_logo' => $artist->country->flag,
+                'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                'biography' => $artist->biography,
+                'know_for' => $artist->know_for,
+
+                'film' => $artist->films->map(function ($film) use ($uploadController) {
+                    //if film id has douplicate show only 1
+
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    ];
+                }),
+                'status' => $artist->status,
 
                 ];
-            }
             return response()->json([
                 'message' => 'Artist retrieved successfully',
                 'data' => $data,

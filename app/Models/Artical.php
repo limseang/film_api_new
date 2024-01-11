@@ -5,10 +5,14 @@ namespace App\Models;
 use App\Http\Controllers\UploadController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Artical extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'title',
         'description',
@@ -26,12 +30,18 @@ class Artical extends Model
 
     ];
 
-    public function origin()
+    /**
+     * @return BelongsTo
+     */
+    public function origin(): BelongsTo
     {
         return $this->belongsTo(Origin::class);
 
     }
-    public function category()
+    /**
+     * @return BelongsTo
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
@@ -39,16 +49,16 @@ class Artical extends Model
     {
         return $this->hasMany(Like::class);
     }
-    public function comments()
+    public function comments() : HasMany
     {
         return $this->hasMany(Comment::class,'item_id','id')->where('type',1);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
     }
-    public function tag()
+    public function tag(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
     }
@@ -58,7 +68,7 @@ class Artical extends Model
         return $this->hasMany(CategoryArtical::class);
     }
 
-    public function BookMark()
+    public function BookMark(): HasMany
     {
         return $this->hasMany(BookMark::class,'post_id','id');
     }
