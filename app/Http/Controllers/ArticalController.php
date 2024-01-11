@@ -10,6 +10,7 @@ use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
 use App\Models\Rate;
+use App\Models\Tag;
 use App\Models\Type;
 use App\Models\UserLogin;
 use App\Models\video;
@@ -482,11 +483,13 @@ class ArticalController extends Controller
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
             $film = Film::with(['languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
             $video = video::with(['film', 'article', 'categories','types','tags']);
+            $tag = Tag::with(['name']);
 
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%');
-                $video->where('title', 'like', '%' . $request->title . '%');
+                $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
+                $tag = $tag->where('name', 'like', '%' . $request->title . '%');
 
             }
 
@@ -518,6 +521,7 @@ class ArticalController extends Controller
                         'tag' => $video->tags->name ?? 'null',
                     ];
                 }),
+
             ];
 
 
