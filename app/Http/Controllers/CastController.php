@@ -107,33 +107,34 @@ class CastController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function castDetail($id)
     {
-        //
-    }
+        try{
+            $uploadController = new UploadController();
+            $cast = Cast::with('artists')->find($id);
+            $data = [
+                'id' => $cast->id,
+                'film_id' => $cast->film_id,
+                'actor_id' => $cast->artists->id ?? '',
+                'actor_name' => $cast->artists->name ?? '',
+                'character' => $cast->character,
+                'position' => $cast->position,
+                'image' => $cast->image ? $uploadController->getSignedUrl($cast->image) : null,
+                'status' => $cast->status,
+            ];
+            return response()->json([
+                'message' => 'Cast retrieved successfully',
+                'data' => $data
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'error',
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
+            ], 400);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cast $cast)
-    {
-        //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cast $cast)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update($id,Request $request)
     {
         try{
