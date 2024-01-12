@@ -141,7 +141,7 @@ class CastController extends Controller
         try{
             $cast = Cast::find($id);
 
-           if($request->file('image') == null){
+           if($request->image == null){
                 $cast->update([
                     'film_id' => $request->film_id,
                     'actor_id' => $request->actor_id,
