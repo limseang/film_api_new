@@ -83,7 +83,8 @@ class CastController extends Controller
             $casts = Cast::with('artists')->where('film_id', $id)->get();
             $data = $casts->map(function ($artical) use ($uploadController) {
                 return [
-//
+
+
                     'id' => $artical->id,
                     'film_id' => $artical->film_id,
                     'actor_id' => $artical->artists->id ?? '',

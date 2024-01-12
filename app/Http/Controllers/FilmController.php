@@ -145,7 +145,6 @@ class FilmController extends Controller
             $uploadController = new UploadController();
 
             $filmCast[] = [
-                'cast_id' => $cast->id,
                 'id' => $cast->actor_id,
                 'name' =>$cast->artists->character ?? '',
                 'position' =>$cast->position,
