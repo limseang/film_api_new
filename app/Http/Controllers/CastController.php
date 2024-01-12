@@ -59,11 +59,13 @@ class CastController extends Controller
             $cast->image = $uploadController->UploadFile($request->file('image'));
             $cast->status = $request->status;
             $cast->save();
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cast created successfully',
                 'data' => $cast
             ]);
+
         }
         catch(\Exception $e){
             return response()->json([
@@ -132,9 +134,36 @@ class CastController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cast $cast)
+    public function update($id,Request $request)
     {
-        //
+        try{
+            $cast = Cast::find($id);
+            $uploadController = new UploadController();
+           if($request->file('image') == null){
+                $cast->update([
+                    'film_id' => $request->film_id,
+                    'actor_id' => $request->actor_id,
+                    'character' => $request->character,
+                    'position' => $request->position,
+                    'status' => $request->status
+                ]);
+           }
+            $cast->update([
+                'film_id' => $request->film_id,
+                'actor_id' => $request->actor_id,
+                'character' => $request->character,
+                'position' => $request->position,
+                'image' => $uploadController->UploadFile($request->file('image')),
+                'status' => $request->status
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cast updated failed',
+                'data' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

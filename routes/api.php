@@ -289,7 +289,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/cast/new', [CastController::class, 'create']);
         Route::delete('/film/cast/delete/{id}', [CastController::class, 'destroy']);
-        Route::post('/filmcast/update/{id}', [CastController::class, 'update']);
+        Route::post('/film/cast/update/{id}', [CastController::class, 'update']);
     });
 });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artist;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ArtistController extends Controller
@@ -56,6 +57,14 @@ class ArtistController extends Controller
                 'profile' => $uploadController->UploadFile($request->file('profile')),
                 'status' => $request->status
             ]);
+
+            //1 point to user to user
+            $user = User::find($request->user_id);
+            $user->point = $user->point + 1;
+            $user->save();
+
+
+
 
             return response()->json([
                 'message' => 'Artist created successfully',
