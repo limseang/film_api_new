@@ -141,7 +141,7 @@ class CastController extends Controller
         try{
             $cast = Cast::find($id);
 
-           if($request->image == null){
+           if(!$request->file('image')){
                 $cast->update([
                     'film_id' => $request->film_id,
                     'actor_id' => $request->actor_id,
@@ -152,15 +152,17 @@ class CastController extends Controller
                 ]);
 
            }
-            $uploadController = new UploadController();
-            $cast->update([
-                'film_id' => $request->film_id,
-                'actor_id' => $request->actor_id,
-                'character' => $request->character,
-                'position' => $request->position,
-                'image' => $uploadController->UploadFile($request->file('image')),
-                'status' => $request->status
-            ]);
+            else {
+                $uploadController = new UploadController();
+                $cast->update([
+                    'film_id' => $request->film_id,
+                    'actor_id' => $request->actor_id,
+                    'character' => $request->character,
+                    'position' => $request->position,
+                    'image' => $uploadController->UploadFile($request->file('image')),
+                    'status' => $request->status
+                ]);
+            }
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cast updated successfully',
