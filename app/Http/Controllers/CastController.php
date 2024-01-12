@@ -146,6 +146,7 @@ class CastController extends Controller
                     'film_id' => $request->film_id,
                     'actor_id' => $request->actor_id,
                     'character' => $request->character,
+                    'image' => $cast->image,
                     'position' => $request->position,
                     'status' => $request->status
                 ]);
