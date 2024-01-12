@@ -147,6 +147,7 @@ class CastController extends Controller
                     'position' => $request->position,
                     'status' => $request->status
                 ]);
+
            }
             $cast->update([
                 'film_id' => $request->film_id,
@@ -155,6 +156,11 @@ class CastController extends Controller
                 'position' => $request->position,
                 'image' => $uploadController->UploadFile($request->file('image')),
                 'status' => $request->status
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cast updated successfully',
+                'data' => $cast
             ]);
         }
         catch(\Exception $e){
