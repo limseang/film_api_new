@@ -142,5 +142,49 @@ class ArtistController extends Controller
         }
     }
 
+    public function update($id, Request $request)
+    {
+        try{
+            $artist = Artist::find($id);
+            if(!$artist){
+                return response()->json([
+                    'message' => 'Artist not found',
+                ], 404);
+            }
+            if(!$request->file('profile')){
+                $artist->update([
+                    'name' => $request->name,
+                    'birth_date' => $request->birth_date,
+                    'death_date' => $request->death_date,
+                    'gender' => $request->gender,
+                    'nationality' => $request->nationality,
+                    'biography' => $request->biography,
+                    'known_for' => $request->know_for,
+                    'profile' => $artist->profile,
+                ]);
+            }
+            else{
+                $uploadController = new UploadController();
+                $artist->update([
+                    'name' => $request->name,
+                    'birth_date' => $request->birth_date,
+                    'death_date' => $request->death_date,
+                    'gender' => $request->gender,
+                    'nationality' => $request->nationality,
+                    'biography' => $request->biography,
+                    'known_for' => $request->know_for,
+                    'profile' => $uploadController->UploadFile($request->file('profile')),
+                ]);
+
+            }
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Artist not found',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
+
 
 }
