@@ -58,9 +58,9 @@ class ArtistController extends Controller
                 'status' => $request->status
             ]);
 
-//            $user = User::find(auth()->user()->id);
-//            $user->point = $user->point + 3;
-//            $user->save();
+            $user = User::find(auth()->user()->id);
+            $user->point = $user->point + 3;
+            $user->save();
 
 
 
