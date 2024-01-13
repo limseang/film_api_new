@@ -96,6 +96,7 @@ class ArtistController extends Controller
                 'country_id' => $artist->country->id,
                 'nationality' => $artist->country->nationality,
                 'nationality_logo' => $artist->country->flag,
+                'gender' => $artist->gender,
                 'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                 'biography' => $artist->biography,
                 'know_for' => $artist->known_for,
