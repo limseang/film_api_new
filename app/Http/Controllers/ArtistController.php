@@ -53,7 +53,7 @@ class ArtistController extends Controller
                 'gender' => $request->gender,
                 'nationality' => $request->nationality,
                 'biography' => $request->biography,
-                'know_for' => $request->know_for,
+                'known_for' => $request->know_for,
                 'profile' => $uploadController->UploadFile($request->file('profile')),
                 'status' => $request->status
             ]);
