@@ -58,10 +58,9 @@ class ArtistController extends Controller
                 'status' => $request->status
             ]);
 
-            //1 point to user to user
-            $user = User::find(auth()->user()->id);
-            $user->point = $user->point + 3;
-            $user->save();
+//            $user = User::find(auth()->user()->id);
+//            $user->point = $user->point + 3;
+//            $user->save();
 
 
 
@@ -98,7 +97,7 @@ class ArtistController extends Controller
                 'nationality_logo' => $artist->country->flag,
                 'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                 'biography' => $artist->biography,
-                'know_for' => $artist->know_for,
+                'know_for' => $artist->known_for,
 
                 'film' => $artist->films->map(function ($film) use ($uploadController) {
                     //if film id has douplicate show only 1
