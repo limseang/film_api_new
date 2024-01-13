@@ -59,8 +59,8 @@ class ArtistController extends Controller
             ]);
 
             //1 point to user to user
-            $user = User::find($request->user_id);
-            $user->point = $user->point + 1;
+            $user = User::find(auth()->user()->id);
+            $user->point = $user->point + 3;
             $user->save();
 
 
