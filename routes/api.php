@@ -237,7 +237,7 @@ Route::get('/artist/{id}', [ArtistController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/artist/new', [ArtistController::class, 'create']);
-        Route::delete('/artist/deletes/{id}', [ArtistController::class, 'destroy']);
+        Route::delete('/artist/delete/{id}', [ArtistController::class, 'destroy']);
         Route::post('/artist/update/{id}', [ArtistController::class, 'update']);
     });
 });

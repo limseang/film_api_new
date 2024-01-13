@@ -127,9 +127,15 @@ class ArtistController extends Controller
 
         }
    }
-    public function destroy(Artist $artist)
+    public function destroy($id)
     {
         try{
+            $artist = Artist::find($id);
+            if(!$artist){
+                return response()->json([
+                    'message' => 'Artist not found',
+                ], 404);
+            }
             $artist->delete();
             return response()->json([
                 'message' => 'Artist deleted successfully',
