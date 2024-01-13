@@ -177,8 +177,11 @@ class ArtistController extends Controller
                     'known_for' => $request->know_for,
                     'profile' => $uploadController->UploadFile($request->file('profile')),
                 ]);
-
             }
+            return response()->json([
+                'message' => 'Artist updated successfully',
+                'data' => $artist
+            ], 200);
         }
         catch (\Exception $e){
             return response()->json([
