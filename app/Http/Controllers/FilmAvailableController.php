@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\FilmAvailable;
 use Illuminate\Http\Request;
 
@@ -16,13 +17,12 @@ class FilmAvailableController extends Controller
             $filmAvailable = FilmAvailable::with('films')->with('availables')->get();
 
             $data = $filmAvailable->map(function ($filmAvailable) {
-                return [
 
+                return [
                     'id' => $filmAvailable->id,
                     'film_id' => $filmAvailable->film_id,
                     'available_id' => $filmAvailable->available_id,
-////
-//                    'film_title' => $filmAvailable->film_id->films->title ?? 'null',
+                    'film' => $this->getFilm($filmAvailable->film_id)->title ?? 'null',
                     'available_name' => $filmAvailable->availables->name ?? 'null',
                     'page_id' => $filmAvailable->page_id,
                 ];
@@ -44,23 +44,9 @@ class FilmAvailableController extends Controller
     public function getFilm($id)
     {
         try{
-            $filmAvailable = FilmAvailable::where('film_id',$id)->with('films')->with('availables')->get();
-
-            $data = $filmAvailable->map(function ($filmAvailable) {
-                return [
-                    'id' => $filmAvailable->id,
-                    'film_id' => $filmAvailable->film_id,
-                    'available_id' => $filmAvailable->available_id,
-                    'url' => $filmAvailable->url,
-                    'film_title' => $filmAvailable->film_id->films->title ?? 'null',
-                    'available_name' => $filmAvailable->availables->name ?? 'null',
-                    'page_id' => $filmAvailable->page_id,
-                ];
-            });
-            return response()->json([
-                'message' => 'FilmAvailable retrieved successfully',
-                'data' => $data
-            ], 200);
+          //get film by id
+            $film = Film::find($id);
+            return $film;
 
         }
         catch (\Exception $e){
