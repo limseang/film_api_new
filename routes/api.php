@@ -296,7 +296,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 /* Available in for film */
 Route::get('/film/available/in', [FilmAvailableController::class, 'index']);
-Route::get('/film/available/{id}', [FilmAvailableController::class, 'showByID']);
+Route::get('/film/available/{id}', [FilmAvailableController::class, 'getFilmAvailableByFilmId']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/available/new', [FilmAvailableController::class, 'create']);
