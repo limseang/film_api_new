@@ -21,8 +21,8 @@ class FilmAvailableController extends Controller
                     'id' => $filmAvailable->id,
                     'film_id' => $filmAvailable->film_id,
                     'available_id' => $filmAvailable->available_id,
-//
-                    'film_title' => $filmAvailable->film_id->films->title ?? 'null',
+////
+//                    'film_title' => $filmAvailable->film_id->films->title ?? 'null',
                     'available_name' => $filmAvailable->availables->name ?? 'null',
                     'page_id' => $filmAvailable->page_id,
                 ];
