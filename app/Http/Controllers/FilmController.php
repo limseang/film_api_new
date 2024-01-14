@@ -36,7 +36,7 @@ class FilmController extends Controller
 
 
                 ];
-        });
+            });
             return response()->json([
                 'message' => 'Films retrieved successfully',
                 'data' => $data->sortByDesc('created_at')->values()->all()
@@ -197,22 +197,22 @@ class FilmController extends Controller
             $film->running_time = $request->running_time;
             $film->language = $request->language;
             $film->save();
-          if($request->type != 10){
-              $user = UserLogin::all();
-              $type = Type::find($request->type);
-              foreach ($user as $item){
-                  $data = [
-                      'token' => $item->fcm_token,
-                      'title' => $film->title,
-                      'body' => $type->description,
-                      'data' => [
-                          'id' => $film->id,
-                          'type' => '2',
-                      ]
-                  ];
-                  PushNotificationService::pushNotification($data);
-              }
-          }
+            if($request->type != 10){
+                $user = UserLogin::all();
+                $type = Type::find($request->type);
+                foreach ($user as $item){
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => $film->title,
+                        'body' => $type->description,
+                        'data' => [
+                            'id' => $film->id,
+                            'type' => '2',
+                        ]
+                    ];
+                    PushNotificationService::pushNotification($data);
+                }
+            }
             return response()->json([
                 'message' => 'Film created successfully',
                 'data' => $film
@@ -268,22 +268,25 @@ class FilmController extends Controller
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
-                'comment' => $film->filmComment->map(function ($comment) use ($uploadController) {
+                'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
                         return [
                             'id' => $comment->id,
                             'comment' => $comment->comment,
                             'user_id' => (string)$comment->user_id,
+                            //show rate of user on this film
+                            'rate' => $film->rate->where('user_id',$comment->user_id)->first() ? $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                             'user' => 'Anonymous',
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
                             'confess' => $comment->confess,
-                            'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                            'reply' => $comment->reply->map(function ($reply) use ($film, $comment, $uploadController) {
                                 return [
                                     'id' => $reply->id,
                                     'user_id' =>  (string)$reply->user_id,
                                     'comment' => $reply->comment,
                                     'user' => $reply->user->name,
+                                    'rate' => $film->rate->where('user_id',$comment->user_id)->first() ? $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                                     'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
                                     'created_at' => $reply->created_at->format('d/m/Y'),
                                 ];
@@ -296,14 +299,16 @@ class FilmController extends Controller
                             'comment' => $comment->comment,
                             'user_id' => (string)$comment->user_id,
                             'user' => $comment->user->name,
+                            'rate' => $film->rate->where('user_id',$comment->user_id)->first() ? $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
-                            'reply' => $comment->reply->map(function ($reply) use ($uploadController) {
+                            'reply' => $comment->reply->map(function ($reply) use ($film, $uploadController) {
                                 return [
                                     'id' => $reply->id,
                                     'comment' => $reply->comment,
                                     'user' => $reply->user->name,
                                     'user_id' => (string)$reply->user_id,
+                                    'rate' => $film->rate->where('user_id',$reply->user->id)->first() ? $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                                     'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
                                     'created_at' => $reply->created_at->format('d/m/Y'),
                                 ];
