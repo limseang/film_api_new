@@ -36,6 +36,7 @@ class RendomPointController extends Controller
     {
         try{
             $gift = Gift::find($request->gift_id);
+            $user = User::find(auth()->user()->id);
             if($gift->quantity == 0){
                 return response()->json([
                     'status' => false,
@@ -43,6 +44,14 @@ class RendomPointController extends Controller
                     'data' => null
                 ]);
             }
+            if($user->point < $gift->point){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Point is not enough',
+                    'data' => null
+                ]);
+            }
+
             $rendomPoint = RendomPoint :: create([
                 'user_id' => auth()->user()->id,
                 'gift_id' => $request->gift_id,
