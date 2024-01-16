@@ -15,6 +15,10 @@ class GiftController extends Controller
         try{
             $gifts = Gift::all();
             $uploadController = new UploadController();
+           //show only gift that have quantity > 0
+            $gifts = $gifts->filter(function ($gift) {
+                return $gift->quantity > 0;
+            });
             foreach($gifts as $gift){
                 $gift->image = $uploadController->getSignedUrl($gift->image);
             }
@@ -66,7 +70,6 @@ class GiftController extends Controller
         }
     }
 
-    //redom 5 digit code
     public function random_strings($length_of_string)
     {
         $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
