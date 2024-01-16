@@ -18,14 +18,14 @@ class RendomPointController extends Controller
             $rendomPoints = RendomPoint::all();
             return response()->json([
                 'status' => true,
-                'message' => 'RendomPoints List',
+                'message' => 'RandomPoints List',
                 'data' => $rendomPoints
             ]);
         }
         catch(\Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'RendomPoints List Failed',
+                'message' => 'RandomPoints List Failed',
                 'data' => $e->getMessage()
             ]);
         }
@@ -134,7 +134,7 @@ class RendomPointController extends Controller
         catch(\Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'RendomPoint Canceled Failed',
+                'message' => 'RandomPoint Canceled Failed',
                 'data' => $e->getMessage()
             ]);
         }
@@ -148,14 +148,14 @@ class RendomPointController extends Controller
             $rendomPoints = RendomPoint::where('user_id', $user)->get();
             return response()->json([
                 'status' => true,
-                'message' => 'RendomPoints List',
+                'message' => 'RandomPoints List',
                 'data' => $rendomPoints
             ]);
         }
         catch(\Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'RendomPoints List Failed',
+                'message' => 'RandomPoints List Failed',
                 'data' => $e->getMessage()
             ]);
         }

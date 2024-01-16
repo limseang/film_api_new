@@ -317,11 +317,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Rendom Point */
-Route::get('/rendom/point', [RendomPointController::class, 'index']);
+Route::get('/random/point', [RendomPointController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
-    Route::post('/rendom/point/create', [RendomPointController::class, 'create']);
-    Route::post('/rendom/point/cancel/{id}', [RendomPointController::class, 'cancel']);
-    Route::get('/rendom/point/user/', [RendomPointController::class, 'showUserRandom']);
+    Route::post('/random/point/create', [RendomPointController::class, 'create']);
+    Route::post('/random/point/cancel/{id}', [RendomPointController::class, 'cancel']);
+    Route::get('/random/point/user/', [RendomPointController::class, 'showUserRandom']);
 });
 
 
