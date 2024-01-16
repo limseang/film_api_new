@@ -16,10 +16,12 @@ use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
+use App\Http\Controllers\GiftController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\RateController;
+use App\Http\Controllers\RendomPointController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\RequestFilmController;
@@ -304,6 +306,25 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/available/update/{id}', [FilmAvailableController::class, 'update']);
     });
 });
+
+/* Gift */
+Route::get('/gift', [GiftController::class, 'index']);
+Route::post('/gift/create/', [GiftController::class, 'create']);
+Route::get('/gift/{id}', [GiftController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::delete('/gift/delete/{id}', [GiftController::class, 'destroy']);
+    Route::post('/gift/update/{id}', [GiftController::class, 'update']);
+});
+
+/* Rendom Point */
+Route::get('/rendom/point', [RendomPointController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/rendom/point/create', [RendomPointController::class, 'create']);
+    Route::post('/rendom/point/cancel/{id}', [RendomPointController::class, 'cancel']);
+    Route::get('/rendom/point/user/', [RendomPointController::class, 'showUserRandom']);
+});
+
+
 
 
 
