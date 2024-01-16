@@ -153,8 +153,7 @@ class RendomPointController extends Controller
     public function showUserRandom()
     {
         try{
-            $user = User::find(auth()->user()->id);
-            $rendomPoints = RendomPoint::where('user_id', $user)->get();
+            $rendomPoints = RendomPoint::where('user_id', auth()->user()->id)->get();
             return response()->json([
                 'status' => true,
                 'message' => 'RandomPoints List',
