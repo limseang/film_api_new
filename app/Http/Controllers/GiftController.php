@@ -94,4 +94,26 @@ class GiftController extends Controller
             ]);
         }
     }
+
+    public function showByID($id)
+    {
+        try{
+            $gift = Gift::find($id);
+            $uploadController = new UploadController();
+            $gift->image = $uploadController->getSignedUrl($gift->image);
+            return response()->json([
+                'status' => true,
+                'message' => 'Gift Detail',
+                'data' => $gift
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Gift Detail Failed',
+                'data' => $e->getMessage()
+            ]);
+        }
+
+    }
 }

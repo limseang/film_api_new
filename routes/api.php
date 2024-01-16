@@ -309,9 +309,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 /* Gift */
 Route::get('/gift', [GiftController::class, 'index']);
-Route::post('/gift/create/', [GiftController::class, 'create']);
 Route::get('/gift/{id}', [GiftController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/gift/create/', [GiftController::class, 'create']);
     Route::delete('/gift/delete/{id}', [GiftController::class, 'destroy']);
     Route::post('/gift/update/{id}', [GiftController::class, 'update']);
 });
