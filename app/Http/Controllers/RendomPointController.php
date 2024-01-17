@@ -172,7 +172,6 @@ class RendomPointController extends Controller
                     'user_id' => $rendomPoint->user_id,
                     'gift_id' => $rendomPoint->gift_id,
                     'code' => $rendomPoint->code,
-                  'image' => $gift->image,
                     'status' => $rendomPoint->status,
                     'phone_number' => $rendomPoint->phone_number,
 
