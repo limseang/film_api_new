@@ -127,7 +127,7 @@ class RendomPointController extends Controller
             $gift = Gift::find($rendomPoint->gift_id);
 
             RendomPoint::where('id', $id)->update([
-                'status' => 2
+                'status' => 3
             ]);
             Gift::where('id', $rendomPoint->gift_id)->update([
                 'quantity' => $gift->quantity + 1
