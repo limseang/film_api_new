@@ -197,7 +197,7 @@ class FilmController extends Controller
             $film->running_time = $request->running_time;
             $film->language = $request->language;
             $film->save();
-            if($request->type != 10){
+            if($request->type == 10){
                 $user = UserLogin::all();
                 $type = Type::find($request->type);
                 foreach ($user as $item){
