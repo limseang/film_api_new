@@ -341,6 +341,26 @@ class UserController extends Controller
 
     }
 
+    public function editPone(Request $request)
+    {
+        try{
+            $user = auth()->user();
+            $user->phone = $request->phone;
+            $user->save();
+            return response()->json([
+                'message' => 'successfully',
+                'phone' => $user->phone
+            ], 200);
+        }
+        catch (Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
     public function editPassword(Request $request)
     {
         try{
