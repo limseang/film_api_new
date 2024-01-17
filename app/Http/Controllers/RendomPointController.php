@@ -174,7 +174,7 @@ class RendomPointController extends Controller
                     'image' => $uploadController->getSignedUrl($gift->image),
                     'status' => $rendomPoint->status,
                     'phone_number' => $rendomPoint->phone_number,
-                    'gift_count' => $giftCounts[$rendomPoint->gift_id],
+
                 ];
             }
 
