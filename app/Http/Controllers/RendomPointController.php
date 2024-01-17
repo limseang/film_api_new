@@ -155,13 +155,26 @@ class RendomPointController extends Controller
         try{
             $rendomPoints = RendomPoint::where('user_id', auth()->user()->id)->get();
             $uploadController = new UploadController();
+            $data = [];
             foreach ($rendomPoints as $rendomPoint){
-                $rendomPoint->gift->image = $uploadController->getSignedUrl($rendomPoint->gift->image);
+                $gift = Gift::find($rendomPoint->gift_id);
+                $data = [
+                    'id' => $rendomPoint->id,
+                    'user_id' => $rendomPoint->user_id,
+                    'gift_id' => $rendomPoint->gift_id,
+                    'code' => $rendomPoint->code,
+                    'image' => $uploadController->getSignedUrl($gift->image),
+                    'status' => $rendomPoint->status,
+                    'phone_number' => $rendomPoint->phone_number,
+
+
+                ];
             }
+
             return response()->json([
                 'status' => true,
                 'message' => 'RandomPoints List',
-                'data' => $rendomPoints
+                'data' => $data
             ]);
         }
         catch(\Exception $e){
