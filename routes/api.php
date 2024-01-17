@@ -84,7 +84,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/login/info', [UserLoginController::class, 'create']);
     Route::post('/user/update/fcm', [UserLoginController::class, 'updateFcm']);
     Route::post('/user/update/name', [UserConTroller::class, 'editName']);
-    Route::post('/user/update/phone', [UserConTroller::class, 'editPhone']);
+    Route::post('/user/update/phone', [UserConTroller::class, 'editPone']);
     Route::post('/user/update/password', [UserConTroller::class, 'editPassword']);
     Route::delete('/user/delete/', [UserConTroller::class, 'deleteAccount']);
 });
