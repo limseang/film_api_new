@@ -153,30 +153,23 @@ class RendomPointController extends Controller
     public function showUserRandom()
     {
         try{
-            $rendomPoints = RendomPoint::where('user_id', auth()->user()->id)->get();
+            $randomPoints = RendomPoint::with('gifts')->where('user_id', auth()->user()->id)->get();
             $uploadController = new UploadController();
 
             $giftCounts = [];
             $data = [];
-            foreach ($rendomPoints as $rendomPoint){
-                $gift = Gift::find($rendomPoint->gift_id);
-                if(array_key_exists($rendomPoint->gift_id, $giftCounts)){
-                    $giftCounts[$rendomPoint->gift_id] += 1;
+            foreach ($randomPoints as $randomPoint){
+                if($randomPoint->gifts != null) {
+                    $data[] = [
+                        'id' => $randomPoint->id,
+                        'user_id' => $randomPoint->user_id,
+                        'gift_id' => $randomPoint->gift_id,
+                        'code' => $randomPoint->code,
+                        'status' => $randomPoint->status,
+                        'phone_number' => $randomPoint->phone_number,
+
+                    ];
                 }
-                else{
-                    $giftCounts[$rendomPoint->gift_id] = 1;
-                }
-
-                $data[] = [
-                    'id' => $rendomPoint->id,
-                    'user_id' => $rendomPoint->user_id,
-                    'gift_id' => $rendomPoint->gift_id,
-                    'code' => $rendomPoint->code,
-
-                    'status' => $rendomPoint->status,
-                    'phone_number' => $rendomPoint->phone_number,
-
-                ];
             }
 
             return response()->json([
