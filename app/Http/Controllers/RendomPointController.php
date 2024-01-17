@@ -166,28 +166,23 @@ class RendomPointController extends Controller
                 else{
                     $giftCounts[$rendomPoint->gift_id] = 1;
                 }
-                if($gift->image){
-                    $gift->image = $uploadController->getSignedUrl($gift->image);
-                }
-                else {
-                    $gift->image = null;
-                }
-//                $data[] = [
-//                    'id' => $rendomPoint->id,
-//                    'user_id' => $rendomPoint->user_id,
-//                    'gift_id' => $rendomPoint->gift_id,
-//                    'code' => $rendomPoint->code,
-//                  'image' => $gift->image,
-//                    'status' => $rendomPoint->status,
-//                    'phone_number' => $rendomPoint->phone_number,
-//
-//                ];
+
+                $data[] = [
+                    'id' => $rendomPoint->id,
+                    'user_id' => $rendomPoint->user_id,
+                    'gift_id' => $rendomPoint->gift_id,
+                    'code' => $rendomPoint->code,
+                  'image' => $gift->image,
+                    'status' => $rendomPoint->status,
+                    'phone_number' => $rendomPoint->phone_number,
+
+                ];
             }
 
             return response()->json([
                 'status' => true,
                 'message' => 'RandomPoints List',
-                'data' => $rendomPoints
+                'data' => $data,
             ]);
         }
         catch(\Exception $e){
