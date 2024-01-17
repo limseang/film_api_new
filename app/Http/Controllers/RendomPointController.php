@@ -160,33 +160,30 @@ class RendomPointController extends Controller
             $data = [];
             foreach ($rendomPoints as $rendomPoint){
                 $gift = Gift::find($rendomPoint->gift_id);
-                if($gift->deleted_at != null){
-                    $gift->image = $uploadController->getSignedUrl($gift->image);
-                    $giftCounts[] = $gift;
+                if($gift->deleted_at == null){
                     if(array_key_exists($rendomPoint->gift_id, $giftCounts)){
                         $giftCounts[$rendomPoint->gift_id] += 1;
                     }
                     else{
                         $giftCounts[$rendomPoint->gift_id] = 1;
                     }
-
                     $data[] = [
                         'id' => $rendomPoint->id,
                         'user_id' => $rendomPoint->user_id,
                         'gift_id' => $rendomPoint->gift_id,
                         'code' => $rendomPoint->code,
+                        'image' => $uploadController->getSignedUrl($gift->image),
                         'status' => $rendomPoint->status,
                         'phone_number' => $rendomPoint->phone_number,
-
+                        'gift_count' => $giftCounts[$rendomPoint->gift_id],
                     ];
                 }
-
             }
 
             return response()->json([
                 'status' => true,
                 'message' => 'RandomPoints List',
-                'data' => $data,
+                'data' => $data
             ]);
         }
         catch(\Exception $e){
