@@ -125,8 +125,9 @@ class RendomPointController extends Controller
         try{
             $rendomPoint = RendomPoint::find($id);
             $gift = Gift::find($rendomPoint->gift_id);
+
             RendomPoint::where('id', $id)->update([
-                'status' => 0
+                'status' => 2
             ]);
             Gift::where('id', $rendomPoint->gift_id)->update([
                 'quantity' => $gift->quantity + 1
@@ -134,6 +135,9 @@ class RendomPointController extends Controller
             User::where('id', auth()->user()->id)->update([
                 'point' => auth()->user()->point + $gift->point
             ]);
+
+            //change status to 2
+
             return response()->json([
                 'status' => true,
                 'message' => 'RendomPoint Canceled',
