@@ -324,7 +324,7 @@ class FilmController extends Controller
         catch (\Exception $e){
             return response()->json([
                 'message' => 'Film retrieved failed',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
             ], 400);
         }
     }
