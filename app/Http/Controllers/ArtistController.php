@@ -15,7 +15,7 @@ class ArtistController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $artists = Artist::with('country')->groupBy('nationality')->get();
+            $artists = Artist::with('country')->get();
             $data = $artists->map(function ($artical) use ($uploadController) {
                 return [
                     'id' => $artical->id,
@@ -25,10 +25,9 @@ class ArtistController extends Controller
                     'profile' => $artical->profile ? $uploadController->getSignedUrl($artical->profile) : null,
                     'status' => $artical->status,
                 ];
-
-
-
             });
+            //short data group by nationality
+
             return response()->json([
                 'message' => 'Artists retrieved successfully',
                 'data' => $data
