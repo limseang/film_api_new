@@ -255,7 +255,7 @@ class FilmController extends Controller
                 'overview' => $film->overview,
                 'release_date' => $film->release_date,
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
-                'tag' => $film->tags->name,
+                'tag' => $film->tags->name ?? '',
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer,
                 'type' => $film->types->name ?? $film->type,
