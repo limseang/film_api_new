@@ -31,7 +31,7 @@ class ArtistController extends Controller
             });
             return response()->json([
                 'message' => 'Artists retrieved successfully',
-                'data' => $data->sortByDesc('nationality')
+                'data' => $data->sortByDesc('country')
             ], 200);
         }
         catch (\Exception $e){
