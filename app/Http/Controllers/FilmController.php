@@ -313,11 +313,11 @@ class FilmController extends Controller
                                 })
                             ];
                         }else{
-                            return [];
+                            return '';
                         }
                     }
 
-                }) ?? [],
+                }) ?? '',
 
             ];
             return response()->json([
