@@ -15,7 +15,7 @@ class ArtistController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $artists = Artist::with('country')->get();
+            $artists = Artist::with('country')->groupBy('nationality')->get();
             $data = $artists->map(function ($artical) use ($uploadController) {
                 return [
                     'id' => $artical->id,
@@ -31,7 +31,7 @@ class ArtistController extends Controller
             });
             return response()->json([
                 'message' => 'Artists retrieved successfully',
-                'data' => $data->groupBy('nationality')
+                'data' => $data
             ], 200);
         }
         catch (\Exception $e){
