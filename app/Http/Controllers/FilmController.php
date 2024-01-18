@@ -296,7 +296,7 @@ class FilmController extends Controller
                             'id' => $comment->id,
                             'comment' => $comment->comment,
                             'user_id' => (string)$comment->user_id,
-                            'user' => $comment->user->name ?? null,
+                            'user' => $comment->user->name ?? 'Anonymous',
                             'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ? (string)$film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
