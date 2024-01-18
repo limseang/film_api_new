@@ -313,7 +313,27 @@ class FilmController extends Controller
                                 })
                             ];
                         }else{
-                            return '';
+                            return  [
+                                'id' => $comment->id,
+                                'comment' => $comment->comment,
+                                'user_id' => (string)$comment->user_id,
+                                'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ?(string) $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
+                                'user' => 'Anonymous',
+                                'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+                                'created_at' => $comment->created_at,
+                                'confess' => $comment->confess,
+                                'reply' => $comment->reply->map(function ($reply) use ($film, $comment, $uploadController) {
+                                    return [
+                                        'id' => $reply->id,
+                                        'user_id' =>  (string)$reply->user_id,
+                                        'comment' => $reply->comment,
+                                        'user' => $reply->user->name,
+                                        'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ?(string) $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
+                                        'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+                                        'created_at' => $reply->created_at->format('d/m/Y'),
+                                    ];
+                                })
+                            ];
                         }
                     }
 
