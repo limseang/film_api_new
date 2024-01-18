@@ -32,7 +32,7 @@ class ArtistController extends Controller
             return response()->json([
                 'message' => 'Artists retrieved successfully',
                 //short by country id
-                'data' => $data->sortBy('country_id')
+                'data' => $data->sortBy('nationality')
             ], 200);
         }
         catch (\Exception $e){
