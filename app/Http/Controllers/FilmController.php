@@ -291,7 +291,6 @@ class FilmController extends Controller
                             })
                         ];
                     }else {
-                        if(!empty($comment->user)) {
                             return [
                                 'id' => $comment->id,
                                 'comment' => $comment->comment,
@@ -313,7 +312,6 @@ class FilmController extends Controller
                                 })
                             ];
                         }
-                    }
                 }) ?? '',
 
             ];
