@@ -84,7 +84,7 @@ class RateController extends Controller
             $rate->film_id = $request->film_id;
             $rate->rate = (string)$request->rate;
             $rate->save();
-            auth()->user()->point = auth()->user()->point + 3;
+            auth()->user()->point = auth()->user()->point + 1;
             auth()->user()->save();
 
             return response()->json([
