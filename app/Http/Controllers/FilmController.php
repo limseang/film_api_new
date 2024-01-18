@@ -442,5 +442,37 @@ class FilmController extends Controller
 
     }
 
+    public function showDelete()
+    {
+        try{
+            $uploadController = new UploadController();
+            $films = Film::onlyTrashed()->with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
+            $data = $films->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'release_date' => $film->release_date,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'rating' => (string) $this->countRate($film->id),
+                    'rate_people' => $this->countRatePeople($film->id),
+                    'type' => $film->types ? $film->types->name : null,
+                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                    'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                ];
+            });
+            return response()->json([
+                'message' => 'Films retrieved successfully',
+                'data' => $data->sortByDesc('created_at')->values()->all()
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Artists retrieved failed',
+                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
+            ], 400);
+        }
+
+    }
+
 
 }
