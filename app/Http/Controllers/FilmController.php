@@ -423,5 +423,24 @@ class FilmController extends Controller
         }
     }
 
+    public function restore($id)
+    {
+        try{
+            $film = Film::withTrashed()->find($id);
+            $film->restore();
+            return response()->json([
+                'message' => 'Film restored successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film restored failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
 
 }

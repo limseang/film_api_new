@@ -276,6 +276,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/new', [FilmController::class, 'create']);
         Route::post('/film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::delete('/film/delete/{id}', [FilmController::class, 'destroy']);
+        Route::post('/film/restore/{id}', [FilmController::class, 'restore']);
         Route::post('/film/update/type/{id}', [FilmController::class, 'ChangeType']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
 
