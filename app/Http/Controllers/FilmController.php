@@ -312,9 +312,8 @@ class FilmController extends Controller
                                     ];
                                 })
                             ];
-                        }
-                        else {
-                            [];
+                        }else{
+                            return [];
                         }
                     }
 
