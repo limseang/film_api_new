@@ -296,7 +296,7 @@ class FilmController extends Controller
                             'id' => $comment->id,
                             'comment' => $comment->comment,
                             'user_id' => (string)$comment->user_id,
-                            'user' => $comment->user->name,
+                            'user' => $comment->user->name ?? null,
                             'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ? (string)$film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                             'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                             'created_at' => $comment->created_at,
@@ -324,7 +324,7 @@ class FilmController extends Controller
         catch (\Exception $e){
             return response()->json([
                 'message' => 'Film retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
+                'error' => $e->getMessage()
             ], 400);
         }
     }
