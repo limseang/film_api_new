@@ -16,18 +16,21 @@ class ArtistController extends Controller
         try{
             $uploadController = new UploadController();
             $artists = Artist::with('country')->get();
-            $data = $artists->map(function ($artical) use ($uploadController) {
-                return [
-                    'id' => $artical->id,
-                    'name' => $artical->name,
-                    'nationality' => $artical->country ? $artical->country->nationality : '',
-                    'nationality_logo' => $artical->country ? $artical->country->flag : '',
-                    'profile' => $artical->profile ? $uploadController->getSignedUrl($artical->profile) : null,
-                    'status' => $artical->status,
-                ];
-            });
-            //short data group by nationality
-
+            $groupByNationality = collect($artists->groupBy('nationality_name'));
+            $data =[];
+            foreach ($groupByNationality as $key => $value){
+                foreach ($value as $item => $result)
+                {
+                    $data[$key][$item] =[
+                        'id' => $result->id,
+                        'name' => $result->name,
+                        'nationality' => $result->country ? $result->country->nationality : '',
+                        'nationality_logo' => $result->country ? $result->country->flag : '',
+                        'profile' => $result->profile ? $uploadController->getSignedUrl($result->profile) : null,
+                        'status' => $result->status,
+                    ];
+                }
+            }
             return response()->json([
                 'message' => 'Artists retrieved successfully',
                 'data' => $data
@@ -100,15 +103,15 @@ class ArtistController extends Controller
                 'biography' => $artist->biography,
                 'know_for' => $artist->known_for,
 
-                'film' => $artist->films->map(function ($film) use ($uploadController) {
-                    //if film id has douplicate show only 1
-
-                    return [
-                        'id' => $film->id,
-                        'title' => $film->title,
-                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    ];
-                }),
+//                'film' => $artist->films->map(function ($film) use ($uploadController) {
+//
+//                    return [
+//                        'id' => $film->id,
+//                        'title' => $film->title,
+//                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+//                    ];
+//                }),
+            'film' => $artist->casts ? $this->getFilmResource($artist->casts) : '',
                 'status' => $artist->status,
 
                 ];
@@ -125,6 +128,21 @@ class ArtistController extends Controller
             ], 400);
 
         }
+   }
+
+   public function getFilmResource($data)
+   {
+       $uploadController = new UploadController();
+       $response = [];
+         foreach ($data as $item) {
+                 $response[] = [
+                     'id' => $item->id,
+                     'title' => $item->title,
+                     'poster' => $item->poster ? $uploadController->getSignedUrl($item->poster) : null,
+                 ];
+         }
+            return $response;
+
    }
     public function destroy($id)
     {

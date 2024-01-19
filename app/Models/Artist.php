@@ -22,6 +22,10 @@ class Artist extends Model
         'film'
     ];
 
+    protected $appends =[
+        'nationality_name'
+    ];
+
    public function country()
    {
        return $this->belongsTo(Country::class,'nationality','id');
@@ -29,13 +33,21 @@ class Artist extends Model
 
  public function casts()
  {
-        return $this->hasMany(Cast::class,'actor_id','id');
+     // deleted_at is null
+        return $this->belongsToMany(Film::class,'casts','actor_id','film_id')->whereNull('casts.deleted_at');
  }
 
  public function films()
  {
         return $this->belongsToMany(Film::class,'casts','actor_id','film_id');
  }
+ public function getNationalityNameAttribute()
+ {
+     return $this->country->name ?? '';
+
+ }
+
+
 
 
 
