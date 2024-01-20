@@ -209,6 +209,7 @@ class RendomPointController extends Controller
                 'description' => $randomPoint->gifts->description,
                 'gift_name' => $randomPoint->gifts->name,
                 'gift_point' => $randomPoint->gifts->point,
+                'expired_date' => $randomPoint->gifts->expired_date,
 
             ];
 
