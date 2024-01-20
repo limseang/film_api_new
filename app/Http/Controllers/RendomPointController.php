@@ -191,4 +191,37 @@ class RendomPointController extends Controller
             ]);
         }
     }
+
+    public function ShowDetail($id)
+    {
+        try{
+            $randomPoint = RendomPoint::with('gifts')->where('id', $id)->first();
+            $uploadController = new UploadController();
+
+            $data = [
+                'id' => $randomPoint->id,
+                'user_id' => $randomPoint->user_id,
+                'gift_id' => $randomPoint->gift_id,
+                'code' => $randomPoint->code,
+                'image' => $uploadController->getSignedUrl($randomPoint->gifts->image),
+                'status' => $randomPoint->status,
+                'phone_number' => $randomPoint->phone_number,
+
+            ];
+
+            return response()->json([
+                'status' => true,
+                'message' => 'RandomPoints List',
+                'data' => $data,
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'RandomPoints List Failed',
+                'data' => $e->getMessage()
+            ]);
+        }
+
+    }
 }
