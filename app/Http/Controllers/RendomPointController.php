@@ -206,6 +206,9 @@ class RendomPointController extends Controller
                 'image' => $uploadController->getSignedUrl($randomPoint->gifts->image),
                 'status' => $randomPoint->status,
                 'phone_number' => $randomPoint->phone_number,
+                'description' => $randomPoint->gifts->description,
+                'gift_name' => $randomPoint->gifts->name,
+                'gift_point' => $randomPoint->gifts->point,
 
             ];
 
