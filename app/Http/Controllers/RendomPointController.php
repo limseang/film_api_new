@@ -125,18 +125,39 @@ class RendomPointController extends Controller
         try{
             $rendomPoint = RendomPoint::find($id);
             $gift = Gift::find($rendomPoint->gift_id);
+            $user = auth()->user();
+            if($user->role_id == 1 || $user->role_id == 2){
+                RendomPoint::where('id', $id)->update([
+                    'status' => 3
+                ]);
+                Gift::where('id', $rendomPoint->gift_id)->update([
+                    'quantity' => $gift->quantity + 1
+                ]);
+                User::where('id', auth()->user()->id)->update([
+                    'point' => User::where('id' , $rendomPoint->user_id)->first()->point + $gift->point
+                ]);
 
-            RendomPoint::where('id', $id)->update([
-                'status' => 3
-            ]);
-            Gift::where('id', $rendomPoint->gift_id)->update([
-                'quantity' => $gift->quantity + 1
-            ]);
-            User::where('id', auth()->user()->id)->update([
-                'point' => auth()->user()->point + $gift->point
-            ]);
+            }
+            else if($user->id == $rendomPoint->user_id){
 
-            //change status to 2
+                RendomPoint::where('id', $id)->update([
+                    'status' => 3
+                ]);
+                Gift::where('id', $rendomPoint->gift_id)->update([
+                    'quantity' => $gift->quantity + 1
+                ]);
+                User::where('id', auth()->user()->id)->update([
+                    'point' => auth()->user()->point + $gift->point
+                ]);
+
+            }
+            else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You are not allowed to cancel this gift',
+                    'data' => null
+                ]);
+            }
 
             return response()->json([
                 'status' => true,
@@ -228,4 +249,43 @@ class RendomPointController extends Controller
         }
 
     }
+
+    public function confirmRandom($id)
+    {
+        try{
+            $randomPoint = RendomPoint::find($id);
+            $user = auth()->user();
+            if($user->role_id == 1 || $user->role_id == 2){
+                RendomPoint::where('id', $id)->update([
+                    'status' => 2
+                ]);
+            }
+            else if($user->id == $randomPoint->user_id){
+                RendomPoint::where('id', $id)->update([
+                    'status' => 1
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You are not allowed to confirm this gift',
+                    'data' => null
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'RandomPoints Confirmed',
+                'data' => $randomPoint,
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'RandomPoints Confirmed Failed',
+                'data' => $e->getMessage()
+            ]);
+        }
+    }
+
 }
