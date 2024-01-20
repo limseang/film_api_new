@@ -326,6 +326,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/random/point/cancel/{id}', [RendomPointController::class, 'cancel']);
     Route::get('/random/point/user/', [RendomPointController::class, 'showUserRandom']);
     Route::get('/random/point/user/{id}', [RendomPointController::class, 'ShowDetail']);
+    Route::post('/random/point/confirm/{id}', [RendomPointController::class, 'confirmRandom']);
 });
 
 

@@ -181,7 +181,6 @@ class RendomPointController extends Controller
             $randomPoints = RendomPoint::with('gifts')->where('user_id', auth()->user()->id)->get();
             $uploadController = new UploadController();
 
-            $giftCounts = [];
             $data = [];
             foreach ($randomPoints as $randomPoint){
                 if($randomPoint->gifts != null) {
@@ -189,7 +188,7 @@ class RendomPointController extends Controller
                         'id' => $randomPoint->id,
                         'user_id' => $randomPoint->user_id,
                         'gift_id' => $randomPoint->gift_id,
-                        'code' => $randomPoint->code,
+                        'code' => $randomPoint->gifts->name,
                         'image' => $uploadController->getSignedUrl($randomPoint->gifts->image),
                         'status' => $randomPoint->status,
                         'phone_number' => $randomPoint->phone_number,
