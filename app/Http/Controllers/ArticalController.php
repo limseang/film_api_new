@@ -107,9 +107,11 @@ class ArticalController extends Controller
 
             $type = $artical->type->name;
             $user = UserLogin::all();
+            $fcm = [];
             foreach ($user as $item){
+                $fcm[] = $item->fcm_token;
                 $data = [
-                    'token' => $item->fcm_token,
+                    'token' => $fcm,
                     'title' => 'New '.$type.' Artical',
                     'body' => $artical->title,
                     'data' => [
