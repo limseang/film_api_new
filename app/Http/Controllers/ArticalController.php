@@ -110,16 +110,21 @@ class ArticalController extends Controller
             $fcm = [];
             foreach ($user as $item){
                 $fcm[] = $item->fcm_token;
-                $data = [
-                    'token' => $fcm,
-                    'title' => 'New '.$type.' Artical',
-                    'body' => $artical->title,
-                    'data' => [
-                        'id' => $artical->id,
-                        'type' => '1',
-                    ]
+               if(!$user->fcm_token){
+                     return response()->json([
+                          'message' => 'fcm token not found'
+                     ], 404);
+                }
+                 $data = [
+                      'token' => $fcm,
+                      'title' => $artical->title,
+                      'body' => 'New Artical has been post',
+                      'data' => [
+                            'id' => $artical->id,
+                            'type' => '1',
+                      ]
+                 ];
 
-                ];
                 PushNotificationService::pushNotification($data);
             }
             return response()->json([
