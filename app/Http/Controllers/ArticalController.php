@@ -107,24 +107,17 @@ class ArticalController extends Controller
 
             $type = $artical->type->name;
             $user = UserLogin::all();
-            $fcm = [];
             foreach ($user as $item){
-                $fcm[] = $item->fcm_token;
-               if(!$user->fcm_token){
-                     return response()->json([
-                          'message' => 'fcm token not found'
-                     ], 404);
-                }
-                 $data = [
-                      'token' => $fcm,
-                      'title' => $artical->title,
-                      'body' => 'New Artical has been post',
-                      'data' => [
-                            'id' => $artical->id,
-                            'type' => '1',
-                      ]
-                 ];
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => 'New '.$type.' Artical',
+                    'body' => $artical->title,
+                    'data' => [
+                        'id' => $artical->id,
+                        'type' => '1',
+                    ]
 
+                ];
                 PushNotificationService::pushNotification($data);
             }
             return response()->json([
