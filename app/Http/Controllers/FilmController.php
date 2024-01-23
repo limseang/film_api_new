@@ -105,7 +105,7 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
-                'poster' => $uploadController->getSignedUrl($item->poster),
+                'poster' => $item->poster ? $uploadController->getSignedUrl($item->poster) : $film_id->poster,
             ];
         }
         return $filmEpisode;
@@ -201,6 +201,7 @@ class FilmController extends Controller
                 $user = UserLogin::all();
                 $type = Type::find($request->type);
                 foreach ($user as $item){
+                    $fcm = [];
                     $data = [
                         'token' => $item->fcm_token,
                         'title' => $film->title,

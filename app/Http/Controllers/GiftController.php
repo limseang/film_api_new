@@ -3,22 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gift;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GiftController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try{
-            $gifts = Gift::all();
+
+            $gifts = Gift::query()->where('expired_date', '>=', date('Y-m-d h:i:s'))->where('quantity', '>', 0)->get();
             $uploadController = new UploadController();
-           //show only gift that have quantity > 0
-            $gifts = $gifts->filter(function ($gift) {
-                return $gift->quantity > 0;
-            });
             foreach($gifts as $gift){
                 $gift->image = $uploadController->getSignedUrl($gift->image);
             }
