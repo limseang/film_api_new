@@ -202,9 +202,8 @@ class FilmController extends Controller
                 $type = Type::find($request->type);
                 foreach ($user as $item){
                     $fcm = [];
-                    $fcm[] = $item->fcm_token;
                     $data = [
-                        'token' => $fcm,
+                        'token' => $item->fcm_token,
                         'title' => $film->title,
                         'body' => $type->description,
                         'data' => [

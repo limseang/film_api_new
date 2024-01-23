@@ -63,11 +63,11 @@ class EpisodeController extends Controller
             $episode->save();
 
             $user = UserLogin::all();
-            $fcm = [];
+
             foreach ($user as $item){
-                $fcm[] = $item->fcm_token;
+
                 $data = [
-                    'token' => $fcm,
+                    'token' => $item->fcm_token,
                     'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
                     'body' => 'New Episode has been post',
                     'data' => [
