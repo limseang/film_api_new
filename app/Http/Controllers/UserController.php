@@ -205,12 +205,16 @@ class UserController extends Controller
          else{
              $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
          }
+         $response =[];
+         foreach ($user as $key=>$value){
+             $response[$key] = (string)$value;
+         }
 
 
 
          return response()->json([
              'message' => 'User successfully get info',
-             'user' => (string)$user,
+             'user' => $response,
          ], 200);
 
 
