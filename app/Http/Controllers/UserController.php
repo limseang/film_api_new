@@ -210,7 +210,7 @@ class UserController extends Controller
 
          return response()->json([
              'message' => 'User successfully get info',
-             'user' => $user,
+             'user' => (string)$user,
          ], 200);
 
 
