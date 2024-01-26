@@ -62,21 +62,21 @@ class EpisodeController extends Controller
             $episode->file = $request->file;
             $episode->save();
 
-            $user = UserLogin::all();
-
-            foreach ($user as $item){
-
-                $data = [
-                    'token' => $item->fcm_token,
-                    'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
-                    'body' => 'New Episode has been post',
-                    'data' => [
-                        'id' => $episode->film_id,
-                        'type' => '2',
-                    ]
-                ];
-                PushNotificationService::pushNotification($data);
-            }
+//            $user = UserLogin::all();
+//
+//            foreach ($user as $item){
+//
+//                $data = [
+//                    'token' => $item->fcm_token,
+//                    'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
+//                    'body' => 'New Episode has been post',
+//                    'data' => [
+//                        'id' => $episode->film_id,
+//                        'type' => '2',
+//                    ]
+//                ];
+//                PushNotificationService::pushNotification($data);
+//            }
             $film = Film::find($episode->film_id);
             $film->created_at = $episode->created_at;
             $film->save();
