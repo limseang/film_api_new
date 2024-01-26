@@ -82,7 +82,8 @@ class EpisodeController extends Controller
             $film->save();
             return response()->json([
                 'message' => 'successfully',
-                'data' => $episode
+                'data' => $episode,
+                'created_at' => $film->created_at
             ], 200);
 
 
