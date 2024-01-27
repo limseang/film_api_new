@@ -35,20 +35,18 @@ class SendNotificationJob implements ShouldQueue
         try {
             $episode = $this->episode;
             $user = UserLogin::all();
-
+            $fcmToken = [];
             foreach ($user as $item) {
-
-                $data = [
-                    'token' => $item->fcm_token,
-                    'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
-                    'body' => 'New Episode has been post',
-                    'data' => [
-                        'id' => $episode->film_id,
-                        'type' => '2',
-                    ]
-                ];
-                PushNotificationService::pushNotification($data);
+                $fcmToken[] = $item->fcm_token;
             }
+            PushNotificationService::pushMultipleNotification([
+                'token' => $fcmToken,
+                'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
+                'body' => 'New Episode has been post',
+                'data' => [
+                    'id' => $episode->film_id,
+                    'type' => '2',
+                ]]);
         }catch (Exception $e){
             Log::error($e->getMessage());
         }

@@ -35,6 +35,35 @@ namespace App\Services;
             }
 
         }
+
+        public static function pushMultipleNotification(array $businessParams=[
+            'token' => [],
+            'title' => "",
+            'body' => "",
+            'data' => [],
+        ]): void
+        {
+            try{
+                $firebase = (new Factory)
+                    ->withServiceAccount(__DIR__.'/firebase_credentials.json');
+                $messaging = $firebase->createMessaging();
+                $notification = CloudMessage::withTargetToken(['token', $businessParams['token']])
+                    ->withNotification([
+                        'title' => $businessParams['title'] ?? "",
+                        'body' => $businessParams['body'] ?? "",
+                        'image' => $businessParams['image'] ?? "",
+                        'type' => $businessParams['type'] ?? '',
+                        'data' => $businessParams['data'] ?? [],
+                        'id' => $businessParams['id'] ?? '',
+                        'sound' => 'default',
+                    ])->withData($businessParams['data'] ?? []);
+                $messaging->send($notification);
+
+            }catch (Exception $e){
+                log::error($e->getMessage());
+            }
+
+        }
     }
 
 
