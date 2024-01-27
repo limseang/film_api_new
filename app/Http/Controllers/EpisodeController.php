@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendNotificationJob;
 use App\Models\Episode;
 use App\Models\Film;
 use App\Models\UserLogin;
@@ -61,6 +62,7 @@ class EpisodeController extends Controller
             );
             $episode->file = $request->file;
             $episode->save();
+            Dispatch(new SendNotificationJob($episode))->onQueue('default');
 
 //            $user = UserLogin::all();
 //
