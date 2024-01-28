@@ -81,7 +81,7 @@ class EpisodeController extends Controller
 //            }
             $film = Film::find($episode->film_id);
            $film->update([
-                'updated_at' => now()
+                'created_at' => now()
             ]);
             return response()->json([
                 'message' => 'successfully',
