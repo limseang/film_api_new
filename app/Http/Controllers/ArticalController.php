@@ -17,6 +17,7 @@ use App\Models\video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PushNotificationService;
+use Illuminate\Support\Str;
 
 class ArticalController extends Controller
 {
@@ -34,6 +35,7 @@ class ArticalController extends Controller
             }
 
             $data = $articals->map(function ($artical) {
+                $description = strip_tags(str_replace('&nbsp;', ' ', $artical->description));
                 return [
                     'id' => $artical->id,
                     'title' => $artical->title,
@@ -42,7 +44,8 @@ class ArticalController extends Controller
                     'comment' => $this->countCmt($artical->id),
                     'share' => $artical->share,
                     'image' => $artical->image,
-                    'description' => $artical->description,
+                    'description' => Str::limit($description, 100, '.....'),
+
                     'type' => $artical->type ? $artical->type->name : '',
                     'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];

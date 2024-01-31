@@ -47,7 +47,7 @@ namespace App\Services;
                 $firebase = (new Factory)
                     ->withServiceAccount(__DIR__.'/firebase_credentials.json');
                 $messaging = $firebase->createMessaging();
-                foreach ($businessParams['token'] as $token){
+                foreach ($businessParams['token'] as  $token){
                     $notification = CloudMessage::withTarget('token', $token)
                         ->withNotification([
                             'title' => $businessParams['title'] ?? "",
