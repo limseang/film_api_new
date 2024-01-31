@@ -1,5 +1,7 @@
 <?php
 namespace App\Services;
+    use Kreait\Firebase\Exception\FirebaseException;
+    use Kreait\Firebase\Exception\MessagingException;
     use Kreait\Firebase\Messaging\CloudMessage;
     use Kreait\Firebase\Factory;
     use Exception;
@@ -36,6 +38,10 @@ namespace App\Services;
 
         }
 
+        /**
+         * @throws MessagingException
+         * @throws FirebaseException
+         */
         public static function pushMultipleNotification(array $businessParams=[
             'token' => [],
             'title' => "",
@@ -44,10 +50,12 @@ namespace App\Services;
         ]): void
         {
             try{
+
                 $firebase = (new Factory)
                     ->withServiceAccount(__DIR__.'/firebase_credentials.json');
                 $messaging = $firebase->createMessaging();
-                foreach ($businessParams['token'] as  $token){
+                $messages = [];
+                foreach ($businessParams['token'] as $token) {
                     $notification = CloudMessage::withTarget('token', $token)
                         ->withNotification([
                             'title' => $businessParams['title'] ?? "",
@@ -58,8 +66,9 @@ namespace App\Services;
                             'id' => $businessParams['id'] ?? '',
                             'sound' => 'default',
                         ])->withData($businessParams['data'] ?? []);
-                    $messaging->send($notification);
+                    $messages[] = $notification;
                 }
+                $messaging->sendAll($messages);
 
             }catch (Exception $e){
                 log::error($e->getMessage());
