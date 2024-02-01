@@ -208,6 +208,7 @@ class FilmController extends Controller
                 ];
                 $message = $type->description;
 
+
                 Dispatch(new SendNotificationJob($subject, $message))->onQueue('default');
 
             }
