@@ -63,37 +63,16 @@ class EpisodeController extends Controller
             $episode->file = $request->file;
             $episode->save();
 
-//            $episode = $this->episode;
-//            $user = UserLogin::all();
-//            $fcmToken = [];
-//            foreach ($user as $item) {
-//                $fcmToken[] = $item->fcm_token;
-//            }
-//            PushNotificationService::pushMultipleNotification([
-//                'token' => $fcmToken,
-//                'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
-//                'body' => 'New Episode has been post',
-//                'data' => [
-//                    'id' => $episode->film_id,
-//                    'type' => '2',
-//                ]]);
-            Dispatch(new SendNotificationJob($episode))->onQueue('default');
+            $subject=[
+                'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
+                'id' => $episode->film_id,
+                'type' => '2',
+            ];
+            $message = 'New Episode has been post';
 
-//            $user = UserLogin::all();
-//
-//            foreach ($user as $item){
-//
-//                $data = [
-//                    'token' => $item->fcm_token,
-//                    'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
-//                    'body' => 'New Episode has been post',
-//                    'data' => [
-//                        'id' => $episode->film_id,
-//                        'type' => '2',
-//                    ]
-//                ];
-//                PushNotificationService::pushNotification($data);
-//            }
+            Dispatch(new SendNotificationJob($subject, $message))->onQueue('default');
+
+
             $film = Film::find($episode->film_id);
            $film->update([
                 'created_at' => now()

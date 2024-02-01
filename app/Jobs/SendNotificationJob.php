@@ -22,9 +22,11 @@ class SendNotificationJob implements ShouldQueue
      * Create a new job instance.
      */
     protected $episode;
-    public function __construct($episode)
+    public function __construct( $subject, $message)
     {
-        $this->episode = $episode;
+        $this->subject = $subject;
+        $this->message = $message;
+
     }
 
     /**
@@ -33,7 +35,7 @@ class SendNotificationJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $episode = $this->episode;
+            $episode = $this->subject;
             $user = UserLogin::all();
             $fcmToken = [];
             foreach ($user as $item) {
@@ -41,11 +43,11 @@ class SendNotificationJob implements ShouldQueue
             }
             PushNotificationService::pushMultipleNotification([
                 'token' => $fcmToken,
-                'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
-                'body' => 'New Episode has been post',
+                'title' => $episode['title'],
+                'body' => $this->message,
                 'data' => [
-                    'id' => $episode->film_id,
-                    'type' => '2',
+                    'id' => $episode['id'],
+                    'type' => $episode['type'],
                 ]]);
         }catch (Exception $e){
             Log::error($e->getMessage());
