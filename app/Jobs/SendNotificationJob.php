@@ -45,7 +45,7 @@ class SendNotificationJob implements ShouldQueue
 //
             PushNotificationService::pushMultipleNotification([
                 'token' => $fcmToken,
-                'title' => $this->$subject['title'],
+                'title' => $subject['title'],
                 'body' => 'New Episode has been post',
                 'data' => [
                     'id' => '1',
