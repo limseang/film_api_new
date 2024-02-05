@@ -35,6 +35,7 @@ class SendNotificationJob implements ShouldQueue
     {
         try {
             $subject = $this->subject;
+            $message = $this->message;
 
             $user = UserLogin::all();
             $fcmToken = [];
@@ -46,7 +47,7 @@ class SendNotificationJob implements ShouldQueue
             PushNotificationService::pushMultipleNotification([
                 'token' => $fcmToken,
                 'title' => $subject['title'],
-                'body' => 'New Episode has been post',
+                'body' => $message,
                 'data' => [
                     'id' => '1',
                     'type' => '2',

@@ -77,11 +77,10 @@ class EpisodeController extends Controller
 //                    'id' => $episode->film_id,
 //                    'type' => '2',
 //                ]]);
-            $subject = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
-            $message ='test';
+            $subjects = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
+            $message ='New Episode has been post';
             $subject = [
-                'title' => $subject,
-                'body' => 'New Episode has been post',
+                'title' => $subjects,
                 'data' => [
                     'id' => $episode->film_id,
                     'type' => '2',
