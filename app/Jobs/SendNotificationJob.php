@@ -13,6 +13,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class SendNotificationJob implements ShouldQueue
 {
@@ -21,7 +23,7 @@ class SendNotificationJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $episode;
+    protected $subject, $message;
     public function __construct($subject, $message)
     {
         $this->subject = $subject;
@@ -44,14 +46,15 @@ class SendNotificationJob implements ShouldQueue
                 $fcmToken[] = $item->fcm_token;
             }
 //
-            PushNotificationService::pushMultipleNotification([
-                'token' => $fcmToken,
-                'title' => $subject['title'],
-                'body' => $message,
-                'data' => [
-                    'id' => '1',
-                    'type' => '2',
-                ]]);
+                PushNotificationService::pushMultipleNotification([
+                    'token' => $fcmToken,
+                    'title' => $subject['title'],
+                    'body' => $message,
+                    'data' => [
+                        'id' => '1',
+                        'type' => '2',
+                    ]]);
+
         }catch (Exception $e){
             Log::error($e->getMessage());
         }
