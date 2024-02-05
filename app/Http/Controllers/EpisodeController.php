@@ -63,20 +63,7 @@ class EpisodeController extends Controller
             $episode->file = $request->file;
             $episode->save();
 
-//            $episode = $this->episode;
-//            $user = UserLogin::all();
-//            $fcmToken = [];
-//            foreach ($user as $item) {
-//                $fcmToken[] = $item->fcm_token;
-//            }
-//            PushNotificationService::pushMultipleNotification([
-//                'token' => $fcmToken,
-//                'title' => $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode,
-//                'body' => 'New Episode has been post',
-//                'data' => [
-//                    'id' => $episode->film_id,
-//                    'type' => '2',
-//                ]]);
+
             $subjects = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
             $message ='New Episode has been post';
             $subject = [
@@ -86,27 +73,12 @@ class EpisodeController extends Controller
                     'type' => '2',
                 ]
             ];
+            $film = Film::find($episode->film_id);
+            $film->update([
+                'created_at' => $episode->created_at
+            ]);
             Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
 
-//            $user = UserLogin::all();
-//
-//            foreach ($user as $item){
-//
-//                $data = [
-//                    'token' => $item->fcm_token,
-//                    'title' => $episode->title . ' ' .'S'. $episode->season . ' ' .'Ep'. $episode->episode ,
-//                    'body' => 'New Episode has been post',
-//                    'data' => [
-//                        'id' => $episode->film_id,
-//                        'type' => '2',
-//                    ]
-//                ];
-//                PushNotificationService::pushNotification($data);
-//            }
-            $film = Film::find($episode->film_id);
-           $film->update([
-                'created_at' => now()
-            ]);
             return response()->json([
                 'message' => 'successfully',
                 'data' => $episode,
