@@ -15,7 +15,7 @@ class ArtistController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $artists = Artist::with('country')->get();
+            $artists = Artist::with('country')->OrderBy('name','DESC')->get();
             $groupByNationality = collect($artists->groupBy('nationality_name'));
             $data =[];
             foreach ($groupByNationality as $key => $value){
