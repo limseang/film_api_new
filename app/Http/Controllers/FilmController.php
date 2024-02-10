@@ -363,7 +363,8 @@ class FilmController extends Controller
             //map data use date show only month has key and value is array of film
             foreach ($films as $film){
                 //release date form is d-m-Y but show only month
-                $month = date('F', strtotime($film->release_date));
+                $dates = date('d/m/Y', strtotime($film->release_date));
+                $month = date('F', strtotime($dates));
                 if($film->release_date > $date){
                     $data[$month][] = [
                         'id' => $film->id,
