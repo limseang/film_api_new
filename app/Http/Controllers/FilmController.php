@@ -358,14 +358,13 @@ class FilmController extends Controller
             $uploadController = new UploadController();
             $films = Film::where('type', 10)->with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
            $data = [];
-           $date = date('d-m-Y');
-
-            //map data use date show only month has key and value is array of film
             foreach ($films as $film){
                 //release date form is d-m-Y but show only month
-                $dates = date('d/m/Y', strtotime($film->release_date));
-                $month = date('F', strtotime($dates));
-                if($film->release_date > $date){
+                $date = $film->release_date;
+                $formattedDate = date('d/m/Y', strtotime($date));
+                $month = date('F', strtotime($formattedDate));
+                $currentDate = date('d/m/Y');
+                if($date > $currentDate){
                     $data[$month][] = [
                         'id' => $film->id,
                         'title' => $film->title,
@@ -374,13 +373,11 @@ class FilmController extends Controller
                         'rating' => (string) $this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
-//                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                     ];
                 }
-
             }
-            return response()->json([
+                return response()->json([
                 'message' => 'Films retrieved successfully',
                 'data' => $data
             ], 200);
