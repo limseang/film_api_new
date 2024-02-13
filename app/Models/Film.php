@@ -86,10 +86,10 @@ class Film extends Model
         return $this->hasMany(Comment::class,'item_id','id')->where('type',2);
     }
 
-    public function getReleaseDateAttribute()
-    {
-        return date('Y-m-d',strtotime($this->attributes['release_date']));
-
-    }
+//    public function getReleaseDateAttribute()
+//    {
+//        return date('Y-m-d',strtotime($this->attributes['release_date']));
+//
+//    }
 
 }
