@@ -13,6 +13,7 @@ use App\Models\UserLogin;
 use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Constraint\Count;
+use Carbon\Carbon;
 
 class FilmController extends Controller
 {
@@ -354,34 +355,36 @@ class FilmController extends Controller
 
     public function FilmComingSoon()
     {
-        try{
+        try {
             $uploadController = new UploadController();
-            $films = Film::where('type', 10)->with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
-           $data = [];
-            foreach ($films as $film){
-                //release date form is d-m-Y but show only month
-                $date = $film->release_date;
-                $formattedDate = date('d/m/Y', strtotime($date));
-                $month = date('F', strtotime($formattedDate));
-                $currentDate = date('d/m/Y');
-                if($date > $currentDate){
-                    $data[$month][] = [
-                        'id' => $film->id,
-                        'title' => $film->title,
-                        'release_date' => $film->release_date,
-                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                        'rating' => (string) $this->countRate($film->id),
-                        'rate_people' => $this->countRatePeople($film->id),
-                        'type' => $film->types ? $film->types->name : null,
-                        'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
-                    ];
-                }
+            $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
+            $data = [];
+            $groupByMonth = collect($films)->groupBy(function ($item) {
+                return carbon::parse($item->release_date)->format('F Y');
+            });
+            foreach ($groupByMonth as $key => $item) {
+                $data[$key] = [
+                    'film' => $item->map(function ($film) use ($uploadController) {
+                        return [
+                            'id' => $film->id,
+                            'title' => $film->title,
+                            'release_date' => $film->release_date,
+                            'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                            'rating' => (string)$this->countRate($film->id),
+                            'rate_people' => $this->countRatePeople($film->id),
+                            'type' => $film->types ? $film->types->name : null,
+                            'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                            'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                        ];
+                    }),
+                ];
             }
-                return response()->json([
+            return response()->json([
                 'message' => 'Films retrieved successfully',
                 'data' => $data
             ], 200);
         }
+
         catch (\Exception $e){
             return response()->json([
                 'message' => 'Artists retrieved failed',
