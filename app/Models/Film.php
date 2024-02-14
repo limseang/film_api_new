@@ -29,6 +29,9 @@ class Film extends Model
         'trailer',
         'release_date'
     ];
+    protected $appends=[
+        'release_date_format',
+    ];
 
     public function categories()
     {
@@ -86,10 +89,10 @@ class Film extends Model
         return $this->hasMany(Comment::class,'item_id','id')->where('type',2);
     }
 
-//    public function getReleaseDateAttribute()
-//    {
-//        return date('Y-m-d',strtotime($this->attributes['release_date']));
-//
-//    }
+    public function getReleaseDateFormatAttribute()
+    {
+        return date('d/m/Y',strtotime($this->attributes['release_date']));
+
+    }
 
 }

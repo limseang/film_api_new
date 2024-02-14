@@ -360,7 +360,7 @@ class FilmController extends Controller
             $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
-                return carbon::parse($item->release_date)->format('F Y');
+                return carbon::parse($item->release_date_format)->format('F Y');
             });
             foreach ($groupByMonth as $key => $item) {
                 $data[$key] = [
