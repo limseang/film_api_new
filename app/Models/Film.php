@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Film extends Model
 {
@@ -91,7 +92,7 @@ class Film extends Model
 
     public function getReleaseDateFormatAttribute()
     {
-        return date('d/m/Y',strtotime($this->attributes['release_date']));
+       return date('d/m/Y',strtotime($this->attributes['release_date']));
 
     }
 

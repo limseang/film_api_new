@@ -360,6 +360,7 @@ class FilmController extends Controller
             $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
+                var_dump($item->release_date_format);
                 return carbon::parse($item->release_date_format)->format('F Y');
             });
             foreach ($groupByMonth as $key => $item) {
@@ -368,6 +369,7 @@ class FilmController extends Controller
                         return [
                             'id' => $film->id,
                             'title' => $film->title,
+                            'release_date_format' => $film->release_date_format,
                             'release_date' => $film->release_date,
                             'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                             'rating' => (string)$this->countRate($film->id),
