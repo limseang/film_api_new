@@ -360,17 +360,17 @@ class FilmController extends Controller
             $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
-                var_dump($item->release_date_format);
-                return carbon::parse($item->release_date_format)->format('F Y');
+                return Carbon::parse($item->release_date)->format('F Y');
             });
+
             foreach ($groupByMonth as $key => $item) {
                 $data[$key] = [
                     'film' => $item->map(function ($film) use ($uploadController) {
                         return [
                             'id' => $film->id,
                             'title' => $film->title,
-                            'release_date_format' => $film->release_date_format,
-                            'release_date' => $film->release_date,
+                            'release_date_format' => Carbon::parse($film->release_date)->format('d/m/Y'),
+                            'release_date' => Carbon::parse($film->release_date)->format('F'),
                             'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                             'rating' => (string)$this->countRate($film->id),
                             'rate_people' => $this->countRatePeople($film->id),
@@ -385,14 +385,15 @@ class FilmController extends Controller
                 'message' => 'Films retrieved successfully',
                 'data' => $data
             ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve films',
+                'error' => $e->getMessage()
+            ], 400);
+
         }
 
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Artists retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
-            ], 400);
-        }
+
 
     }
 
