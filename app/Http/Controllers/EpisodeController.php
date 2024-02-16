@@ -74,9 +74,9 @@ class EpisodeController extends Controller
                 ]
             ];
             $film = Film::find($episode->film_id);
-            $film->update([
-                'created_at' => $episode->created_at
-            ]);
+            //update film
+            $film->created_at = now();
+            $film->save();
             Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
 
             return response()->json([
