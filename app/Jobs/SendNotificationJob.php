@@ -39,23 +39,25 @@ class SendNotificationJob implements ShouldQueue
             $subject = $this->subject;
             $message = $this->message;
 
-            $user = UserLogin::all();
             $fcmToken = [];
 
-            foreach ($user as $item) {
-                $fcmToken[] = $item->fcm_token;
-            }
-//
-                PushNotificationService::pushMultipleNotification([
-                    'token' => $fcmToken,
-                    'title' => $subject['title'],
-                    'body' => $message,
-                    'data' => [
-                        'id' => '1',
-                        'type' => '2',
-                    ]]);
+            UserLogin::chunk(200, function ($users) use (&$fcmToken) {
+                foreach ($users as $user) {
+                    $fcmToken[] = $user->fcm_token;
+                }
+            });
 
-        }catch (Exception $e){
+            PushNotificationService::pushMultipleNotification([
+                'token' => $fcmToken,
+                'title' => $subject['title'],
+                'body' => $message,
+                'data' => [
+                    'id' => '1',
+                    'type' => '2',
+                ]
+            ]);
+
+        } catch (Exception $e) {
             Log::error($e->getMessage());
         }
     }
