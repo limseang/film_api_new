@@ -12,8 +12,7 @@ use App\Models\Type;
 use App\Models\UserLogin;
 use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\Constraint\Count;
-use Carbon\Carbon;
+use DateTime;
 
 class FilmController extends Controller
 {
@@ -360,26 +359,24 @@ class FilmController extends Controller
             $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
-                return Carbon::parse($item->release_date)->format('d/m/Y');
+                return DateTime::createFromFormat('d/m/Y', $item->release_date)->format('F Y');
             });
 
             foreach ($groupByMonth as $key => $item) {
-                $data[$key] = [
-                    'film' => $item->map(function ($film) use ($uploadController) {
+                $data[$key] = $item->map(function ($film) use ($uploadController) {
                         return [
                             'id' => $film->id,
                             'title' => $film->title,
-                            'release_date_format' => Carbon::parse($film->release_date)->format('d/m/Y'),
-                            'release_date' => Carbon::parse($film->release_date)->format('F'),
-                            'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                            'release_date_format' => $film->release_date_format,
+                            'release_date' => $film->release_date,
+//                            'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                             'rating' => (string)$this->countRate($film->id),
                             'rate_people' => $this->countRatePeople($film->id),
                             'type' => $film->types ? $film->types->name : null,
                             'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                             'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                         ];
-                    }),
-                ];
+                    });
             }
             return response()->json([
                 'message' => 'Films retrieved successfully',
@@ -388,7 +385,7 @@ class FilmController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to retrieve films',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage().$e->getLine().$e->getFile()
             ], 400);
 
         }
@@ -396,6 +393,7 @@ class FilmController extends Controller
 
 
     }
+
 
     public function showByRate()
     {

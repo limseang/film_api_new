@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
-
+use DateTime;
 class Film extends Model
 {
     use HasFactory , SoftDeletes;
@@ -92,8 +92,10 @@ class Film extends Model
 
     public function getReleaseDateFormatAttribute()
     {
-       return date('d/m/Y',strtotime($this->attributes['release_date']));
-
+//       return date('d/m/Y',strtotime('27/03/2024'));
+        $dateString = '27/03/2024';
+        $date = DateTime::createFromFormat('d/m/Y', $dateString);
+        return $date->format('d/m/Y');
     }
 
 }
