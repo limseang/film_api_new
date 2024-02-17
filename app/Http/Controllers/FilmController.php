@@ -211,8 +211,10 @@ class FilmController extends Controller
                 UserLogin::chunk(200, function ($users) use (&$fcmToken) {
                     foreach ($users as $user) {
                         $fcmToken[] = $user->fcm_token;
+
                     }
                 });
+                dd($fcmToken);
                 PushNotificationService::pushNotification([
                     'token' => $fcmToken,
                     'title' => $subject['title'],
