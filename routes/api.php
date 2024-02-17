@@ -283,7 +283,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
 
 /* Episode */
-        Route::post('/film/episode/new/{id}', [EpisodeController::class, 'create']);
+        Route::post('/film/episode/new/', [EpisodeController::class, 'create']);
         Route::delete('/film/episode/delete/{id}', [EpisodeController::class, 'destroy']);
     });
 });

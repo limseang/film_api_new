@@ -44,13 +44,19 @@ class EpisodeController extends Controller
     }
 
 
-    public function create(Request $request, $id)
+    public function create(Request $request)
     {
         try{
-            $film = Film::find($id);
+            $film = Film::find($request->film_id);
             $uploadController = new UploadController();
             $episode = new Episode();
-            $episode->film_id = $film->id;
+            $episode->film_id = $request->film_id;
+          //validate film_id
+            if(!$film){
+                return response()->json([
+                    'message' => 'Film not found',
+                ], 400);
+            }
             $episode->title = $request->title;
             $episode->description = $request->description;
             $episode->episode = $request->episode;
