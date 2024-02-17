@@ -356,7 +356,7 @@ class FilmController extends Controller
     {
         try {
             $uploadController = new UploadController();
-            $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
+            $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'ASC')->get();
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
                 return DateTime::createFromFormat('d/m/Y', $item->release_date)->format('F Y');
