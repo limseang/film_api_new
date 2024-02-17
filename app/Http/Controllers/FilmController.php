@@ -208,22 +208,22 @@ class FilmController extends Controller
                 $message = $type->description;
 
                 $fcmToken = [];
-                UserLogin::chunk(200, function ($users) use (&$fcmToken) {
+                UserLogin::chunk(100, function ($users) use (&$fcmToken) {
                     foreach ($users as $user) {
                         $fcmToken[] = $user->fcm_token;
 
                     }
                 });
-                dd($fcmToken);
-                PushNotificationService::pushNotification([
+                $data = [
                     'token' => $fcmToken,
-                    'title' => $subject['title'],
+                    'title' => $film->title,
                     'body' => $message,
                     'data' => [
                         'id' => '1',
                         'type' => '2',
                     ]
-                ]);
+                ];
+                PushNotificationService::pushMultipleNotification($data);
 
 
 
