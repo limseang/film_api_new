@@ -80,7 +80,7 @@ class EpisodeController extends Controller
             $film->save();
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
             $fcmToken = [];
-            UserLogin::chunk(100, function ($users) use (&$fcmToken) {
+            UserLogin::chunk(200, function ($users) use (&$fcmToken) {
                 foreach ($users as $user) {
                     $fcmToken[] = $user->fcm_token;
                 }
