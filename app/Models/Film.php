@@ -92,9 +92,7 @@ class Film extends Model
 
     public function getReleaseDateFormatAttribute()
     {
-//       return date('d/m/Y',strtotime('27/03/2024'));
-        $dateString = '27/03/2024';
-        $date = DateTime::createFromFormat('d/m/Y', $dateString);
+        $date = DateTime::createFromFormat('d/m/Y', $this->attributes['release_date']);
         return $date->format('d/m/Y');
     }
 
