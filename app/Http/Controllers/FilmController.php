@@ -201,15 +201,30 @@ class FilmController extends Controller
             if($request->type != 10 && $request->type != 14){
 
                 $type = Type::find($request->type);
-                $subject=[
+                $subject = [
                     'title' => $film->title,
-                    'id' => $film->id,
-                    'type' => '2',
+                    'description' => $type->description,
                 ];
                 $message = $type->description;
 
+                $fcmToken = [];
+                UserLogin::chunk(200, function ($users) use (&$fcmToken) {
+                    foreach ($users as $user) {
+                        $fcmToken[] = $user->fcm_token;
+                    }
+                });
+                PushNotificationService::pushNotification([
+                    'token' => $fcmToken,
+                    'title' => $subject['title'],
+                    'body' => $message,
+                    'data' => [
+                        'id' => '1',
+                        'type' => '2',
+                    ]
+                ]);
 
-                Dispatch(new SendNotificationJob($subject, $message))->onQueue('default');
+
+
 
             }
             return response()->json([
