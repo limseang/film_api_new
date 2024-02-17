@@ -356,27 +356,33 @@ class FilmController extends Controller
     {
         try {
             $uploadController = new UploadController();
-            $films = Film::where('type', 10)->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])->orderBy('release_date', 'DESC')->get();
+            $films = Film::query()->where('type', 10)
+                ->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])
+                ->get()
+                ->sortBy(function($film) {
+                    return DateTime::createFromFormat('d/m/Y', $film->release_date)->format('Ym');
+                });
             $data = [];
             $groupByMonth = collect($films)->groupBy(function ($item) {
-                return DateTime::createFromFormat('d/m/Y', $item->release_date)->format('F Y');
+                return DateTime::createFromFormat('d/m/Y', $item->release_date_format)->format('F Y');
             });
 
             foreach ($groupByMonth as $key => $item) {
+                // order by release date
                 $data[$key] = $item->map(function ($film) use ($uploadController) {
-                        return [
-                            'id' => $film->id,
-                            'title' => $film->title,
-                            'release_date_format' => $film->release_date_format,
-                            'release_date' => $film->release_date,
-//                            'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                            'rating' => (string)$this->countRate($film->id),
-                            'rate_people' => $this->countRatePeople($film->id),
-                            'type' => $film->types ? $film->types->name : null,
-                            'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                            'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
-                        ];
-                    });
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'release_date_format' => $film->release_date_format,
+                        'release_date' => $film->release_date,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'rating' => (string)$this->countRate($film->id),
+                        'rate_people' => $this->countRatePeople($film->id),
+                        'type' => $film->types ? $film->types->name : null,
+                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+                        'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                    ];
+                })->sortBy('release_date')->values()->all();
             }
             return response()->json([
                 'message' => 'Films retrieved successfully',
