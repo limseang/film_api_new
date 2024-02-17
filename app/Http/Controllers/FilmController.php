@@ -211,7 +211,6 @@ class FilmController extends Controller
                 UserLogin::chunk(100, function ($users) use (&$fcmToken) {
                     foreach ($users as $user) {
                         $fcmToken[] = $user->fcm_token;
-
                     }
                 });
                 $data = [
