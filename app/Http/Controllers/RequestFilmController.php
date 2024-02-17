@@ -158,8 +158,8 @@ class RequestFilmController extends Controller
                 foreach ($userLogin as $item) {
                     $data = [
                         'token' => $item->fcm_token,
-                        'title' => 'your request film accepted',
-                        'body' => $requestFilm->film_name,
+                        'title' => 'Your request film was uploaded successfully',
+                        'body' => "Now you can watch it! Please help us by rating the film. Thank you!",
                         'type' => 2,
                         'data' => [
                             'id' => $requestFilm->id,
