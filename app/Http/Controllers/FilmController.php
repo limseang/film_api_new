@@ -556,7 +556,7 @@ class FilmController extends Controller
                     'message' => 'Genre not found',
                 ], 400);
             }
-            $film->film_id = $request->film_id;
+            $film->id = $request->film_id;
             $film->genre_id = $request->genre_id;
             $film->save();
             return response()->json([
