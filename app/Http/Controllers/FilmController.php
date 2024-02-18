@@ -7,6 +7,7 @@ use App\Models\Cast;
 use App\Models\Episode;
 use App\Models\Film;
 use App\Models\FilmAvailable;
+use App\Models\Genre;
 use App\Models\Rate;
 use App\Models\Type;
 use App\Models\UserLogin;
@@ -548,7 +549,15 @@ class FilmController extends Controller
                     'message' => 'Film not found',
                 ], 400);
             }
-            $film->genre = $request->genre;
+            // validate genre id
+            $genre = Genre::find($request->genre_id);
+            if(!$genre){
+                return response()->json([
+                    'message' => 'Genre not found',
+                ], 400);
+            }
+            $film->film_id = $request->film_id;
+            $film->genre_id = $request->genre_id;
             $film->save();
             return response()->json([
                 'message' => 'Film updated successfully',
