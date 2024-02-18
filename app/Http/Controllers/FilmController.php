@@ -55,7 +55,7 @@ class FilmController extends Controller
     public function getCategoryResource($data){
         $categories = [];
         foreach ($data as $item){
-            $categories[] = $item->name;
+            $categories[] = $item;
 
         }
         return $categories;
