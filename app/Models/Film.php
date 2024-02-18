@@ -96,4 +96,10 @@ class Film extends Model
         return $date->format('d/m/Y');
     }
 
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class,'genre_id','id');
+
+    }
+
 }

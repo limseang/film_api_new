@@ -263,7 +263,7 @@ class FilmController extends Controller
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment'])->find($id);
+            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment','genre'])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title ?? null,
@@ -282,6 +282,7 @@ class FilmController extends Controller
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
+                'genre' => $film->genre ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
                         return  [

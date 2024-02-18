@@ -16,6 +16,7 @@ use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
@@ -287,6 +288,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/film/episode/delete/{id}', [EpisodeController::class, 'destroy']);
     });
 });
+
+/* Genre */
+
+Route::get('/genre', [GenreController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/genre/new', [GenreController::class, 'create']);
+        Route::delete('/genre/delete/{id}', [GenreController::class, 'destroy']);
+    });
+});
+
 
 /* Cast for film */
 Route::get('/all/cast', [CastController::class, 'index']);
