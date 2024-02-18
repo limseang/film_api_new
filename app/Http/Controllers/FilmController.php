@@ -539,5 +539,30 @@ class FilmController extends Controller
 
     }
 
+    public function addGenre(Request $request)
+    {
+        try{
+            $film = Film::find($request->film_id);
+            if(!$film){
+                return response()->json([
+                    'message' => 'Film not found',
+                ], 400);
+            }
+            $film->genre = $request->genre;
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
 
 }
