@@ -556,6 +556,12 @@ class FilmController extends Controller
                     'message' => 'Genre not found',
                 ], 400);
             }
+           //1 film has only 1 genre
+            if($film->genre){
+                return response()->json([
+                    'message' => 'Film has already had genre',
+                ], 400);
+            }
             $film->id = $request->film_id;
             $film->genre_id = $request->genre_id;
             $film->save();

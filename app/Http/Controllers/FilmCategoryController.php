@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Film;
 use App\Models\FilmCategory;
 use Illuminate\Http\Request;
 
@@ -34,8 +36,30 @@ class FilmCategoryController extends Controller
     {
         try{
             $filmCategory = new FilmCategory();
-            $filmCategory->film_id = $request->film_id;
+
+           //validate film_id
+            $film = Film::find($request->film_id);
+            if(!$film){
+                return response()->json([
+                    'message' => 'Film not found',
+                ], 400);
+            }
+            //validate category_id
+            $category = Category::find($request->category_id);
+            if(!$category){
+                return response()->json([
+                    'message' => 'Category not found',
+                ], 400);
+            }
+            //validate film_id and category_id if it exists in the database
+            $filmCategoryExist = FilmCategory::where('film_id', $request->film_id)->where('category_id', $request->category_id)->first();
+            if($filmCategoryExist){
+                return response()->json([
+                    'message' => 'FilmCategory already exists',
+                ], 400);
+            }
             $filmCategory->category_id = $request->category_id;
+            $filmCategory->film_id = $request->film_id;
             $filmCategory->save();
             return response()->json([
                 'message' => 'FilmCategory created successfully',
