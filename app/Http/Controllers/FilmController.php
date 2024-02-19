@@ -53,10 +53,10 @@ class FilmController extends Controller
     }
 
     public function getCategoryResource($data){
+       //show name and id of category
         $categories = [];
         foreach ($data as $item){
-            $categories[] = $item;
-
+            $categories[] = $item->categories;
         }
         return $categories;
     }
