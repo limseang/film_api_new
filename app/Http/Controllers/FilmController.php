@@ -198,8 +198,12 @@ class FilmController extends Controller
             $film->overview = $request->overview;
             $film->release_date = $request->release_date;
             $film->rating = '0';
-            $film->category = $request->category;
-            $film->tag = $request->tag;
+           if($request->category){
+                $film->category = $request->category;
+           }
+           if($request->tag){
+                    $film->tag = $request->tag;
+                }
            if($request->cover){
                $film->cover = $uploadController->uploadFile($request->cover, 'film');
               }
