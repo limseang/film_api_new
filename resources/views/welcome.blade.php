@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cenimagic</title>
+    <title>Cinemagickh</title>
     <link rel="icon" type="image/x-icon" href="https://play-lh.googleusercontent.com/EMWDXCC2I_yUbxaybXBKiGDo3kDcTr2msPHaUAh0-ooQTt3DcuBMmEgLcnQegElZWEU2=s96-rw">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
