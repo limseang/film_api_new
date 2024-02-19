@@ -53,11 +53,20 @@ class FilmController extends Controller
     }
 
     public function getCategoryResource($data){
-       //show name and id of category
         $categories = [];
+
         foreach ($data as $item){
-            $categories[] = $item->categories;
+            $categories[] = $item->name;
         }
+//        foreach ($data as $key => $item){
+//            $categories[$key] =[
+//
+//                    'id' => $item->id,
+//                    'name' => $item->name,
+//
+//            ];
+//
+//        }
         return $categories;
     }
 
@@ -272,7 +281,8 @@ class FilmController extends Controller
                 'release_date' => $film->release_date ?? null,
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
-                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+
+//                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
                 'running_time' => $film->running_time,
@@ -282,7 +292,7 @@ class FilmController extends Controller
                 'available' => $this->filmAvailables($film->id) ,
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
-                'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
+//                'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
                 'genre' => $film->genre ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
