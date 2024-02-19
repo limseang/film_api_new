@@ -61,7 +61,6 @@ class EpisodeController extends Controller
             $episode->description = $request->description;
             $episode->episode = $request->episode;
             $episode->season = $request->season;
-            $request->notification;
             $episode->release_date = $request->release_date;
             $episode->poster = $uploadController->UploadFilm(
                 $request->file('poster'),
@@ -80,7 +79,7 @@ class EpisodeController extends Controller
             $film->created_at = now();
             $film->save();
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
-           if($episode->notification == 1){
+           if($request->notification == 1){
                $fcmToken = [];
                UserLogin::chunk(200, function ($users) use (&$fcmToken) {
                    foreach ($users as $user) {
