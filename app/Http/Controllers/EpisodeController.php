@@ -61,7 +61,7 @@ class EpisodeController extends Controller
             $episode->description = $request->description;
             $episode->episode = $request->episode;
             $episode->season = $request->season;
-            $episode->notification = $request->notification;
+            $request->notification;
             $episode->release_date = $request->release_date;
             $episode->poster = $uploadController->UploadFilm(
                 $request->file('poster'),
