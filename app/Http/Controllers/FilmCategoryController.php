@@ -75,10 +75,17 @@ class FilmCategoryController extends Controller
     }
 
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try{
-            $filmCategory = FilmCategory::find($id);
+            $filmCategory = FilmCategory::find($request->id);
+            //validate if filmCategory exists
+            if(!$filmCategory){
+                return response()->json([
+                    'message' => 'FilmCategory not found',
+                ], 400);
+            }
+
             $filmCategory->delete();
             return response()->json([
                 'message' => 'FilmCategory deleted successfully',
