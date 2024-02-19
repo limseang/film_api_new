@@ -282,7 +282,7 @@ class FilmController extends Controller
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
 
-//                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
                 'running_time' => $film->running_time,
@@ -292,7 +292,7 @@ class FilmController extends Controller
                 'available' => $this->filmAvailables($film->id) ,
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
-//                'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
+                'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
                 'genre' => $film->genre ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
