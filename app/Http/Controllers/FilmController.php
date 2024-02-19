@@ -200,8 +200,13 @@ class FilmController extends Controller
             $film->rating = '0';
             $film->category = $request->category;
             $film->tag = $request->tag;
-            $film->cover =  $uploadController->uploadFile($request->cover, 'avatar');
-            $film->poster =  $uploadController->uploadFile($request->poster, 'avatar');
+           if($request->cover){
+               $film->cover = $uploadController->uploadFile($request->cover, 'film');
+              }
+            if($request->poster){
+                $film->poster = $uploadController->uploadFile($request->poster, 'film');
+            }
+
             $film->trailer = $request->trailer;
             $film->type = $request->type;
             $film->director = $request->director;
