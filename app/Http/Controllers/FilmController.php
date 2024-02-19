@@ -579,5 +579,38 @@ class FilmController extends Controller
 
     }
 
+    public function update(Request $request)
+    {
+        try{
+            $film = Film::find($request->id);
+            $uploadController = new UploadController();
+            $film->title = $request->title ?? $film->title;
+            $film->overview = $request->overview ?? $film->overview;
+            $film->release_date = $request->release_date ?? $film->release_date;
+            $film->rating = $request->rating ?? $film->rating;
+            $film->category = $request->category ?? $film->category;
+            $film->tag = $request->tag ?? $film->tag;
+            $film->cover =  $uploadController->uploadFile($request->cover, 'avatar') ?? $film->cover;
+            $film->poster =  $uploadController->uploadFile($request->poster, 'avatar') ?? $film->poster;
+            $film->trailer = $request->trailer ?? $film->trailer;
+            $film->type = $request->type ?? $film->type;
+            $film->director = $request->director ?? $film->director;
+            $film->running_time = $request->running_time ?? $film->running_time;
+            $film->language = $request->language ?? $film->language;
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
 
 }
