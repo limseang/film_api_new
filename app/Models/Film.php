@@ -99,7 +99,10 @@ class Film extends Model
     public function genre()
     {
         return $this->belongsTo(Genre::class,'genre_id','id');
-
+    }
+    public function distributors()
+    {
+        return $this->belongsTo(Distributor::class,'distributor_id','id');
     }
 
 }

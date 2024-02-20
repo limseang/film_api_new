@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendNotificationJob;
 use App\Models\Cast;
+use App\Models\Distributor;
 use App\Models\Episode;
 use App\Models\Film;
 use App\Models\FilmAvailable;
@@ -312,7 +313,7 @@ class FilmController extends Controller
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment','genre'])->find($id);
+            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment','genre','distributors'])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title ?? null,
@@ -320,7 +321,7 @@ class FilmController extends Controller
                 'release_date' => $film->release_date ?? null,
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
-
+                'distributors' => $film->distributors->name ?? 'N/A',
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
@@ -646,6 +647,44 @@ class FilmController extends Controller
             $film->director = $request->director ?? $film->director;
             $film->running_time = $request->running_time ?? $film->running_time;
             $film->language = $request->language ?? $film->language;
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
+    public function addDistributor(Request $request)
+    {
+        try{
+            $film = Film::find($request->film_id);
+            if(!$film){
+                return response()->json([
+                    'message' => 'Film not found',
+                ], 400);
+            }
+            $distributor = Distributor::find($request->distributor_id);
+            if(!$distributor){
+                return response()->json([
+                    'message' => 'Distributor not found',
+                ], 400);
+            }
+            //1 film has only 1 distributor
+            if($film->distributors){
+                return response()->json([
+                    'message' => 'Film has already had distributor',
+                ], 400);
+            }
+            $film->id = $request->film_id;
+            $film->distributor_id = $request->distributor_id;
             $film->save();
             return response()->json([
                 'message' => 'Film updated successfully',

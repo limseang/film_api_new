@@ -12,6 +12,7 @@ use App\Http\Controllers\CinemBranchController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
@@ -283,6 +284,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/update/type/{id}', [FilmController::class, 'ChangeType']);
         Route::post('/film/update/{id}', [FilmController::class, 'update']);
         Route::post('/film/add/genre', [FilmController::class, 'addGenre']);
+        Route::post('/film/add/distributor', [FilmController::class, 'addDistributor']);
 
 /* Episode */
         Route::post('/film/episode/new/', [EpisodeController::class, 'create']);
@@ -378,6 +380,18 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/available/update/{id}', [AvailableInController::class, 'update']);
     });
 });
+
+/* distributor */
+Route::get('/distributor', [DistributorController::class, 'index']);
+Route::get('/distributor/{id}', [DistributorController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/distributor/new', [DistributorController::class, 'create']);
+        Route::delete('/distributor/delete/{id}', [DistributorController::class, 'destroy']);
+        Route::post('/distributor/update/', [DistributorController::class, 'edit']);
+    });
+});
+
 
 /* send Notification */
 
