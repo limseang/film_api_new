@@ -78,6 +78,36 @@ class FilmController extends Controller
         return $casts;
     }
 
+    public function deleteCategory(Request $request){
+        try{
+//
+            $film_id = $request->film_id;
+
+            $category_id = $request->category_id;
+
+            $film = Film::find($film_id);
+            $filmCategoryExist = $film->filmCategories()->where('category_id', $category_id)->first();
+            if(!$filmCategoryExist){
+                return response()->json([
+                    'message' => 'not found',
+                ], 400);
+            }
+            $film->filmCategories()->detach($category_id);
+            return response()->json([
+                'message' => 'deleted successfully',
+                'data' => $film
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'deleted failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
+
 
 
     public function countRate($film_id){

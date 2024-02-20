@@ -361,7 +361,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/film/category/new', [FilmCategoryController::class, 'create']);
         Route::post('/film/category/edit/{id}', [FilmCategoryController::class, 'edit']);
-        Route::delete('/film/category/delete/{id}', [FilmCategoryController::class, 'destroy']);
+        Route::delete('/film/category/delete', [FilmController::class, 'deleteCategory']);
     });
 
 

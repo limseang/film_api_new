@@ -78,18 +78,36 @@ class FilmCategoryController extends Controller
     public function destroy(Request $request)
     {
         try{
-            $filmCategory = FilmCategory::find($request->id);
-            //validate if filmCategory exists
+         $request->validate([
+             'film_id' => 'required',
+             'category_id' => 'required'
+            ]);
+            $filmCategory = FilmCategory::where('film_id', $request->film_id)->where('category_id', $request ->category_id)->first();
+
+            //dd film title
+            $film = Film::find($request->film_id);
+            if(!$film){
+                return response()->json([
+                    'message' => 'Film not found',
+                ], 400);
+            }
+            $category = Category::find($request->category_id);
+            if(!$category){
+                return response()->json([
+                    'message' => 'Category not found',
+                ], 400);
+            }
+            $filmCategory = FilmCategory::where('film_id', $request->film_id)->where('category_id', $request->category_id)->first();
+            dd($filmCategory);
+
             if(!$filmCategory){
                 return response()->json([
                     'message' => 'FilmCategory not found',
                 ], 400);
             }
-
             $filmCategory->delete();
             return response()->json([
                 'message' => 'FilmCategory deleted successfully',
-                'data' => $filmCategory
             ], 200);
         }
         catch (\Exception $e){
