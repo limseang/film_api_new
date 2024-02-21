@@ -637,9 +637,6 @@ class FilmController extends Controller
             $film->title = $request->title ?? $film->title;
             $film->overview = $request->overview ?? $film->overview;
             $film->release_date = $request->release_date ?? $film->release_date;
-            $film->rating = $request->rating ?? $film->rating;
-            $film->category = $request->category ?? $film->category;
-            $film->tag = $request->tag ?? $film->tag;
             if($request->cover){
                 $film->cover = $uploadController->uploadFile($request->cover, 'film');
             }
@@ -647,10 +644,12 @@ class FilmController extends Controller
                 $film->poster = $uploadController->uploadFile($request->poster, 'film');
             }
             $film->trailer = $request->trailer ?? $film->trailer;
-            $film->type = $request->type ?? $film->type;
-            $film->director = $request->director ?? $film->director;
             $film->running_time = $request->running_time ?? $film->running_time;
-            $film->language = $request->language ?? $film->language;
+            $film->type;
+           if($request->type){
+               $film->type = $request->type ?? $film->type;
+           }
+
             $film->save();
             return response()->json([
                 'message' => 'Film updated successfully',
