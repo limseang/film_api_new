@@ -485,11 +485,13 @@ class ArticalController extends Controller
             $uploadController = new UploadController();
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical']);
             $film = Film::with(['languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
-            $video = video::with(['film', 'article', 'categories','types','tags','title']);
+            $video = video::with(['film', 'article', 'categories','types','tags']);
+            $tag = Tag::all();
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
                 $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
                 $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
+                $tag->where('name', 'like', '%' . $request->title . '%');
 //                $film->whereHas('tags', function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
 
             }
