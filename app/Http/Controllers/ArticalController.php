@@ -489,7 +489,7 @@ class ArticalController extends Controller
             $tag = Tag::all();
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
-                $film->where('title', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
                 $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
                 $tag->where('name', 'like', '%' . $request->title . '%');
 //                $film->whereHas('tags', function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
@@ -508,7 +508,7 @@ class ArticalController extends Controller
                         'rating' => (string) $this->countRate($film->id),
                         'type' => $film->types ? $film->types->name : null,
                         'tag' => $film->tags ? $film->tags->name : null,
-                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
+//                        'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'created_at' => $film->created_at,
                     ];
                 }),
