@@ -23,23 +23,23 @@ class UserController extends Controller
         try{
             $cloudController = new UploadController();
            $user = User::all();
-            $role = role::all();
-            foreach ($user as $item) {
-                foreach ($role as $roleItem) {
-                    if ($item->role_id == $roleItem->id) {
-                        $item->role_id = $roleItem->name;
+
+            foreach ($user as $item){
+                if(!empty($item['avatar'])){
+                    if (filter_var($item['avatar'], FILTER_VALIDATE_URL)) {
+
+                    }
+                    else{
+                        $item['avatar'] = $cloudController->getSignedUrl($item['avatar']);
                     }
                 }
-                if ($item->avatar != null) {
-                    if (filter_var($item->avatar, FILTER_VALIDATE_URL)) {
-                    } else {
-                        $item->avatar = $cloudController->getSignedUrl($item->avatar);
-                    }
+                else{
+                    $item['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
                 }
-           }
+            }
             return response()->json([
                 'message' => 'users retrieved successfully',
-                'users' => $user
+                'data' => $user
             ], 200);
 
         }
