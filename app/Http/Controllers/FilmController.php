@@ -42,13 +42,15 @@ class FilmController extends Controller
                 ];
             });
 
-            //show 1 page 10 films
 
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'current_page' => $films->currentPage(),
-                'total_pages' => $films->lastPage(),
-                'data' => $data->sortByDesc('created_at')->values()->all()
+
+                'data' => [
+                    'films' => $data->sortByDesc('created_at')->values()->all(),
+                    'current_page' => $films->currentPage(),
+                    'total_pages' => $films->lastPage()
+                ]
             ], 200);
         }
         catch (\Exception $e){
