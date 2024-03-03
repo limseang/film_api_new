@@ -15,14 +15,14 @@ class LikeController extends Controller
         try{
             $like = Like::all();
             return response()->json([
-                'message' => 'likes retrieved successfully',
+                'message' => 'success',
                 'likes' => $like
             ], 200);
 
         }
         catch(\Exception $e){
             return response()->json([
-                'message' => 'likes retrieved failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 400);
         }
@@ -49,13 +49,13 @@ class LikeController extends Controller
             $user->point = $user->point + 1;
             $user->save();
             return response()->json([
-                'message' => 'Like created successfully',
+                'message' => 'success',
                 'data' => $like
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in creating like',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -77,14 +77,14 @@ class LikeController extends Controller
             $user->point = $user->point - 1;
             $user->save();
             return response()->json([
-                'message' => 'Like deleted successfully',
+                'message' => 'success',
                 'data' => $like
             ], 200);
 
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in deleting like',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }

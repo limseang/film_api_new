@@ -19,13 +19,13 @@ class OriginController extends Controller
                 $origin->logo = $uploadController->getSignedUrl($origin->logo);
             }
             return response()->json([
-                'message' => 'Origins retrieved successfully',
+                'message' => 'success',
                 'data' => $origins
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving origins',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -49,13 +49,13 @@ class OriginController extends Controller
             $origin->page_id = $request->page_id;
             $origin->save();
             return response()->json([
-                'message' => 'Origin created successfully',
+                'message' => 'success',
                 'data' => $origin
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in creating origin',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -79,13 +79,13 @@ class OriginController extends Controller
             $origin = Origin::find($id);
             $origin->logo = $uploadController->getSignedUrl($origin->logo);
             return response()->json([
-                'message' => 'Origin retrieved successfully',
+                'message' => 'success',
                 'data' => $origin
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving origin',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -113,13 +113,13 @@ class OriginController extends Controller
             $origin = Origin::find($id);
             $origin->delete();
             return response()->json([
-                'message' => 'Origin deleted successfully',
+                'message' => 'success',
                 'data' => $origin
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in deleting origin',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }

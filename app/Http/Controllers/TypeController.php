@@ -15,13 +15,13 @@ class TypeController extends Controller
         try{
             $types = Type::all();
             return response()->json([
-                'message' => 'Types retrieved successfully',
+                'message' => 'success',
                 'data' => $types
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving types',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -39,13 +39,13 @@ class TypeController extends Controller
 
             $type->save();
             return response()->json([
-                'message' => 'Type created successfully',
+                'message' => 'success',
                 'data' => $type
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in creating type',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -56,13 +56,13 @@ class TypeController extends Controller
         try{
             $type = Type::find($id);
             return response()->json([
-                'message' => 'Type retrieved successfully',
+                'message' => 'success',
                 'data' => $type
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving type',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -74,13 +74,13 @@ class TypeController extends Controller
             $type = Type::find($id);
             $type->delete();
             return response()->json([
-                'message' => 'Type deleted successfully',
+                'message' => 'success',
                 'data' => $type
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in deleting type',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }

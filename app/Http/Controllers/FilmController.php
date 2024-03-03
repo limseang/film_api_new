@@ -23,7 +23,7 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(20);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -40,6 +40,9 @@ class FilmController extends Controller
 
                 ];
             });
+
+            //show 1 page 10 films
+
             return response()->json([
                 'message' => 'Films retrieved successfully',
                 'data' => $data->sortByDesc('created_at')->values()->all()

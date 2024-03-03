@@ -24,13 +24,13 @@ class CategoryController extends Controller
                 }
             }
             return response()->json([
-                'message' => 'Categories retrieved successfully',
+                'message' => 'success',
                 'data' => $categories
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving categories',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -51,13 +51,13 @@ class CategoryController extends Controller
 
             $category->save();
             return response()->json([
-                'message' => 'Category created successfully',
+                'message' => 'success',
                 'data' => $category
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in creating category',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -69,13 +69,13 @@ class CategoryController extends Controller
         try{
             $category = Category::find($id);
             return response()->json([
-                'message' => 'Category retrieved successfully',
+                'message' => 'success',
                 'data' => $category
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in retrieving category',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -88,13 +88,13 @@ class CategoryController extends Controller
             $category = Category::find($id);
             $category->delete();
             return response()->json([
-                'message' => 'Category deleted successfully',
+                'message' => 'success',
                 'data' => $category
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in deleting category',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -108,13 +108,13 @@ class CategoryController extends Controller
             $category->image= $uploadController->UploadFile($request->file('image'));
             $category->save();
             return response()->json([
-                'message' => 'Category image added successfully',
+                'message' => 'success',
                 'data' => $category
             ], 200);
         }
         catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error in adding category image',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }

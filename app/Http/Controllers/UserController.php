@@ -67,9 +67,13 @@ class UserController extends Controller
             $user->phone = $request->phone;
             $user->password = bcrypt($request->password);
             $user->save();
+            $data = [
+                'user_id' => $user->id,
+                'fcm_token' => $request->fcm_token,
+            ];
             return response()->json([
                 'message' => 'success',
-                'user' => $user
+                'user' => $data,
             ], 200);
 
 
@@ -94,14 +98,14 @@ class UserController extends Controller
             if(!$user){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'email Account not much',
+                    'message' => 'Account not much',
                 ]);
             }
             // check password
             if(!Hash::check($request->password, $user->password)){
                 return response()->json([
                     'status' => 401,
-                    'message' => 'passwordAccount not much',
+                    'message' => 'Account not much',
                 ]);
             }
             // create token
@@ -337,7 +341,7 @@ class UserController extends Controller
 
     }
 
-    public function editPone(Request $request)
+    public function changePhone(Request $request)
     {
         try{
             $user = auth()->user();
@@ -378,45 +382,7 @@ class UserController extends Controller
     }
 
 
-    /* Todo: Blade Method */
-    public function loginBlade(Request $request)
 
-    {
-        try{
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string',
-            ]);
-            // check user
-            $user = User::where('email', $request->email)->first();
-            if(!$user){
-                return response()->json([
-                    'status' => 401,
-                    'message' => 'email Account not much',
-                ]);
-            }
-            // check password
-            if(!Hash::check($request->password, $user->password)){
-                return response()->json([
-                    'status' => 401,
-                    'message' => 'passwordAccount not much',
-                ]);
-            }
-            // create token
-            $token = $user->createToken('auth_token')->plainTextToken;
-            $count = User::all()->count();
-            $article = Artical::all()->count();
-            $film = Film::all()->count();
-            return view('home', compact('token','count','article','film'));
-        }
-        catch(Exception $e){
-            return response()->json([
-                'status' => 501,
-                'message' => 'Error',
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
 
    public function deleteAccount()
    {
