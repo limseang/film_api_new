@@ -48,7 +48,7 @@ class FilmController extends Controller
 
                 'data' => [
                     'current_page' => $films->currentPage(),
-                    'total_pages' => $films->lastPage()
+                    'total_pages' => $films->lastPage(),
                     'films' => $data->sortByDesc('created_at')->values()->all(),
 
                 ]
