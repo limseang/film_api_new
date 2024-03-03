@@ -38,14 +38,14 @@ class UserController extends Controller
                 }
             }
             return response()->json([
-                'message' => 'users retrieved successfully',
+                'message' => 'success',
                 'data' => $user
             ], 200);
 
         }
         catch(\Exception $e){
             return response()->json([
-                'message' => 'users retrieved failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 400);
         }
@@ -66,7 +66,7 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
             $user->save();
             return response()->json([
-                'message' => 'User successfully registered',
+                'message' => 'success',
                 'user' => $user
             ], 200);
 
@@ -127,11 +127,11 @@ class UserController extends Controller
             $request->user()->currentAccessToken()->delete();
             UserLogin::where('user_id', auth()->user()->id)->first()->delete();
             return response()->json([
-                'message' => 'User successfully signed out'
+                'message' => 'success'
             ], 200);
         }catch(Exception $e){
             return response()->json([
-                'message' => 'User failed signed out',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -143,13 +143,13 @@ class UserController extends Controller
             $user->avatar = $cloudController->uploadFile($request->avatar, 'avatar');
             $user->save();
             return response()->json([
-                'message' => 'successfully',
+                'message' => 'success',
                 'avatar' => $cloudController->getSignedUrl($user->avatar)
             ], 200);
         }
         catch(Exception $e){
             return response()->json([
-                'message' => 'failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
