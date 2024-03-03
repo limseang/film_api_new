@@ -215,7 +215,7 @@ class UserController extends Controller
 
 
          return response()->json([
-             'message' => 'User successfully get info',
+             'message' => 'success',
              'user' => $response,
          ], 200);
 
@@ -224,7 +224,7 @@ class UserController extends Controller
      }
      catch (Exception $e){
          return response()->json([
-             'message' => 'User failed add avatar',
+             'message' => 'error',
              'error' => $e->getMessage()
          ], 500);
      }
@@ -251,7 +251,7 @@ class UserController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'status' => 200,
-                'message' => 'Success',
+                'message' => 'success',
                 'token' => $token,
                 'user' => $user
             ]);
@@ -259,7 +259,7 @@ class UserController extends Controller
         catch(Exception $e){
             return response()->json([
                 'status' => 501,
-                'message' => 'Error',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ]);
         }
@@ -283,7 +283,7 @@ class UserController extends Controller
         ];
         PushNotificationService::pushNotification($data);
         return response()->json([
-            'message' => 'successfully',
+            'message' => 'success',
             'notification' => $data
         ], 200);
 
@@ -308,7 +308,7 @@ class UserController extends Controller
         }
         catch (Exception $e){
             return response()->json([
-                'message' => 'failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -322,13 +322,13 @@ class UserController extends Controller
             $user->name = $request->name;
             $user->save();
             return response()->json([
-                'message' => 'successfully',
+                'message' => 'success',
                 'name' => $user->name
             ], 200);
         }
         catch (Exception $e){
             return response()->json([
-                'message' => 'failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -342,13 +342,13 @@ class UserController extends Controller
             $user->phone = $request->phone;
             $user->save();
             return response()->json([
-                'message' => 'successfully',
+                'message' => 'success',
                 'phone' => $user->phone
             ], 200);
         }
         catch (Exception $e){
             return response()->json([
-                'message' => 'failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -362,13 +362,13 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
             $user->save();
             return response()->json([
-                'message' => 'successfully',
+                'message' => 'success',
                 'user' => $user
             ], 200);
         }
         catch (Exception $e){
             return response()->json([
-                'message' => 'failed',
+                'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -422,12 +422,12 @@ class UserController extends Controller
            $user = auth()->user();
            $user->delete();
            return response()->json([
-               'message' => 'successfully',
+               'message' => 'success',
            ], 200);
        }
        catch (Exception $e){
            return response()->json([
-               'message' => 'failed',
+               'message' => 'error',
                'error' => $e->getMessage()
            ], 500);
        }
