@@ -46,7 +46,7 @@ class FilmController extends Controller
 
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'current_page' => $films->$page(),
+                'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'data' => $data->sortByDesc('created_at')->values()->all()
             ], 200);
