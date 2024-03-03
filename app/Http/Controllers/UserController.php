@@ -108,7 +108,6 @@ class UserController extends Controller
                 'status' => 200,
                 'message' => 'Success',
                 'token' => $token,
-                'user' => $user
             ]);
         }
         catch(Exception $e){
