@@ -229,6 +229,34 @@ class FilmController extends Controller
 
     }
 
+    public function updateFilm($id, Request $request)
+    {
+        try{
+            $film = Film::find($id);
+            $uploadController = new UploadController();
+           $film->update($request->all());
+            if($request->cover){
+                $film->cover = $uploadController->uploadFile($request->cover, 'film');
+            }
+            if($request->poster){
+                $film->poster = $uploadController->uploadFile($request->poster, 'film');
+            }
+            $film->save();
+            return response()->json([
+                'message' => 'Film updated successfully',
+                'data' => $film
+            ], 200);
+
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Film updated failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
 
     public function create(Request $request)
     {
