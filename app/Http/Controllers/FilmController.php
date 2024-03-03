@@ -19,7 +19,7 @@ use DateTime;
 class FilmController extends Controller
 {
 
-    public function index()
+    public function index($page)
     {
         try{
             $uploadController = new UploadController();
@@ -45,7 +45,7 @@ class FilmController extends Controller
 
             return response()->json([
                 'message' => 'Films retrieved successfully',
-                'current_page' => $films->currentPage(),
+                'current_page' => $films->$page(),
                 'total_pages' => $films->lastPage(),
                 'data' => $data->sortByDesc('created_at')->values()->all()
             ], 200);
