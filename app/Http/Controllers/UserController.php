@@ -40,6 +40,7 @@ class UserController extends Controller
             $data [] = $user;
             return response()->json([
                 'message' => 'success',
+                'count' => $user->count(),
                 'data' => $data
             ], 200);
 
