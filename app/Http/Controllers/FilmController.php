@@ -47,9 +47,10 @@ class FilmController extends Controller
                 'message' => 'Films retrieved successfully',
 
                 'data' => [
-                    'films' => $data->sortByDesc('created_at')->values()->all(),
                     'current_page' => $films->currentPage(),
                     'total_pages' => $films->lastPage()
+                    'films' => $data->sortByDesc('created_at')->values()->all(),
+
                 ]
             ], 200);
         }
