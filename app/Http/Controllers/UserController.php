@@ -211,6 +211,12 @@ class UserController extends Controller
          else{
              $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
          }
+         if(!empty($user['name'])){
+             $user['name'] = $user['name'];
+         }
+         else{
+             $user['name'] = 'No Name';
+         }
          $users = $user->toArray();
          $response =[];
          if(!empty($users)){
@@ -245,7 +251,7 @@ class UserController extends Controller
             $userUUID = User::where('userUUID',$request->userUUID)->first();
             if(!$userUUID){
                 $user->userUUID = $request->userUUID;
-                $user->name = $request->name;
+                $user->name = $request->name ?? 'No Name';
                 $user->email = $request->email;
                 $user->phone = $request->phone;
                 $user->avatar = $request->avatar;

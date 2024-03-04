@@ -286,15 +286,10 @@ class FilmController extends Controller
             $film->running_time = $request->running_time;
             $film->language = $request->language;
             $film->save();
+
             if($request->type != 10 && $request->type != 14){
-
                 $type = Type::find($request->type);
-                $subject = [
-                    'title' => $film->title,
-                    'description' => $type->description,
-                ];
                 $message = $type->description;
-
                 $fcmToken = [];
                 UserLogin::chunk(100, function ($users) use (&$fcmToken) {
                     foreach ($users as $user) {
@@ -311,10 +306,6 @@ class FilmController extends Controller
                     ]
                 ];
                 PushNotificationService::pushMultipleNotification($data);
-
-
-
-
             }
             return response()->json([
                 'message' => 'Film created successfully',
