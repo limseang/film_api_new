@@ -12,16 +12,17 @@ class Controller extends BaseController
 
 
     public function sendResponse(
+        $data = [],
         int $code = 200,
         string $message = ''
-        , $data = []
+
         //pagination data
     ) {
         $message = !empty($message) ? $message :  'success';
         return response()->json([
             'code' => $code,
             'status' => $message,
-            'data' => [],
+            'data' => $data
         ], $code ?? 200);
     }
 

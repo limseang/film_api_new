@@ -54,13 +54,12 @@ class ArticalController extends Controller
 
             });
             return $this->sendResponse([
-
                 'current_page' => $articals->currentPage(),
                 'last_page' => $articals->lastPage(),
                 'per_page' => $articals->perPage(),
                 'total' => $articals->total(),
-                'data' => $data
-                ]);
+                'articles' => $data,
+            ]);
 
 
         } catch (Exception $e) {
