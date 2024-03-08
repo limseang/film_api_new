@@ -22,7 +22,6 @@ class Controller extends BaseController
         return response()->json([
             'code' => $code,
             'status' => $message,
-            'count' => count($data),
             'data' => $data
         ], $code ?? 200);
     }

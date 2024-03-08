@@ -26,7 +26,7 @@ class ArticalController extends Controller
     {
         $page = $request->get('page', 1);
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->get();
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -53,7 +53,12 @@ class ArticalController extends Controller
                 ];
 
             });
-            return $this->sendResponse($data->paginate(20, ['*'], 'page', $page));
+            return $this->sendResponse([
+                'data' => $data,
+                'current_page' => $articals->currentPage(),
+                'last_page' => $articals->lastPage(),
+                'per_page' => $articals->perPage(),
+                'total' => $articals->total(),]);
 
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());
