@@ -12,7 +12,6 @@ class Controller extends BaseController
 
 
     public function sendResponse(
-        $data = [],
         int $code = 200,
         string $message = ''
 
@@ -22,7 +21,6 @@ class Controller extends BaseController
         return response()->json([
             'code' => $code,
             'status' => $message,
-            'data' => $data
         ], $code ?? 200);
     }
 
