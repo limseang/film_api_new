@@ -15,6 +15,7 @@ class Controller extends BaseController
         $data = [],
         int $code = 200,
         string $message = ''
+
         //pagination data
     ) {
         $message = !empty($message) ? $message :  'success';
@@ -22,7 +23,7 @@ class Controller extends BaseController
             'code' => $code,
             'status' => $message,
             'count' => count($data),
-            'data' => $data->paginate(20)
+            'data' => $data
         ], $code ?? 200);
     }
 

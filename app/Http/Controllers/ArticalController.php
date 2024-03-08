@@ -22,8 +22,9 @@ use Exception;
 
 class ArticalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $page = $request->get('page', 1);
         try {
             $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->get();
             $uploadController = new UploadController();
@@ -52,7 +53,7 @@ class ArticalController extends Controller
                 ];
 
             });
-            return $this->sendResponse($data);
+            return $this->sendResponse($data->paginate(20, ['*'], 'page', $page));
 
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());
