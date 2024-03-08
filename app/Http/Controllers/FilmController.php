@@ -32,43 +32,29 @@ class FilmController extends Controller
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                     'rating' => (string) $this->countRate($film->id),
-                    'rate_people' => $this->countRatePeople($film->id),
-                    'type' => $film->types ? $film->types->name : null,
-                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                    'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                     'created_at' => $film->created_at,
 
 
                 ];
             });
 
+            return $this->sendResponse([
+                'current_page' => $films->currentPage(),
+                'total_pages' => $films->lastPage(),
+                'total_count' => $films->total(),
+                'films' => $data->sortByDesc('created_at')->values()->all(),
+            ]);
 
-            return response()->json([
-                'message' => 'Films retrieved successfully',
 
-                'data' => [
-                    'current_page' => $films->currentPage(),
-                    'total_pages' => $films->lastPage(),
-                    'total_count' => $films->total(),
-                    'films' => $data->sortByDesc('created_at')->values()->all(),
-
-                ]
-            ], 200);
         }
         catch (\Exception $e){
-            return response()->json([
-                'message' => 'Artists retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
     }
 
     public function getCategoryResource($data){
         $categories = [];
 
-//        foreach ($data as $item){
-//            $categories[] = $item->name;
-//        }
         foreach ($data as $key => $item){
             $categories[$key] =[
 

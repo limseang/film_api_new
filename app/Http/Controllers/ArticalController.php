@@ -42,7 +42,7 @@ class ArticalController extends Controller
                     'id' => $artical->id,
                     'title' => $artical->title,
                     'image' => $artical->image,
-                    'description' => Str::limit($description, 100, '.....'),
+                    'description' => Str::limit($description, 60, '.....'),
                     'type' => $artical->type ? $artical->type->name : '',
                 ];
 
