@@ -59,7 +59,7 @@ class ArticalController extends Controller
                 'last_page' => $articals->lastPage(),
                 'per_page' => $articals->perPage(),
                 'total' => $articals->total(),
-                $data
+                'data' => $data
                 ]);
 
 
