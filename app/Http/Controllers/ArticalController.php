@@ -41,15 +41,9 @@ class ArticalController extends Controller
                 return [
                     'id' => $artical->id,
                     'title' => $artical->title,
-                    'origin' => $artical->origin ? $artical->origin->name : '',
-                    'like' => $artical->like,
-                    'comment' => $this->countCmt($artical->id),
-                    'share' => $artical->share,
                     'image' => $artical->image,
                     'description' => Str::limit($description, 100, '.....'),
-
                     'type' => $artical->type ? $artical->type->name : '',
-                    'category' => $artical->categoryArtical ? $this->getCategoryResource($artical->categoryArtical) : '',
                 ];
 
             });
