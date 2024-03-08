@@ -131,7 +131,12 @@ class UserController extends Controller
     {
         try{
             $request->user()->currentAccessToken()->delete();
-            UserLogin::where('user_id', auth()->user()->id)->first()->delete();
+            UserLogin::where('user_id', auth()->user()->id)->first();
+            if ($request->user()->id){
+                $user = UserLogin::where('user_id', auth()->user()->id)->first();
+                $user->delete();
+            }
+
             return response()->json([
                 'message' => 'success'
             ], 200);
