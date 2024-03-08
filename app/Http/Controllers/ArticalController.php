@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PushNotificationService;
 use Illuminate\Support\Str;
+use Exception;
 
 class ArticalController extends Controller
 {
@@ -51,30 +52,16 @@ class ArticalController extends Controller
                 ];
 
             });
+            return $this->sendResponse($data);
 
-
-            return response()->json([
-                'message' => 'Articals retrieved successfully',
-                'data' => $data,
-//                'image' => $artical->image
-
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Articals retrieved failed',
-                'error' => $e->getMessage()
-            ], 400);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
         }
     }
 
     public function countCmt($id)
     {
-        $comment = Comment::where('item_id', $id)->where('type', 1)->count();
-        if($comment == null){
-            return 0;
-        }
-        return $comment;
+      return Comment::where('item_id', $id)->where('type', 1)->count() ?? 0;
 
     }
 
@@ -123,17 +110,19 @@ class ArticalController extends Controller
                 ];
                 PushNotificationService::pushNotification($data);
             }
-            return response()->json([
-                'message' => 'Artical created successfully',
-                'data' => $artical
-            ], 200);
+            // return response()->json([
+            //     'message' => 'Artical created successfully',
+            //     'data' => $artical
+            // ], 200);
+            return $this->sendResponse($artical);
 //
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error in creating artical',
-                'error' => $e->getMessage()
-            ],
-                500);
+            // return response()->json([
+            //     'message' => 'Error in creating artical',
+            //     'error' => $e->getMessage()
+            // ],
+            //     500);
+            return $this->sendError(['message' => $e->getMessage()],500);
         }
     }
 
@@ -166,7 +155,7 @@ class ArticalController extends Controller
             $articals = Artical::with(['origin', 'category', 'type','categoryArtical'])->where('category_id', $id)->get();
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
-                if ($artical->image != null) {
+                if ($artical->image) {
                     $artical->image = $uploadController->getSignedUrl($artical->image);
                 } else {
                     $artical->image = null;
@@ -287,9 +276,10 @@ class ArticalController extends Controller
         try{
             $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes'])->find($id);
             if(!$artical){
-                return response()->json([
-                    'message' => 'not found'
-                ], 404);
+                // return response()->json([
+                //     'message' => 'not found'
+                // ], 404);
+                return $this->sendError(['message' => 'not found']);
             }
             $uploadController = new UploadController();
             if ($artical->image != null) {
