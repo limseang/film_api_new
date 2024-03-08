@@ -10,7 +10,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    
+
     public function sendResponse(
         $data = [],
         int $code = 200,
@@ -20,6 +20,7 @@ class Controller extends BaseController
         return response()->json([
             'code' => $code,
             'status' => $message,
+            'count' => count($data),
             'data' => $data
         ], $code ?? 200);
     }
@@ -29,7 +30,7 @@ class Controller extends BaseController
         $data = [],
         int $code = 400,
         string $message = '',
-       
+
     ) {
         $message = !empty($message) ? $message : 'failed';
         return response()->json([

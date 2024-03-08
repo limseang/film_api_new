@@ -137,63 +137,26 @@ class UserController extends Controller
                 $user->delete();
             }
 
-            return response()->json([
-                'message' => 'success'
-            ], 200);
+            return $this->sendResponse();
         }catch(Exception $e){
-            return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->sendError($e->getMessage());
         }
     }
     public function addAvatar(Request $request){
         try{
             $cloudController = new UploadController();
             $user = auth()->user();
-            $user->avatar = $cloudController->uploadFile($request->avatar, 'avatar');
+            $user->avatar = $cloudController->uploadFile($request->avatar);
             $user->save();
-            return response()->json([
-                'message' => 'success',
-                'avatar' => $cloudController->getSignedUrl($user->avatar)
-            ], 200);
+            return $this->sendResponse();
         }
         catch(Exception $e){
-            return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->sendError($e->getMessage());
         }
     }
 
-//    public function deleteAvatar ($avatarId)
-//
-//    {
-//        try{
-//            $cloudController = new UploadController();
-//            $user = auth()->user();
-//            $user->avatar = $cloudController->delete($user->avatar);
-//            $user->save();
-//            return response()->json([
-//                'message' => 'User successfully delete avatar',
-//                'user' => $user
-//
-//            ], 200);
-//        }
-//        catch(Exception $e){
-//            return response()->json([
-//                'message' => 'User failed delete avatar',
-//                'error' => $e->getMessage()
-//            ], 500);
-//        }
-//
-//    }
-
-    public function forgetpwd (Request $request)
-    {
 
 
-    }
 
     public function userinfo(Request $request)
     {
@@ -231,19 +194,13 @@ class UserController extends Controller
          }
 
 
-         return response()->json([
-             'message' => 'success',
-             'user' => $response,
-         ], 200);
+         return $this->sendResponse($response);
 
 
 
      }
      catch (Exception $e){
-         return response()->json([
-             'message' => 'error',
-             'error' => $e->getMessage()
-         ], 500);
+         return $this->sendError($e->getMessage());
      }
 
     }
@@ -252,7 +209,6 @@ class UserController extends Controller
     {
         try{
             $user = new User();
-            //check userUUID has or not
             $userUUID = User::where('userUUID',$request->userUUID)->first();
             if(!$userUUID){
                 $user->userUUID = $request->userUUID;
@@ -266,19 +222,13 @@ class UserController extends Controller
             $user = User::where('userUUID',$request->userUUID,)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json([
-                'status' => 200,
-                'message' => 'success',
-                'token' => $token,
-                'user' => $user
-            ]);
+           return $this->sendResponse([
+               'token' => $token,
+               'user' => $user]);
+
         }
         catch(Exception $e){
-            return response()->json([
-                'status' => 501,
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ]);
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -338,16 +288,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->name = $request->name;
             $user->save();
-            return response()->json([
-                'message' => 'success',
-                'name' => $user->name
-            ], 200);
+            return $this->sendResponse($user->name);
         }
         catch (Exception $e){
-            return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -358,16 +302,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->phone = $request->phone;
             $user->save();
-            return response()->json([
-                'message' => 'success',
-                'phone' => $user->phone
-            ], 200);
+            return $this->sendResponse($user->phone);
         }
         catch (Exception $e){
-            return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -378,16 +316,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->password = bcrypt($request->password);
             $user->save();
-            return response()->json([
-                'message' => 'success',
-                'user' => $user
-            ], 200);
+            return $this->sendResponse($user->password);
         }
         catch (Exception $e){
-            return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -400,15 +332,10 @@ class UserController extends Controller
        try{
            $user = auth()->user();
            $user->delete();
-           return response()->json([
-               'message' => 'success',
-           ], 200);
+              return $this->sendResponse();
        }
        catch (Exception $e){
-           return response()->json([
-               'message' => 'error',
-               'error' => $e->getMessage()
-           ], 500);
+              return $this->sendError($e->getMessage());
        }
 
    }
