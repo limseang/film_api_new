@@ -15,13 +15,14 @@ class Controller extends BaseController
         $data = [],
         int $code = 200,
         string $message = ''
+        //pagination data
     ) {
         $message = !empty($message) ? $message :  'success';
         return response()->json([
             'code' => $code,
             'status' => $message,
             'count' => count($data),
-            'data' => $data
+            'data' => $data->paginate(20)
         ], $code ?? 200);
     }
 
