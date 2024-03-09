@@ -627,11 +627,14 @@ class FilmController extends Controller
                     'created_at' => $film->created_at,
                 ];
             });
+            $nowshowing = $data->filter(function($film){
+                return $film->type == 9;
+            });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                'nowShowing' => $data->sortByDesc('created_at')->values('type' == 9),
+                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
 //                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
 //                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
             ]);
