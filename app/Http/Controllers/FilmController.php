@@ -628,9 +628,9 @@ class FilmController extends Controller
                     'created_at' => $film->created_at,
                 ];
             });
-            $nowshowing = $data->filter(function($film){
-                return $film->types->name == 'nowshowing';
-            });
+//            $nowshowing = $data->filter(function($film){
+//                return $film->types->name == 'nowshowing';
+//            });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
