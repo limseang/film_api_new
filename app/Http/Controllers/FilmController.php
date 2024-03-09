@@ -108,6 +108,7 @@ class FilmController extends Controller
         $episode = Episode::where('film_id',$film_id)->get();
         $filmEpisode = [];
         $episode = $episode->sortBy('episode');
+        $uploadController = new UploadController();
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
@@ -117,7 +118,7 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
-                'poster' => $film_id->poster ?? '',
+                'poster' => $film_id->poster ? $uploadController->getSignedUrl($film_id->poster) : null,
             ];
         }
         return $filmEpisode;
