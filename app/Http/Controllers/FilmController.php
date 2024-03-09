@@ -634,7 +634,13 @@ class FilmController extends Controller
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
+                'data' => $data->sortByDesc('created_at')->values()->all(),
+//                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
+//                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
+//                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
+//
+
+//                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
 //                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
 //                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
             ]);
