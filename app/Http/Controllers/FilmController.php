@@ -632,9 +632,9 @@ class FilmController extends Controller
 //                return $film->types->name == 'nowshowing';
 //            });
             return $this->sendResponse([
-                'current_page' => $films->currentPage(),
-                'total_pages' => $films->lastPage(),
-                'total_count' => $films->total(),
+//                'current_page' => $films->currentPage(),
+//                'total_pages' => $films->lastPage(),
+//                'total_count' => $films->total(),
                 'data' => $data->sortByDesc('created_at')->values()->all(),
 //                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
 //                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
