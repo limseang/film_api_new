@@ -631,10 +631,9 @@ class FilmController extends Controller
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                //show only film has type == 10
-                'nowShowing' => $data->sortByDesc('created_at')->values('type' == 9)->paginate(10)->get(),
-//                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
-//                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
+                'nowShowing' => $data->filter(function ($film) {
+                    return $film['type'] == 9;
+                })->sortByDesc('created_at')->paginate(10),
             ]);
         }
         catch (Exception $e){
