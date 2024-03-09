@@ -4186,7 +4186,7 @@ var FullCalendar = (function (exports) {
             forcedTzo: dateMeta.forcedTzo
         });
     }
-    function formatRange(startInput, endInput, options // mixture of env and formatter settings
+    function formatRange(startInput, endInput, options // mixture of .env and formatter settings
     ) {
         var dateEnv = buildDateEnv(typeof options === 'object' && options ? options : {}); // pass in if non-null object
         var formatter = createFormatter(options);
@@ -6823,7 +6823,7 @@ var FullCalendar = (function (exports) {
         var endMarker = framingRange.end;
         var instanceStarts = [];
         while (dayMarker < endMarker) {
-            var instanceStart 
+            var instanceStart
             // if everyday, or this particular day-of-week
             = void 0;
             // if everyday, or this particular day-of-week

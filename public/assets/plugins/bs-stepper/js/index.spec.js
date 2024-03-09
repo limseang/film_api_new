@@ -1,4 +1,4 @@
-/* eslint-env jasmine */
+/* eslint-.env jasmine */
 import Stepper from './index'
 
 describe('Stepper', () => {

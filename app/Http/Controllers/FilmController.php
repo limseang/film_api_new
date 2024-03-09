@@ -611,45 +611,61 @@ class FilmController extends Controller
 
     }
 
-    public function homeScreen(Request $request)
+    public function homeScreen()
     {
         try{
-            $page = $request->get('page', 1);
             $uploadController = new UploadController();
             $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
-            $data = $films->map(function ($film) use ($uploadController) {
+            $nowShowing = $films->values()->filter(function ($film) {
+                return $film->type == 9;
+            });
+            $nowShowing = $nowShowing->sortByDesc('created_at')->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
-                    'title' => $film->title,
-                    'release_date' => $film->release_date,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'name' => $film->title,
                     'rating' => (string) $this->countRate($film->id),
+                    'release_date' => $film->release_date,
                     'type' => $film->types ? $film->types->name : null,
-                    'created_at' => $film->created_at,
+                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
+            })->values()->all();
+            $comingSoon = $films->values()->filter(function ($film) {
+                return $film->type == 10;
             });
-//            $nowshowing = $data->filter(function($film){
-//                return $film->types->name == 'nowshowing';
-//            });
-            return $this->sendResponse([
-//                'current_page' => $films->currentPage(),
-//                'total_pages' => $films->lastPage(),
-//                'total_count' => $films->total(),
-                'data' => $data->sortByDesc('created_at')->values()->all(),
-//                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
-//                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
-//                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
-//
+            $comingSoon = $comingSoon->sortBy('release_date')->take(6)->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'name' => $film->title,
+                    'rating' => (string) $this->countRate($film->id),
+                    'release_date' => $film->release_date,
+                    'type' => $film->types ? $film->types->name : null,
+                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                ];
+            })->values()->all();
 
-//                'nowShowing' => $nowshowing->sortByDesc('created_at')->values()->all(),
-//                'comingsoon' => $data->sortByDesc('created_at')->types(10)->values()->paginate(10)->all(),
-//                'tvshow' => $data->sortByDesc('created_at')->types(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
+            $watch = $films->values()->filter(function ($film) {
+                return $film->type == 5 || $film->type == 6 || $film->type == 7 || $film->type == 8;
+            });
+            $watch = $watch->sortByDesc('created_at')->take(6)->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'name' => $film->title,
+                    'rating' => (string) $this->countRate($film->id),
+                    'release_date' => $film->release_date,
+                    'type' => $film->types ? $film->types->name : null,
+                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                ];
+            })->values()->all();
+
+            return $this->sendResponse([
+                'now_showing' => $nowShowing,
+                'coming_soon' => $comingSoon,
+                'most_watch' => $watch,
             ]);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
         }
-
     }
 
 

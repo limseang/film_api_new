@@ -31,9 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 //    "apple" => [
-//        'client_id' => env('APPLE_CLIENT_ID'),
-//        'client_secret' => env('APPLE_CLIENT_SECRET'),
-//        'redirect' => env('APP_URL').env('SIGN_IN_WITH_APPLE_REDIRECT')
+//        'client_id' => .env('APPLE_CLIENT_ID'),
+//        'client_secret' => .env('APPLE_CLIENT_SECRET'),
+//        'redirect' => .env('APP_URL')..env('SIGN_IN_WITH_APPLE_REDIRECT')
 //    ],
 
 ];
