@@ -626,7 +626,7 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
                     'type' => $film->types ? $film->types->name : null,
-                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
             })->values()->all();
             $comingSoon = $films->values()->filter(function ($film) {
@@ -639,7 +639,7 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
                     'type' => $film->types ? $film->types->name : null,
-                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
             })->values()->all();
 
@@ -653,7 +653,7 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
                     'type' => $film->types ? $film->types->name : null,
-                    'image' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
             })->values()->all();
 
