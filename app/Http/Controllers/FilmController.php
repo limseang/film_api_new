@@ -629,7 +629,7 @@ class FilmController extends Controller
                 ];
             });
             $nowshowing = $data->filter(function($film){
-                return $film->types == 9;
+                return $film->types->name == 'nowshowing';
             });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
