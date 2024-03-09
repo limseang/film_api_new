@@ -611,5 +611,36 @@ class FilmController extends Controller
 
     }
 
+    public function homeScreen()
+    {
+        try{
+            $uploadController = new UploadController();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(100);
+            $data = $films->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'release_date' => $film->release_date,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'rating' => (string) $this->countRate($film->id),
+                    'type' => $film->types ? $film->types->name : null,
+                    'created_at' => $film->created_at,
+                ];
+            });
+            return $this->sendResponse([
+                'current_page' => $films->currentPage(),
+                'total_pages' => $films->lastPage(),
+                'total_count' => $films->total(),
+                'nowshowing' => $data->sortByDesc('created_at')->type(9)->values()->paginate(10)->all(),
+                'comingsoon' => $data->sortByDesc('created_at')->type(10)->values()->paginate(10)->all(),
+                'tvshow' => $data->sortByDesc('created_at')->type(5 || 6 || 7 || 8)->values()->paginate(10)->all(),
+            ]);
+        }
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
 
 }
