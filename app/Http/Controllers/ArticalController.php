@@ -80,7 +80,6 @@ class ArticalController extends Controller
     public function create(Request $request)
     {
         try {
-            //artical has relationship with origin
             $cloudController = new UploadController();
             $artical = new Artical();
             $artical::with(['origin', 'category', 'type'])->find($request->id);

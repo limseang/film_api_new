@@ -13,6 +13,7 @@ use App\Models\Rate;
 use App\Models\Type;
 use App\Models\UserLogin;
 use App\Services\PushNotificationService;
+use Exception;
 use Illuminate\Http\Request;
 use DateTime;
 
@@ -34,21 +35,16 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
-
-
                 ];
             });
-
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
                 'films' => $data->sortByDesc('created_at')->values()->all(),
             ]);
-
-
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             return $this->sendError($e->getMessage());
         }
     }
@@ -58,10 +54,8 @@ class FilmController extends Controller
 
         foreach ($data as $key => $item){
             $categories[$key] =[
-
                     'id' => $item->id,
                     'name' => $item->name,
-
             ];
 
         }
@@ -78,11 +72,8 @@ class FilmController extends Controller
 
     public function deleteCategory(Request $request){
         try{
-//
             $film_id = $request->film_id;
-
             $category_id = $request->category_id;
-
             $film = Film::find($film_id);
             $filmCategoryExist = $film->filmCategories()->where('category_id', $category_id)->first();
             if(!$filmCategoryExist){
@@ -91,23 +82,12 @@ class FilmController extends Controller
                 ], 400);
             }
             $film->filmCategories()->detach($category_id);
-            return response()->json([
-                'message' => 'deleted successfully',
-                'data' => $film
-            ], 200);
+           return $this->sendResponse();
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'deleted failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
     }
-
-
-
-
-
     public function countRate($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
         $total = 0;
@@ -118,22 +98,15 @@ class FilmController extends Controller
             return 0;
         }
         return number_format($total/count($rates), 1);
-
     }
-
-
-
     public function countRatePeople ($film_id){
         $rates = Rate::where('film_id',$film_id)->get();
         return count($rates);
     }
-
     public function getEpisode($film_id)
     {
         $episode = Episode::where('film_id',$film_id)->get();
-        $uploadController = new UploadController();
         $filmEpisode = [];
-        //short by episode name
         $episode = $episode->sortBy('episode');
         foreach ($episode as $item){
             $filmEpisode[] = [
@@ -144,12 +117,11 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
-                'poster' => $item->poster ? $uploadController->getSignedUrl($item->poster) : $film_id->poster,
+                'poster' => $film_id->poster ?? '',
             ];
         }
         return $filmEpisode;
     }
-
     public function filmAvailables($film_id){
         $availables = FilmAvailable::where('film_id',$film_id)->get();
         if(!$availables){
@@ -175,14 +147,12 @@ class FilmController extends Controller
 
         return $filmAvailable;
     }
-
     public function filmCast($film_id){
         $casts = Cast::with('artists')->where('film_id',$film_id)->get();
         $filmCast = [];
 
         foreach ($casts as $cast){
             $uploadController = new UploadController();
-
             $filmCast[] = [
                 'id' => $cast->actor_id,
                 'name' =>$cast->artists->character ?? '',
@@ -206,16 +176,13 @@ class FilmController extends Controller
                 'data' => $film
             ], 200);
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             return response()->json([
                 'message' => 'Film updated failed',
                 'error' => $e->getMessage()
             ], 400);
         }
-
-
     }
-
     public function updateFilm($id, Request $request)
     {
         try{
@@ -235,7 +202,7 @@ class FilmController extends Controller
             ], 200);
 
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             return response()->json([
                 'message' => 'Film updated failed',
                 'error' => $e->getMessage()
@@ -243,8 +210,6 @@ class FilmController extends Controller
         }
 
     }
-
-
     public function create(Request $request)
     {
         try{
@@ -294,35 +259,21 @@ class FilmController extends Controller
                 ];
                 PushNotificationService::pushMultipleNotification($data);
             }
-            return response()->json([
-                'message' => 'Film created successfully',
-                'data' => $film
-            ], 200);
+           return $this->sendResponse($film);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film created failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
     }
-
-
     public function destroy($id)
     {
         try{
             $film = Film::find($id);
             $film->delete();
-            return response()->json([
-                'message' => 'Film deleted successfully',
-                'data' => $film
-            ], 200);
+            return $this->sendResponse();
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film deleted failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -423,16 +374,10 @@ class FilmController extends Controller
                 }) ?? '',
 
             ];
-            return response()->json([
-                'message' => 'Film retrieved successfully',
-                'data' => $data
-            ], 200);
+            return $this->sendResponse($data);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -468,19 +413,10 @@ class FilmController extends Controller
                     ];
                 })->sortBy('release_date')->values()->all();
             }
-            return response()->json([
-                'message' => 'Films retrieved successfully',
-                'data' => $data
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Failed to retrieve films',
-                'error' => $e->getMessage().$e->getLine().$e->getFile()
-            ], 400);
-
+            return $this->sendResponse($data);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
         }
-
-
 
     }
 
@@ -489,8 +425,6 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            //total rate
-
             $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
@@ -501,20 +435,12 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
-                    'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                    'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                 ];
             });
-            return response()->json([
-                'message' => 'Films retrieved successfully',
-                'data' => $data->sortByDesc('rating')->values()->all()
-            ], 200);
+            return $this->sendResponse($data->sortByDesc('rating')->values()->all());
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Artists retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -543,15 +469,9 @@ class FilmController extends Controller
                     PushNotificationService::pushNotification($data);
                 }
             }
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendResponse($film);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -560,16 +480,10 @@ class FilmController extends Controller
         try{
             $film = Film::withTrashed()->find($id);
             $film->restore();
-            return response()->json([
-                'message' => 'Film restored successfully',
-                'data' => $film
-            ], 200);
+            return $this->sendResponse($film);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film restored failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+          return $this->sendError($e->getMessage());
         }
 
     }
@@ -592,16 +506,10 @@ class FilmController extends Controller
                     'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
                 ];
             });
-            return response()->json([
-                'message' => 'Films retrieved successfully',
-                'data' => $data->sortByDesc('created_at')->values()->all()
-            ], 200);
+            return $this->sendResponse($data->sortByDesc('created_at')->values()->all());
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Artists retrieved failed',
-                'error' => $e->getMessage() . ' ' . $e->getLine(). ' ' . $e->getFile()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -631,16 +539,10 @@ class FilmController extends Controller
             $film->id = $request->film_id;
             $film->genre_id = $request->genre_id;
             $film->save();
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
+            return $this->sendResponse($film);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -667,16 +569,10 @@ class FilmController extends Controller
            }
 
             $film->save();
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
+           return $this->sendResponse($film);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -705,16 +601,10 @@ class FilmController extends Controller
             $film->id = $request->film_id;
             $film->distributor_id = $request->distributor_id;
             $film->save();
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
+            return $this->sendResponse($film);
         }
-        catch (\Exception $e){
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
         }
 
     }

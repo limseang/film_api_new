@@ -19,6 +19,7 @@ class EpisodeController extends Controller
     {
         try{
             $episodes = Episode::all();
+
             $uploadController = new UploadController();
             foreach ($episodes as $episode) {
                 $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
@@ -48,7 +49,6 @@ class EpisodeController extends Controller
     {
         try{
             $film = Film::find($request->film_id);
-            $uploadController = new UploadController();
             $episode = new Episode();
             $episode->film_id = $request->film_id;
           //validate film_id
@@ -62,18 +62,11 @@ class EpisodeController extends Controller
             $episode->episode = $request->episode;
             $episode->season = $request->season;
             $episode->release_date = $request->release_date;
-            $episode->poster = $uploadController->UploadFilm(
-                $request->file('poster'),
-                'a'
-            );
+            $episode->poster = $film->poster;
             $episode->file = $request->file;
             $episode->save();
-
-
             $subjects = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
             $message ='New Episode has been post';
-
-
             $film = Film::find($episode->film_id);
             //update film
             $film->created_at = now();
@@ -97,28 +90,19 @@ class EpisodeController extends Controller
                ]);
               }
            else {
-               return response()->json([
-                   'message' => 'successfully',
-                   'data' => $episode,
-                   'created_at' => $film->created_at
-               ], 200);
+                return response()->json([
+                     'message' => 'successfully',
+                     'data' => $episode,
+                     'created_at' => $film->created_at
+                ], 200);
            }
 
-
-
-            return response()->json([
-                'message' => 'successfully',
-                'data' => $episode,
-                'created_at' => $film->created_at
-            ], 200);
+            return $this->sendResponse($episode);
 
 
         }
         catch (\Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -128,16 +112,10 @@ class EpisodeController extends Controller
         try{
             $episode = Episode::find($id);
             $episode->delete();
-            return response()->json([
-                'message' => 'successfully',
-                'data' => $episode
-            ], 200);
+            return $this->sendResponse($episode);
         }
         catch (\Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -155,16 +133,10 @@ class EpisodeController extends Controller
                 'a')?? $episode->poster;
             $episode->file = $request->file ?? $episode->file;
             $episode->save();
-            return response()->json([
-                'message' => 'successfully',
-                'data' => $episode
-            ], 200);
+            return $this->sendResponse($episode);
         }
         catch (\Exception $e){
-            return response()->json([
-                'message' => 'failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
     }
 
