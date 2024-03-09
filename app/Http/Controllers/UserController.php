@@ -185,6 +185,13 @@ class UserController extends Controller
          else{
              $user['name'] = 'No Name';
          }
+         if(!empty($user['fcm_token'])){
+             $user['fcm_token'] = $user['fcm_token'];
+         }
+
+         else{
+             $user['fcm_token'] = 'No FCM Token';
+         }
          $users = $user->toArray();
          $response =[];
          if(!empty($users)){
