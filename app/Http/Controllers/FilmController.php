@@ -616,7 +616,7 @@ class FilmController extends Controller
         try{
             $page = $request->get('page', 1);
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(100, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -629,7 +629,7 @@ class FilmController extends Controller
                 ];
             });
             $nowshowing = $data->filter(function($film){
-                return $film->type == 9;
+                return $film->types == 9;
             });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
