@@ -27,7 +27,7 @@ class FilmController extends Controller
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(100, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -175,16 +175,10 @@ class FilmController extends Controller
             $film = Film::find($id);
             $film->type = $request->type;
             $film->save();
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
+            return $this->sendResponse($film);
         }
         catch (Exception $e){
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
     }
     public function updateFilm($id, Request $request)
@@ -192,25 +186,24 @@ class FilmController extends Controller
         try{
             $film = Film::find($id);
             $uploadController = new UploadController();
-           $film->update($request->all());
-            if($request->cover){
-                $film->cover = $uploadController->uploadFile($request->cover, 'film');
-            }
-            if($request->poster){
-                $film->poster = $uploadController->uploadFile($request->poster, 'film');
-            }
+            $film->title = $request->title ?? $film->title;
+            $film->overview = $request->overview ?? $film->overview;
+            $film->release_date = $request->release_date ?? $film->release_date;
+            $film->rating = $request->rating ?? $film->rating;
+            $film->category = $request->category ?? $film->category;
+            $film->tag = $request->tag ?? $film->tag;
+            $film->cover = $request->cover ? $uploadController->uploadFile($request->cover, 'film') : $film->cover;
+            $film->poster = $request->poster ? $uploadController->uploadFile($request->poster, 'film') : $film->poster;
+            $film->trailer = $request->trailer ?? $film->trailer;
+            $film->type = $request->type ?? $film->type;
+            $film->director = $request->director ?? $film->director;
+            $film->running_time = $request->running_time ?? $film->running_time;
+            $film->language = $request->language ?? $film->language;
             $film->save();
-            return response()->json([
-                'message' => 'Film updated successfully',
-                'data' => $film
-            ], 200);
-
+            return $this->sendResponse($film);
         }
         catch (Exception $e){
-            return response()->json([
-                'message' => 'Film updated failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
         }
 
     }
@@ -425,11 +418,12 @@ class FilmController extends Controller
     }
 
 
-    public function showByRate()
+    public function showByRate(Request $request)
     {
+        $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -441,7 +435,12 @@ class FilmController extends Controller
                     'type' => $film->types ? $film->types->name : null,
                 ];
             });
-            return $this->sendResponse($data->sortByDesc('rating')->values()->all());
+            return $this->sendResponse([
+                'current_page' => $films->currentPage(),
+                'total_pages' => $films->lastPage(),
+                'total_count' => $films->total(),
+                'films' => $data->sortByDesc('rating')->values()->all(),
+            ]);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
