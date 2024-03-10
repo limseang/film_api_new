@@ -161,7 +161,6 @@ class UserController extends Controller
     public function userinfo(Request $request)
     {
      try{
-         //show avatar as link
          $cloudController = new UploadController();
          $user = auth()->user();
          $user->fcm_token = $request->fcm_token;
@@ -184,13 +183,6 @@ class UserController extends Controller
          }
          else{
              $user['name'] = 'No Name';
-         }
-         if(!empty($user['fcm_token'])){
-             $user['fcm_token'] = $user['fcm_token'];
-         }
-
-         else{
-             $user['fcm_token'] = 'No FCM Token';
          }
          $users = $user->toArray();
          $response =[];

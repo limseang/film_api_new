@@ -26,7 +26,7 @@ class ArticalController extends Controller
     {
         $page = $request->get('page', 1);
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->paginate(10, ['*'], 'page', $page);
+            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $uploadController = new UploadController();
             foreach ($articals as $artical) {
                 if ($artical->image != null) {
@@ -67,13 +67,7 @@ class ArticalController extends Controller
 
     }
 
-    public function getCategoryResource($data){
-        $category = [];
-        foreach ($data as $item){
-            $category[] = $item->categories->name;
-        }
-        return $category;
-    }
+
 
 
 

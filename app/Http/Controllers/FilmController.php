@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendNotificationJob;
+use App\Models\Artical;
 use App\Models\Cast;
 use App\Models\Distributor;
 use App\Models\Episode;
@@ -16,6 +17,7 @@ use App\Services\PushNotificationService;
 use Exception;
 use Illuminate\Http\Request;
 use DateTime;
+use Illuminate\Support\Str;
 
 class FilmController extends Controller
 {
@@ -615,6 +617,7 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
+            $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->get();
             $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
             $nowShowing = $films->values()->filter(function ($film) {
                 return $film->type == 9;
@@ -657,10 +660,22 @@ class FilmController extends Controller
                 ];
             })->values()->all();
 
+            $articles = $articles->sortByDesc('created_at')->take(6)->map(function ($article) use ($uploadController) {
+                $description = strip_tags(str_replace('&nbsp;', ' ', $article->description));
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'image' =>   $uploadController->getSignedUrl($article->image),
+                    'description' => Str::limit($description, 60, '.....'),
+                    'type' => $article->type ? $article->type->name : '',
+                ];
+            })->values()->all();
+
             return $this->sendResponse([
                 'now_showing' => $nowShowing,
                 'coming_soon' => $comingSoon,
                 'most_watch' => $watch,
+                'articles' => $articles,
             ]);
         }
         catch (Exception $e){
