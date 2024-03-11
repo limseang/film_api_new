@@ -279,7 +279,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->name = $request->name;
             $user->save();
-            return $this->sendResponse($user->name);
+            $data = [
+                'name' => $user->name
+            ];
+            return $this->sendResponse($data);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
@@ -293,7 +296,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->phone = $request->phone;
             $user->save();
-            return $this->sendResponse($user->phone);
+            $data = [
+                'phone' => $user->phone
+            ];
+            return $this->sendResponse($data);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
@@ -307,7 +313,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->password = bcrypt($request->password);
             $user->save();
-            return $this->sendResponse($user->password);
+            $data = [
+                'password' => $user->password
+            ];
+            return $this->sendResponse($data);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
