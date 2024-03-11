@@ -688,7 +688,7 @@ class FilmController extends Controller
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->where('type', 5)->orWhere('type', 6)->orWhere('type', 7)->orWhere('type', 8)->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->where('type', 5)->orWhere('type', 6)->orWhere('type', 7)->orWhere('type', 8)->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
