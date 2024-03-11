@@ -143,7 +143,7 @@ class UserController extends Controller
             $user->avatar = $cloudController->uploadFile($request->avatar);
             $user->save();
             $data = [
-                'avatar' => $user->avatar,
+                'avatar' => $cloudController->getSignedUrl($user->avatar)
             ];
             return $this->sendResponse($data);
         }
