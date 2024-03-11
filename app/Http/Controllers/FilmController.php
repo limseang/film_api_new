@@ -421,9 +421,16 @@ class FilmController extends Controller
     public function showByRate(Request $request)
     {
         $page = $request->get('page', 1);
+        $watch = $request->get('watch', false);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->paginate(21, ['*'], 'page', $page);
+            $filmsQuery = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
+
+            if ($watch) {
+                $filmsQuery = $filmsQuery->whereIn('type', [5, 6, 7, 8]);
+            }
+
+            $films = $filmsQuery->paginate(21, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -447,7 +454,6 @@ class FilmController extends Controller
         }
 
     }
-
     public function ChangeType(Request $request, $id)
     {
         try {
