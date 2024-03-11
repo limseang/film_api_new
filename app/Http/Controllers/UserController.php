@@ -142,7 +142,7 @@ class UserController extends Controller
             $user = auth()->user();
             $user->avatar = $cloudController->uploadFile($request->avatar);
             $user->save();
-            return $this->sendResponse();
+            return $this->sendResponse($user->avatar);
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
@@ -172,12 +172,7 @@ class UserController extends Controller
          else{
              $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
          }
-         if(!empty($user['name'])){
-             $user['name'] = $user['name'];
-         }
-         else{
-             $user['name'] = 'No Name';
-         }
+
          $users = $user->toArray();
          $response =[];
          if(!empty($users)){
