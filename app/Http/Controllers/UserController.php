@@ -142,7 +142,10 @@ class UserController extends Controller
             $user = auth()->user();
             $user->avatar = $cloudController->uploadFile($request->avatar);
             $user->save();
-            return $this->sendResponse($user->avatar);
+            $data = [
+                'avatar' => $user->avatar,
+            ];
+            return $this->sendResponse($data);
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
