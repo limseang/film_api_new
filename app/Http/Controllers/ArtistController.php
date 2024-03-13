@@ -11,11 +11,12 @@ class ArtistController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $page = $request->page ? $request->page : 1;
         try{
             $uploadController = new UploadController();
-            $artists = Artist::with('country')->orderByDesc('name')->get();
+            $artists = Artist::with('country')->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
             $groupByNationality = collect($artists->groupBy('nationality_name'));
             $data =[];
             foreach ($groupByNationality as $key => $value){
@@ -31,10 +32,13 @@ class ArtistController extends Controller
                     ];
                 }
             }
-            return response()->json([
-                'message' => 'Artists retrieved successfully',
-                'data' => $data
-            ], 200);
+            return $this->sendResponse([
+                'current_page' => $artists->currentPage(),
+                'last_page' => $artists->lastPage(),
+                'per_page' => $artists->perPage(),
+                'total' => $artists->total(),
+                'data' => $data,
+            ]);
         }
         catch (\Exception $e){
             return response()->json([

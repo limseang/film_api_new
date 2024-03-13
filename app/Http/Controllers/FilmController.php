@@ -617,8 +617,8 @@ class FilmController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->get();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
+            $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->limit(6)->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->limit(50)->get();
             $nowShowing = $films->values()->filter(function ($film) {
                 return $film->type == 9;
             });
@@ -688,7 +688,7 @@ class FilmController extends Controller
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->where('type', 5)->orWhere('type', 6)->orWhere('type', 7)->orWhere('type', 8)->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5,6,7,8])->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
