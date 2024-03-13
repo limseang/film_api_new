@@ -310,12 +310,15 @@ class UserController extends Controller
     {
         try{
             $user = auth()->user();
-            $user->password = bcrypt($request->password);
+            //check old password
+            if(!Hash::check($request->old_password, $user->password)){
+                return response()->json([
+                    'message' => 'Old password not match',
+                ], 400);
+            }
+            $user->password = bcrypt($request->new_password);
             $user->save();
-            $data = [
-                'password' => $user->password
-            ];
-            return $this->sendResponse($data);
+            return $this->sendResponse();
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
