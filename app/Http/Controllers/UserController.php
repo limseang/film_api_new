@@ -304,10 +304,9 @@ class UserController extends Controller
         catch (Exception $e){
             return $this->sendError($e->getMessage());
         }
-
     }
 
-    public function editPassword(Request $request)
+    public function changePassword(Request $request)
     {
         try{
             $user = auth()->user();
