@@ -119,11 +119,7 @@ class ArtistController extends Controller
                 'status' => $artist->status,
 
                 ];
-            return response()->json([
-                'message' => 'Artist retrieved successfully',
-                'data' => $data,
-
-            ], 200);
+            return $this->sendResponse($data);
         }
         catch (\Exception $e) {
             return response()->json([
