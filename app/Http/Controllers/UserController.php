@@ -316,7 +316,12 @@ class UserController extends Controller
                     'message' => 'Old password not match',
                 ], 400);
             }
-            $user->password = bcrypt($request->new_password);
+           if(Hash::check($request->new_password, $user->password)){
+                return response()->json([
+                    'message' => 'New password can not be the same as old password',
+                ], 400);
+            }
+            $user->password = Hash::make($request->new_password);
             $user->save();
             return $this->sendResponse();
         }
