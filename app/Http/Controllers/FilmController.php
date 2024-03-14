@@ -618,7 +618,8 @@ class FilmController extends Controller
         try{
             $uploadController = new UploadController();
             $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->limit(6)->get();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->limit(100)->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
+                //take type 9, 10, 5, 6, 7, 8 for 1 type only 10 film
             $nowShowing = $films->values()->filter(function ($film) {
                 return $film->type == 9;
             });
