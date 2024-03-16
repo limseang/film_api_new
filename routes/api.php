@@ -14,6 +14,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\FarvoriteController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
@@ -445,6 +446,15 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
        Route::post('/cinema/branch/update/{id}', [CinemBranchController::class, 'update']);
    });
 });
+
+/* Favorite */
+Route::get('/farvorite', [FarvoriteController::class, 'index']);
+Route::get('/farvorite/{id}', [FarvoriteController::class, 'detail']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/farvorite/create', [FarvoriteController::class, 'create']);
+    Route::delete('/farvorite/delete/{id}', [FarvoriteController::class, 'destroy']);
+});
+
 
 
 /* BookMark */
