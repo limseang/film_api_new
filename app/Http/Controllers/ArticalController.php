@@ -6,6 +6,7 @@ use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\CategoryArtical;
 use App\Models\Comment;
+use App\Models\Farvorite;
 use App\Models\Film;
 use App\Models\Like;
 use App\Models\Origin;
@@ -410,9 +411,10 @@ class ArticalController extends Controller
         }
         $bookmark = BookMark::where('post_id', $id)->where('post_type', $request->type_id)->where('status', 1)->where('user_id', $user->id)->first();
         $like = Like::where('user_id', $user->id)->where('artical_id', $id)->first();
+        $favorite = Farvorite::where('type_id', 2)->where('item_id', $id)->where('user_id', $user->id)->first();
+
 
         if ($like) {
-
            if($bookmark){
                return response()->json([
                    'BookMark' => true,
@@ -422,6 +424,7 @@ class ArticalController extends Controller
             return response()->json([
                 'Like' => true,
                 'BookMark' => false,
+                ''
             ], 200);
         }
         if (!$like) {

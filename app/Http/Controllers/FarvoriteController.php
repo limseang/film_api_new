@@ -43,15 +43,20 @@ class FarvoriteController extends Controller
         $page = $request->page ? $request->page : 1;
         try{
             $farvorite = Farvorite::with('film', 'article')->where('user_id', Auth()->user()->id)->orderByDesc('id')->paginate(21, ['*'], 'page', $page);
-            $data = $farvorite->map(function ($farvorite) {
-                return [
-                    'id' => $farvorite->id,
-                    'user_id' => $farvorite->user_id,
-                    'item_type' => $farvorite->item_type,
-                    'item_id' => $farvorite->item_id,
-                    'status' => $farvorite->status,
+            if($farvorite->item_type = 2){
+                $film = Film::find($farvorite->item_id);
+                $uploadController = new UploadController();
+                $data = [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'release_date' => $film->release_date,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'rating' => (string) $this->countRate($film->id),
+                    'type' => $film->types ? $film->types->name : null,
+                    'created_at' => $film->created_at,
+
                 ];
-            });
+            }
             return $this->sendResponse([
                 'current_page' => $farvorite->currentPage(),
                 'last_page' => $farvorite->lastPage(),
