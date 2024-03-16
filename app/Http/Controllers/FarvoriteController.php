@@ -46,7 +46,7 @@ class FarvoriteController extends Controller
 
             $data = $farvorite->map(function ($farvorite) {
                 $uploadController = new UploadController();
-                return [
+                $farvorites = [
                     'farvorite_id' => $farvorite->id,
                     'id' => $farvorite->film->id,
                     'title' => $farvorite->film->title,
@@ -55,13 +55,14 @@ class FarvoriteController extends Controller
                     'type' => $farvorite->film->types ? $farvorite->film->types->name : null,
                     'created_at' => $farvorite->film->created_at,
                 ];
+                return $farvorites;
             });
             return $this->sendResponse([
                 'current_page' => $farvorite->currentPage(),
                 'last_page' => $farvorite->lastPage(),
                 'per_page' => $farvorite->perPage(),
                 'total' => $farvorite->total(),
-                'data' => $data,
+                'favorite' => $data,
             ]);
 
         }
