@@ -448,11 +448,16 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Favorite */
-Route::get('/farvorite', [FarvoriteController::class, 'index']);
-Route::get('/farvorite/{id}', [FarvoriteController::class, 'detail']);
+
 Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::get('/farvorite/user', [FarvoriteController::class, 'ownFavorite']);
+    Route::get('/farvorite/{id}', [FarvoriteController::class, 'detail']);
     Route::post('/farvorite/create', [FarvoriteController::class, 'create']);
     Route::delete('/farvorite/delete/{id}', [FarvoriteController::class, 'destroy']);
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/farvorite', [FarvoriteController::class, 'index']);
+        Route::post('/farvorite/change/status/{id}', [FarvoriteController::class, 'changeStatus']);
+    });
 });
 
 
