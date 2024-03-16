@@ -59,87 +59,43 @@ class CommentController extends Controller
 
 
 
-                $artical = Artical::find($request->item_id);
+
+            } else if  ($request->type == 2)
+            {
+                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
+                if (!$check){
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 1;
+                    $user->save();
+                }
+                else {
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 0;
+                    $user->save();
+                }
                 $pushNotificationService = new PushNotificationService();
-//                $bookmarks = BookMark::where('post_id', $request->item_id)->where('post_type', '1')->get();
-//                foreach ($bookmarks as $bookmark) {
-//                    $user_id = $bookmark->user_id;
-//                    $userLogin = UserLogin::where('user_id', $user_id)->get();
-//                    foreach ($userLogin as $item){
-//
-//                        $data = [
-//                            'token' => $item->fcm_token,
-//                            'title' => 'new comment in',
-//                            'body' => $artical->title,
-//                            'data' => [
-//                                'id' => $artical->id,
-//                                'type' => '1',
-//                            ]
-//                        ];
-//                        $pushNotificationService->pushNotification($data);
-//                    }
-//
-////            }
-//                }
-//            } else if  ($request->type == 2)
-//            {
-//                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
-//                if (!$check){
-//                    $user = User::find(auth()->user()->id);
-//                    $user->point = $user->point + 3;
-//                    $user->save();
-//                }
-//                else {
-//                    $user = User::find(auth()->user()->id);
-//                    $user->point = $user->point + 0;
-//                    $user->save();
-//                }
-                $pushNotificationService = new PushNotificationService();
-                $film = Film::find($request->item_id);
-//                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
-//                foreach ($bookmarks as $bookmark) {
-//                    $user_id = $bookmark->user_id;
-//                    $userLogin = UserLogin::where('user_id', $user_id)->get();
-//                    foreach ($userLogin as $item) {
-//
-//                        $data = [
-//                            'token' => $item->fcm_token,
-//                            'title' => 'new comment in',
-//                            'body' => $film->title,
-//                            'data' => [
-//                                'id' => $film->id,
-//                                'type' => '2',
-//                            ]
-//                        ];
-//                        $pushNotificationService->pushNotification($data);
-//                    }
-//
-//
-//                }
             }
 
 
-//            else if($request->type == 3){
-//                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
-//                if (!$check){
-//                    $user = User::find(auth()->user()->id);
-//                    $user->point = $user->point + 3;
-//                    $user->save();
-//                }
-//                else {
-//                    $user = User::find(auth()->user()->id);
-//                    $user->point = $user->point + 0;
-//                    $user->save();
-//                }
-////                $pushNotificationService = new PushNotificationService();
-////                $film = Film::find($request->item_id);
-////                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
-////
-//            }
+            else if($request->type == 3){
+                $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
+                if (!$check){
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 1;
+                    $user->save();
+                }
+                else {
+                    $user = User::find(auth()->user()->id);
+                    $user->point = $user->point + 0;
+                    $user->save();
+                }
+//
+            }
             $admin = User::where('role_id', 1)->first();
             $admin = UserLogin::where('user_id', $admin->id)->get();
             foreach ($admin as $item) {
                 if($request->type == 1){
+                    $artical = Artical::find($request->item_id);
                     $data = [
                         'token' => $item->fcm_token,
                         'title' => $artical->title,
@@ -151,6 +107,7 @@ class CommentController extends Controller
                     ];
                 }
                 else if($request->type == 2){
+                    $film = Film::find($request->item_id);
                     $data = [
                         'token' => $item->fcm_token,
                         'title' => $film->title,
