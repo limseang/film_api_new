@@ -57,6 +57,17 @@ class CommentController extends Controller
                 }
                 $comment->save();
                 $artical = Artical::find($request->item_id);
+                $admin = User::where('role_id', 1)->first();
+                $pushNotificationService = new PushNotificationService();
+                $pushNotificationService->pushNotification([
+                    'token' => $admin->fcm_token,
+                    'title' => $artical->title,
+                    'body' => $request->comment,
+                    'data' => [
+                        'id' => $comment->id,
+                        'type' => '1',
+                    ]
+                ]);
 
 
             } else if  ($request->type == 2)
@@ -74,6 +85,16 @@ class CommentController extends Controller
                 }
                 $pushNotificationService = new PushNotificationService();
                 $film = Film::find($request->item_id);
+                $admin = User::where('role_id', 1)->first();
+                $pushNotificationService->pushNotification([
+                    'token' => $admin->fcm_token,
+                    'title' => $film->title,
+                    'body' => $request->comment,
+                    'data' => [
+                        'id' => $comment->id,
+                        'type' => '2',
+                    ]
+                ]);
 
             }
             else if($request->type == 3){
@@ -152,7 +173,7 @@ class CommentController extends Controller
             {
                 $comment->delete();
                 $user = User::find(auth()->user()->id);
-                $user->point = $user->point - 2;
+                $user->point = $user->point - 1;
                 $user->save();
                 return response()->json([
                     'message' => 'Comment successfully deleted',
