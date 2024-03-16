@@ -56,8 +56,7 @@ class CommentController extends Controller
                     $user->save();
                 }
                 $comment->save();
-
-
+                $artical = Artical::find($request->item_id);
 
 
             } else if  ($request->type == 2)
@@ -74,9 +73,9 @@ class CommentController extends Controller
                     $user->save();
                 }
                 $pushNotificationService = new PushNotificationService();
+                $film = Film::find($request->item_id);
+
             }
-
-
             else if($request->type == 3){
                 $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
                 if (!$check){
@@ -89,47 +88,10 @@ class CommentController extends Controller
                     $user->point = $user->point + 0;
                     $user->save();
                 }
+//                $pushNotificationService = new PushNotificationService();
+//                $film = Film::find($request->item_id);
+//                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
 //
-            }
-            $admin = User::where('role_id', 1)->first();
-            $admin = UserLogin::where('user_id', $admin->id)->get();
-            foreach ($admin as $item) {
-                if($request->type == 1){
-                    $artical = Artical::find($request->item_id);
-                    $data = [
-                        'token' => $item->fcm_token,
-                        'title' => $artical->title,
-                        'body' => $request->comment,
-                        'data' => [
-                            'id' => $artical->id,
-                            'type' => '1',
-                        ]
-                    ];
-                }
-                else if($request->type == 2){
-                    $film = Film::find($request->item_id);
-                    $data = [
-                        'token' => $item->fcm_token,
-                        'title' => $film->title,
-                        'body' => $request->comment,
-                        'data' => [
-                            'id' => $film->id,
-                            'type' => '2',
-                        ]
-                    ];
-                }
-                else if($request->type == 3){
-                    $data = [
-                        'token' => $item->fcm_token,
-                        'title' => 'new comment in',
-                        'body' => $request->comment,
-                        'data' => [
-                            'id' => $request->item_id,
-                            'type' => '3',
-                        ]
-                    ];
-                }
-                $pushNotificationService->pushNotification($data);
             }
 
 
