@@ -23,7 +23,7 @@ class Farvorite extends Model
 
     public function film()
     {
-        return $this->belongsTo(Film::class, 'item_id');
+        return $this->hasMany(Film::class, 'item_id', 'id');
     }
 
     public function article()
