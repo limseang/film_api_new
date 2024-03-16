@@ -114,6 +114,8 @@ class CommentController extends Controller
 
                 }
             }
+
+
             else if($request->type == 3){
                 $check = Comment::where('user_id', $user->id)->where('item_id', $request->item_id)->first();
                 if (!$check){
@@ -130,6 +132,20 @@ class CommentController extends Controller
 //                $film = Film::find($request->item_id);
 //                $bookmarks = BookMark::where('post_id', $request->artical_id)->where('post_type', '2')->get();
 //
+            }
+            $admin = User::where('role_id', 1)->first();
+            $admin = UserLogin::where('user_id', $admin->id)->get();
+            foreach ($admin as $item) {
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => 'new comment in',
+                    'body' => $comment->comment,
+                    'data' => [
+                        'id' => $comment->id,
+                        'type' => $comment->type,
+                    ]
+                ];
+                $pushNotificationService->pushNotification($data);
             }
 
 
