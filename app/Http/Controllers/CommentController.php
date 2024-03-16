@@ -136,15 +136,39 @@ class CommentController extends Controller
             $admin = User::where('role_id', 1)->first();
             $admin = UserLogin::where('user_id', $admin->id)->get();
             foreach ($admin as $item) {
-                $data = [
-                    'token' => $item->fcm_token,
-                    'title' => 'new comment in',
-                    'body' => $comment->comment,
-                    'data' => [
-                        'id' => $comment->id,
-                        'type' => $comment->type,
-                    ]
-                ];
+                if($request->type == 1){
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => $artical->title,
+                        'body' => $request->comment,
+                        'data' => [
+                            'id' => $artical->id,
+                            'type' => '1',
+                        ]
+                    ];
+                }
+                else if($request->type == 2){
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => $film->title,
+                        'body' => $request->comment,
+                        'data' => [
+                            'id' => $film->id,
+                            'type' => '2',
+                        ]
+                    ];
+                }
+                else if($request->type == 3){
+                    $data = [
+                        'token' => $item->fcm_token,
+                        'title' => 'new comment in',
+                        'body' => $request->comment,
+                        'data' => [
+                            'id' => $request->item_id,
+                            'type' => '3',
+                        ]
+                    ];
+                }
                 $pushNotificationService->pushNotification($data);
             }
 
