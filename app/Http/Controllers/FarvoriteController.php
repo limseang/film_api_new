@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Farvorite;
 use App\Models\Film;
+use App\Models\Rate;
 use Illuminate\Http\Request;
 
 class FarvoriteController extends Controller
@@ -51,6 +52,7 @@ class FarvoriteController extends Controller
                     'id' => $farvorite->film->id,
                     'title' => $farvorite->film->title,
                     'release_date' => $farvorite->film->release_date,
+                    'rating' => (string) $this->countRate($farvorite->film->id),
                     'poster' => $farvorite->film->poster ? $uploadController->getSignedUrl($farvorite->film->poster) : null,
                     'type' => $farvorite->film->types ? $farvorite->film->types->name : null,
                     'created_at' => $farvorite->film->created_at,
@@ -70,6 +72,17 @@ class FarvoriteController extends Controller
             return $this->sendError($e->getMessage());
         }
 
+    }
+    public function countRate($film_id){
+        $rates = Rate::where('film_id',$film_id)->get();
+        $total = 0;
+        foreach ($rates as $rate){
+            $total += $rate->rate;
+        }
+        if(count($rates) == 0){
+            return 0;
+        }
+        return number_format($total/count($rates), 1);
     }
 
     public function changeStatus($id)
