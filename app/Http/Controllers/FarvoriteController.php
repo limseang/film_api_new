@@ -42,7 +42,7 @@ class FarvoriteController extends Controller
     {
         $page = $request->page ? $request->page : 1;
         try{
-            $farvorite = Farvorite::with('film', 'article')->where('user_id', Auth()->user()->id)->orderByDesc('id')->paginate(21, ['*'], 'page', $page);
+            $farvorite = Farvorite::with('film', 'article')->where('user_id', Auth()->user()->id)->get();
             if($farvorite->item_type = 2){
                 $film = Film::find($farvorite->item_id);
                 $uploadController = new UploadController();
