@@ -42,21 +42,20 @@ class FarvoriteController extends Controller
     {
         $page = $request->page ? $request->page : 1;
         try{
-            $farvorite = Farvorite::with('film', 'article')->where('user_id', Auth()->user()->id)->get();
-            if($farvorite->item_type = 2){
-                $film = Film::find($farvorite->item_id);
-                $uploadController = new UploadController();
-                $data = [
-                    'id' => $film->id,
-                    'title' => $film->title,
-                    'release_date' => $film->release_date,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => (string) $this->countRate($film->id),
-                    'type' => $film->types ? $film->types->name : null,
-                    'created_at' => $film->created_at,
+            $farvorite = Farvorite::with('film', 'article')->where('user_id', Auth()->user()->id)->where('item_type', 2)->orderByDesc('id')->paginate(21, ['*'], 'page', $page);
 
+            $data = $farvorite->map(function ($farvorite) {
+                $uploadController = new UploadController();
+                return [
+                    'farvorite_id' => $farvorite->id,
+                    'id' => $farvorite->film->id,
+                    'title' => $farvorite->film->title,
+                    'release_date' => $farvorite->film->release_date,
+                    'poster' => $farvorite->film->poster ? $uploadController->getSignedUrl($farvorite->film->poster) : null,
+                    'type' => $farvorite->film->types ? $farvorite->film->types->name : null,
+                    'created_at' => $farvorite->film->created_at,
                 ];
-            }
+            });
             return $this->sendResponse([
                 'current_page' => $farvorite->currentPage(),
                 'last_page' => $farvorite->lastPage(),
@@ -64,6 +63,7 @@ class FarvoriteController extends Controller
                 'total' => $farvorite->total(),
                 'data' => $data,
             ]);
+
         }
         catch(\Exception $e){
             return $this->sendError($e->getMessage());
