@@ -158,27 +158,26 @@ class FarvoriteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-  public function delete($id)
+  public function delete(Request $request)
   {
       try{
-            $farvorite = Farvorite::find($id);
-            if(!$farvorite){
-                return response()->json([
-                    'message' => 'Farvorite not found',
-                ], 404);
-            }
-            //only user can delete their own farvorite
+
+            $farvorite = Farvorite::find($request->id);
+            dd($farvorite);
+
+//            if(!$farvorite){
+//                return response()->json([
+//                    'message' => 'Farvorite not found',
+//                ], 404);
+//            }
             if($farvorite->user_id != Auth()->user()->id){
-                return response()->json([
-                    'message' => 'Unauthorized',
-                ], 401);
+                return $this->sendError('Unauthorized');
             }
+            $farvorite->delete();
+            return $this->sendResponse($farvorite);
         }
         catch (\Exception $e){
-            return response()->json([
-                'message' => 'Farvorite deleted failed',
-                'error' => $e->getMessage()
-            ], 400);
+            return $this->sendError($e->getMessage());
       }
 
   }

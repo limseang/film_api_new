@@ -417,7 +417,9 @@ class ArticalController extends Controller
             'BookMark' => $bookmark ? true : false,
             'Like' => $like ? true : false,
             'Favorite' => $favorite ? true : false,
+            'FavoriteId' => $favorite ? $favorite->id : 'null',
         ];
+
 
         return response()->json($response, 200);
     }
@@ -442,8 +444,6 @@ class ArticalController extends Controller
             'message' => 'successfully',
             'data' => $artical
         ], 200);
-
-
 
     }
 
