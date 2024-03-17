@@ -410,37 +410,16 @@ class ArticalController extends Controller
             ], 404);
         }
         $bookmark = BookMark::where('post_id', $id)->where('post_type', $request->type_id)->where('status', 1)->where('user_id', $user->id)->first();
+        $favorite = Farvorite::where('item_id', $id)->where('item_type', $request->type_id)->where('status', 1)->where('user_id', $user->id)->first();
         $like = Like::where('user_id', $user->id)->where('artical_id', $id)->first();
 
+        $response = [
+            'BookMark' => $bookmark ? true : false,
+            'Like' => $like ? true : false,
+            'Favorite' => $favorite ? true : false,
+        ];
 
-        if ($like) {
-           if($bookmark){
-               return response()->json([
-                   'BookMark' => true,
-                   'Like' => true,
-               ], 200);
-           }
-            return response()->json([
-                'Like' => true,
-                'BookMark' => false,
-                ''
-            ], 200);
-        }
-        if (!$like) {
-            if($bookmark){
-                return response()->json([
-                    'BookMark' => true,
-                    'Like' => false,
-                ], 200);
-            }
-            return response()->json([
-                'Like' => false,
-                'BookMark' => false,
-            ], 200);
-
-
-        }
-
+        return response()->json($response, 200);
     }
 
     public function schedulePost()
