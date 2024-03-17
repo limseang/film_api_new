@@ -453,7 +453,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::get('/favorite/user', [FarvoriteController::class, 'ownFavorite']);
     Route::get('/favorite/{id}', [FarvoriteController::class, 'detail']);
     Route::post('/favorite/create', [FarvoriteController::class, 'create']);
-    Route::delete('/favorite/delete', [FarvoriteController::class, 'delete']);
+    Route::delete('/favorite/delete/${id}', [FarvoriteController::class, 'delete']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/favorite', [FarvoriteController::class, 'index']);
         Route::post('/favorite/change/status/{id}', [FarvoriteController::class, 'changeStatus']);
