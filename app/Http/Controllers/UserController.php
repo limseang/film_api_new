@@ -110,11 +110,9 @@ class UserController extends Controller
             }
             // create token
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json([
-                'status' => 200,
-                'message' => 'success',
+            return $this->sendResponse([
                 'token' => $token,
-                'user' => $user,
+                'user' => $user
             ]);
         }
         catch(Exception $e){
@@ -215,9 +213,12 @@ class UserController extends Controller
             $user = User::where('userUUID',$request->userUUID,)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
-           return $this->sendResponse([
-               'token' => $token,
-               'user' => $user]);
+            return response()->json([
+                'token' => $token,
+                'user' => $user
+            ]);
+
+
 
         }
         catch(Exception $e){
