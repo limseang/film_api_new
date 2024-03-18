@@ -110,9 +110,11 @@ class UserController extends Controller
             }
             // create token
             $token = $user->createToken('auth_token')->plainTextToken;
-            return $this->sendResponse([
+            return response()->json([
+                'status' => 200,
+                'message' => 'success',
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
             ]);
         }
         catch(Exception $e){

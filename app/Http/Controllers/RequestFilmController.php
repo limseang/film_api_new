@@ -64,7 +64,6 @@ class RequestFilmController extends Controller
                 $userID = $item->id;
                 $userLogin = UserLogin::where('user_id', $userID)->get();
                 foreach ($userLogin as $item) {
-//                    dd($item->fcm_token);
                    $data = [
                        'token' => $item->fcm_token,
                         'title' => 'new request film',
