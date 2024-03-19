@@ -72,10 +72,10 @@ class EpisodeController extends Controller
             $film->created_at = now();
             $film->save();
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
-           if($request->notification == 1){
+           if($request->notification == 1) {
 
                $user = UserLogin::all();
-               foreach ($user as $item){
+               foreach ($user as $item) {
                    $data = [
                        'token' => $item->fcm_token,
                        'title' => $subjects,
@@ -86,7 +86,8 @@ class EpisodeController extends Controller
                        ]
                    ];
                    PushNotificationService::pushNotification($data);
-              }
+               }
+           }
            else {
                 return response()->json([
                      'message' => 'successfully',
