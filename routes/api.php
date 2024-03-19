@@ -217,6 +217,9 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/report/create', [ReportController::class, 'create']);
     Route::delete('/report/delete/{id}', [ReportController::class, 'destroy']);
     Route::get('/report/{id}', [ReportController::class, 'showByID']);
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/report', [ReportController::class, 'index']);
+    });
 });
 
 /* Tage */
