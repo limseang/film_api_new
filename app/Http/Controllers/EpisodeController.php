@@ -74,19 +74,24 @@ class EpisodeController extends Controller
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
            if($request->notification == 1) {
 
-               $user = UserLogin::all();
-               foreach ($user as $item) {
-                   $data = [
-                       'token' => $item->fcm_token,
-                       'title' => $subjects,
-                       'body' => $message,
-                       'data' => [
-                           'id' => $film->id,
-                           'type' => '2',
-                       ]
-                   ];
-                   PushNotificationService::pushNotification($data);
-               }
+              //use chunk to avoid memory issues
+             UserLogin::chunk(100, function ($users) use ($subjects, $message, $episode) {
+                   foreach ($users as $user) {
+                       $data = [
+                           'token' => $user->fcm_token,
+                           'title' => $subjects,
+                           'body' => $message,
+                           'data' => [
+                               'id' => $episode->id,
+                               'type' => 2,
+                           ]
+                       ];
+                       PushNotificationService::pushNotification($data);
+                   }
+               });
+
+
+
            }
            else {
                 return response()->json([
