@@ -211,6 +211,13 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 //    Route::get('/reportcmt/{id}', [ReportComment::class, 'showReport']);
 });
 
+/* Report */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/report/create', [ReportCommentController::class, 'create']);
+    Route::delete('/report/delete/{id}', [ReportCommentController::class, 'destroy']);
+    Route::get('/report/{id}', [ReportCommentController::class, 'showByID']);
+});
+
 /* Tage */
 
 Route::get('/tag', [TagController::class, 'index']);
