@@ -66,33 +66,29 @@ class EpisodeController extends Controller
             $episode->file = $request->file;
             $episode->save();
             $subjects = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
-            $message ='New Episode has been uploaded';
+            $message ='New Episode has been post';
             $film = Film::find($episode->film_id);
             //update film
             $film->created_at = now();
             $film->save();
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
-           if($request->notification == 1) {
-
-              //use chunk to avoid memory issues
-             UserLogin::chunk(100, function ($users) use ($subjects, $message, $episode) {
+           if($request->notification == 1){
+               $fcmToken = [];
+               UserLogin::chunk(200, function ($users) use (&$fcmToken) {
                    foreach ($users as $user) {
-                       $data = [
-                           'token' => $user->fcm_token,
-                           'title' => $subjects,
-                           'body' => $message,
-                           'data' => [
-                               'id' => $episode->id,
-                               'type' => 2,
-                           ]
-                       ];
-                       PushNotificationService::pushNotification($data);
+                       $fcmToken[] = $user->fcm_token;
                    }
                });
-
-
-
-           }
+               PushNotificationService::pushMultipleNotification([
+                   'token' => $fcmToken,
+                   'title' => $subjects,
+                   'body' => $message,
+                   'data' => [
+                       'id' => '1',
+                       'type' => '2',
+                   ]
+               ]);
+              }
            else {
                 return response()->json([
                      'message' => 'successfully',
