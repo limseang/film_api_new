@@ -37,6 +37,7 @@ class UserLoginController extends Controller
         try{
             $userLogin = UserLogin::create([
                 'user_id' => auth()->user()->id,
+                'role_id' => auth()->user()->role_id,
                 'token' => $request->token,
                 'device_id' => $request->device_id,
                 'device_name' => $request->device_name,
