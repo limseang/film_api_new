@@ -27,6 +27,7 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\RendomPointController;
 use App\Http\Controllers\ReplyCommentController;
 use App\Http\Controllers\ReportCommentController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestFilmController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\TagController;
@@ -209,6 +210,16 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/reportcmt/create', [ReportCommentController::class, 'create']);
     Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
 //    Route::get('/reportcmt/{id}', [ReportComment::class, 'showReport']);
+});
+
+/* Report */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/report/create', [ReportController::class, 'create']);
+    Route::delete('/report/delete/{id}', [ReportController::class, 'destroy']);
+    Route::get('/report/{id}', [ReportController::class, 'showByID']);
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/report', [ReportController::class, 'index']);
+    });
 });
 
 /* Tage */

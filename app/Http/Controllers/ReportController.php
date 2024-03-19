@@ -94,6 +94,22 @@ class ReportController extends Controller
                 'image' => $request->image,
                 'status' => 1,
             ]);
+            //show only user has role id 1 2 in userlogin
+            $userLogin = UserLogin::where('role_id', 1, 2)->get();
+            foreach ($userLogin as $item) {
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => 'New Report',
+                    'body' => "New Report",
+                    'type' => 2,
+                    'data' => [
+                        'id' => $report->id,
+                        'type' => '5',
+                    ]
+                ];
+                $pushNotificationService = new PushNotificationService();
+                $pushNotificationService->pushNotification($data);
+            }
             return $this->sendResponse($report);
         }
         catch(\Exception $e){

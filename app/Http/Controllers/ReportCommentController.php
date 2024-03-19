@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReportComment;
+use App\Models\User;
+use App\Models\UserLogin;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 
 class ReportCommentController extends Controller
@@ -45,6 +48,22 @@ class ReportCommentController extends Controller
             $reportComment->comment_id = $request->comment_id;
             $reportComment->reason = $request->reason;
             $reportComment->save();
+            $admin = User::where('role_id', 1, 2)->first();
+            $userLogin = UserLogin::where('user_id', $admin->id)->get();
+            foreach ($userLogin as $item) {
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => 'New Report Comment',
+                    'body' => "New Report Comment",
+                    'type' => 2,
+                    'data' => [
+                        'id' => $reportComment->id,
+                        'type' => '5',
+                    ]
+                ];
+
+                PushNotificationService::pushNotification($data);
+            }
             return response()->json([
                 'status' => 200,
                 'message' => 'successfully',

@@ -12,6 +12,7 @@ class UserLogin extends Model
         'user_id',
         'token',
         'device_id',
+        'role_id',
         'device_name',
         'device_os',
         'device_os_version',
