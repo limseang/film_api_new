@@ -111,7 +111,6 @@ class FilmController extends Controller
         $film = Film::find($film_id);
         $filmEpisode = [];
         $episode = $episode->sortBy('episode');
-        $uploadController = new UploadController();
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
@@ -286,7 +285,7 @@ class FilmController extends Controller
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
                 'distributors' => $film->distributors->name ?? 'N/A',
-                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : '',
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
                 'running_time' => $film->running_time,
