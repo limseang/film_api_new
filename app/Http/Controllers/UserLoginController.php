@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
 
@@ -35,9 +36,12 @@ class UserLoginController extends Controller
     public function create(Request $request)
     {
         try{
+            $user = User::where('email', $request->email)->first();
+            $user_id = $user->id;
+
             $userLogin = UserLogin::create([
                 'user_id' => auth()->user()->id,
-                'role_id' => auth()->user()->role_id,
+                'role_id' => $user_id,
                 'token' => $request->token,
                 'device_id' => $request->device_id,
                 'device_name' => $request->device_name,
