@@ -74,11 +74,11 @@ class EpisodeController extends Controller
 //            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
            if($request->notification == 1){
                $fcmToken = [];
-               UserLogin::chunk(200, function ($users) use (&$fcmToken) {
-                   foreach ($users as $user) {
-                       $fcmToken[] = $user->fcm_token;
-                   }
-               });
+                $userLogins = UserLogin::all();
+                foreach ($userLogins as $userLogin){
+                    array_push($fcmToken, $userLogin->fcm_token);
+                }
+
                PushNotificationService::pushMultipleNotification([
                    'token' => $fcmToken,
                    'title' => $subjects,
