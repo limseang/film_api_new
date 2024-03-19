@@ -374,7 +374,7 @@ class FilmController extends Controller
             return $this->sendResponse($data);
         }
         catch (Exception $e){
-            return $this->sendError($e->getMessage());
+            return $this->sendError($e->getMessage().$e->getLine());
         }
     }
 
