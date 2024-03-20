@@ -30,9 +30,31 @@ class UserLoginController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+   //count country by ip address
+    public function countCountry(Request $request)
+    {
+        try{
+            $userLogins = UserLogin::where('ip_address', $request->ip_address)->get();
+            $country = [];
+            foreach ($userLogins as $item){
+                $country[] = $item->country;
+            }
+            $country = array_count_values($country);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User logins retrieved successfully',
+                'data' => $country
+            ], 200);
+
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User logins retrieval failed',
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
     public function create(Request $request)
     {
         try{

@@ -96,11 +96,15 @@ class ReportController extends Controller
                 'status' => 1,
             ]);
             $userLogin = UserLogin::where('role_id', 1, 2)->get();
+            $film = RequestFilm::where('id', $request->item_id)->first();
+            if($request->sub_item){
+                $sub = $request->sub_item;
+            }
             foreach ($userLogin as $item) {
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => 'New Report',
-                    'body' => "New Report",
+                    'body' => $film ? $film->title . $sub : 'New Report',
                     'type' => 2,
                     'data' => [
                         'id' => $report->id,
