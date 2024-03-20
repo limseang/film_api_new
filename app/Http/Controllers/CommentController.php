@@ -86,7 +86,7 @@ class CommentController extends Controller
                 }
                 $pushNotificationService = new PushNotificationService();
                 $film = Film::find($request->item_id);
-                $admin = User::where('role_id', 1,2)->first();
+                $admin = UserLogin::where('role_id', 1,2)->first();
                 $pushNotificationService->pushNotification([
                     'token' => $admin->fcm_token,
                     'title' => $film->title,
