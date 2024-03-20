@@ -95,7 +95,6 @@ class ReportController extends Controller
                 'image' => $request->image,
                 'status' => 1,
             ]);
-            //show only user has role id 1 2 in userlogin
             $userLogin = UserLogin::where('role_id', 1, 2)->get();
             foreach ($userLogin as $item) {
                 $data = [
