@@ -91,6 +91,7 @@ class ReportController extends Controller
                 'item_id' => $request->item_id,
                 'report_type' => $request->report_type,
                 'report_description' => $request->report_description,
+                'sub_item' => $request->sub_item,
                 'image' => $request->image,
                 'status' => 1,
             ]);
