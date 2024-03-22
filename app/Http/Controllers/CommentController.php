@@ -57,7 +57,7 @@ class CommentController extends Controller
                 }
                 $comment->save();
                 $artical = Artical::find($request->item_id);
-                $admin = User::where('role_id', 1)->first();
+                $admin = User::where('role_id', 1,2)->first();
                 $pushNotificationService = new PushNotificationService();
                 $pushNotificationService->pushNotification([
                     'token' => $admin->fcm_token,
@@ -68,6 +68,7 @@ class CommentController extends Controller
                         'type' => '1',
                     ]
                 ]);
+
 
 
             } else if  ($request->type == 2)
@@ -85,7 +86,7 @@ class CommentController extends Controller
                 }
                 $pushNotificationService = new PushNotificationService();
                 $film = Film::find($request->item_id);
-                $admin = User::where('role_id', 1)->first();
+                $admin = UserLogin::where('role_id', 1,2)->first();
                 $pushNotificationService->pushNotification([
                     'token' => $admin->fcm_token,
                     'title' => $film->title,

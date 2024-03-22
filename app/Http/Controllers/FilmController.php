@@ -111,7 +111,6 @@ class FilmController extends Controller
         $film = Film::find($film_id);
         $filmEpisode = [];
         $episode = $episode->sortBy('episode');
-        $uploadController = new UploadController();
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
@@ -121,7 +120,8 @@ class FilmController extends Controller
                 'season' => $item->season,
                 'release_date' => $item->release_date,
                 'file' => $item->file,
-                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+//                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
             ];
         }
         return $filmEpisode;
@@ -286,7 +286,7 @@ class FilmController extends Controller
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
                 'distributors' => $film->distributors->name ?? 'N/A',
-                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : '',
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
                 'running_time' => $film->running_time,
@@ -309,27 +309,20 @@ class FilmController extends Controller
                             'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                             'created_at' => $comment->created_at,
                             'confess' => $comment->confess,
-                            'reply' => $comment->reply->map(function ($reply) use ($film, $comment, $uploadController) {
-                                return [
-                                    'id' => $reply->id,
-                                    'user_id' =>  (string)$reply->user_id,
-                                    'comment' => $reply->comment,
-                                    'user' => $reply->user->name,
-                                    'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ?(string) $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
-                                    'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
-                                    'created_at' => $reply->created_at->format('d/m/Y'),
-                                ];
-                            })
+
                         ];
                     }else {
                         if(!empty($comment->user)) {
+
                             return [
+
+//
                                 'id' => $comment->id,
                                 'comment' => $comment->comment,
                                 'user_id' => (string)$comment->user_id,
                                 'user' => $comment->user->name ?? 'Anonymous',
                                 'rate' => (string)$film->rate->where('user_id', $comment->user_id)->first() ? (string)$film->rate->where('user_id', $comment->user_id)->first()->rate : null,
-                                'avatar' => $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+                                'avatar' =>  'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
                                 'created_at' => $comment->created_at,
                                 'reply' => $comment->reply->map(function ($reply) use ($film, $uploadController) {
                                     return [
@@ -374,7 +367,7 @@ class FilmController extends Controller
             return $this->sendResponse($data);
         }
         catch (Exception $e){
-            return $this->sendError($e->getMessage());
+            return $this->sendError($e->getMessage().$e->getLine().$e->getFile());
         }
     }
 

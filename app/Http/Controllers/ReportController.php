@@ -91,16 +91,20 @@ class ReportController extends Controller
                 'item_id' => $request->item_id,
                 'report_type' => $request->report_type,
                 'report_description' => $request->report_description,
+                'sub_item' => $request->sub_item,
                 'image' => $request->image,
                 'status' => 1,
             ]);
-            //show only user has role id 1 2 in userlogin
             $userLogin = UserLogin::where('role_id', 1, 2)->get();
+            $film = RequestFilm::where('id', $request->item_id)->first();
+            if($request->sub_item){
+                $sub = $request->sub_item;
+            }
             foreach ($userLogin as $item) {
                 $data = [
                     'token' => $item->fcm_token,
                     'title' => 'New Report',
-                    'body' => "New Report",
+                    'body' => $film ? $film->title . $sub : 'New Report',
                     'type' => 2,
                     'data' => [
                         'id' => $report->id,
