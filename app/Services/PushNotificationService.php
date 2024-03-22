@@ -13,6 +13,7 @@ namespace App\Services;
             'token' => "",
             'title' => "",
             'body' => "",
+           'sound' => 'default',
            'data' => [],
         ]): void
         {
@@ -28,7 +29,7 @@ namespace App\Services;
                     'type' => $businessParams['type'] ?? '',
                     'data' => $businessParams['data'] ?? [],
                     'id' => $businessParams['id'] ?? '',
-                    'sound' => 'default',
+                    'sound' => $businessParams['sound'] ?? 'default',
                 ])->withData($businessParams['data'] ?? []);
             $messaging->send($notification);
 
