@@ -648,6 +648,7 @@ class FilmController extends Controller
                     'name' => $film->title,
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
+                    'total_episode' => count($film->episode),
                     'type' => $film->types ? $film->types->name : null,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
@@ -689,6 +690,7 @@ class FilmController extends Controller
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                     'rating' => (string) $this->countRate($film->id),
+                    'total_episode' => count($film->episode),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
                 ];
