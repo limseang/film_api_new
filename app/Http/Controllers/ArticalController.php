@@ -455,19 +455,10 @@ class ArticalController extends Controller
             $video = video::with(['film', 'article', 'categories','types','tags']);
             $tag = Tag::all();
             if($request->title){
-                if($request->most_watch == 'true'){
-                    $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
-                }
-                else {
-                    $artical->where('title', 'like', '%' . $request->title . '%');
-                    $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
-                    $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
-                    $tag->where('name', 'like', '%' . $request->title . '%');
-                }
-//                $artical->where('title', 'like', '%' . $request->title . '%');
-//                $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
-//                $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
-//                $tag->where('name', 'like', '%' . $request->title . '%');
+                $artical->where('title', 'like', '%' . $request->title . '%');
+                $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('tags',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
+                $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
+                $tag->where('name', 'like', '%' . $request->title . '%');
 //                $film->whereHas('tags', function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
 
             }
