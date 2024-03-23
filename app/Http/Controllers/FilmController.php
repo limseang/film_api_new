@@ -486,6 +486,7 @@ class FilmController extends Controller
                     'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
+                    'total_episode' => count($film->episode),
                 ];
             });
             return $this->sendResponse($data);
