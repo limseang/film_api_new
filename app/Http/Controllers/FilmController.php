@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Jobs\SendNotificationJob;
 use App\Models\Artical;
 use App\Models\Cast;
+use App\Models\CategoryArtical;
+use App\Models\Country;
 use App\Models\Distributor;
 use App\Models\Episode;
 use App\Models\Film;
 use App\Models\FilmAvailable;
 use App\Models\Genre;
+use App\Models\Origin;
 use App\Models\Rate;
+use App\Models\Tag;
 use App\Models\Type;
 use App\Models\UserLogin;
 use App\Services\PushNotificationService;
@@ -728,6 +732,72 @@ class FilmController extends Controller
             ]);
         }
         catch (Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
+
+    //Todo : AdminEnd
+
+    public function filmOption()
+    {
+        try{
+            $category = CategoryArtical::all();
+            // map to get id and name
+            $category = $category->map(function ($category) {
+                return [
+                    'key' => $category->id,
+                    'value' => $category->categories->name,
+                ];
+            });
+            $type = Type::all();
+            $type = $type->map(function ($type) {
+                return [
+                    'key' => $type->id,
+                    'value' => $type->name,
+                ];
+            });
+            $distributor = Distributor::all();
+            $distributor = $distributor->map(function ($distributor) {
+                return [
+                    'key' => $distributor->id,
+                    'value' => $distributor->name,
+                ];
+            });
+            $country = Country::all();
+            $country = $country->map(function ($country) {
+                return [
+                    'key' => $country->id,
+                    'value' => $country->name,
+                ];
+            });
+            $tag = Tag::all();
+            $tag = $tag->map(function ($tag) {
+                return [
+                    'key' => $tag->id,
+                    'value' => $tag->name,
+                ];
+            });
+            $genre = Genre::all();
+            $genre = $genre->map(function ($genre) {
+                return [
+                    'key' => $genre->id,
+                    'value' => $genre->name,
+                ];
+            });
+            $data = [
+                'category' => $category,
+                'tag' => $tag,
+                'type' => $type,
+                'distributor' => $distributor,
+                'genre' => $genre,
+                'language' => $country,
+
+            ];
+            return $this->sendResponse($data);
+        }
+        catch (\Exception $e){
             return $this->sendError($e->getMessage());
         }
 

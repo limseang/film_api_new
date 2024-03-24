@@ -541,61 +541,6 @@ class ArticalController extends Controller
     }
 
 
-    //Todo : AdminEnd
-
-    public function showAll()
-    {
-        try{
-            $category = CategoryArtical::all();
-            // map to get id and name
-            $category = $category->map(function ($category) {
-                return [
-                    'key' => $category->id,
-                    'value' => $category->categories->name,
-                ];
-            });
-            $origin = Origin::all();
-            $origin = $origin->map(function ($origin) {
-                return [
-                    'key' => $origin->id,
-                    'value' => $origin->name,
-                ];
-            });
-            $type = Type::all();
-            $type = $type->map(function ($type) {
-                return [
-                    'key' => $type->id,
-                    'value' => $type->name,
-                ];
-            });
-            $distributor = Distributor::all();
-            $distributor = $distributor->map(function ($distributor) {
-                return [
-                    'key' => $distributor->id,
-                    'value' => $distributor->name,
-                ];
-            });
-            $country = Country::all();
-            $country = $country->map(function ($country) {
-                return [
-                    'key' => $country->id,
-                    'value' => $country->name,
-                ];
-            });
-            $data = [
-                'category' => $category,
-                'origin' => $origin,
-                'type' => $type,
-                'distributor' => $distributor,
-                'country' => $country,
-            ];
-            return $this->sendResponse($data);
-        }
-        catch (\Exception $e){
-            return $this->sendError($e->getMessage());
-        }
-
-    }
 
 
 }
