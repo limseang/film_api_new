@@ -302,6 +302,7 @@ class FilmController extends Controller
                 'tag' => $film->tags->name ?? '',
                 'tag_id' => $film->tag ?? 'N/A',
                 'distributors' => $film->distributors->name ?? 'N/A',
+                'distributor_id' => $film->distributor ?? '',
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : '',
                 'trailer' => $film->trailer ?? null,
                 'type' => $film->types->name ?? null ,
