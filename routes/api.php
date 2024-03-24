@@ -487,7 +487,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);
 
 Route::post('/search/all', [ArticalController::class, 'searchAll']);
-Route::post('admin/list/user', [ArticalController::class, 'showAll']);
+Route::post('/admin/list/user', [ArticalController::class, 'showAll']);
 
 
 
