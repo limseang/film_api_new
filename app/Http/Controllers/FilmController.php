@@ -28,10 +28,19 @@ class FilmController extends Controller
 
     public function index(Request $request)
     {
+        // validate request
+        $request->validate([
+            'title' => 'nullable|string'
+        ]);
+
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
+            $model = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
+            if($request->title){
+                $model->where('title', 'like', '%' . $request->title . '%');
+            }
+            $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
