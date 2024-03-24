@@ -59,8 +59,6 @@ class UserLoginController extends Controller
     {
         try{
             $user = User::where('email', $request->email)->first();
-            $user_id = $user->id;
-
             $userLogin = UserLogin::create([
                 'user_id' => auth()->user()->id,
                 'role_id' => auth()->user()->role_id,
