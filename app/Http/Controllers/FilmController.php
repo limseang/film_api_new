@@ -22,6 +22,7 @@ use Exception;
 use Illuminate\Http\Request;
 use DateTime;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class FilmController extends Controller
 {
@@ -207,6 +208,7 @@ class FilmController extends Controller
     public function updateFilm($id, Request $request)
     {
         try{
+            DB::beginTransaction();
             $film = Film::find($id);
             $uploadController = new UploadController();
             $film->title = $request->title ?? $film->title;
@@ -222,10 +224,16 @@ class FilmController extends Controller
             $film->director = $request->director ?? $film->director;
             $film->running_time = $request->running_time ?? $film->running_time;
             $film->language = $request->language ?? $film->language;
+            $film->genre_id = $request->genre_id ?? $film->genre_id;
+            if($request->category_ids){
+                $film->filmCategories()->sync($request->category_ids);
+            }
             $film->save();
+            DB::commit();
             return $this->sendResponse($film);
         }
         catch (Exception $e){
+            DB::rollBack();
             return $this->sendError($e->getMessage());
         }
 
