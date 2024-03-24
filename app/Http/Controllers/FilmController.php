@@ -225,12 +225,18 @@ class FilmController extends Controller
             $film->running_time = $request->running_time ?? $film->running_time;
             $film->language = $request->language ?? $film->language;
             $film->genre_id = $request->genre_id ?? $film->genre_id;
-            if($request->category_ids){
-                $film->filmCategories()->sync($request->category_ids);
-            }
-            $film->save();
+            $film->distributor_id = $request->distributor_id ?? $film->distributor_id;
+
+           if($request->category_ids) {
+               $category_ids = json_decode($request->category_ids);
+               $film->filmCategories()->sync($category_ids);
+           }
+            $model = $film->save();
             DB::commit();
-            return $this->sendResponse($film);
+            if($model){
+                return $this->sendResponse($film);
+            }
+            return $this->sendError('Update failed');
         }
         catch (Exception $e){
             DB::rollBack();
