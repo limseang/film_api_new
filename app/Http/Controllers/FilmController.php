@@ -68,6 +68,16 @@ class FilmController extends Controller
         return $categories;
     }
 
+    public function getCategoryIdArrayResource($data){
+        $categories = [];
+
+        foreach ($data as $item){
+            $categories[] = $item->id;
+        }
+        return $categories;
+    }
+
+
     public function getCastResource($data){
         $casts = [];
         foreach ($data as $item){
@@ -288,6 +298,7 @@ class FilmController extends Controller
                 'overview' => $film->overview ?? null,
                 'release_date' => $film->release_date ?? null,
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
+                'category_ids' => $film->categories ?? $this->getCategoryIdArrayResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
                 'tag_id' => $film->tag ?? 'N/A',
                 'distributors' => $film->distributors->name ?? 'N/A',
@@ -305,6 +316,7 @@ class FilmController extends Controller
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
                 'genre' => $film->genre ?? null,
+                'genre_id' => $film->genre->id ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
                         return  [
