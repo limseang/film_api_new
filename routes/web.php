@@ -24,3 +24,7 @@ Route::get('/login', function (UserController $userController,){
 });
 //Route::get('api/apple/login',[UserController::class, 'appleLogin']);
 Route::post('/login',[UserController::class, 'loginBlade']) -> name('login');
+
+Route::get('/verification.html', function () {
+    return view('verification');
+});
