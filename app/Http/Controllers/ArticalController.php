@@ -6,6 +6,8 @@ use App\Models\Artical;
 use App\Models\BookMark;
 use App\Models\CategoryArtical;
 use App\Models\Comment;
+use App\Models\Country;
+use App\Models\Distributor;
 use App\Models\Farvorite;
 use App\Models\Film;
 use App\Models\Like;
@@ -536,6 +538,32 @@ class ArticalController extends Controller
 
             return $item;
         });
+    }
+
+
+    //Todo : AdminEnd
+
+    public function showAll()
+    {
+        try{
+            $category = CategoryArtical::all();
+            $origin = Origin::all();
+            $type = Type::all();
+            $distributor = Distributor::all();
+            $country = Country::all();
+            $data = [
+                'category' => $category,
+                'origin' => $origin,
+                'type' => $type,
+                'distributor' => $distributor,
+                'country' => $country,
+            ];
+            return $this->sendResponse($data);
+        }
+        catch (\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
     }
 
 
