@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class FilmController extends Controller
 {
@@ -205,10 +206,32 @@ class FilmController extends Controller
             return $this->sendError($e->getMessage());
         }
     }
-    public function updateFilm($id, Request $request)
+    public function updateFilm(Request $request, $id)
     {
         try{
             DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
+                'overview' => 'required',
+                'category_ids' => 'required|array',
+                'release_date' => 'required',
+                'rating' => 'nullable',
+                'category' => 'required',
+                'tag' => 'required|int',
+                'cover' => 'required|file',
+                'poster' => 'required|file',
+                'trailer' => 'required',
+                'type' => 'required',
+                'director' => 'nullable',
+                'running_time' => 'required',
+                'language' => 'required',
+                'genre_id' => 'nullable|int',
+                'distributor_id' => 'nullable|int',
+            ]);
+            if($validator->fails()){
+                return $this->sendError($validator->errors(), 404, 'Validation failed');
+            }
+
             $film = Film::find($id);
             $uploadController = new UploadController();
             $film->title = $request->title ?? $film->title;
@@ -228,8 +251,7 @@ class FilmController extends Controller
             $film->distributor_id = $request->distributor_id ?? $film->distributor_id;
 
            if($request->category_ids) {
-               $category_ids = json_decode($request->category_ids);
-               $film->filmCategories()->sync($category_ids);
+               $film->filmCategories()->sync($request->category_ids);
            }
             $model = $film->save();
             DB::commit();
