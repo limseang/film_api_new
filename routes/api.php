@@ -14,6 +14,9 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\EventItemController;
+use App\Http\Controllers\EventPackageController;
+use App\Http\Controllers\EventPlanController;
 use App\Http\Controllers\FarvoriteController;
 use App\Http\Controllers\FilmAvailableController;
 use App\Http\Controllers\FilmCategoryController;
@@ -23,6 +26,7 @@ use App\Http\Controllers\GiftController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OriginController;
+use App\Http\Controllers\PackageItemController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\RendomPointController;
 use App\Http\Controllers\ReplyCommentController;
@@ -488,6 +492,51 @@ Route::post('/check/user/dddd/', [ArticalController::class, 'schedulePost']);
 
 Route::post('/search/all', [ArticalController::class, 'searchAll']);
 Route::get('/film/option', [FilmController::class, 'filmOption']);
+
+
+/* Event Plan */
+Route::get('/event/plan', [EventPlanController::class, 'showEvent']);
+Route::get('/event/plan/{id}', [EventPlanController::class, 'eventDetail']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/admin/event/plan', [EventPlanController::class, 'index']);
+        Route::post('/event/plan/create', [EventPlanController::class, 'create']);
+        Route::delete('/event/plan/delete/{id}', [EventPlanController::class, 'destroy']);
+        Route::post('/event/plan/change/status', [EventPlanController::class, 'changeStatus']);
+    });
+});
+
+/* Event Package */
+Route::get('/event/package', [EventPackageController::class, 'index']);
+Route::get('/event/package/{id}', [EventPackageController::class, 'show']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+       Route::group(['middleware' => ['postpermission']], function () {
+           Route::post('/event/package/create', [EventPackageController::class, 'create']);
+           Route::delete('/event/package/delete/{id}', [EventPackageController::class, 'destroy']);
+       });
+    });
+});
+
+/* Event Items */
+Route::get('/event/item', [EventItemController::class, 'index']);
+Route::get('/event/item/{id}', [EventItemController::class, 'show']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/event/item/create', [EventItemController::class, 'create']);
+        Route::delete('/event/item/delete/{id}', [EventItemController::class, 'destroy']);
+    });
+});
+
+/* Package Item */
+Route::get('/package/item', [PackageItemController::class, 'index']);
+Route::get('/package/item/{id}', [PackageItemController::class, 'show']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/package/item/create', [PackageItemController::class, 'create']);
+        Route::delete('/package/item/delete/{id}', [PackageItemController::class, 'destroy']);
+    });
+});
 
 
 
