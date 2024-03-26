@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "alibabacloud/client": "^1.5",
         "alphasnow/aliyun-oss-laravel": "^4.7",
         "genealabs/laravel-sign-in-with-apple": "^0.7.0",
         "genealabs/laravel-socialiter": "^10.0",

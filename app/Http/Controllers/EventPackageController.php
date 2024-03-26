@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\EventPackage;
 use App\Models\EventPlan;
+use App\Models\PackageItem;
+use App\Services\TwoFactorService;
 use Exception;
 use Illuminate\Http\Request;
+
 
 class EventPackageController extends Controller
 {
@@ -15,13 +18,22 @@ class EventPackageController extends Controller
     public function index()
     {
         try{
-            $eventPackages = EventPackage::with('event')->get();
+            $eventPackages = EventPackage::all();
 
             $uploadController = new UploadController();
-            foreach($eventPackages as $eventPackage){
-                $eventPackage->image = $uploadController->getSignedUrl($eventPackage->image);
-            }
-            return $this->sendResponse($eventPackages);
+            $data = $eventPackages->map(function($eventPackage) use ($uploadController){
+                return [
+                    'id' => $eventPackage->id,
+                    'name' => $eventPackage->name,
+                    'description' => $eventPackage->description,
+                    'event_id' => $eventPackage->event_id,
+                    'price' => $eventPackage->price,
+                    'quantity' => $eventPackage->quantity,
+                    'image' => $uploadController->getSignedUrl($eventPackage->image),
+
+                ];
+            });
+            return $this->sendResponse($data);
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
@@ -59,7 +71,7 @@ class EventPackageController extends Controller
    public function detail($id)
    {
        try{
-              $eventPackage = EventPackage::with('items')->find($id);
+              $eventPackage = EventPackage::with('items','event')->find($id);
               return $this->sendResponse($eventPackage);
          }
          catch(Exception $e){
@@ -69,17 +81,54 @@ class EventPackageController extends Controller
 
    }
 
-    /**
-     * Display the specified resource.
-     */
+   public function packageByEvent($id)
+   {
+       try{
+              $eventPackages = EventPackage::where('event_id',$id)->with('items','event')->get();
+              $uploadController = new UploadController();
+              $data = $eventPackages->map(function($eventPackage) use ($uploadController){
+                return [
+                     'id' => $eventPackage->id,
+                     'name' => $eventPackage->name,
+                     'description' => $eventPackage->description,
+                     'event_id' => $eventPackage->event_id,
+                     'price' => $eventPackage->price,
+                     'quantity' => $eventPackage->quantity,
+                     'image' => $uploadController->getSignedUrl($eventPackage->image),
+                        'items' => $eventPackage->items,
+                ];
+              });
+              return $this->sendResponse($data);
+         }
+         catch(Exception $e){
+              return $this->sendError($e->getMessage());
+       }
+
+   }
     public function show(EventPackage $eventPackage)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+   public function getItem ($id)
+   {
+       try{
+                $eventPackage = EventPackage::find($id);
+                $PackageItems = $eventPackage->items;
+                $items = $PackageItems->map(function($item){
+                   $item = PackageItem::find($item->id);
+                     return $item;
+                });
+                TwoFactorService::sendSMS();
+
+           dd($PackageItems);
+                return $this->sendResponse($items);
+             }
+             catch(Exception $e){
+                return $this->sendError($e->getMessage());
+       }
+
+   }
     public function edit(EventPackage $eventPackage)
     {
         //

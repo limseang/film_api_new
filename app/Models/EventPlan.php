@@ -39,7 +39,14 @@ class EventPlan extends Model
 
     public function packages()
     {
-        return $this->hasMany(EventPackage::class, 'event_id', 'id');
+        return $this->hasMany(EventPackage::class, 'id', 'event_id');
     }
+
+    public function items()
+    {
+        return $this->hasMany(EventItem::class);
+    }
+
+
 
 }

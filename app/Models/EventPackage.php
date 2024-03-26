@@ -19,7 +19,7 @@ class EventPackage extends Model
     ];
     public function event()
     {
-        return $this->belongsTo(EventPlan::class);
+        return $this->belongsTo(EventPlan::class, 'event_id', 'id');
     }
     public function tickets()
     {

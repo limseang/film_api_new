@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('ticket_price');
             $table->string('ticket_quantity');
             $table->string('genre_id');
+            $table->string('payment');
         });
     }
 
