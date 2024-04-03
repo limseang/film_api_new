@@ -110,6 +110,18 @@ class EventPackageController extends Controller
         //
     }
 
+    public function sendSMS()
+    {
+        try{
+            TwoFactorService::sendSMS();
+            return $this->sendResponse('SMS sent successfully');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
    public function getItem ($id)
    {
        try{
