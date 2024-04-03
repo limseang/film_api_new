@@ -14,7 +14,6 @@ class VersionCheckController extends Controller
     public function index()
     {
         try{
-            //show only the latest version
             $versionChecks = VersionCheck::orderBy('created_at', 'desc')->first();
             return $this->sendResponse($versionChecks);
         }

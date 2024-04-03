@@ -39,6 +39,7 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserTypeController;
+use App\Http\Controllers\VersionCheckController;
 use App\Http\Controllers\VideoController;
 use App\Models\ReportComment;
 use Illuminate\Http\Request;
@@ -54,6 +55,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+/* Check Version */
+Route::get('/version/check', [VersionCheckController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/version/check/create', [VersionCheckController::class, 'create']);
+        Route::delete('/version/check/delete/{id}', [VersionCheckController::class, 'destroy']);
+    });
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -538,6 +548,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/package/item/delete/{id}', [PackageItemController::class, 'destroy']);
     });
 });
+
+
 
 
 
