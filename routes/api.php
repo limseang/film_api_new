@@ -247,8 +247,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/reportcmt/delete/{id}', [ReportCommentController::class, 'destroy']);
         Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
         Route::post('/admin/change/status/{id}', [AdminController::class, 'ChangeStatusItem']);
+        Route::post('/admin/generate-qr-code', [AdminController::class, 'generateQrCode']);
+        // except for this route
     });
 });
+Route::get('/find/qrcode/{code}', [AdminController::class, 'findQrCode']);
 
 
 /* Artist */
