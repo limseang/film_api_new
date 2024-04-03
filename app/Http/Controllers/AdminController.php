@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UploadController;
 use App\Models\Admin;
 use App\Models\Artical;
 use App\Models\Category;
@@ -13,7 +14,11 @@ use App\Models\Tag;
 use App\Models\Type;
 use App\Models\User;
 use App\Models\UserType;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\Ticket;
+use App\Models\QrCodeRecord;
 
 class AdminController extends Controller
 {
@@ -391,4 +396,80 @@ class AdminController extends Controller
                 ], );
             }
    }
+
+   public function generateQrCode(Request $request)
+   {
+       try{
+          $validate = Validator::make($request->all(),[
+              'code' => 'required|string|unique:tickes,code',
+              'name' => 'required|string',
+                'row' => 'required|string',
+                'seat' => 'required|string',
+
+            ]);
+
+            if($validate->fails()){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error',
+                    'error' => $validate->errors()
+                ], 400);
+            }
+           // get route url
+           $content = url('/find/qrcode').'/'.$request->code;
+           $qrCode = QrCode::encoding('UTF-8')
+           ->format('svg')
+           ->size(100)->generate($content);
+              $ticket = new Ticket();
+           $uploadController = new UploadController();
+           $ticket->code = $request->code;
+           $ticket->name = $request->name;
+           $ticket->row = $request->row;
+           $ticket->seat = $request->seat;
+           $ticket->image = $uploadController->UploadFile($request->image,'ticketss');
+           $ticket->save();
+           return response($qrCode)->header('Content-Type', 'image/svg+xml');
+       }
+        catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in generating QrCode',
+                    'error' => $e->getMessage()
+                ], );
+            }
+        }
+
+        public function findQrCode($code)
+        {
+            try{
+                $ticket = Ticket::where('code',$code)->first();
+                $uploadController = new UploadController();
+                if(empty($ticket)){
+                    return response()->json([
+                        'status' => 400,
+                        'message' => 'Error in finding ticket',
+                        'error' => 'Ticket not found'
+                    ], 400);
+                }
+                $data = [
+                    'name' => $ticket->name ?? '',
+                    'row' => $ticket->row ?? '',
+                    'seat' => $ticket->seat ?? '',
+                    'code' => $ticket->code ?? '',
+                    'image' => $uploadController->getSignedUrl($ticket->image) ?? ''
+                ];
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $data
+                ], 200);
+            }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in finding ticket',
+                    'error' => $e->getMessage()
+                ], );
+            }
+        }
    }
