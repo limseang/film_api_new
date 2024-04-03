@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UploadController;
 use App\Models\Admin;
 use App\Models\Artical;
 use App\Models\Category;
@@ -17,7 +18,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Ticket;
-use App\Http\Controllers\UploadController;
 use App\Models\QrCodeRecord;
 
 class AdminController extends Controller
@@ -401,7 +401,11 @@ class AdminController extends Controller
    {
        try{
           $validate = Validator::make($request->all(),[
-              'code' => 'required|string|unique:qrcode_records,code',
+              'code' => 'required|string|unique:tickes,code',
+              'name' => 'required|string',
+                'row' => 'required|string',
+                'seat' => 'required|string',
+
             ]);
 
             if($validate->fails()){
@@ -416,10 +420,14 @@ class AdminController extends Controller
            $qrCode = QrCode::encoding('UTF-8')
            ->format('svg')
            ->size(100)->generate($content);
-            $qrCodeRecord = new QrCodeRecord();
-            $qrCodeRecord->code = $request->code;
-            $qrCodeRecord->content = $content;
-            $qrCodeRecord->save();
+              $ticket = new Ticket();
+           $uploadController = new UploadController();
+           $ticket->code = $request->code;
+           $ticket->name = $request->name;
+           $ticket->row = $request->row;
+           $ticket->seat = $request->seat;
+           $ticket->image = $uploadController->UploadFile($request->image,'ticketss');
+           $ticket->save();
            return response($qrCode)->header('Content-Type', 'image/svg+xml');
        }
         catch(\Exception $e){

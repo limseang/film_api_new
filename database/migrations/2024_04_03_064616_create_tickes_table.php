@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('row');
             $table->string('seat');
-            $table->sting('image');
+            $table->string('image');
             $table->timestamps();
         });
     }
