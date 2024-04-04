@@ -445,7 +445,7 @@ class AdminController extends Controller
             $qrCode = QrCode::encoding('UTF-8')
             ->format('svg')
             ->size(100)->generate($url);
-            return response($qrCode)->header('Content-Type', 'image/png+xml');
+            return response($qrCode)->header('Content-Type', 'image/svg+xml');
         }
 
 
