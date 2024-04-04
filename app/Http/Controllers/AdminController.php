@@ -448,6 +448,41 @@ class AdminController extends Controller
             return response($qrCode)->header('Content-Type', 'image/svg+xml');
         }
 
+        public function editData(Request $request)
+        {
+            try{
+                $ticket = Ticket::where('code',$request->code)->first();
+                $uploadController = new UploadController();
+                if(empty($ticket)){
+                    return response()->json([
+                        'status' => 400,
+                        'message' => 'Error in finding ticket',
+                        'error' => 'Ticket not found'
+                    ], 400);
+                }
+                $ticket->name = $request->name ?? $ticket->name;
+                $ticket->row = $request->row ?? $ticket->row;
+                $ticket->seat = $request->seat ?? $ticket->seat;
+               if($request->hasFile('image')){
+                   $ticket->image = $uploadController->UploadFile($request->image,'ticketss');
+                }
+                $ticket->save();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'successfully',
+                    'data' => $ticket
+                ], 200);
+            }
+            catch(\Exception $e){
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Error in finding ticket',
+                    'error' => $e->getMessage()
+                ], );
+            }
+        }
+
+
 
 
         public function findQrCode($code)

@@ -259,6 +259,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/reportcmt/delete/{id}', [AdminController::class, 'deleteReport']);
         Route::post('/admin/change/status/{id}', [AdminController::class, 'ChangeStatusItem']);
         Route::post('/admin/generate-qr-code', [AdminController::class, 'generateQrCode']);
+        Route::post('/admin/edit/qr-code', [AdminController::class, 'editData']);
         // except for this route
     });
 });
