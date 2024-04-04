@@ -250,6 +250,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 
 /* Admin Report Cmt */
+
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/reportcmt', [ReportCommentController::class, 'index']);
@@ -262,6 +263,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 Route::get('/find/qrcode/{code}', [AdminController::class, 'findQrCode']);
+Route::post('/check/qrcode', [AdminController::class, 'checkQrCode']);
 
 
 /* Artist */

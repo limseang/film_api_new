@@ -439,6 +439,17 @@ class AdminController extends Controller
             }
         }
 
+        public function checkQrCode(Request $request)
+        {
+            $url = $request->url;
+            $qrCode = QrCode::encoding('UTF-8')
+            ->format('svg')
+            ->size(100)->generate($url);
+            return response($qrCode)->header('Content-Type', 'image/png+xml');
+        }
+
+
+
         public function findQrCode($code)
         {
             try{
