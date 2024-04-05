@@ -18,7 +18,8 @@ class tickesSeeder extends Seeder
                 'name' => 'Ticket ' . $i,
                 'row' => 'A',
                 'seat' => $i,
-                'code' => '0' . $i,
+                //if less than 100, add 0 in front
+                'code' => str_pad($i, 3, '0', STR_PAD_LEFT),
                 'image' => '2620',
             ]);
         }
