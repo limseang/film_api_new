@@ -47,7 +47,7 @@ class TwoFactorService
 //                'response' => $response->toArray()
 //            ]);
 
-            dd ( $response->toArray() );
+            dd ( $response->toArray());
         } catch (ClientException $e) {
             Log::error('ClientException: ' . $e->getErrorMessage(), ['method' => 'sendSms']);
             return $e->getMessage();
