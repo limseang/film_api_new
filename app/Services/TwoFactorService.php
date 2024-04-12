@@ -33,7 +33,7 @@ class TwoFactorService
                 ->options([
                     'query' => [
                         "To" => "855" . $phone,
-                        "From" => "CinemagicKh",
+                        "From" => "cinemagickh",
                         "Message" => $message,
                     ],
                 ])
