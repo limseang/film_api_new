@@ -523,8 +523,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Event Package */
-Route::get('/event/package', [EventPackageController::class, 'index']);
-Route::get('/event/package', [EventPackageController::class, 'sendSMS']);
+Route::get('/event/package/all', [EventPackageController::class, 'index']);
+Route::post('/event/package/send', [EventPackageController::class, 'sendSMS']);
 Route::get('/event/package/detail/{id}', [EventPackageController::class, 'packageByEvent']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {

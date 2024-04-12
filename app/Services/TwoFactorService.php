@@ -3,6 +3,7 @@ namespace App\Services;
 use AlibabaCloud\Client\AlibabaCloud;
 use AlibabaCloud\Client\Exception\ClientException;
 use AlibabaCloud\Client\Exception\ServerException;
+use AlibabaCloud\Tea\Request;
 use App\Models\Storages;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -12,64 +13,49 @@ use OSS\Core\OssException;
 class TwoFactorService
 {
 
-    public static function sendSMS()
+    public static function sendSMS($phone, $message)
     {
         try {
-            if (config('app.debug')) {
-                return [
-                    'ResponseCode' => 'OK',
-                ];
-            }
+
+
             $accessKey = env('ALIBABA_SMS_ACCESS_KEY');
             $secretKey = env('ALIBABA_SMS_SECRET_KEY');
-            AlibabaCloud::accessKeyClient($accessKey, $secretKey)
+       AlibabaCloud::accessKeyClient($accessKey, $secretKey)
                 ->regionId('ap-southeast-1')
                 ->asDefaultClient();
+
             $response = AlibabaCloud::rpc()
-                ->product('Cdn')
-                ->version('2014-11-11')
                 ->action('SendMessageToGlobe')
+                ->product('Dysmsapi')
+                ->version('2018-05-01')
                 ->method('POST')
+                ->host('dysmsapi.ap-southeast-1.aliyuncs.com')
                 ->options([
                     'query' => [
-                        'RegionId' => "ap-southeast-1",
-                        'To' => '85593410672',
-                        'Message' => 'hello kon papa',
-                        'From' => 'Sunpay',
+                        "To" => "855" . $phone,
+                        "From" => "CinemagicKh",
+                        "Message" => $message,
                     ],
                 ])
-                ->request();
-           print $response->toArray();
 
-//                ->product('Dysmsapi')
-//                ->version('2023-06-27')
-//                ->action('SendMessageToGlobe')
-//                ->method('POST')
-//                ->host('dysmsapi.ap-southeast-1.aliyuncs.com')
-//                ->options([
-//                    'query' => [
-//                        'RegionId' => "ap-southeast-1",
-//                        'To' => '85593410672',
-//                        'Message' => 'hello kon papa',
-//                        'From' => 'Sunpay',
-//                    ],
-//                ])
-//                ->request();
-            Log::info('Send SMS', 'sendSms', json_encode($response->toArray()));
+                ->request();
+
+//
 //            ServiceSmsLog::query()->create([
 //                'To' => '+85593410672',
 //                'Message' => 'hello kon papa',
 //                'response' => $response->toArray()
 //            ]);
-            return $response->toArray();
+
+            dd ( $response->toArray() );
         } catch (ClientException $e) {
-            Log::error('ClientException', 'sendSms', $e->getErrorMessage());
+            Log::error('ClientException: ' . $e->getErrorMessage(), ['method' => 'sendSms']);
             return $e->getMessage();
         } catch (ServerException $e) {
-            Log::error('ServerException', 'sendSms', $e->getErrorMessage());
+            Log::error('ServerException: ' . $e->getErrorMessage(), ['method' => 'sendSms']);
             return $e->getMessage();
         } catch (Exception $e) {
-            Log::error('Exception', 'sendSms', $e->getMessage());
+            Log::error('Exception: ' . $e->getMessage(), ['method' => 'sendSms']);
             return $e->getMessage();
         }
 }

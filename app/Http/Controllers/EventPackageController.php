@@ -110,10 +110,11 @@ class EventPackageController extends Controller
         //
     }
 
-    public function sendSMS()
+    public function sendSMS(Request $request)
     {
         try{
-            TwoFactorService::sendSMS();
+
+            TwoFactorService::sendSMS(phone: $request->phone, message: $request->message);
             return $this->sendResponse('SMS sent successfully');
         }
         catch(Exception $e){
