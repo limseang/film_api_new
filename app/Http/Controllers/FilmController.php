@@ -350,6 +350,7 @@ class FilmController extends Controller
                 'distributor_id' => $film->distributor ?? '',
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : '',
                 'trailer' => $film->trailer ?? null,
+                'view' => $film->view ?? 0,
                 'type' => $film->types->name ?? null ,
                 'type_id' => $film->type ?? null,
                 'running_time' => $film->running_time,
@@ -429,6 +430,7 @@ class FilmController extends Controller
                 }) ?? '',
 
             ];
+
             return $this->sendResponse($data);
         }
         catch (Exception $e){
@@ -859,6 +861,21 @@ class FilmController extends Controller
             return $this->sendResponse($data);
         }
         catch (\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
+    public function IncrementViewCount(Request $request)
+    {
+        try{
+            $id = $request->id;
+            $film = Film::find($id);
+            $film->view = $film->view + 1;
+            $film->save();
+            return $this->sendResponse($film);
+        }
+        catch (Exception $e){
             return $this->sendError($e->getMessage());
         }
 
