@@ -59,8 +59,7 @@ class UserLoginController extends Controller
     {
         try{
             $user = User::where('email', $request->email)->first();
-            //if userId has in userLogin table already just update the token
-            $userLogin = UserLogin::where('user_id', $user->id)->first();
+            $userLogin = UserLogin::where('user_id', $user->id)->where('ip_address', $request->ip_address)->first();
             if($userLogin){
                 $userLogin->token = $request->token;
                 $userLogin->save();
@@ -70,25 +69,27 @@ class UserLoginController extends Controller
                     'data' => $userLogin
                 ], 200);
             }
-            //if userId has not in userLogin table create new user login
+            else {
+                $userLogin = UserLogin::create([
+                    'user_id' => $user->id,
+                    'role_id' => $user->role_id,
+                    'token' => $request->token,
+                    'device_id' => $request->device_id,
+                    'device_name' => $request->device_name,
+                    'device_os' => $request->device_os,
+                    'device_os_version' => $request->device_os_version,
+                    'fcm_token' => $request->fcm_token,
+                    'ip_address' => $request->ip_address,
+                    'notification_status' => $request->notification_status,
+                ]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'User login created successfully',
+                    'data' => $userLogin
+                ], 200);
+            }
 
-            $userLogin = UserLogin::create([
-                'user_id' => auth()->user()->id,
-                'role_id' => auth()->user()->role_id,
-                'token' => $request->token,
-                'device_id' => $request->device_id,
-                'device_name' => $request->device_name,
-                'device_os' => $request->device_os,
-                'device_os_version' => $request->device_os_version,
-                'fcm_token' => $request->fcm_token,
-                'ip_address' => $request->ip_address,
-                'notification_status' => $request->notification_status,
-            ]);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'User login created successfully',
-                'data' => $userLogin
-            ], 200);
+
         }
         catch(Exception $e){
             return response()->json([
