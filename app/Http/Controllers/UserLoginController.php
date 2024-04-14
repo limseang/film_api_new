@@ -61,7 +61,7 @@ class UserLoginController extends Controller
             $user = User::where('email', $request->email)->first();
             $userLogin = UserLogin::where('user_id', $user->id)->where('ip_address', $request->ip_address)->first();
             if($userLogin){
-                $userLogin->token = $request->token;
+                $userLogin->fcm_token = $request->fcm_token;
                 $userLogin->save();
                 return response()->json([
                     'status' => 'success',
