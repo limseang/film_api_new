@@ -59,6 +59,19 @@ class UserLoginController extends Controller
     {
         try{
             $user = User::where('email', $request->email)->first();
+            //if userId has in userLogin table already just update the token
+            $userLogin = UserLogin::where('user_id', $user->id)->where('device_id', $request->device_id)->first();
+            if($userLogin){
+                $userLogin->token = $request->token;
+                $userLogin->save();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'User login updated successfully',
+                    'data' => $userLogin
+                ], 200);
+            }
+            //if userId has not in userLogin table create new user login
+
             $userLogin = UserLogin::create([
                 'user_id' => auth()->user()->id,
                 'role_id' => auth()->user()->role_id,
