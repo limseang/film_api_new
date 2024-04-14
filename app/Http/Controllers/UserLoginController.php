@@ -62,6 +62,8 @@ class UserLoginController extends Controller
             $userLogin = UserLogin::where('user_id', $user->id)->where('ip_address', $request->ip_address)->first();
             if($userLogin){
                 $userLogin->fcm_token = $request->fcm_token;
+                $userLogin->notification_status = $request->notification_status;
+                $userLogin->token = $request->token;
                 $userLogin->save();
                 return response()->json([
                     'status' => 'success',
