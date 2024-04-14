@@ -60,7 +60,7 @@ class UserLoginController extends Controller
         try{
             $user = User::where('email', $request->email)->first();
             //if userId has in userLogin table already just update the token
-            $userLogin = UserLogin::where('user_id', $user->id)->where('device_id', $request->device_id)->first();
+            $userLogin = UserLogin::where('user_id', $user->id)->first();
             if($userLogin){
                 $userLogin->token = $request->token;
                 $userLogin->save();
