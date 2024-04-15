@@ -254,6 +254,7 @@ class UserController extends Controller
     {
         try{
             $user = UserLogin::all();
+
             foreach ($user as $item){
                 $data = [
                     'token' => $item->fcm_token,

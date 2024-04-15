@@ -274,6 +274,7 @@ class FilmController extends Controller
             $film->title = $request->title;
             $film->overview = $request->overview;
             $film->release_date = $request->release_date;
+            $film->view = 0;
             $film->rating = '0';
            if($request->category){
                 $film->category = $request->category;
