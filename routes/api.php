@@ -116,6 +116,7 @@ Route::get('/user/type', [UserTypeController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/all/user', [UserConTroller::class, 'index']);
+        Route::get('/admin/home', [UserConTroller::class, 'AdminHome']);
     });
 });
 

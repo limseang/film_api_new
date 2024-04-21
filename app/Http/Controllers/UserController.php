@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artical;
+use App\Models\Category;
 use App\Models\Film;
 use App\Models\role;
 use App\Models\Type;
@@ -150,6 +151,28 @@ class UserController extends Controller
         catch(Exception $e){
             return $this->sendError($e->getMessage());
         }
+    }
+
+    public function AdminHome()
+    {
+        try{
+            $total = User::count();
+            $total_film = Film::count();
+            $total_artical = Artical::count();
+            $toal_category = Category::count();
+
+            $data = [
+                'user' => $total,
+                'film' => $total_film,
+                'artical' => $total_artical,
+                'category' => $toal_category
+            ];
+            return $this->sendResponse($data);
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
     }
 
 
