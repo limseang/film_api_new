@@ -262,7 +262,7 @@ class UserController extends Controller
             'body' => 'New Artical has been created',
             'data' => [
                 'id' => '440',
-                'type' => '1',
+                'type' => '2',
             ]
         ];
         PushNotificationService::pushNotification($data);
