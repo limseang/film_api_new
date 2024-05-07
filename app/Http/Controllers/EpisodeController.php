@@ -59,6 +59,7 @@ class EpisodeController extends Controller
                     'message' => 'Film not found',
                 ], 400);
             }
+
             $episode->title = $request->title;
             $episode->description = $request->description;
             $episode->episode = $request->episode;
@@ -67,30 +68,30 @@ class EpisodeController extends Controller
             $episode->poster = $film->poster;
             $episode->file = $request->file;
             $episode->save();
-            $subjects = $episode->title . ' ' . 'S' . $episode->season . ' ' . 'Ep' . $episode->episode;
-            $message ='New Episode has been post';
+            $subjects = 'New episode of ';
+            $message ='Go to check it out now!';
             $film = Film::find($episode->film_id);
             //update film
             $film->created_at = now();
             $film->save();
-//            Dispatch(new SendNotificationJob($subject,$message))->onQueue('default');
-           if($request->notification == 1){
-               $fcmToken = [];
-               UserLogin::chunk(200, function ($users) use (&$fcmToken) {
-                   foreach ($users as $user) {
-                       $fcmToken[] = $user->fcm_token;
-                   }
-               });
-               PushNotificationService::pushMultipleNotification([
-                   'token' => $fcmToken,
-                   'title' => $subjects,
-                   'body' => $message,
-                   'data' => [
-                       'id' => '1',
-                       'type' => '2',
-                   ]
-               ]);
-              }
+//
+            if($request->notification == 1){
+                $fcmToken = [];
+                UserLogin::chunk(200, function ($users) use (&$fcmToken) {
+                    foreach ($users as $user) {
+                        $fcmToken[] = $user->fcm_token;
+                    }
+                });
+                PushNotificationService::pushMultipleNotification([
+                    'token' => $fcmToken,
+                    'title' => $subjects,
+                    'body' => $message,
+                    'data' => [
+                        'id' => '1',
+                        'type' => '2',
+                    ]
+                ]);
+            }
            else {
                 return response()->json([
                      'message' => 'successfully',

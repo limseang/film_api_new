@@ -7,34 +7,36 @@ namespace App\Services;
     use Exception;
     use Illuminate\Support\Facades\Log;
 
-    class PushNotificationService {
+    class PushNotificationService
+    {
 
-       public static function pushNotification(array $businessParams=[
+        public static function pushNotification(array $businessParams = [
             'token' => "",
             'title' => "",
             'body' => "",
-           'sound' => 'default',
-           'data' => [],
+            'sound' => 'default',
+            'data' => [],
         ]): void
         {
-            try{
-            $firebase = (new Factory)->withServiceAccount(__DIR__.'/firebase_credentials.json');
-            $messaging = $firebase->createMessaging();
+            try {
+                $firebase = (new Factory)->withServiceAccount(__DIR__ . '/firebase_credentials.json');
+                $messaging = $firebase->createMessaging();
 
-            $notification = CloudMessage::withTarget('token', $businessParams['token'])
-                ->withNotification([
-                    'title' => $businessParams['title'] ?? "",
-                    'body' => $businessParams['body'] ?? "",
-                    'image' => $businessParams['image'] ?? "",
-                    'type' => $businessParams['type'] ?? '',
-                    'data' => $businessParams['data'] ?? [],
-                    'id' => $businessParams['id'] ?? '',
-                    'sound' => $businessParams['sound'] ?? 'default',
-                ])->withData($businessParams['data'] ?? []);
-            $messaging->send($notification);
+                $notification = CloudMessage::withTarget('token', $businessParams['token'])
+                    ->withNotification([
+                        'title' => $businessParams['title'] ?? "",
+                        'body' => $businessParams['body'] ?? "",
+                        'image' => $businessParams['image'] ?? "",
+                        'type' => $businessParams['type'] ?? '',
+                        'data' => $businessParams['data'] ?? [],
+                        'id' => $businessParams['id'] ?? '',
+                        'sound' => $businessParams['sound'] ?? 'default',
+                    ])->withData($businessParams['data'] ?? []);
 
-            }catch (Exception $e){
-              log::error($e->getMessage());
+                $messaging->send($notification);
+
+            } catch (Exception $e) {
+                log::error($e->getMessage());
             }
 
         }
@@ -43,38 +45,44 @@ namespace App\Services;
          * @throws MessagingException
          * @throws FirebaseException
          */
-        public static function pushMultipleNotification(array $businessParams=[
+        public static function pushMultipleNotification(array $businessParams = [
             'token' => [],
             'title' => "",
             'body' => "",
             'data' => [],
         ]): void
+
         {
-            try{
-
+            try {
                 $firebase = (new Factory)
-                    ->withServiceAccount(__DIR__.'/firebase_credentials.json');
+                    ->withServiceAccount(__DIR__ . '/firebase_credentials.json');
                 $messaging = $firebase->createMessaging();
-                $messages = [];
-                foreach ($businessParams['token'] as $token) {
-                    $notification = CloudMessage::withTarget('token', $token)
-                        ->withNotification([
-                            'title' => $businessParams['title'] ?? "",
-                            'body' => $businessParams['body'] ?? "",
-                            'image' => $businessParams['image'] ?? "",
-                            'type' => $businessParams['type'] ?? '',
-                            'data' => $businessParams['data'] ?? [],
-                            'id' => $businessParams['id'] ?? '',
-                            'sound' => 'default',
-                        ])->withData($businessParams['data'] ?? []);
-                    $messages[] = $notification;
+
+                $notification = CloudMessage::new()
+                    ->withNotification([
+                        'title' => $businessParams['title'] ?? "",
+                        'body' => $businessParams['body'] ?? "",
+                        'image' => $businessParams['image'] ?? "",
+                        'type' => $businessParams['type'] ?? '',
+                        'data' => $businessParams['data'] ?? [],
+                        'id' => $businessParams['id'] ?? '',
+                        'sound' => $businessParams['sound'] ?? 'default',
+                    ])->withData($businessParams['data'] ?? []);
+
+                $tokenChunks = array_chunk($businessParams['token'], 10);
+
+                foreach ($tokenChunks as $tokens) {
+                    $report = $messaging->sendMulticast($notification, $tokens);
+
+                    if ($report->hasFailures()) {
+                        foreach ($report->failures()->getItems() as $failure) {
+                            Log::error('Failed to send notification to ' . $failure->target()->value() . ': ' . $failure->error()->getMessage());
+                        }
+                    }
                 }
-                $messaging->sendAll($messages);
-
-            }catch (Exception $e){
-                log::error($e->getMessage());
+            } catch (Exception $e) {
+                Log::error($e->getMessage());
             }
-
         }
     }
 

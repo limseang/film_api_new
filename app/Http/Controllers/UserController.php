@@ -87,6 +87,8 @@ class UserController extends Controller
         }
     }
 
+
+
     public function login(Request $request){
         // validation
         try{
@@ -276,20 +278,27 @@ class UserController extends Controller
     public function sendNotificationGlobeAll(Request $request)
     {
         try{
-            $user = UserLogin::all();
-
-            foreach ($user as $item){
-                $data = [
-                    'token' => $item->fcm_token,
-                    'title' => $request->title,
-                    'body' => $request->body,
-                    'data' => [
-                        'id' => $request->id,
-                        'type' => $request->type,
-                    ]
-                ];
-                PushNotificationService::pushNotification($data);
-            }
+            $fcmToken = [];
+            UserLogin::chunk(10, function ($users) use (&$fcmToken){
+                foreach ($users as $user) {
+                    $fcmToken[] = $user->fcm_token;
+//                    dd($fcmToken);
+                }
+            });
+//            dd($fcmToken);
+            PushNotificationService::pushMultipleNotification([
+                'token' => $fcmToken,
+                'title' => 'test',
+                'body' => 'test322',
+                'data' => [
+                    'id' => '1',
+                    'type' => '2',
+                ]
+            ]);
+            return response()->json([
+                'message' => 'success',
+                'notification' => $fcmToken
+            ], 200);
         }
         catch (Exception $e){
             return response()->json([
@@ -373,6 +382,48 @@ class UserController extends Controller
        }
 
    }
+
+
+   // Todo: Admin
+    public function AdminLogin(Request $request)
+    {
+        try{
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
+            $user = User::where('email', $request->email)->first();
+            if(!$user){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Account not much',
+                ]);
+            }
+            if(!Hash::check($request->password, $user->password)){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Account not much',
+                ]);
+            }
+            $role = UserType::where('user_id', $user->id)->first();
+            if($role->role_id != 1 || $role->role_id != 2){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Account not much',
+                ]);
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'token' => $token,
+                'user' => $user
+            ]);
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
 
 
 
