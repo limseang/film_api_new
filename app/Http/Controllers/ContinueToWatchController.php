@@ -86,7 +86,10 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->where('progressing', $request->progressing)
                 ->first();
-            return $this->sendResponse($continueToWatch);
+           if($continueToWatch){
+               return $this->sendResponse($continueToWatch);
+           }
+              return 'null';
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
