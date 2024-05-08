@@ -39,11 +39,16 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
-                $continueToWatch->episode_id = $request->episode_id;
-                $continueToWatch->duration = $request->duration;
-                $continueToWatch->progressing = $request->progressing;
-                $continueToWatch->watched_at = $request->watched_at;
-                $continueToWatch->save();
+              if($request->progressing == $continueToWatch->duration) {
+                  $continueToWatch->delete();
+              }
+              else {
+                  $continueToWatch->episode_id = $request->episode_id;
+                  $continueToWatch->duration = $request->duration;
+                  $continueToWatch->progressing = $request->progressing;
+                  $continueToWatch->watched_at = $request->watched_at;
+                  $continueToWatch->save();
+              }
             }else{
                 $continueToWatch = new ContinueToWatch();
                 $continueToWatch->user_id = auth()->user()->id;
