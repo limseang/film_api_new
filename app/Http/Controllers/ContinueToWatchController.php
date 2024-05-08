@@ -79,11 +79,12 @@ class ContinueToWatchController extends Controller
 
    }
 
-  public function detail(Request $request){
+  public function checkContinue(Request $request){
         try{
             $continueToWatch = ContinueToWatch::where('user_id', auth()->user()->id)
                 ->where('film_id', $request->film_id)
-                ->where('film_type', $request->film_type)
+                ->where('episode_id', $request->episode_id)
+                ->where('progressing', $request->progressing)
                 ->first();
             return $this->sendResponse($continueToWatch);
         }

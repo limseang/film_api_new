@@ -563,7 +563,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 /* Continue to watch */
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::get('/continue-to-watch', [ContinueToWatchController::class, 'shortByUser']);
-    Route::post('/continue-to-watch/detail', [ContinueToWatchController::class, 'detail']);
+    Route::post('/continue-to-watch/check', [ContinueToWatchController::class, 'checkContinue']);
     Route::post('/continue-to-watch/create', [ContinueToWatchController::class, 'create']);
     Route::post('/continue-to-watch/update/{id}', [ContinueToWatchController::class, 'update']);
     Route::delete('/continue-to-watch/delete/{id}', [ContinueToWatchController::class, 'destroy']);
