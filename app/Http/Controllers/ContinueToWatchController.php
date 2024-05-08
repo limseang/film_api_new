@@ -14,7 +14,15 @@ class ContinueToWatchController extends Controller
     public function index()
     {
         try{
-            $continueToWatch = ContinueToWatch::all();
+            $uploadController = new UploadController();
+            $continueToWatch = ContinueToWatch::with(['film', 'episode'])->get();
+
+            foreach($continueToWatch as $item){
+
+                $item->film->poster = $uploadController->getSignedUrl($item->film->poster);
+            }
+
+
             return $this->sendResponse($continueToWatch);
         }
         catch(Exception $e){
@@ -55,17 +63,33 @@ class ContinueToWatchController extends Controller
     }
 
 
-   public function shortByUser()
-   {
-       try{
-           $userID = auth()->user()->id;
-           $continueToWatch = ContinueToWatch::where('user_id', $userID)->get();
-           return $this->sendResponse($continueToWatch);
-       }
-       catch(Exception $e){
-           return $this->sendError($e->getMessage());
-       }
-   }
+    public function shortByUser()
+    {
+        try{
+            $userID = auth()->user()->id;
+            $uploadController = new UploadController();
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
+                ->where('user_id', $userID)
+                ->get();
+
+            $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
+                return [
+                    'id' => $item->id,
+                    'user_id' => $item->user_id,
+                    'films' => $item->films->title,
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'episodes' => $item->episodes->episode,
+                    'progressing' => $item->progressing,
+                    'duration' => $item->duration,
+                ];
+            });
+
+            return $this->sendResponse($continueToWatch);
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
 
    public function allForUser($id)
    {

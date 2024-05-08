@@ -105,6 +105,11 @@ class Film extends Model
         return $this->belongsTo(Distributor::class,'distributor_id','id');
     }
 
+    public function continueToWatch()
+    {
+        return $this->hasMany(ContinueToWatch::class,'film_id','id');
+    }
+
 //    public function favorite()
 //    {
 //        return $this->hasMany(Farvorite::class,'item_id','id')->where('item_type',2);

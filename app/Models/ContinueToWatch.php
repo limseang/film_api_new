@@ -18,12 +18,12 @@ class ContinueToWatch extends Model
         'watched_at'
     ];
 
-    public function film()
+    public function films()
     {
         return $this->belongsTo(Film::class, 'film_id', 'id');
     }
 
-    public function episode()
+    public function episodes()
     {
         return $this->belongsTo(Episode::class, 'episode_id', 'id');
     }
