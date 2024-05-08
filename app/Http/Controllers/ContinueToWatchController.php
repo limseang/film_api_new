@@ -36,7 +36,7 @@ class ContinueToWatchController extends Controller
         try{
             $continueToWatch = ContinueToWatch::where('user_id', auth()->user()->id)
                 ->where('film_id', $request->film_id)
-                ->where('film_type', $request->film_type)
+                ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
                 $continueToWatch->episode_id = $request->episode_id;
