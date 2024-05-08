@@ -50,7 +50,7 @@ class ContinueToWatchController extends Controller
             return $this->sendResponse($continueToWatch);
         }
         catch(Exception $e){
-            return $this->sendEphrror($e->getMessage());
+            return $this->sendError($e->getMessage());
         }
     }
 
