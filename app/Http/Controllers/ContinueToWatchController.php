@@ -103,7 +103,15 @@ class ContinueToWatchController extends Controller
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('id', $id)
                 ->first();
-            return $this->sendResponse($continueToWatch);
+           $data = [
+               'id' => $continueToWatch->id,
+               'user_id' => $continueToWatch->user_id,
+               'films' => $continueToWatch->films->title,
+               'episodes' => $continueToWatch->episodes->episode,
+               'progressing' => $continueToWatch->progressing,
+               'duration' => $continueToWatch->duration,
+           ];
+            return $this->sendResponse($data);
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
