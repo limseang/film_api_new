@@ -75,6 +75,7 @@ class ContinueToWatchController extends Controller
             $uploadController = new UploadController();
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('user_id', $userID)
+                ->shortBy('created_at', 'desc')
                 ->get();
 
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
