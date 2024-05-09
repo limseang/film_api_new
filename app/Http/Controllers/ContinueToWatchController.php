@@ -96,17 +96,21 @@ class ContinueToWatchController extends Controller
         }
     }
 
-   public function allForUser($id)
-   {
-       try{
-              $continueToWatch = ContinueToWatch::where('user_id', $id)->get();
-              return $this->sendResponse($continueToWatch);
-         }
-         catch(Exception $e){
-              return $this->sendError($e->getMessage());
-       }
+    public function detail($id)
+    {
+        try{
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
+                ->where('id', $id)
+                ->first();
+            return $this->sendResponse($continueToWatch);
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
 
-   }
+    }
+
+
 
   public function checkContinue(Request $request){
         try{

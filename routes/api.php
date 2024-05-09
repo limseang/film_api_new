@@ -567,6 +567,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/continue-to-watch/create', [ContinueToWatchController::class, 'create']);
     Route::post('/continue-to-watch/update/{id}', [ContinueToWatchController::class, 'update']);
     Route::delete('/continue-to-watch/delete/{id}', [ContinueToWatchController::class, 'destroy']);
+    Route::get('/continue-to-watch/{id}', [ContinueToWatchController::class, 'detail']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/continue-to-watch/all', [ContinueToWatchController::class, 'index']);
     });
