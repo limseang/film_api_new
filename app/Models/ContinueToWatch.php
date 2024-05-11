@@ -15,7 +15,8 @@ class ContinueToWatch extends Model
         'episode_id',
         'duration',
         'progressing',
-        'watched_at'
+        'watched_at',
+        'episode_number',
     ];
 
     public function films()
