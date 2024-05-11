@@ -47,6 +47,7 @@ class ContinueToWatchController extends Controller
                   $continueToWatch->duration = $request->duration;
                   $continueToWatch->progressing = $request->progressing;
                   $continueToWatch->watched_at = $request->watched_at;
+                    $continueToWatch->episode_number = $request->episodeNumber;
                   $continueToWatch->save();
               }
             }else{
@@ -58,6 +59,7 @@ class ContinueToWatchController extends Controller
                 $continueToWatch->duration = $request->duration;
                 $continueToWatch->progressing = $request->progressing;
                 $continueToWatch->watched_at = $request->watched_at;
+                $continueToWatch->episode_number = $request->episodeNumber;
                 $continueToWatch->save();
             }
             return $this->sendResponse($continueToWatch);
@@ -111,6 +113,7 @@ class ContinueToWatchController extends Controller
                'url' => $continueToWatch->episodes->file,
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
+               'index' => $continueToWatch->episode_number,
            ];
             return $this->sendResponse($data);
         }
@@ -150,6 +153,7 @@ class ContinueToWatchController extends Controller
             $continueToWatch->duration = $request->duration ?? $continueToWatch->duration;
             $continueToWatch->progressing = $request->progressing ?? $continueToWatch->progressing;
             $continueToWatch->watched_at = $request->watched_at ?? $continueToWatch->watched_at;
+            $continueToWatch->episode_number = $request->episodeNumber ?? $continueToWatch->episode_number;
             $continueToWatch->save();
             return $this->sendResponse($continueToWatch);
         }
