@@ -108,6 +108,7 @@ class ContinueToWatchController extends Controller
                'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title,
                'episodes' => $continueToWatch->episodes->episode,
+               'url' => $continueToWatch->episodes->file,
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
            ];
