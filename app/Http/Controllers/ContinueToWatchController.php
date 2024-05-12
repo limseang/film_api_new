@@ -168,7 +168,8 @@ class ContinueToWatchController extends Controller
         try{
             $uploadController = new UploadController();
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
-                ->where('film_id', $id, 'user_id', auth()->user()->id)
+                ->where('film_id', $id, )
+                ->where('user_id', auth()->user()->id)
                //orderby episode number
                 ->orderBy('episode_number', 'ASC')
                 ->get();
