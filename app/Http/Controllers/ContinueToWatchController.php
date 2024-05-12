@@ -151,8 +151,8 @@ class ContinueToWatchController extends Controller
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
             $continueToWatch->episode_id = $request->episode_id ?? $continueToWatch->episode_id;
             $continueToWatch->duration = $request->duration ?? $continueToWatch->duration;
-            $continueToWatch->progressing = $request->progressing ?? $continueToWatch->progressing;
-            $continueToWatch->watched_at = $request->watched_at ?? $continueToWatch->watched_at;
+            $continueToWatch->progressing = $request->progressing;
+            $continueToWatch->watched_at = $request->watched_at;
             $continueToWatch->episode_number = $request->episodeNumber ?? $continueToWatch->episode_number;
             $continueToWatch->save();
             return $this->sendResponse($continueToWatch);
