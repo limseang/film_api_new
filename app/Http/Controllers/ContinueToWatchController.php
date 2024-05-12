@@ -162,10 +162,37 @@ class ContinueToWatchController extends Controller
         }
     }
 
+    public function sortByFilm($id)
+    {
+        try{
+            $uploadController = new UploadController();
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
+                ->where('film_id', $id, 'user_id', auth()->user()->id)
+               //orderby episode number
+                ->orderBy('episode_number', 'ASC')
+                ->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
+            $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
+                return [
+                    'id' => $item->id,
+                    'user_id' => $item->user_id,
+                    'films' => $item->films->title,
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'episodes' => $item->episodes->episode,
+                    'progressing' => $item->progressing,
+                    'duration' => $item->duration,
+                ];
+            });
+
+            return $this->sendResponse($continueToWatch);
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
+
     public function destroy($id)
     {
         try{
