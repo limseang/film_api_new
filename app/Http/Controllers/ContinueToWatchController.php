@@ -224,6 +224,11 @@ class ContinueToWatchController extends Controller
 
                     }
                 }
+                // progress in percentage
+                $percentage = 0;
+                if ($duration != 0 && $progressing != 0) {
+                    $percentage = $progressing / $duration * 100;
+                }
                 return [
                     'id' => $item->id,
 
@@ -234,7 +239,7 @@ class ContinueToWatchController extends Controller
                     'file' => $item->file,
                     'duration' => $duration,
                     'progressing' => $progressing,
-                    'percentage' => $progressing / $duration * 100 . '%'
+                    'percentage' => round($percentage,2) . '%',
                 ];
             });
 
