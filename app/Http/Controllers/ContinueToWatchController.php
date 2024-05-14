@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContinueToWatch;
+use App\Models\Film;
 use Exception;
+use Faker\Core\File;
 use Illuminate\Http\Request;
 
 class ContinueToWatchController extends Controller
@@ -192,6 +194,61 @@ class ContinueToWatchController extends Controller
             return $this->sendError($e->getMessage());
         }
 
+    }
+
+    public function detailByFilm($id)
+    {
+        try{
+            $uploadController = new UploadController();
+            $film = Film::with(['episode','continueToWatch'])
+                ->where('id', $id)
+                ->first();
+            // check if the user has watched the film in with episode in continue to watch table or not show the status
+            $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
+                ->where('film_id', $id)
+                ->get();
+
+            $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
+                $status = 'unwatched';
+                $progressing = 0;
+                $duration = 0;
+                foreach ($continueToWatch as $watch) {
+                    if ($item->id == $watch->episode_id) {
+                        if($watch->progressing == $watch->duration){
+                            $status = 'watched';
+                        }elseif(!empty($watch->progressing)){
+                            $status = 'progressing';
+                        }
+                        $progressing = $watch->progressing;
+                        $duration = $watch->duration;
+
+                    }
+                }
+                return [
+                    'id' => $item->id,
+
+                    'episode' => $item->episode,
+                    'season' => $item->season,
+
+                    'status' => $status,
+                    'file' => $item->file,
+                    'duration' => $duration,
+                    'progressing' => $progressing,
+                ];
+            });
+
+
+            $data = [
+                'id' => $film->id,
+                'title' => $film->title,
+                'description' => $film->description,
+                'poster' => $film->poster,
+                'episodes' => $film->episode,
+            ];
+            return $this->sendResponse($data);
+        }catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
     }
 
 
