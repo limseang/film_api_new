@@ -231,13 +231,11 @@ class ContinueToWatchController extends Controller
                 }
                 return [
                     'id' => $item->id,
-
                     'episode' => $item->episode,
                     'season' => $item->season,
-
                     'status' => $status,
                     'file' => $item->file,
-                    'duration' => $duration,
+                    'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
                 ];
