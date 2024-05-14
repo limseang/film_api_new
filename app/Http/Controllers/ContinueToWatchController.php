@@ -234,6 +234,7 @@ class ContinueToWatchController extends Controller
                     'file' => $item->file,
                     'duration' => $duration,
                     'progressing' => $progressing,
+                    'percentage' => $progressing / $duration * 100 . '%'
                 ];
             });
 
