@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContinueToWatch;
 use App\Models\Film;
+use App\Models\User;
 use Exception;
 use Faker\Core\File;
 use Illuminate\Http\Request;
@@ -41,17 +42,18 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
-              if($request->progressing == $continueToWatch->duration) {
-                  $continueToWatch->delete();
-              }
-              else {
-                  $continueToWatch->episode_id = $request->episode_id;
-                  $continueToWatch->duration = $request->duration;
-                  $continueToWatch->progressing = $request->progressing;
-                  $continueToWatch->watched_at = $request->watched_at;
-                    $continueToWatch->episode_number = $request->episode_number;
-                  $continueToWatch->save();
-              }
+
+                $continueToWatch->episode_id = $request->episode_id;
+                $continueToWatch->duration = $request->duration;
+                $continueToWatch->progressing = $request->progressing;
+                $continueToWatch->watched_at = $request->watched_at;
+                $continueToWatch->episode_number = $request->episode_number;
+                $continueToWatch->save();
+
+                // - point from user 2 point
+                $user = User::find(auth()->user()->id);
+                $user->point = $user->point - 2;
+                $user->save();
             }else{
                 $continueToWatch = new ContinueToWatch();
                 $continueToWatch->user_id = auth()->user()->id;
@@ -83,15 +85,19 @@ class ContinueToWatchController extends Controller
                 ->get();
 
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
+                //if same film_id show only the latest episode
+                $latestEpisode = ContinueToWatch::where('film_id', $item->film_id)
+                    ->where('user_id', auth()->user()->id)
+                    ->orderBy('watched_at', 'DESC')
+                    ->first();
                 return [
-                    'id' => $item->id,
-                    'user_id' => $item->user_id,
-                    'films' => $item->films->title,
-                    'film_id' => $item->film_id,
-                    'poster' => $uploadController->getSignedUrl($item->films->poster),
-                    'episodes' => $item->episodes->episode,
-                    'progressing' => $item->progressing,
-                    'duration' => $item->duration,
+                    'id' => $latestEpisode->id,
+                    'user_id' => $latestEpisode->user_id,
+                    'films' => $latestEpisode->films->title,
+                    'poster' => $uploadController->getSignedUrl($latestEpisode->films->poster),
+                    'episodes' => $latestEpisode->episodes->episode,
+                    'progressing' => $latestEpisode->progressing,
+                    'duration' => $latestEpisode->duration,
                 ];
             });
 
