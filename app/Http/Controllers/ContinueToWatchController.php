@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ContinueToWatch;
 use App\Models\Film;
-use App\Models\User;
 use Exception;
 use Faker\Core\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ContinueToWatchController extends Controller
 {
@@ -49,11 +49,6 @@ class ContinueToWatchController extends Controller
                 $continueToWatch->watched_at = $request->watched_at;
                 $continueToWatch->episode_number = $request->episode_number;
                 $continueToWatch->save();
-
-                // - point from user 2 point
-                $user = User::find(auth()->user()->id);
-                $user->point = $user->point - 2;
-                $user->save();
             }else{
                 $continueToWatch = new ContinueToWatch();
                 $continueToWatch->user_id = auth()->user()->id;
@@ -77,27 +72,27 @@ class ContinueToWatchController extends Controller
     public function shortByUser()
     {
         try{
-            $userID = auth()->user()->id;
             $uploadController = new UploadController();
-            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
-                ->where('user_id', $userID)
-                ->orderBy('watched_at', 'DESC')
+            $continueToWatch =   ContinueToWatch::with(['films'])
+                ->select('continue_to_watches.*')
+                ->join(DB::raw('(select film_id, max(watched_at) as max_watched_at from continue_to_watches where user_id = '.auth()->user()->id.' group by film_id) as latest_watches'), function($join) {
+                    $join->on('continue_to_watches.film_id', '=', 'latest_watches.film_id');
+                    $join->on('continue_to_watches.watched_at', '=', 'latest_watches.max_watched_at');
+                })
+                ->where('user_id', auth()->user()->id)
+                ->orderByDesc('watched_at') // Order by watched_at in descending order
                 ->get();
-
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
-                //if same film_id show only the latest episode
-                $latestEpisode = ContinueToWatch::where('film_id', $item->film_id)
-                    ->where('user_id', auth()->user()->id)
-                    ->orderBy('watched_at', 'DESC')
-                    ->first();
                 return [
-                    'id' => $latestEpisode->id,
-                    'user_id' => $latestEpisode->user_id,
-                    'films' => $latestEpisode->films->title,
-                    'poster' => $uploadController->getSignedUrl($latestEpisode->films->poster),
-                    'episodes' => $latestEpisode->episodes->episode,
-                    'progressing' => $latestEpisode->progressing,
-                    'duration' => $latestEpisode->duration,
+                    'id' => $item->id,
+                    'user_id' => $item->user_id,
+                    'films' => $item->films->title,
+                    'film_id' => $item->film_id,
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'episodes' => $item->episodes->episode ?? '',
+                    'progressing' => $item->progressing,
+                    'episode_id' => $item->episode_id,
+                    'duration' => $item->duration,
                 ];
             });
 
