@@ -18,7 +18,7 @@ class ContinueToWatchController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $continueToWatch = ContinueToWatch::with(['film', 'episode'])->get();
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])->get();
 
             foreach($continueToWatch as $item){
 
