@@ -17,13 +17,9 @@ class ContinueToWatchController extends Controller
     public function index()
     {
         try{
-            $uploadController = new UploadController();
+
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])->get();
 
-            foreach($continueToWatch as $item){
-
-                $item->film->poster = $uploadController->getSignedUrl($item->film->poster);
-            }
 
 
             return $this->sendResponse($continueToWatch);
