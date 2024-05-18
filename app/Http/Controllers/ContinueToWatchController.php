@@ -106,8 +106,11 @@ class ContinueToWatchController extends Controller
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('id', $id)
                 ->first();
-            //find episode file by using episode id
-            $episode = Episode::where('id', $continueToWatch->episode_id)->first();
+            //find episode file by film_id and episode number
+            $episode = Episode::where('film_id', $continueToWatch->film_id)
+                ->where('episode', $continueToWatch->episode_number)
+                ->first();
+
            $data = [
                'id' => $continueToWatch->id,
                'user_id' => $continueToWatch->user_id,
