@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContinueToWatch;
+use App\Models\Episode;
 use App\Models\Film;
 use Exception;
 use Faker\Core\File;
@@ -105,12 +106,14 @@ class ContinueToWatchController extends Controller
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('id', $id)
                 ->first();
+            //find episode file by using episode id
+            $episode = Episode::where('id', $continueToWatch->episode_id)->first();
            $data = [
                'id' => $continueToWatch->id,
                'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title ?? '',
                'episodes' => $continueToWatch->episodes->episode,
-               'url' => $continueToWatch->episodes->file,
+               'url' => $episode->file,
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
                'index' => $continueToWatch->episode_number,
