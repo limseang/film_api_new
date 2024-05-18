@@ -108,7 +108,7 @@ class ContinueToWatchController extends Controller
            $data = [
                'id' => $continueToWatch->id,
                'user_id' => $continueToWatch->user_id,
-               'films' => $continueToWatch->films->title,
+               'films' => $continueToWatch->films->title ?? '',
                'episodes' => $continueToWatch->episodes->episode,
                'url' => $continueToWatch->episodes->file,
                'progressing' => $continueToWatch->progressing,
