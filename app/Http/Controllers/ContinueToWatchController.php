@@ -38,6 +38,7 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
+
                 $continueToWatch->episode_id = $request->episode_id;
                 $continueToWatch->duration = $request->duration;
                 $continueToWatch->progressing = $request->progressing;
@@ -83,8 +84,8 @@ class ContinueToWatchController extends Controller
                     'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
-                    'poster' => $item->films->poster ?? '',
-                    'episodes' => $uploadController->getSignedUrl($item->episodes->episode),
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
                     'duration' => $item->duration,
