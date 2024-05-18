@@ -218,6 +218,7 @@ class ContinueToWatchController extends Controller
                         }
                         $progressing = $watch->progressing;
                         $duration = $watch->duration;
+                        $continueToWatchId = $watch->id;
 
                     }
                 }
@@ -228,7 +229,7 @@ class ContinueToWatchController extends Controller
                 }
                 return [
                     'id' => $item->id,
-                    'continue_id' => $watch->id ?? null, // if the user has not watched the film, the value will be 'null
+                    'continue_id' => $continueToWatchId ?? null, // if the user has not watched the film, the value will be 'null
                     'episode' => $item->episode,
                     'season' => $item->season,
                     'status' => $status,
