@@ -39,7 +39,6 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
-
                 $continueToWatch->episode_id = $request->episode_id;
                 $continueToWatch->duration = $request->duration;
                 $continueToWatch->progressing = $request->progressing;
@@ -217,7 +216,7 @@ class ContinueToWatchController extends Controller
                 $duration = 0;
                 foreach ($continueToWatch as $watch) {
                     if ($item->id == $watch->episode_id) {
-                        if($watch->progressing == $watch->duration){
+                        if($watch->progressing >= $watch->duration){
                             $status = 'watched';
                         }elseif(!empty($watch->progressing)){
                             $status = 'progressing';
