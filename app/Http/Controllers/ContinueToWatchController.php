@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContinueToWatch;
 use App\Models\Episode;
+use App\Models\EpisodeSubtitle;
 use App\Models\Film;
 use Exception;
 use Faker\Core\File;
@@ -102,7 +103,7 @@ class ContinueToWatchController extends Controller
     public function detail($id)
     {
         try{
-            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes','subtitles'])
                 ->where('id', $id)
                 ->first();
             //find episode file by film_id and episode number
@@ -111,14 +112,16 @@ class ContinueToWatchController extends Controller
                 ->first();
 
            $data = [
+
                'id' => $continueToWatch->id,
                'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title ?? '',
                'episodes' => $continueToWatch->episodes->episode,
-               'url' => $episode->file,
+               'url' => $continueToWatch->episodes->file,
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
                'index' => $continueToWatch->episode_number,
+                'subtitles' => $continueToWatch->subtitles ?? null,
            ];
             return $this->sendResponse($data);
         }
@@ -202,13 +205,15 @@ class ContinueToWatchController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $film = Film::with(['episode','continueToWatch'])
+            $film = Film::with(['episode','continueToWatch','subtitles'])
                 ->where('id', $id)
                 ->first();
             // check if the user has watched the film in with episode in continue to watch table or not show the status
             $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
                 ->where('film_id', $id)
                 ->get();
+
+
 
             $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
                 $status = 'unwatched';
@@ -242,6 +247,7 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
+                    'subtitles' => $item->subtitles,
                 ];
             });
 

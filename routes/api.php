@@ -15,6 +15,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\EpisodeSubtitleController;
 use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\EventPackageController;
 use App\Http\Controllers\EventPlanController;
@@ -573,6 +574,19 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('/continue-to-watch/all', [ContinueToWatchController::class, 'index']);
     });
 });
+
+/* Subtitle */
+Route::get('/episode/subtitle', [EpisodeSubtitleController::class, 'index']);
+Route::get('/episode/subtitle/{id}', [EpisodeSubtitleController::class, 'detail']);
+Route::get('/episode/subtitle/film/{id}', [EpisodeSubtitleController::class, 'byFilm']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/episode/subtitle/create', [EpisodeSubtitleController::class, 'create']);
+        Route::delete('/episode/subtitle/delete/{id}', [EpisodeSubtitleController::class, 'destroy']);
+        Route::get('/episode/subtitle/all', [EpisodeSubtitleController::class, 'index']);
+    });
+});
+
 
 
 

@@ -38,4 +38,9 @@ class ContinueToWatch extends Model
     {
         return $value ? json_decode($value) : null;
     }
+
+    public function subtitles()
+    {
+        return $this->hasOne(EpisodeSubtitle::class,'episode_id','episode_id');
+    }
 }

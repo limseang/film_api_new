@@ -115,6 +115,11 @@ class Film extends Model
 //        return $this->hasMany(Farvorite::class,'item_id','id')->where('item_type',2);
 //    }
 
+public function subtitles()
+{
+    return $this->hasMany(EpisodeSubtitle::class, 'film_id', 'id');
+}
+
 
 
 }
