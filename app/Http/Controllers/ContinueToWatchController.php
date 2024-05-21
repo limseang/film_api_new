@@ -294,6 +294,7 @@ class ContinueToWatchController extends Controller
                 'description' => $film->description,
                 'poster' => $film->poster,
                 'episodes' => $film->episode,
+                'subtitles' => $data['subtitles'] ?? 'null',
             ];
             return $this->sendResponse($data);
         }catch(Exception $e){
