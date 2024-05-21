@@ -106,10 +106,31 @@ class ContinueToWatchController extends Controller
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('id', $id)
                 ->first();
+            if(!$continueToWatch){
+                return $this->sendError('ID is not found');
+            }
+            if(!$continueToWatch->film_id){
+                return $this->sendError('Film ID is not found');
+            }
             //find episode file by film_id and episode number
             $episode = Episode::where('film_id', $continueToWatch->film_id)
                 ->where('id', $continueToWatch->episode_id)
                 ->first();
+            if(!$episode){
+                return $this->sendError('Episode ID is not found');
+            }
+            $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $continueToWatch->film_id)
+                ->where('episode_id', $continueToWatch->episode_id)
+                ->get();
+            if($episodeSubtitle){
+                $data['subtitles'] = $episodeSubtitle->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'language' => $item->language->name,
+                        'url' => $item->url,
+                    ];
+                });
+            }
            $data = [
 
                'id' => $continueToWatch->id,
@@ -121,7 +142,8 @@ class ContinueToWatchController extends Controller
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
                'index' => $continueToWatch->episode_number,
-                'subtitles' => $continueToWatch->subtitles ?? null,
+                'subtitles' => $data['subtitles'] ?? 'null',
+
            ];
             return $this->sendResponse($data);
         }
@@ -213,7 +235,7 @@ class ContinueToWatchController extends Controller
                 ->where('film_id', $id)
                 ->get();
 
-
+            $data = [];
 
             $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
                 $status = 'unwatched';
@@ -231,6 +253,20 @@ class ContinueToWatchController extends Controller
                         $continueToWatchId = $watch->id;
 
                     }
+                    $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
+                        ->where('episode_id', $item->id)
+                        ->get();
+                    if($episodeSubtitle){
+
+                        $data['subtitles'] = $episodeSubtitle->map(function ($item) {
+                            return [
+                                'id' => $item->id,
+                                'language' => $item->language->name,
+                                'url' => $item->url,
+                            ];
+                        });
+                    }
+
                 }
                 // progress in percentage
                 $percentage = 0;
@@ -247,7 +283,7 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
-                    'subtitles' => $item->subtitles,
+                    'subtitles' => $data['subtitles'] ?? 'null',
                 ];
             });
 
