@@ -229,7 +229,6 @@ class ContinueToWatchController extends Controller
             $uploadController = new UploadController();
             $film = Film::with(['episode','continueToWatch','subtitles'])
                 ->where('id', $id)
-                ->orderBy('episode', 'ASC')
                 ->first();
             // check if the user has watched the film in with episode in continue to watch table or not show the status
             $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
