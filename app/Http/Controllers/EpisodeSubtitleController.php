@@ -99,7 +99,15 @@ class EpisodeSubtitleController extends Controller
             $episodeSubtitle = EpisodeSubtitle::with('language')->where('episode_id',$id)->get();
             if(!$episodeSubtitle)
                 return $this->sendError('Episode ID is not found', );
-            return $this->sendResponse($episodeSubtitle, );
+           $data = [];
+            foreach ($episodeSubtitle as $item){
+                $data[] = [
+                    'id' => $item->id,
+                    'language' => $item->language->name,
+                    'url' => $item->url,
+                ];
+            }
+            return $this->sendResponse($data, );
         }
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
