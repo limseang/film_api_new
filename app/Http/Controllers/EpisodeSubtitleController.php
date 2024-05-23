@@ -82,15 +82,6 @@ class EpisodeSubtitleController extends Controller
         }
     }
 
-    public function byEpisode($episode_id){
-        try{
-            $episodeSubtitle = EpisodeSubtitle::where('episode_id',$episode_id)->get();
-            return $this->sendResponse($episodeSubtitle, );
-        }
-        catch (\Exception $e){
-            return $this->sendError($e->getMessage(), );
-        }
-    }
 
     public function detail($id){
         try{
@@ -100,6 +91,20 @@ class EpisodeSubtitleController extends Controller
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
         }
+    }
+
+    public function showByEpisode($id)
+    {
+        try{
+            $episodeSubtitle = EpisodeSubtitle::where('episode_id',$id)->get();
+            if(!$episodeSubtitle)
+                return $this->sendError('Episode ID is not found', );
+            return $this->sendResponse($episodeSubtitle, );
+        }
+        catch (\Exception $e){
+            return $this->sendError($e->getMessage(), );
+        }
+
     }
 
 

@@ -579,6 +579,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/episode/subtitle', [EpisodeSubtitleController::class, 'index']);
 Route::get('/episode/subtitle/{id}', [EpisodeSubtitleController::class, 'detail']);
 Route::get('/episode/subtitle/film/{id}', [EpisodeSubtitleController::class, 'byFilm']);
+Route::get('/episode/subtitle/episode/{id}', [EpisodeSubtitleController::class, 'showByEpisode']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/episode/subtitle/create', [EpisodeSubtitleController::class, 'create']);
