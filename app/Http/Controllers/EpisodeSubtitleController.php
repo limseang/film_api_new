@@ -105,6 +105,7 @@ class EpisodeSubtitleController extends Controller
                     'id' => $item->id,
                     'language' => $item->language->name,
                     'url' => $item->url,
+                    'language_code' => $item->language->code,
                 ];
             }
             return $this->sendResponse($data, );
