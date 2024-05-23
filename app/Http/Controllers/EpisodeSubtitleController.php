@@ -96,7 +96,7 @@ class EpisodeSubtitleController extends Controller
     public function showByEpisode($id)
     {
         try{
-            $episodeSubtitle = EpisodeSubtitle::where('episode_id',$id)->get();
+            $episodeSubtitle = EpisodeSubtitle::with('language')->where('episode_id',$id)->get();
             if(!$episodeSubtitle)
                 return $this->sendError('Episode ID is not found', );
             return $this->sendResponse($episodeSubtitle, );
