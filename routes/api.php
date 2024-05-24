@@ -562,7 +562,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Continue to watch */
-Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'detailByFilm']);
+Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'byfilmForuserNotLogin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::get('/continue-to-watch', [ContinueToWatchController::class, 'shortByUser']);
     Route::post('/continue-to-watch/check', [ContinueToWatchController::class, 'checkContinue']);
@@ -570,7 +570,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/continue-to-watch/update/{id}', [ContinueToWatchController::class, 'update']);
     Route::delete('/continue-to-watch/delete/{id}', [ContinueToWatchController::class, 'destroy']);
     Route::get('/continue-to-watch/detail/{id}', [ContinueToWatchController::class, 'detail']);
-
+    Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'detailByFilm']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/continue-to-watch/all', [ContinueToWatchController::class, 'index']);
     });

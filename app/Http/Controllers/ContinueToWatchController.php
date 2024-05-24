@@ -302,6 +302,35 @@ class ContinueToWatchController extends Controller
         }
     }
 
+    public function byfilmForuserNotLogin($id)
+    {
+        try{
+            $uploadController = new UploadController();
+            $film = Film::with(['episode','subtitles'])
+                ->where('id', $id)
+                ->first();
+            $film->episode = $film->episode->map(function ($item,$uploadController ) {
+                return [
+                    'id' => $item->id,
+                    'episode' => $item->episode,
+                    'season' => $item->season,
+                    'file' => $item->file,
+                ];
+            });
+            $data = [
+                'id' => $film->id,
+                'title' => $film->title,
+                'description' => $film->description,
+                'poster' => $film->poster,
+                'episodes' => $film->episode,
+            ];
+            return $this->sendResponse($data);
+        }catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
 
     public function destroy($id)
     {
