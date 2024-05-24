@@ -233,6 +233,7 @@ class ContinueToWatchController extends Controller
             // check if the user has watched the film in with episode in continue to watch table or not show the status
             $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
                 ->where('film_id', $id)
+                ->orderBy('episode_number', 'ASC' )
                 ->get();
 
             $data = [];
