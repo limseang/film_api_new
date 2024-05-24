@@ -83,7 +83,7 @@ class Film extends Model
     }
 
     public function episode(){
-        return $this->hasMany(Episode::class,'film_id','id');
+        return $this->hasMany(Episode::class,'film_id','id')->orderBy('episode','asc');
     }
 
     public function filmComment(){
