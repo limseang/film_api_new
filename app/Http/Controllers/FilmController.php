@@ -737,7 +737,7 @@ public function updateFilm(Request $request,$id)
         try{
             $uploadController = new UploadController();
             $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->limit(6)->get();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->orderBy('created_at', 'DESC')->get();
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast','subtitles'])->orderBy('created_at', 'DESC')->get();
             $nowShowing = $films->values()->filter(function ($film) {
                 return $film->type == 9;
             });
@@ -775,6 +775,7 @@ public function updateFilm(Request $request,$id)
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
                     'total_episode' => count($film->episode),
+                    'subtitle' => $film->subtitles->count() > 0 ? true : false,
                     'type' => $film->types ? $film->types->name : null,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
