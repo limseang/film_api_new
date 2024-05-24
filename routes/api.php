@@ -562,7 +562,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Continue to watch */
-Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'byfilmForuserNotLogin']);
+//Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'byfilmForuserNotLogin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::get('/continue-to-watch', [ContinueToWatchController::class, 'shortByUser']);
     Route::post('/continue-to-watch/check', [ContinueToWatchController::class, 'checkContinue']);

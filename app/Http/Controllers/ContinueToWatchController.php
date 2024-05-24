@@ -226,110 +226,53 @@ class ContinueToWatchController extends Controller
     public function detailByFilm($id)
     {
         try{
+         //if user not login
+            if(!auth()->user()){
+                $film = Film::with(['episode','subtitles'])
+                    ->where('id', $id)
+                    ->first();
+                $film->episode = $film->episode->map(function ($item,$uploadController ) {
+                    return [
+                        'id' => $item->id,
+                        'episode' => $item->episode,
+                        'season' => $item->season,
+                        'file' => $item->file,
+                    ];
+                });
+                $data = [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'description' => $film->description,
+                    'poster' => $film->poster,
+                    'episodes' => $film->episode,
+                ];
+                return $this->sendResponse($data);
+            }
             $uploadController = new UploadController();
-            $film = Film::with(['episode','continueToWatch','subtitles'])
-                ->where('id', $id)
-                ->first();
-            // check if the user has watched the film in with episode in continue to watch table or not show the status
-            $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('film_id', $id)
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('episode_number', 'ASC')
                 ->get();
-
-            $data = [];
-
-            $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
-                $status = 'unwatched';
-                $progressing = 0;
-                $duration = 0;
-                foreach ($continueToWatch as $watch) {
-                    if ($item->id == $watch->episode_id) {
-                        if($watch->progressing >= $watch->duration){
-                            $status = 'watched';
-                        }elseif(!empty($watch->progressing)){
-                            $status = 'progressing';
-                        }
-                        $progressing = $watch->progressing;
-                        $duration = $watch->duration;
-                        $continueToWatchId = $watch->id;
-
-                    }
-                    $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
-                        ->where('episode_id', $item->id)
-                        ->get();
-                    if($episodeSubtitle){
-
-                        $data['subtitles'] = $episodeSubtitle->map(function ($item) {
-                            return [
-                                'id' => $item->id,
-                                'language' => $item->language->name,
-                                'url' => $item->url,
-                            ];
-                        });
-                    }
-
-                }
-                // progress in percentage
-                $percentage = 0;
-                if ($duration != 0 && $progressing != 0) {
-                    $percentage = $progressing / $duration * 100;
-                }
+            $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
                 return [
                     'id' => $item->id,
-                    'continue_id' => $continueToWatchId ?? null, // if the user has not watched the film, the value will be 'null
-                    'episode' => $item->episode,
-                    'season' => $item->season,
-                    'status' => $status,
-                    'file' => $item->file,
-                    'duration' => (string) $duration,
-                    'progressing' => (string) $progressing,
-                    'percentage' => round($percentage,2) . '%',
-                    'subtitles' => $data['subtitles'] ?? 'null',
+                    'user_id' => $item->user_id,
+                    'films' => $item->films->title,
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'episodes' => $item->episodes->episode,
+                    'progressing' => $item->progressing,
+                    'duration' => $item->duration,
                 ];
             });
 
-
-            $data = [
-                'id' => $film->id,
-                'title' => $film->title,
-                'description' => $film->description,
-                'poster' => $film->poster,
-                'episodes' => $film->episode,
-                'subtitles' => $data['subtitles'] ?? 'null',
-            ];
-            return $this->sendResponse($data);
+            return $this->sendResponse($continueToWatch);
         }catch(Exception $e){
             return $this->sendError($e->getMessage());
         }
     }
 
-    public function byfilmForuserNotLogin($id)
-    {
-        try{
-            $uploadController = new UploadController();
-            $film = Film::with(['episode','subtitles'])
-                ->where('id', $id)
-                ->first();
-            $film->episode = $film->episode->map(function ($item,$uploadController ) {
-                return [
-                    'id' => $item->id,
-                    'episode' => $item->episode,
-                    'season' => $item->season,
-                    'file' => $item->file,
-                ];
-            });
-            $data = [
-                'id' => $film->id,
-                'title' => $film->title,
-                'description' => $film->description,
-                'poster' => $film->poster,
-                'episodes' => $film->episode,
-            ];
-            return $this->sendResponse($data);
-        }catch(Exception $e){
-            return $this->sendError($e->getMessage());
-        }
 
-    }
 
 
     public function destroy($id)
