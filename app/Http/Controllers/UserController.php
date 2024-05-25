@@ -112,36 +112,28 @@ class UserController extends Controller
                     'message' => 'Account not much',
                 ]);
             }
-            $userPremium = PremiumUser::query()->where('user_id', Auth()->user()->id)->first();
-            if(!$userPremium){
-                $userLogin = UserLogin::query()->where('user_id', Auth()->user()->id)->get();
-                // delete old token
-                foreach ($userLogin as $item){
-                    $item->delete();
-                }
-                // set all token to expire
-                $user->tokens()->delete();
-                // create a new login session
-                $newUserLogin = new UserLogin();
-                $newUserLogin->user_id = $user->id;
-                $newUserLogin->token = $user->createToken('auth_token')->plainTextToken;
-                $newUserLogin->save();
-            }
+            $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            $user = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'avatar' => $user->avatar,
+                'role' => $user->role_id,
+                'status' => $userPremium ? 'premium' : 'free'
 
-            // create token for premium users without deleting old tokens
-            if($userPremium){
-                $token = $user->createToken('auth_token')->plainTextToken;
-            }
-
+            ];
             return $this->sendResponse([
                 'token' => $token,
                 'user' => $user,
-                'status' => $userPremium ? 'premium' : 'free'
             ]);
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
         }
+
+
     }
     public function logout(Request $request)
     {
@@ -207,12 +199,7 @@ class UserController extends Controller
          $user->fcm_token = $request->fcm_token;
          $user->save();
          $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
-         if($userPremium){
-             $user->status = 'premium';
-         }
-         else{
-             $user->status = 'free';
-         }
+            $user->status = $userPremium ? 'premium' : 'free';
          if(!empty($user['avatar'])){
 
              if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
