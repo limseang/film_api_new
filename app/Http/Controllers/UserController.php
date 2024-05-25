@@ -239,9 +239,15 @@ class UserController extends Controller
             $user = User::where('userUUID',$request->userUUID,)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
+            $data = [
+                'token' => $token,
+                'user' => $user
+            ];
+
             return response()->json([
                 'token' => $token,
-                'user' => $user->name
+                'user' => $user->name,
+                'data' => $data
             ]);
 
 
