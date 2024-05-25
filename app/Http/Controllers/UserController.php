@@ -112,9 +112,9 @@ class UserController extends Controller
                     'message' => 'Account not much',
                 ]);
             }
-            $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
+            $userPremium = PremiumUser::query()->where('user_id', Auth()->user()->id)->first();
             if(!$userPremium){
-                $userLogin = UserLogin::query()->where('user_id', $user->id)->get();
+                $userLogin = UserLogin::query()->where('user_id', Auth()->user()->id)->get();
                 // delete old token
                 foreach ($userLogin as $item){
                     $item->delete();
