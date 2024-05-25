@@ -106,7 +106,7 @@ class EpisodeSubtitleController extends Controller
                     'language' => $item->language->name,
                     'url' => $item->url,
                     'language_code' => $item->language->code,
-                    'status' => $item->status == 1 ? 'Free' : 'Premium',
+                    'status' => $item->status == 1 ? 'Premium' : 'Free',
                 ];
             }
             return $this->sendResponse($data, );
