@@ -121,9 +121,12 @@ class UserController extends Controller
                 }
                 // set all token to expire
                 $user->tokens()->delete();
-                // show status for user is free
 
-
+                // create a new login session
+                $newUserLogin = new UserLogin();
+                $newUserLogin->user_id = $user->id;
+                $newUserLogin->token = $user->createToken('auth_token')->plainTextToken;
+                $newUserLogin->save();
             }
 
             // create token
