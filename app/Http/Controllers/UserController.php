@@ -116,14 +116,15 @@ class UserController extends Controller
          //find user has in userPremium or not
             $userPremium = PremiumUser::where('user_id', $user->id)->first();
             if($userPremium){
+
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+            }
+            else{
                 //delete token
                 $user->tokens()->delete();
                 $token = $user->createToken('auth_token')->plainTextToken;
 
-
-            }
-            else{
-                $token = $user->createToken('auth_token')->plainTextToken;
             }
 
             return response()->json([
