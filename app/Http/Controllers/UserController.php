@@ -188,8 +188,6 @@ class UserController extends Controller
          $user = auth()->user();
          $user->fcm_token = $request->fcm_token;
          $user->save();
-         $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
-            $user->status = $userPremium ? 'premium' : 'free';
          if(!empty($user['avatar'])){
 
              if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
