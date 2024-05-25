@@ -112,18 +112,8 @@ class UserController extends Controller
                     'message' => 'Account not much',
                 ]);
             }
-            $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
-            $token = $user->createToken('auth_token')->plainTextToken;
-            $user = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'avatar' => $user->avatar,
-                'role' => $user->role_id,
-                'status' => $userPremium ? 'premium' : 'free'
 
-            ];
+            $token = $user->createToken('auth_token')->plainTextToken;
             return $this->sendResponse([
                 'token' => $token,
                 'user' => $user,
