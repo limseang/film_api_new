@@ -114,11 +114,20 @@ class UserController extends Controller
             }
             $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
             if(!$userPremium){
-                // If user is not premium, delete all existing tokens
+                $userLogin = UserLogin::query()->where('user_id', $user->id)->get();
+                // delete old token
+                foreach ($userLogin as $item){
+                    $item->delete();
+                }
+                // set all token to expire
                 $user->tokens()->delete();
+                // show status for user is free
+
+
             }
 
             // create token
+
             $token = $user->createToken('auth_token')->plainTextToken;
             return $this->sendResponse([
                 'token' => $token,
@@ -129,6 +138,8 @@ class UserController extends Controller
         catch(Exception $e){
             return $this->sendError($e->getMessage());
         }
+
+
     }
     public function logout(Request $request)
     {
