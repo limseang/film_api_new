@@ -121,9 +121,16 @@ class UserController extends Controller
 
             }
             else{
-                //delete token
-                $user->tokens()->delete();
+              //can login 1 device in 1 time
+                $userLogin = UserLogin::where('user_id', $user->id)->first();
+                if($userLogin){
+                    $userLogin->delete();
+                }
                 $token = $user->createToken('auth_token')->plainTextToken;
+                $userLogin = new UserLogin();
+                $userLogin->user_id = $user->id;
+                $userLogin->fcm_token = $request->fcm_token;
+                $userLogin->save();
 
             }
 
