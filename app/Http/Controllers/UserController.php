@@ -121,7 +121,6 @@ class UserController extends Controller
                 }
                 // set all token to expire
                 $user->tokens()->delete();
-
                 // create a new login session
                 $newUserLogin = new UserLogin();
                 $newUserLogin->user_id = $user->id;
@@ -129,9 +128,11 @@ class UserController extends Controller
                 $newUserLogin->save();
             }
 
-            // create token
+            // create token for premium users without deleting old tokens
+            if($userPremium){
+                $token = $user->createToken('auth_token')->plainTextToken;
+            }
 
-            $token = $user->createToken('auth_token')->plainTextToken;
             return $this->sendResponse([
                 'token' => $token,
                 'user' => $user,
@@ -141,8 +142,6 @@ class UserController extends Controller
         catch(Exception $e){
             return $this->sendError($e->getMessage());
         }
-
-
     }
     public function logout(Request $request)
     {
