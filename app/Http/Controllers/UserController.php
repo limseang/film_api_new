@@ -112,31 +112,27 @@ class UserController extends Controller
                     'message' => 'Account not much',
                 ]);
             }
-            // create token
-         //find user has in userPremium or not
-            $userPremium = PremiumUser::where('user_id', $user->id)->first();
-            if($userPremium){
-
-                $token = $user->createToken('auth_token')->plainTextToken;
-
-            }
-            else{
-              //can login 1 device in 1 time
-                $userLogin = UserLogin::where('user_id', $user->id)->first();
-                if($userLogin){
-                    $userLogin->delete();
+            $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
+            if(!$userPremium){
+                $userLogin = UserLogin::query()->where('user_id', $user->id)->get();
+                // delete old token
+                foreach ($userLogin as $item){
+                    $item->delete();
                 }
-                $token = $user->createToken('auth_token')->plainTextToken;
-                $userLogin = new UserLogin();
-                $userLogin->user_id = $user->id;
-                $userLogin->fcm_token = $request->fcm_token;
-                $userLogin->save();
+                // set all token to expire
+                $user->tokens()->delete();
+                // show status for user is free
+
 
             }
 
-            return response()->json([
+            // create token
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return $this->sendResponse([
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
+                'status' => $userPremium ? 'premium' : 'free'
             ]);
         }
         catch(Exception $e){
@@ -208,6 +204,13 @@ class UserController extends Controller
          $user = auth()->user();
          $user->fcm_token = $request->fcm_token;
          $user->save();
+         $userPremium = PremiumUser::query()->where('user_id', $user->id)->first();
+         if($userPremium){
+             $user->status = 'premium';
+         }
+         else{
+             $user->status = 'free';
+         }
          if(!empty($user['avatar'])){
 
              if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
