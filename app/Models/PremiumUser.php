@@ -11,10 +11,8 @@ class PremiumUser extends Model
     protected $fillable = [
         'user_id',
         'payment_id',
-        'payment_method',
         'register_date',
         'expired_date',
-        'recipe_id',
         'status',
     ];
 

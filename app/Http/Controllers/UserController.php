@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\Category;
 use App\Models\Film;
+use App\Models\PremiumUser;
 use App\Models\role;
 use App\Models\Type;
 use App\Models\User;
@@ -112,8 +113,20 @@ class UserController extends Controller
                 ]);
             }
             // create token
-            $token = $user->createToken('auth_token')->plainTextToken;
-            return $this->sendResponse([
+         //find user has in userPremium or not
+            $userPremium = PremiumUser::where('user_id', $user->id)->first();
+            if($userPremium){
+                //delete token
+                $user->tokens()->delete();
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+
+            }
+            else{
+                $token = $user->createToken('auth_token')->plainTextToken;
+            }
+
+            return response()->json([
                 'token' => $token,
                 'user' => $user
             ]);

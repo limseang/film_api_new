@@ -31,7 +31,7 @@ class PurchasePointController extends Controller
         return $this->sendResponse($purchasePoints);
     }
 
-    public function buy
+
     public function destroy(PurchasePoint $purchasePoint)
     {
         //

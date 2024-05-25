@@ -65,4 +65,9 @@ class User extends Model
     public function Usertype (){
         return $this->belongsTo(UserType::class);
     }
+
+    public function UserPremium(){
+        return $this->hasOne(PremiumUser::class);
+    }
+
 }
