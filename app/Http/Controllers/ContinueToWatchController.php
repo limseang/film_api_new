@@ -289,7 +289,7 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
-                    'subTittleAvailable' =>$data['subtitles']  != null ? true : false,
+                    'subTittleAvailable' =>$data['subtitles'].count() > 0 ? true : false,
                     'subtitles' => $data['subtitles'] ?? 'null',
 
                 ];
