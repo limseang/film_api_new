@@ -249,7 +249,6 @@ class ContinueToWatchController extends Controller
                 $status = 'unwatched';
                 $progressing = 0;
                 $duration = 0;
-                $subTittle = false;
                 // order by episode number in order by asc to show the episode in order
                 foreach ($continueToWatch as $watch) {
                     if ($item->id == $watch->episode_id) {
@@ -261,24 +260,9 @@ class ContinueToWatchController extends Controller
                         $progressing = $watch->progressing;
                         $duration = $watch->duration;
                         $continueToWatchId = $watch->id;
-                        $subTittle = $item->is_subtitled;
 
                     }
-                    $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
-                        ->where('episode_id', $item->id)
-                        ->get();
 
-
-                    if($episodeSubtitle){
-
-                        $data['subtitles'] = $episodeSubtitle->map(function ($item) {
-                            return [
-                                'id' => $item->id,
-                                'language' => $item->language->name,
-                                'url' => $item->url,
-                            ];
-                        });
-                    }
 
                 }
                 // progress in percentage
@@ -296,8 +280,6 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
-                    'subTittleAvailable' =>$data['subtitles'].count() > 0 ? true : false,
-                    'subtitles' => $data['subtitles'] ?? 'null',
 
                 ];
             })->sortBy('episode');
