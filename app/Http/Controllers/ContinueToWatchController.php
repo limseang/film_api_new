@@ -83,16 +83,13 @@ class ContinueToWatchController extends Controller
 
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
                 //check film has poster or not
-                $poster = $uploadController->getSignedUrl($item->films->poster);
-                if(!$poster){
-                    $item->films->poster = null;
-                }
+                $poster = $item->films ? $uploadController->getSignedUrl($item->films->poster) : null;
                 return [
                     'id' => $item->id,
                     'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
-                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'poster' =>$poster,
                     'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
