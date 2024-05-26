@@ -169,7 +169,11 @@ class ContinueToWatchController extends Controller
 
   public function checkContinue(Request $request){
         try{
-            $continueToWatch = ContinueToWatch::where('user_id', auth()->user()->id)
+            $user = auth()->user();
+            if (!$user) {
+                return $this->sendError('User not authenticated.', 401);
+            }
+            $continueToWatch = ContinueToWatch::where('user_id', $user->id)
                 ->where('film_id', $request->film_id)
                 ->where('episode_id', $request->episode_id)
                 ->where('progressing', $request->progressing)
@@ -187,8 +191,12 @@ class ContinueToWatchController extends Controller
     public function update($id, Request $request)
     {
         try{
+            $user = auth()->user();
+            if (!$user) {
+                return $this->sendError('User not authenticated.', 401);
+            }
             $continueToWatch = ContinueToWatch::find($id);
-            $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
+            $continueToWatch->user_id = $user->id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
             $continueToWatch->episode_id = $request->episode_id ?? $continueToWatch->episode_id;
