@@ -83,8 +83,8 @@ class ContinueToWatchController extends Controller
             //find episode_id has subtitle or not
 
             $continueToWatch = $continueToWatch->filter(function ($item) {
-                // Check if the film still exists
-                return $item->films != null;
+//                // Check if the film still exists
+//                return $item->films != null;
             })->map(function ($item)  use ($uploadController) {
                 $subtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
                     ->where('episode_id', $item->episode_id)
