@@ -79,13 +79,16 @@ class ContinueToWatchController extends Controller
                 ->where('user_id', auth()->user()->id)
                 ->orderByDesc('watched_at') // Order by watched_at in descending order
                 ->get();
+            //if not has poster return null
+
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
+
                 return [
                     'id' => $item->id,
                     'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
-                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'poster' => $item->films->poser == null ? $poster = null : $poster = $uploadController->getSignedUrl($item->films->poster),
                     'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
