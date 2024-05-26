@@ -79,13 +79,7 @@ class ContinueToWatchController extends Controller
                 ->where('user_id', auth()->user()->id)
                 ->orderByDesc('watched_at') // Order by watched_at in descending order
                 ->get();
-
-            //find episode_id has subtitle or not
-
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
-                $subtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
-                    ->where('episode_id', $item->episode_id)
-                    ->get();
                 return [
                     'id' => $item->id,
                     'user_id' => $item->user_id,
@@ -95,7 +89,6 @@ class ContinueToWatchController extends Controller
                     'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
-                    'subtitle' => $subtitle->count() > 0 ? true : false,
                     'duration' => $item->duration,
                 ];
             });
