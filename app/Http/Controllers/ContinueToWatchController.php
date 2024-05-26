@@ -91,7 +91,7 @@ class ContinueToWatchController extends Controller
                     'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
-                    'poster' => $item->films->poster ? $uploadController->getSignedUrl($item->films->poster) : '',
+                    'poster' => $uploadController->getSignedUrl($item->films->poster),
                     'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
