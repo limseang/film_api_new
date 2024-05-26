@@ -34,21 +34,28 @@ class ContinueToWatchController extends Controller
 
     public function create(Request $request)
     {
-        try{
-            $continueToWatch = ContinueToWatch::where('user_id', auth()->user()->id)
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return $this->sendError('User not authenticated.', 401);
+            }
+
+            $continueToWatch = ContinueToWatch::where('user_id', $user->id)
                 ->where('film_id', $request->film_id)
                 ->where('episode_id', $request->episode_id)
                 ->first();
-            if($continueToWatch){
+
+            if ($continueToWatch) {
                 $continueToWatch->episode_id = $request->episode_id;
                 $continueToWatch->duration = $request->duration;
                 $continueToWatch->progressing = $request->progressing;
                 $continueToWatch->watched_at = $request->watched_at;
                 $continueToWatch->episode_number = $request->episode_number;
                 $continueToWatch->save();
-            }else{
+            } else {
                 $continueToWatch = new ContinueToWatch();
-                $continueToWatch->user_id = auth()->user()->id;
+                $continueToWatch->user_id = $user->id;
                 $continueToWatch->film_id = $request->film_id;
                 $continueToWatch->film_type = $request->film_type;
                 $continueToWatch->episode_id = $request->episode_id;
@@ -58,9 +65,9 @@ class ContinueToWatchController extends Controller
                 $continueToWatch->episode_number = $request->episode_number;
                 $continueToWatch->save();
             }
+
             return $this->sendResponse($continueToWatch);
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
     }
