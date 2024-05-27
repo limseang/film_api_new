@@ -183,18 +183,7 @@ class ContinueToWatchController extends Controller
             $auth = auth()->user()->id;
             $continueToWatch = ContinueToWatch::find($id);
             if (!$continueToWatch) {
-                $continueToWatch = new ContinueToWatch();
-                $continueToWatch->user_id = auth()->user()->id;
-                $continueToWatch->film_id = $request->film_id;
-                $continueToWatch->film_type = $request->film_type;
-                $continueToWatch->episode_id = $request->episode_id;
-                $continueToWatch->duration = $request->duration;
-                $continueToWatch->progressing = $request->progressing;
-                $continueToWatch->watched_at = $request->watched_at;
-                $continueToWatch->episode_number = $request->episode_number;
-                $continueToWatch->save();
-                return $this->sendResponse($continueToWatch);
-
+                return $this->sendError('ContinueToWatch record not found');
             }
             $continueToWatch->user_id = $auth;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
