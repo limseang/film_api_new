@@ -149,7 +149,7 @@ class EpisodeSubtitleController extends Controller
     public function uploadTest(Request $request)
     {
         $uploadController = new UploadController();
-        $request->url = $uploadController->UploadFile($request->file('url'));
+        $request->url = $uploadController->uploadSubtitle($request->file('url'));
         return $this->sendResponse($request->url, );
 
     }
