@@ -180,12 +180,8 @@ class ContinueToWatchController extends Controller
     public function update($id, Request $request)
     {
         try{
-            $auth = auth()->user()->id;
             $continueToWatch = ContinueToWatch::find($id);
-            if (!$continueToWatch) {
-                return $this->sendError('ContinueToWatch record not found');
-            }
-            $continueToWatch->user_id = $auth;
+            $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
             $continueToWatch->episode_id = $request->episode_id ?? $continueToWatch->episode_id;
@@ -200,6 +196,7 @@ class ContinueToWatchController extends Controller
             return $this->sendError($e->getMessage());
         }
     }
+
     public function sortByFilm($id)
     {
         try{
@@ -235,7 +232,7 @@ class ContinueToWatchController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $film = Film::with(['episode','continueToWatch',])
+            $film = Film::with(['episode','continueToWatch','subtitles'])
                 ->where('id', $id)
                 ->first();
             // check if the user has watched the film in with episode in continue to watch table or not show the status
@@ -273,7 +270,7 @@ class ContinueToWatchController extends Controller
                 }
                 return [
                     'id' => $item->id,
-                    'continue_id' => $continueToWatchId ?? 'null', // if the user has not watched the film, the value will be 'null
+                    'continue_id' => $continueToWatchId ?? null, // if the user has not watched the film, the value will be 'null
                     'episode' => $item->episode,
                     'season' => $item->season,
                     'status' => $status,
