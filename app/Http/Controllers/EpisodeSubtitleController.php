@@ -40,6 +40,7 @@ class EpisodeSubtitleController extends Controller
     public function create(Request $request)
     {
         try{
+            $uploadController = new UploadController();
             if($request->film_id){
                 $film = Film::find($request->film_id);
                 if(!$film){
@@ -58,12 +59,15 @@ class EpisodeSubtitleController extends Controller
                     return $this->sendError('Subtitle is already exist',);
                 }
 
+
             }
+
+            $film = Film::find($request->film_id);
             $episodeSubtitle = new EpisodeSubtitle();
             $episodeSubtitle->film_id = $request->film_id;
             $episodeSubtitle->episode_id = $request->episode_id;
             $episodeSubtitle->language_id = $request->language_id;
-            $episodeSubtitle->url = $request->url;
+            $episodeSubtitle->url = $uploadController->UploadFile($request->file('url'));
             $episodeSubtitle->save();
             return $this->sendResponse($episodeSubtitle, );
         }
@@ -74,8 +78,21 @@ class EpisodeSubtitleController extends Controller
 
    public function byFilm($film_id){
         try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::where('film_id',$film_id)->get();
-            return $this->sendResponse($episodeSubtitle, );
+            if(!$episodeSubtitle)
+                return $this->sendError('Film ID is not found', );
+            $data = [];
+            foreach ($episodeSubtitle as $item){
+                $data[] = [
+                    'id' => $item->id,
+                    'language' => $item->language->name,
+                    'url' => $uploadController->getSubtileUrl($item->url),
+                    'film' => $item->film->title,
+                    'episode' => $item->episode->title,
+                ];
+            }
+            return $this->sendResponse($data, );
         }
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
@@ -85,8 +102,19 @@ class EpisodeSubtitleController extends Controller
 
     public function detail($id){
         try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::find($id);
-            return $this->sendResponse($episodeSubtitle, );
+            if(!$episodeSubtitle)
+                return $this->sendError('Subtitle ID is not found', );
+            $data = [
+                'id' => $episodeSubtitle->id,
+                'language' => $episodeSubtitle->language->name,
+                'url' => $uploadController->getSubtileUrl($episodeSubtitle->url),
+                'film' => $episodeSubtitle->film->title,
+                'episode' => $episodeSubtitle->episode->title,
+            ];
+            return $this->sendResponse($data, );
+//            return $this->sendResponse($episodeSubtitle, );
         }
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
@@ -96,6 +124,7 @@ class EpisodeSubtitleController extends Controller
     public function showByEpisode($id)
     {
         try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::with('language')->where('episode_id',$id)->get();
             if(!$episodeSubtitle)
                 return $this->sendError('Episode ID is not found', );
@@ -104,7 +133,7 @@ class EpisodeSubtitleController extends Controller
                 $data[] = [
                     'id' => $item->id,
                     'language' => $item->language->name,
-                    'url' => $item->url,
+                    'url' => $uploadController->getSubtileUrl($item->url),
                     'language_code' => $item->language->code,
                     'status' => $item->status == 1 ? 'Premium' : 'Free',
                 ];
@@ -114,6 +143,13 @@ class EpisodeSubtitleController extends Controller
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
         }
+
+    }
+
+    public function uploadTest(Request $request)
+    {
+        $uploadController = new UploadController();
+        return $uploadController->uploadSubtitle($request->file('url'));
 
     }
 
