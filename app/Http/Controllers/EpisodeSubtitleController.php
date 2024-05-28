@@ -65,7 +65,7 @@ class EpisodeSubtitleController extends Controller
             $episodeSubtitle->film_id = $request->film_id;
             $episodeSubtitle->episode_id = $request->episode_id;
             $episodeSubtitle->language_id = $request->language_id;
-            $episodeSubtitle->url = $uploadController->uploadSubtitle($request->file('url'));
+            $episodeSubtitle->url = $request->url;
             $episodeSubtitle->save();
             return $this->sendResponse($episodeSubtitle, );
         }
