@@ -69,7 +69,7 @@ class EpisodeController extends Controller
             $episode->file = $request->file;
             $episode->save();
             $subjects = 'New episode of '.$film->title;
-            $message ='Go to check it out now!';
+            $message ="កុំភ្លេចជួយអោយពិន្ទុម្នាក់១ផងណា";
             $film = Film::find($episode->film_id);
             //update film
             $film->created_at = now();
