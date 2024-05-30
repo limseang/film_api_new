@@ -7,6 +7,7 @@ use App\Models\Episode;
 use App\Models\EpisodeSubtitle;
 use App\Models\Film;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EpisodeSubtitleController extends Controller
 {
@@ -142,6 +143,17 @@ class EpisodeSubtitleController extends Controller
                 'subtitles' => 'required|array',
                 'subtitles.*.language_id' => 'required|exists:countries,id',
                 'subtitles.*.url' => 'required|url',
+            ], [
+                'film_id.required' => 'The film ID is required.',
+                'film_id.exists' => 'The specified film does not exist.',
+                'episode_id.required' => 'The episode ID is required.',
+                'episode_id.exists' => 'The specified episode does not exist.',
+                'subtitles.required' => 'Subtitles are required.',
+                'subtitles.array' => 'Subtitles must be an array.',
+                'subtitles.*.language_id.required' => 'The language ID for each subtitle is required.',
+                'subtitles.*.language_id.exists' => 'The specified language does not exist.',
+                'subtitles.*.url.required' => 'The URL for each subtitle is required.',
+                'subtitles.*.url.url' => 'The URL for each subtitle must be a valid URL.'
             ]);
 
             // Check if the film and episode are related
@@ -153,7 +165,9 @@ class EpisodeSubtitleController extends Controller
                 return $this->sendError('Film and Episode do not match');
             }
 
-            // Process each subtitle
+            DB::beginTransaction();
+
+            $subtitlesData = [];
             foreach ($request->subtitles as $subtitle) {
                 // Check if the subtitle already exists
                 $existingSubtitle = EpisodeSubtitle::where([
@@ -163,20 +177,29 @@ class EpisodeSubtitleController extends Controller
                 ])->first();
 
                 if ($existingSubtitle) {
+                    DB::rollBack();
                     return $this->sendError('Subtitle for language ID ' . $subtitle['language_id'] . ' already exists');
                 }
 
-                // Create a new subtitle
-                EpisodeSubtitle::create([
+                $subtitlesData[] = [
                     'film_id' => $request->film_id,
                     'episode_id' => $request->episode_id,
                     'language_id' => $subtitle['language_id'],
-                    'url' => $subtitle['url']
-                ]);
+                    'url' => $subtitle['url'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
             }
+
+            // Insert all subtitles in one go
+            EpisodeSubtitle::insert($subtitlesData);
+
+            DB::commit();
 
             return $this->sendResponse('Subtitles uploaded successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error uploading subtitles: ' . $e->getMessage());
             return $this->sendError('An error occurred: ' . $e->getMessage());
         }
     }

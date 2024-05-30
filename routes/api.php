@@ -588,7 +588,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/episode/subtitle/create', [EpisodeSubtitleController::class, 'create']);
         Route::delete('/episode/subtitle/delete/{id}', [EpisodeSubtitleController::class, 'destroy']);
         Route::get('/episode/subtitle/all', [EpisodeSubtitleController::class, 'index']);
-        Route::post('episode/subtitle/multi', [EpisodeSubtitleController::class, 'uploadSubtitles']);
+        Route::post('/episode/subtitle/multi', [EpisodeSubtitleController::class, 'uploadSubtitles']);
     });
 });
 
