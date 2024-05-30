@@ -119,6 +119,54 @@ class EpisodeSubtitleController extends Controller
 
 
 
+    public function uploadSubtitles(Request $request)
+    {
+        try {
+            // Validate the request
+            $request->validate([
+                'film_id' => 'required|exists:films,id',
+                'episode_id' => 'required|exists:episodes,id',
+                'subtitles' => 'required|array',
+                'subtitles.*.language_id' => 'required|exists:countries,id',
+                'subtitles.*.url' => 'required|url',
+            ]);
+
+            // Check if the film and episode are related
+            $episode = Episode::where('film_id', $request->film_id)
+                ->where('id', $request->episode_id)
+                ->first();
+
+            if (!$episode) {
+                return $this->sendError('Film and Episode do not match');
+            }
+
+            // Process each subtitle
+            foreach ($request->subtitles as $subtitle) {
+                // Check if the subtitle already exists
+                $existingSubtitle = EpisodeSubtitle::where([
+                    'film_id' => $request->film_id,
+                    'episode_id' => $request->episode_id,
+                    'language_id' => $subtitle['language_id']
+                ])->first();
+
+                if ($existingSubtitle) {
+                    return $this->sendError('Subtitle for language ID ' . $subtitle['language_id'] . ' already exists');
+                }
+
+                // Create a new subtitle
+                EpisodeSubtitle::create([
+                    'film_id' => $request->film_id,
+                    'episode_id' => $request->episode_id,
+                    'language_id' => $subtitle['language_id'],
+                    'url' => $subtitle['url']
+                ]);
+            }
+
+            return $this->sendResponse('Subtitles uploaded successfully');
+        } catch (\Exception $e) {
+            return $this->sendError('An error occurred: ' . $e->getMessage());
+        }
+    }
     /**
      * Update the specified resource in storage.
      */
