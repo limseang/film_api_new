@@ -42,112 +42,59 @@ class UploadController extends Controller
         }
     }
 
-    public function uploadSubtitle($file,$tile)
-    {
-        $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-        $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-        $endpoint = env("ALIBABA_OSS_ENDPOINT");
-        $bucket = env("ALIBABA_OSS_BUCKET");
+   public function uploadSubtitle($file)
+   {
+       try{
+           $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+           $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+           $endpoint = env("ALIBABA_OSS_ENDPOINT");
+           $bucket = env("ALIBABA_OSS_BUCKET");
 
-        $object = 'subtitles/' . $tile . '/';
-        $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
-        $filePath = $file->getRealPath();
-        $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-        $result = $ossClient->uploadFile($bucket, $object, $filePath);
+              $object = 'subtitles/' . '/';
+                $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
+                $filePath = $file->getRealPath();
+                $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+                $result = $ossClient->uploadFile($bucket, $object, $filePath);
 
-        if (!empty($result)) {
-            $params = [
-                'path' => $object,
-                'extension' => $file->getClientOriginalExtension(),
-                'size' => $file->getSize()
-            ];
-            $storage = Storages::query()->create($params);
-            return $storage->id;
-        }
-        else{
-            return 0;
-        }
+                if (!empty($result)) {
+                    $params = [
+                        'path' => $object,
+                        'extension' => $file->getClientOriginalExtension(),
+                        'size' => $file->getSize()
+                    ];
+                    $storage = Storages::query()->create($params);
+                    return $storage->id;
+                }
+                else{
+                    return 0;
+                }
+       }
+         catch (OssException $e) {
+              Log::error($e->getErrorMessage());
+              return $e->getMessage();
+         }
 
+   }
 
-    }
+   public function getSubtileUrl($id)
+   {
+       try{
+           $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+           $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+           $endpoint = env("ALIBABA_OSS_ENDPOINT");
+           $bucket = env("ALIBABA_OSS_BUCKET");
 
-    //get url of subtitle
-    public function getSubtitleUrl($id,$tile): string
-    {
-        try {
-            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-            $endpoint = env("ALIBABA_OSS_ENDPOINT");
-            $bucket = env("ALIBABA_OSS_BUCKET");
-
-            $storage = Storages::query()->find('subtitles/' . $tile . '/' . $id);
-            $timeout = 3600;
-
-            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-            $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
-            // $ossClient->signUrl($bucket, $storage->path, $timeout);
-
-            return $signedUrl;
-        }
-        catch (OssException $e) {
-            Log::error($e->getErrorMessage());
-            return $e->getMessage();
-        }
-    }
-
-    public function UploadFilm($file,$directory){
-        $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-        $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-        $endpoint = env("ALIBABA_OSS_ENDPOINT");
-        $bucket = env("ALIBABA_OSS_BUCKET");
-
-        $object = 'film/' . $directory . '/';
-        $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
-        $filePath = $file->getRealPath();
-        $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-        $result = $ossClient->uploadFile($bucket, $object, $filePath);
-
-        if (!empty($result)) {
-            $params = [
-                'path' => $object,
-                'extension' => $file->getClientOriginalExtension(),
-                'size' => $file->getSize()
-            ];
-            $storage = Storages::query()->create($params);
-            return $storage->id;
-        }
-        else{
-            return 0;
-        }
-
-
-
-
-    }
-
-    public function getFilmUrl($id,$directory): string
-    {
-        try {
-            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-            $endpoint = env("ALIBABA_OSS_ENDPOINT");
-            $bucket = env("ALIBABA_OSS_BUCKET");
-
-            $storage = Storages::query()->find('film/' . $directory . '/' . $id);
-            $timeout = 3600;
-
-            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-            $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
-            // $ossClient->signUrl($bucket, $storage->path, $timeout);
-
-            return $signedUrl;
-        }
-        catch (OssException $e) {
-            Log::error($e->getErrorMessage());
-            return $e->getMessage();
-        }
-    }
-
+              $storage = Storages::query()->find($id);
+                $timeout = 3600;
+                $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+                $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
+                return $signedUrl;
+       }
+            catch (OssException $e) {
+                Log::error($e->getErrorMessage());
+                return $e->getMessage();
+            }
+   }
     public function getSignedUrl($id): string
     {
         try {

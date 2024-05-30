@@ -19,8 +19,22 @@ class Episode extends Model
         'file',
     ];
 
+    protected $appends = [
+        'is_subtitled',
+    ];
+
     public function film()
     {
         return $this->belongsTo(Film::class,'film_id','id');
+    }
+
+    public function subtitles()
+    {
+        return $this->hasMany(EpisodeSubtitle::class);
+    }
+
+    public function getIsSubtitledAttribute()
+    {
+        return $this->subtitles()->exists();
     }
 }

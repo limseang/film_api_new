@@ -79,18 +79,23 @@ class ContinueToWatchController extends Controller
                 ->where('user_id', auth()->user()->id)
                 ->orderByDesc('watched_at') // Order by watched_at in descending order
                 ->get();
+            //if not has poster return null
+
             $continueToWatch = $continueToWatch->map(function ($item)  use ($uploadController) {
+                //check film has poster or not
+                $poster = $item->films ? $uploadController->getSignedUrl($item->films->poster) : null;
                 return [
                     'id' => $item->id,
                     'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
-                    'poster' => $uploadController->getSignedUrl($item->films->poster),
+                    'poster' =>$poster,
                     'episodes' => $item->episodes->episode ?? '',
                     'progressing' => $item->progressing,
                     'episode_id' => $item->episode_id,
                     'duration' => $item->duration,
                 ];
+
             });
 
             return $this->sendResponse($continueToWatch);
@@ -236,11 +241,13 @@ class ContinueToWatchController extends Controller
                 ->get();
 
             $data = [];
+            // order by episode in film->episode
 
             $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
                 $status = 'unwatched';
                 $progressing = 0;
                 $duration = 0;
+                // order by episode number in order by asc to show the episode in order
                 foreach ($continueToWatch as $watch) {
                     if ($item->id == $watch->episode_id) {
                         if($watch->progressing >= $watch->duration){
@@ -253,19 +260,7 @@ class ContinueToWatchController extends Controller
                         $continueToWatchId = $watch->id;
 
                     }
-                    $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $item->film_id)
-                        ->where('episode_id', $item->id)
-                        ->get();
-                    if($episodeSubtitle){
 
-                        $data['subtitles'] = $episodeSubtitle->map(function ($item) {
-                            return [
-                                'id' => $item->id,
-                                'language' => $item->language->name,
-                                'url' => $item->url,
-                            ];
-                        });
-                    }
 
                 }
                 // progress in percentage
@@ -283,9 +278,9 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
-                    'subtitles' => $data['subtitles'] ?? 'null',
+
                 ];
-            });
+            })->sortBy('episode');
 
 
             $data = [

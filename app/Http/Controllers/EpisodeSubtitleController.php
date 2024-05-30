@@ -15,7 +15,7 @@ class EpisodeSubtitleController extends Controller
      */
     public function index()
     {
-        try{
+        try{ $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::with('film','episode','language')->get();
             $data = [];
             foreach ($episodeSubtitle as $item){
@@ -40,6 +40,7 @@ class EpisodeSubtitleController extends Controller
     public function create(Request $request)
     {
         try{
+            $uploadController = new UploadController();
             if($request->film_id){
                 $film = Film::find($request->film_id);
                 if(!$film){
@@ -59,6 +60,7 @@ class EpisodeSubtitleController extends Controller
                 }
 
             }
+            $film = Film::find($request->film_id);
             $episodeSubtitle = new EpisodeSubtitle();
             $episodeSubtitle->film_id = $request->film_id;
             $episodeSubtitle->episode_id = $request->episode_id;
@@ -85,8 +87,19 @@ class EpisodeSubtitleController extends Controller
 
     public function detail($id){
         try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::find($id);
-            return $this->sendResponse($episodeSubtitle, );
+            if(!$episodeSubtitle)
+                return $this->sendError('Subtitle ID is not found', );
+            $data = [
+                'id' => $episodeSubtitle->id,
+                'language' => $episodeSubtitle->language->name,
+                'url' => $uploadController->getSubtileUrl($episodeSubtitle->url),
+                'film' => $episodeSubtitle->film->title,
+                'episode' => $episodeSubtitle->episode->title,
+            ];
+            return $this->sendResponse($data, );
+//            return $this->sendResponse($episodeSubtitle, );
         }
         catch (\Exception $e){
             return $this->sendError($e->getMessage(), );
@@ -106,7 +119,7 @@ class EpisodeSubtitleController extends Controller
                     'language' => $item->language->name,
                     'url' => $item->url,
                     'language_code' => $item->language->code,
-                    'status' => $item->status == 1 ? 'Free' : 'Premium',
+                    'status' => $item->status == 1 ? 'Premium' : 'Free',
                 ];
             }
             return $this->sendResponse($data, );

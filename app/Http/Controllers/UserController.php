@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artical;
 use App\Models\Category;
 use App\Models\Film;
+use App\Models\PremiumUser;
 use App\Models\role;
 use App\Models\Type;
 use App\Models\User;
@@ -111,11 +112,11 @@ class UserController extends Controller
                     'message' => 'Account not much',
                 ]);
             }
-            // create token
+
             $token = $user->createToken('auth_token')->plainTextToken;
             return $this->sendResponse([
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
             ]);
         }
         catch(Exception $e){
@@ -128,11 +129,6 @@ class UserController extends Controller
     {
         try{
             $request->user()->currentAccessToken()->delete();
-            UserLogin::where('user_id', auth()->user()->id)->first();
-            if ($request->user()->id){
-                $user = UserLogin::where('user_id', auth()->user()->id)->first();
-                $user->delete();
-            }
 
             return $this->sendResponse();
         }catch(Exception $e){
@@ -238,9 +234,11 @@ class UserController extends Controller
             $user = User::where('userUUID',$request->userUUID,)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
+
+
             return response()->json([
                 'token' => $token,
-                'user' => $user->name
+                'user' => $user->name,
             ]);
 
 

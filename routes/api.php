@@ -562,6 +562,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* Continue to watch */
+//Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'byfilmForuserNotLogin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::get('/continue-to-watch', [ContinueToWatchController::class, 'shortByUser']);
     Route::post('/continue-to-watch/check', [ContinueToWatchController::class, 'checkContinue']);
@@ -583,6 +584,7 @@ Route::get('/episode/subtitle/episode/{id}', [EpisodeSubtitleController::class, 
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/episode/subtitle/test', [EpisodeSubtitleController::class, 'uploadTest']);
         Route::post('/episode/subtitle/create', [EpisodeSubtitleController::class, 'create']);
         Route::delete('/episode/subtitle/delete/{id}', [EpisodeSubtitleController::class, 'destroy']);
         Route::get('/episode/subtitle/all', [EpisodeSubtitleController::class, 'index']);
