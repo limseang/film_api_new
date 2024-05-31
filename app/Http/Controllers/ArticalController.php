@@ -465,6 +465,7 @@ class ArticalController extends Controller
                     ->orWhereHas('categories', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->title . '%');
                     })
+                    ->whereNull('deleted_at') // Ensure soft deleted films are not included
                     ->get();
                 $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
                 $tag->where('name', 'like', '%' . $request->title . '%');
