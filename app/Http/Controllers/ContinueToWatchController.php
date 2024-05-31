@@ -181,13 +181,6 @@ class ContinueToWatchController extends Controller
     {
         try{
             $continueToWatch = ContinueToWatch::find($id);
-
-            if (!$continueToWatch) {
-                $continueToWatch = new ContinueToWatch();
-                $continueToWatch->id = $id;
-                $continueToWatch->user_id = auth()->user()->id; // Set the user_id field
-            }
-
             $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
