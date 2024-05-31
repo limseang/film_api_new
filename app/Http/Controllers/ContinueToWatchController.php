@@ -185,6 +185,7 @@ class ContinueToWatchController extends Controller
             if (!$continueToWatch) {
                 $continueToWatch = new ContinueToWatch();
                 $continueToWatch->id = $id;
+                $continueToWatch->user_id = $request->user_id; // Set the user_id field
             }
 
             $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
