@@ -181,6 +181,9 @@ class ContinueToWatchController extends Controller
     {
         try{
             $continueToWatch = ContinueToWatch::find($id);
+            if (!$continueToWatch) {
+                return $this->sendError('ContinueToWatch record not found');
+            }
             $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
