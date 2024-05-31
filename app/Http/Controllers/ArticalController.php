@@ -458,7 +458,7 @@ class ArticalController extends Controller
             $tag = Tag::all();
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
-                $films = Film::where('title', 'like', '%' . $request->title . '%')
+                $film = Film::where('title', 'like', '%' . $request->title . '%')
                     ->orWhereHas('tags', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->title . '%');
                     })
