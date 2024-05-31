@@ -40,7 +40,6 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $request->episode_id)
                 ->first();
             if($continueToWatch){
-                $continueToWatch->user_id = auth()->user()->id;
                 $continueToWatch->episode_id = $request->episode_id;
                 $continueToWatch->duration = $request->duration;
                 $continueToWatch->progressing = $request->progressing;
@@ -182,7 +181,7 @@ class ContinueToWatchController extends Controller
     {
         try{
             $continueToWatch = ContinueToWatch::find($id);
-            $continueToWatch->user_id = auth()->user()->id;
+            $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
             $continueToWatch->episode_id = $request->episode_id ?? $continueToWatch->episode_id;
