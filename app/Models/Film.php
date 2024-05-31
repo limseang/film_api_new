@@ -36,7 +36,7 @@ class Film extends Model
 
     public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class,'category','id');
     }
     public function tags()
     {
