@@ -86,7 +86,7 @@ class ContinueToWatchController extends Controller
                 $poster = $item->films ? $uploadController->getSignedUrl($item->films->poster) : null;
                 return [
                     'id' => $item->id,
-                    'user_id' => auth()->user()->id,
+                    'user_id' => $item->user_id,
                     'films' => $item->films->title ?? '',
                     'film_id' => $item->film_id,
                     'poster' =>$poster,
@@ -139,7 +139,7 @@ class ContinueToWatchController extends Controller
            $data = [
 
                'id' => $continueToWatch->id,
-               'user_id' =>auth()->user()->id,
+               'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title ?? '',
                'episodes' => $continueToWatch->episodes->episode,
                'url' => $episode->file,
@@ -181,7 +181,7 @@ class ContinueToWatchController extends Controller
     {
         try{
             $continueToWatch = ContinueToWatch::find($id);
-            $continueToWatch->user_id =auth()->user()->id;
+            $continueToWatch->user_id = $request->user_id ?? $continueToWatch->user_id;
             $continueToWatch->film_id = $request->film_id ?? $continueToWatch->film_id;
             $continueToWatch->film_type = $request->film_type ?? $continueToWatch->film_type;
             $continueToWatch->episode_id = $request->episode_id ?? $continueToWatch->episode_id;
