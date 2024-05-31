@@ -465,9 +465,6 @@ class ArticalController extends Controller
                     ->orWhereHas('categories', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->title . '%');
                     })
-                    ->orWhereHas('filmCategories', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->title . '%');
-                    })
                     ->get();
                 $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
                 $tag->where('name', 'like', '%' . $request->title . '%');
