@@ -458,15 +458,7 @@ class ArticalController extends Controller
             $tag = Tag::all();
             if($request->title){
                 $artical->where('title', 'like', '%' . $request->title . '%');
-                $film = Film::where('title', 'like', '%' . $request->title . '%')
-                    ->orWhereHas('tags', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->title . '%');
-                    })
-                    ->orWhereHas('categories', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->title . '%');
-                    })
-                    ->whereNull('deleted_at') // Ensure soft deleted films are not included
-                    ->get();
+                $film->where('title', 'like', '%' . $request->title . '%')->orWhereHas('categories',function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
                 $video->where('title', 'like', '%' . $request->title . '%', 'or', 'tags', 'like', '%' . $request->title . '%');
                 $tag->where('name', 'like', '%' . $request->title . '%');
 //                $film->whereHas('tags', function ($query) use ($request) {$query->where('name', 'like', '%' . $request->title . '%');});
