@@ -29,6 +29,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PackageItemController;
+use App\Http\Controllers\PremiumUserController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\RendomPointController;
 use App\Http\Controllers\ReplyCommentController;
@@ -107,6 +108,18 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/update/phone', [UserConTroller::class, 'changePhone']);
     Route::post('/user/update/password', [UserConTroller::class, 'changePassword']);
     Route::delete('/user/delete/', [UserConTroller::class, 'deleteAccount']);
+});
+
+/* User Premium */
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/user/premium/create', [PremiumUserController::class, 'create']);
+    Route::get('/user/premium', [PremiumUserController::class, 'ownPremium']);
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
+        Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
+        Route::post('/user/premium/change/status/', [PremiumUserController::class, 'changeStatus']);
+    });
+
 });
 
 /* UserType */

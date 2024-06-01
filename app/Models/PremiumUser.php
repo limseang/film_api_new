@@ -13,6 +13,8 @@ class PremiumUser extends Model
         'payment_id',
         'register_date',
         'expired_date',
+        'payment_method',
+        'recipe_id',
         'status',
     ];
 

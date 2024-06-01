@@ -178,42 +178,50 @@ class UserController extends Controller
 
     public function userinfo(Request $request)
     {
-     try{
-         $cloudController = new UploadController();
-         $user = auth()->user();
-         $user->fcm_token = $request->fcm_token;
-         $user->save();
-         if(!empty($user['avatar'])){
+        try{
+            $cloudController = new UploadController();
+            $user = auth()->user();
+            $userPremium = PremiumUser::find($user->id);
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
+            if($userPremium){
+                $user['premium'] = $userPremium->status == 1 ? 'Pending' : ($userPremium->status == 2 ? 'Premium' : ($userPremium->status == 3 ? 'Reject' : 'Expired'));
+            }
+            else{
+                $user['premium'] = 'Free';
+            }
+            if(!empty($user['avatar'])){
 
-             if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
+                if (filter_var($user['avatar'], FILTER_VALIDATE_URL)) {
 
-             }
-             else{
-                 $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
-             }
+                }
+                else{
+                    $user['avatar'] = $cloudController->getSignedUrl($user['avatar']);
+                }
 
-         }
-         else{
-             $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
-         }
+            }
+            else{
+                $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
+            }
 
-         $users = $user->toArray();
-         $response =[];
-         if(!empty($users)){
-             foreach ($users as  $key=> $value){
-                 $response[$key] = (string)$value;
-             }
-         }
+            $users = $user->toArray();
+            $response =[];
+            if(!empty($users)){
+                foreach ($users as  $key=> $value){
+                    $response[$key] = $value;
 
-
-         return $this->sendResponse($response);
+                }
+            }
 
 
+            return $this->sendResponse($response);
 
-     }
-     catch (Exception $e){
-         return $this->sendError($e->getMessage());
-     }
+
+
+        }
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
+        }
 
     }
 

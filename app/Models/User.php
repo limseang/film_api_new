@@ -67,7 +67,7 @@ class User extends Model
     }
 
     public function UserPremium(){
-        return $this->hasOne(PremiumUser::class);
+        return $this->hasOne(PremiumUser::class,'user_id','id');
     }
 
 }

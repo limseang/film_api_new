@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('payment_id');
             $table->string('register_date');
             $table->string('expired_date');
+            $table->string('payment_method');
+            $table->string('recipe_id');
             $table->string('status');
             $table->timestamps();
         });
