@@ -598,8 +598,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
-//    Route::get('/user/premium', [PremiumUserController::class, 'ownPremium']);
-    Route::get('/user/premium', [PremiumUserController::class, 'ownPremium']);
+    Route::get('/user/premium/own', [PremiumUserController::class, 'ownPremium']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
         Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
