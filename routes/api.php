@@ -26,7 +26,6 @@ use App\Http\Controllers\FilmController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\LikeController;
-use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PackageItemController;
 use App\Http\Controllers\PremiumUserController;
@@ -599,7 +598,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
-    Route::get('user/premium', [PremiumUserController::class, 'ownPremium']);
+//    Route::get('/user/premium', [PremiumUserController::class, 'ownPremium']);
+    Route::get('/user/premium', [PremiumUserController::class, 'ownPremium']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
         Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
