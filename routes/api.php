@@ -111,17 +111,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* User Premium */
-Route::group(['middleware' => ['auth:sanctum']], function (){
-    Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
-    Route::get('/premium', [PremiumUserController::class, 'ownPremium']);
-    Route::group(['middleware' => ['postpermission']], function () {
-        Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
-        Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
 
-        Route::post('/user/premium/change/status/', [PremiumUserController::class, 'changeStatus']);
-    });
-
-});
 
 /* UserType */
 
@@ -606,6 +596,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
+    Route::get('/premium', [PremiumUserController::class, 'ownPremium']);
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
+        Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
+        Route::post('/user/premium/change/status/', [PremiumUserController::class, 'changeStatus']);
+    });
+
+});
 
 
 
