@@ -595,30 +595,19 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 
+
+
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
     Route::get('/user/premium/own', [PremiumUserController::class, 'ownPremium']);
     Route::group(['middleware' => ['postpermission']], function () {
-//        Route::post('/episode/subtitle/test', [EpisodeSubtitleController::class, 'uploadTest']);
-//        Route::post('/episode/subtitle/create', [EpisodeSubtitleController::class, 'create']);
-//        Route::delete('/episode/subtitle/delete/{id}', [EpisodeSubtitleController::class, 'destroy']);
-//        Route::get('/episode/subtitle/all', [EpisodeSubtitleController::class, 'index']);
-//        Route::post('/episode/subtitle/multi', [EpisodeSubtitleController::class, 'uploadSubtitles']);
+        Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
+        Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
+        Route::post('/user/premium/change/status/', [PremiumUserController::class, 'changeStatus']);
     });
+
 });
 
-
-//Route::group(['middleware' => ['auth:sanctum']], function (){
-//    Route::post('/user/premium/create/', [PremiumUserController::class, 'create']);
-//    Route::get('/user/premium/own', [PremiumUserController::class, 'ownPremium']);
-//    Route::group(['middleware' => ['postpermission']], function () {
-//        Route::get('/all/user/premium', [PremiumUserController::class, 'index']);
-//        Route::delete('/user/premium/delete/{id}', [PremiumUserController::class, 'destroy']);
-//        Route::post('/user/premium/change/status/', [PremiumUserController::class, 'changeStatus']);
-//    });
-//
-//});
-//
 
 
 
