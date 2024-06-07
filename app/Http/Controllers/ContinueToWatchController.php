@@ -270,7 +270,7 @@ class ContinueToWatchController extends Controller
                 }
                 return [
                     'id' => $item->id,
-                    'continue_id' => $continueToWatchId ?? null, // if the user has not watched the film, the value will be 'null
+                    'continue_id' => $continueToWatchId ?? 'null', // if the user has not watched the film, the value will be 'null
                     'episode' => $item->episode,
                     'season' => $item->season,
                     'status' => $status,
@@ -289,7 +289,6 @@ class ContinueToWatchController extends Controller
                 'description' => $film->description,
                 'poster' => $film->poster,
                 'episodes' => $film->episode,
-                'subtitles' => $data['subtitles'] ?? 'null',
             ];
             return $this->sendResponse($data);
         }catch(Exception $e){
