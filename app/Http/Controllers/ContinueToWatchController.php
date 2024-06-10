@@ -235,19 +235,17 @@ class ContinueToWatchController extends Controller
             $film = Film::with(['episode','continueToWatch','subtitles'])
                 ->where('id', $id)
                 ->first();
-            // check if the user has watched the film in with episode in continue to watch table or not show the status
+
             $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
                 ->where('film_id', $id)
                 ->get();
 
-            $data = [];
-            // order by episode in film->episode
-
-            $film->episode = $film->episode->map(function ($item,$uploadController ) use ($continueToWatch) {
+            $film->episode = $film->episode->map(function ($item) use ($continueToWatch) {
                 $status = 'unwatched';
                 $progressing = 0;
                 $duration = 0;
-                // order by episode number in order by asc to show the episode in order
+                $continueToWatchId = null;
+
                 foreach ($continueToWatch as $watch) {
                     if ($item->id == $watch->episode_id) {
                         if($watch->progressing >= $watch->duration){
@@ -258,19 +256,17 @@ class ContinueToWatchController extends Controller
                         $progressing = $watch->progressing;
                         $duration = $watch->duration;
                         $continueToWatchId = $watch->id;
-
                     }
-
-
                 }
-                // progress in percentage
+
                 $percentage = 0;
                 if ($duration != 0 && $progressing != 0) {
                     $percentage = $progressing / $duration * 100;
                 }
+
                 return [
                     'id' => $item->id,
-                    'continue_id' => $continueToWatchId ?? null, // if the user has not watched the film, the value will be 'null
+                    'continue_id' => $continueToWatchId,
                     'episode' => $item->episode,
                     'season' => $item->season,
                     'status' => $status,
@@ -278,10 +274,8 @@ class ContinueToWatchController extends Controller
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
-
                 ];
             })->sortBy('episode');
-
 
             $data = [
                 'id' => $film->id,
@@ -289,8 +283,9 @@ class ContinueToWatchController extends Controller
                 'description' => $film->description,
                 'poster' => $film->poster,
                 'episodes' => $film->episode,
-                'subtitles' => $data['subtitles'] ?? 'null',
+                'subtitles' => $film->subtitles ?? 'null',
             ];
+
             return $this->sendResponse($data);
         }catch(Exception $e){
             return $this->sendError($e->getMessage());
