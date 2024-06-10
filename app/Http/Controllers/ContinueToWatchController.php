@@ -275,7 +275,7 @@ class ContinueToWatchController extends Controller
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
                 ];
-            })->sortBy('episode');
+            })->sortBy('episode')->values();
 
             $data = [
                 'id' => $film->id,
