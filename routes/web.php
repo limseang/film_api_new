@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/privacy', function () {
+    return view('privacy_policy');
+});
+
 Route::get('/login', function (UserController $userController,){
     return view('login');
 });
