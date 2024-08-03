@@ -23,7 +23,7 @@ class PostPermission
             ], 401);
         }
 
-        if ($user->role_id == "2" || $user->id == $request->id) {
+        if ($user->role_id == 2 || $user->role_id == 1 || $user->id == $request->id) {
             return $next($request);
         }
 
