@@ -16,7 +16,6 @@ class PostPermission
     public function handle(Request $request, Closure $next): Response
     {
         if(
-            auth()->user()->role_id == "1" ||
             auth()->user()->role_id == "2" ||
 
             auth()->user()->id == $request->id
