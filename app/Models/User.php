@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use GPBMetadata\Google\Api\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 //sof delete
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -18,6 +20,7 @@ class User extends Model
         'name',
         'email',
         'role_id',
+        'language',
         'phone',
         // 'telegram',
         // 'avatar',
