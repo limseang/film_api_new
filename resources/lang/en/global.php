@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'icon_error' => 'fas fa-ban',
+    'icon_success' => 'far fa-check-circle',
+    'success' => 'Success',
+    'warning' => 'Warning',
+    'error' => 'Error',
+    'title_success' => 'Success',
+    'title_warning' => 'Warning',
+    'title_error' => 'Error',
+    'message_success' => 'Operation completed successfully',
+    'message_warning' => 'Operation completed with warning',
+    'message_error' => 'Operation failed',
+    'message_error_404' => 'Resource not found',
+    'message_error_500' => 'Internal server error',
+    'message_error_503' => 'Service unavailable',
+    'message_error_504' => 'Gateway timeout',
+    'message_error_505' => 'HTTP version not supported',
+    'message_error_506' => 'Variant also negotiates',
+    'message_error_507' => 'Insufficient storage',
+    'welcome_dashboard' => 'Welcome to Dashboard',
+    'welcome' => 'Welcome',
+    'come_back' => 'Welcome back',
+    'abort404' => 'Resource not found',
+    'icon_home' => 'fas fa-home',
+    'dashboard' => 'Dashboard',
+];

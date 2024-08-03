@@ -1,0 +1,8 @@
+@font-face {
+  font-family: 'KhmerOS_Content';
+  font-style:  normal;
+  font-weight: 100;
+  font-display: auto;
+  src: url("KhmerOS_content.ttf?v=1.1") format("woff2"),
+       url("KhmerOS_content.ttf?v=1.1") format("woff");
+}

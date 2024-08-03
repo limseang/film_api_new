@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminPermision::class,
         'user' => \App\Http\Middleware\UserPermission::class,
         'postpermission' => \App\Http\Middleware\PostPermission::class,
+        'lang' => \App\Http\Middleware\Localization::class,
     ];
 }
