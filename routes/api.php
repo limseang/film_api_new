@@ -608,6 +608,14 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 });
 
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/create-payment-link', [UserController::class, 'createPaymentLink'])->name('create-payment-link');
+    Route::post('/payment-callback', [UserController::class, 'handlePaymentCallback'])->name('payment-callback');
+    Route::post('/generate-qr-code', [UserController::class, 'generatePaymentQrCode'])->name('generate-qr-code');
+
+});
+Route::get('/verify-payment', [UserController::class, 'verifyPayment'])->name('verify-payment');
+Route::post('/webhook/payment', [UserController::class, 'handlePaymentWebhook'])->name('webhook.payment');
 
 
 

@@ -15,6 +15,8 @@ use App\Services\PushNotificationService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
@@ -422,6 +424,185 @@ class UserController extends Controller
         }
 
     }
+
+    // Todo: Payment Link
+    public function createPaymentLink(Request $request)
+    {
+
+        // Generate a unique transaction ID
+        $transaction_id = time(); // Using time() to generate a unique transaction ID as in the example
+        $amount = $request->amount;
+        $user_id = auth()->user()->id;
+        $remark = $request->remark;
+
+        // Generate the success URL with transaction_id and user_id
+        $success_url = "https://www.raksmeypay.com/payment/sample-success-page?transaction_id={$transaction_id}&token={$user_id}";
+        $encoded_success_url = urlencode($success_url);
+
+        $profile_key = "188bedcc6235ff1617dde3dd78deb1e49408b7a42db46f71f572c1a82569ee4d8c5a4848fc21c0df";
+        $hash = sha1($profile_key . $transaction_id . $amount . $encoded_success_url . $remark);
+
+        $parameters = [
+            "transaction_id" => $transaction_id,
+            "amount" => $amount,
+            "success_url" => $encoded_success_url,
+            "remark" => $remark,
+            "hash" => $hash
+        ];
+
+        $queryString = http_build_query($parameters);
+        $my_payment_url = "https://www.raksmeypay.com/payment/request/4d9312574ca3ebb2ead00027f18d1ef8";
+        $payment_link_url = $my_payment_url . "?" . $queryString;
+
+        // Generate QR code URL
+        $qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($payment_link_url);
+
+        return response()->json([
+            'payment_link' => $payment_link_url,
+            'qr_code_url' => $qr_code_url,
+            'transaction_id' => $transaction_id,
+            'success_url' => $success_url
+        ]);
+    }
+
+
+    public function handlePaymentCallback(Request $request)
+    {
+        // Validate the request
+
+
+        $transaction_id = $request->transaction_id;
+        $received_hash = $request->hash;
+
+        // Calculate the hash to verify
+        $profile_key = "188bedcc6235ff1617dde3dd78deb1e49408b7a42db46f71f572c1a82569ee4d8c5a4848fc21c0df";
+        $calculated_hash = sha1($profile_key . $transaction_id);
+
+        // Verify the hash
+        if ($calculated_hash !== $received_hash) {
+            return response()->json(['error' => 'Invalid hash'], 400);
+        }
+
+        // Process the transaction, update database, etc.
+        // Here you would typically update the transaction status in your database
+
+        return response()->json(['success' => true, 'transaction_id' => $transaction_id]);
+    }
+
+    public function generatePaymentQrCode(Request $request)
+    {
+
+
+        // Get the amount from the request
+        $amount = $request->input('amount');
+
+        // Generate a unique transaction ID
+        $transaction_id = time(); // Using current timestamp for uniqueness
+
+        // Payment URL and success URL
+        $my_payment_url = "https://www.raksmeypay.com/payment/request/4d9312574ca3ebb2ead00027f18d1ef8";
+        $profile_key = "188bedcc6235ff1617dde3dd78deb1e49408b7a42db46f71f572c1a82569ee4d8c5a4848fc21c0df";
+        $success_url = "http://localhost/sample-payment/payment_success.php?transaction_id={$transaction_id}&amount={$amount}";
+
+        // Generate hash
+        $hash = sha1($profile_key . $transaction_id . $amount . $success_url);
+
+        // Build query string
+        $parameters = [
+            "transaction_id" => $transaction_id,
+            "amount" => $amount,
+            "success_url" => urlencode($success_url),
+            "hash" => $hash
+        ];
+
+        $queryString = http_build_query($parameters);
+        $payment_link_url = $my_payment_url . "?" . $queryString;
+
+        // Make the API call to get the QR code data
+        $response = Http::get($payment_link_url);
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Failed to generate payment link'], 500);
+        }
+
+        // Extract the data from the response
+        $data = $response->body(); // Assuming the QR code data is directly in the response body
+
+        // Generate QR code URL
+        $qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($data);
+
+        // Return the QR code URL and transaction ID in the response
+        return response()->json([
+            'success' => 1,
+            'payment_link' => $payment_link_url,
+            'qr_code_url' => $qr_code_url,
+            'transaction_id' => $transaction_id
+        ]);
+    }
+
+    public function handlePaymentWebhook(Request $request)
+    {
+        // Log the incoming webhook request for debugging
+        Log::info('Payment Webhook received:', $request->all());
+
+        // Validate the webhook request if necessary (e.g., check a signature)
+        // $this->validateWebhook($request);
+
+        // Process the webhook data
+        $transaction_id = $request->input('transaction_id');
+        $status = $request->input('status');
+        $amount = $request->input('amount');
+
+        // Handle different event types
+        switch ($status) {
+            case 'success':
+                // Handle successful payment
+                $this->handleSuccessfulPayment($transaction_id, $amount);
+                break;
+            case 'failed':
+                // Handle failed payment
+                $this->handleFailedPayment($transaction_id, $amount);
+                break;
+            case 'pending':
+                // Handle pending payment
+                $this->handlePendingPayment($transaction_id, $amount);
+                break;
+            default:
+                // Handle unknown status
+                Log::warning('Unknown payment status:', $status);
+                break;
+        }
+
+        // Return a response to acknowledge receipt of the webhook
+        return response()->json(['status' => 'received'], 200);
+    }
+
+    protected function handleSuccessfulPayment($transaction_id, $amount)
+    {
+        // Update the payment status in the database
+        // Notify the user about the successful payment
+        // Any other logic you need
+        Log::info("Payment successful for transaction ID: $transaction_id, Amount: $amount");
+    }
+
+    protected function handleFailedPayment($transaction_id, $amount)
+    {
+        // Update the payment status in the database
+        // Notify the user about the failed payment
+        // Any other logic you need
+        Log::info("Payment failed for transaction ID: $transaction_id, Amount: $amount");
+    }
+
+    protected function handlePendingPayment($transaction_id, $amount)
+    {
+        // Update the payment status in the database
+        // Notify the user about the pending payment
+        // Any other logic you need
+        Log::info("Payment pending for transaction ID: $transaction_id, Amount: $amount");
+    }
+
+
+
 
 
 

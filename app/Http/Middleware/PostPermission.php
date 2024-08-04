@@ -15,15 +15,20 @@ class PostPermission
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(
-            auth()->user()->role_id == 1 ||
-            auth()->user()->role_id == 2 ||
-            auth()->user()->id == $request->id
-        ){
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not authenticated',
+            ], 401);
+        }
+
+        if ($user->role_id == 2 || $user->role_id == 1 || $user->id == $request->id) {
             return $next($request);
         }
+
         return response()->json([
-            'message' => 'you not has permision with this function',
+            'message' => 'You do not have permission for this function',
         ], 401);
     }
 }
