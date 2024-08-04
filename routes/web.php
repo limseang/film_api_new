@@ -5,7 +5,12 @@ use App\Http\Controllers\Auth\AppleSigninController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserAdminController;
+use App\Http\Controllers\Admin\SystemLogController;
+use App\Http\Controllers\Admin\TypeController;
+use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +32,53 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
     Route::get('lang/{local}', [UserAdminController::class, 'lang'])->name('lang');
     Route::get('/logout',[AuthController::class, 'logout']) -> name('logout');
+
+    // Prefix for Admin
+    Route::prefix('admin')->group(function () {
+        Route::prefix('role')->name('role.')->group(function(){
+            Route::get('/', [RoleController::class, 'index'])->name('index');
+            Route::get('/create', [RoleController::class, 'create'])->name('create');
+            Route::post('/store', [RoleController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [RoleController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [RoleController::class, 'destroy'])->name('delete');
+
+            Route::get('/permission/{id}', [RoleController::class, 'rolePermission'])->name('permission');
+            Route::post('/permission/store', [RoleController::class, 'storeRolePermission'])->name('permission.store');
+
+        });
+        Route::prefix('system_log')->name('system_log.')->group(function () {
+            Route::get('/', [SystemLogController::class, 'index'])->name('index');
+            Route::post('/show-detail', [SystemLogController::class, 'showDetail'])->name('show_detail');
+        });
+        Route::prefix('type')->name('type.')->group(function(){
+            Route::get('/', [TypeController::class, 'index'])->name('index');
+            Route::get('/create', [TypeController::class, 'create'])->name('create');
+            Route::post('/store', [TypeController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [TypeController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [TypeController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [TypeController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [TypeController::class, 'status'])->name('status');
+        });
+        Route::prefix('tag')->name('tag.')->group(function(){
+            Route::get('/', [TagController::class, 'index'])->name('index');
+            Route::get('/create', [TagController::class, 'create'])->name('create');
+            Route::post('/store', [TagController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [TagController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [TagController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [TagController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [TagController::class, 'status'])->name('status');
+        });
+        Route::prefix('category')->name('category.')->group(function(){
+            Route::get('/', [CategoryController::class, 'index'])->name('index');
+            Route::get('/create', [CategoryController::class, 'create'])->name('create');
+            Route::post('/store', [CategoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CategoryController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [CategoryController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [CategoryController::class, 'status'])->name('status');
+        });
+    });
 });
 
 Route::get('/privacy', function () {
