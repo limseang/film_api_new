@@ -58,7 +58,7 @@
                                 {{__('global.user')}}
                             </a>
                         </li>
-                        <?php $arrRouteDirector = [route('director.index'), route('director.create'), request()->is('admin/type/director/*')]; ?>
+                        <?php $arrRouteDirector = [route('director.index'), route('director.create'), request()->is('admin/director/edit/*')]; ?>
                         <li class="nav-item">
                             <a href="{{route('director.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteDirector)) active @else '' @endif">
                                 {{__('sma.director')}}

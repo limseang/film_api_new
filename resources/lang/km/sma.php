@@ -289,5 +289,6 @@
     'know_for' => 'ឈ្មោះហៅក្រៅ',
     'birth_date' => 'ថ្ងៃកំណើត',
     'death_date' => 'ថ្ងៃស្លាប់',
-    'nationality' => 'សញ្ជាតិ'
+    'nationality' => 'សញ្ជាតិ',
+    'edit_director' => 'កែប្រែអ្នកដឹកនាំ',
   ];

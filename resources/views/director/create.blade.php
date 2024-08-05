@@ -43,6 +43,9 @@
                       <option value="{{ $value->id }}" {{old('nationality') == $value->id ? 'selected':''}} >{{$value->name }}</option>
                       @endforeach
                   </select>
+                  <span class="invalid-feedback">
+                    The field is required.
+                  </span>
                   </div>
                 <div class="mb-3">
                   <label class="form-label" for="birth_date">{{ trans('sma.birth_date') }}</label>
@@ -50,7 +53,9 @@
                       <span class="input-group-text"><i class="ph-calendar"></i></span>
                       <input type="text" class="form-control datepicker-autohide" value="{{old('birth_date')}}" name="birth_date" placeholder="Please select date" required/>
                     </div>
-
+                    <span class="invalid-feedback">
+                      The field is required.
+                    </span>
                 </div>
 
                 <div class="mb-3">
@@ -65,15 +70,18 @@
                 </div>
                 <div class="mb-3">
                   <label class="form-label" for="status">{{ trans('global.publish') }}</label>
-                  <select id="publish" class="{{ config('setup.input_select2') }}" name="status" required>
+                  <select id="status" class="{{ config('setup.input_select2') }} form-select" name="status" required="">
                       <option value="">{{ __('global.please_select') }}</option>
                       <option value="1" {{old('status') == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
                       <option value="2" {{old('status') == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
                   </select>
+                  <span class="invalid-feedback">
+                    The field is required.
+                  </span>
                   </div>
                 <div class="mb-3">
                   <label class="form-label" for="biography">{{trans('sma.biography')}}</label>
-                  <textarea rows="3" cols="3" name="biography" class="form-control" id="ckeditor_classic_prefilled2">
+                  <textarea rows="3" cols="3" name="biography" class="form-control" id="ckeditor_classic_prefilled2" required>
                     {{old('biography')}}
                   </textarea>
                 </div>
@@ -93,35 +101,4 @@
     </div>
   </div>
   </div>
-  @section('scripts')
-  <script>     
-  // check data-permision attribute checkbox and set all child id permission checkboxes and uncheck id permission checkbox
-  $(document).ready(function(){
-        $('input[type="checkbox"]').click(function(){
-            if($(this).is(":checked")){
-                var permission_id = $(this).attr('data-permission');
-                $('input[data-parent-permssion="'+permission_id+'"]').prop('checked', true);
-            }else{
-                var permission_id = $(this).attr('data-permission');
-                $('input[data-parent-permssion="'+permission_id+'"]').prop('checked', false);
-            }
-        });
-        // when uncheck all child permission or uncheck one checkbox then uncheck parent permission checkbox
-        $('input[type="checkbox"]').click(function(){
-            var permission_id = $(this).attr('data-parent-permssion');
-            if($('input[data-parent-permssion="'+permission_id+'"]').not(':checked')){
-                $('#permission_parent'+permission_id).prop('checked', false);
-            }
-        });
-        // when check all child child permission then check parent permission checkbox
-        $('input[type="checkbox"]').click(function(){
-            // get all child permission id and check all child permission checkbox parent permission checkbox
-            var permission_id = $(this).attr('data-parent-permssion');
-            if($('input[data-parent-permssion="'+permission_id+'"]').length == $('input[data-parent-permssion="'+permission_id+'"]:checked').length){
-                $('#permission_parent'+permission_id).prop('checked', true);
-            }
-        });
-  });
-</script>
-@endsection
   @endsection

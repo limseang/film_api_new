@@ -5,7 +5,8 @@ use App\Models\Storages;
 use Illuminate\Support\Facades\Log;
 use OSS\OssClient;
 use OSS\Core\OssException;
-trait AlibabaStorage{ 
+trait AlibabaStorage
+{ 
     
     public  function UploadFile($file): int
     {
@@ -52,6 +53,28 @@ trait AlibabaStorage{
             $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
 
             return $signedUrl;
+        } catch (OssException $e) {
+            Log::error($e->getErrorMessage());
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteFile($id)
+    {
+        try {
+            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+            $endpoint = env("ALIBABA_OSS_ENDPOINT");
+            $bucket = env("ALIBABA_OSS_BUCKET");
+
+            $storage = Storages::query()->find($id);
+            if(empty($storage)){
+                return false;
+            }
+            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+            $ossClient->deleteObject($bucket, $storage->path);
+            $storage->delete();
+            return true;
         } catch (OssException $e) {
             Log::error($e->getErrorMessage());
             return $e->getMessage();
