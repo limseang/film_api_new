@@ -1,5 +1,6 @@
 <div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
     
+    <?php $currentURL = url()->current(); ?>
     <!-- Sidebar content -->
     <div class="sidebar-content">
 
@@ -32,21 +33,64 @@
                     <i class="ph-dots-three sidebar-resize-show"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link active">
+                    <a href="{{route('dashboard')}}" class="nav-link  {{request()->is('dashboard') ? ' active ' : '' }}">
                         <i class="ph-house"></i>
                         <span>
-                            Dashboard
+                            {{__('global.dashboard')}}
                         </span>
                     </a>
                 </li>
-                <li class="nav-item nav-item-submenu">
-                    <a href="#" class="nav-link">
-                        <i class="ph-layout"></i>
-                        <span>Layouts</span>
+                <?php $arrRouteSetting = [route('role.index'),
+                route('role.create'), 
+                request()->is('admin/role/edit/*'), 
+                request()->is('admin/role/permission/*'), 
+                route('system_log.index'),
+                route('type.index'),
+                route('type.create'),
+                request()->is('admin/type/edit/*'),
+                route('tag.index'),
+                route('tag.create'),
+                request()->is('admin/tag/edit/*'),
+                route('category.index'),
+                route('category.create'),
+                request()->is('admin/category/edit/*'),
+                ]; ?>
+                <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteSetting)) nav-item-open @else '' @endif">
+                    <a href="" class="nav-link @if(in_array($currentURL, $arrRouteSetting)) active @else '' @endif">
+                        <i class="fa fa-cog"></i>
+                        <span>{{__('global.setting')}}</span>
                     </a>
-                    <ul class="nav-group-sub collapse">
-                        <li class="nav-item"><a href="index.html" class="nav-link active">Default layout</a></li>
-                        <li class="nav-item"><a href="../../layout_2/full/index.html" class="nav-link">Layout 2</a></li>
+                    <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteSetting)) show @else '' @endif">
+                        <?php $arrRouteRole = [route('role.index'), route('role.create'), request()->is('admin/role/edit/*'), request()->is('admin/role/permission/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('role.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteRole)) active @else '' @endif">
+                                {{__('global.role')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteType = [route('type.index'), route('type.create'), request()->is('admin/type/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('type.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteType)) active @else '' @endif">
+                                {{__('sma.type')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteTag = [route('tag.index'), route('tag.create'), request()->is('admin/tag/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('tag.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteTag)) active @else '' @endif">
+                                {{__('sma.tag')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteCategory = [route('category.index'), route('category.create'), request()->is('admin/category/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('category.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteCategory)) active @else '' @endif">
+                                {{__('sma.category_film')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteSystemLog = [route('system_log.index')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('system_log.index')}}" class="nav-link @if(in_array($currentURL, $arrRouteSystemLog)) active @else '' @endif"">
+                                {{__('global.user_system_log')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <!-- /layout -->

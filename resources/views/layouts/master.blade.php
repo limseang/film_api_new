@@ -5,6 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 	<title>@yield('title',config('app.name')) |CinemagicKH</title>
     <meta name="description" content="Limitless - Responsive Web Application Kit by Eugene Kopyov">
     <meta name="author" content="Eugene Kopyov">
@@ -12,7 +13,7 @@
 
 </head>
 
-<body class="language_{{ App::getLocale() }}">
+<body class="{{ App::getLocale() == 'km' ? 'language_km': ''}}">
 
 	<!-- Main navbar -->
 	@include('layouts.includes.header-navbar')

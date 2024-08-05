@@ -25,4 +25,9 @@ return [
     'abort404' => 'Resource not found',
     'icon_home' => 'fas fa-home',
     'dashboard' => 'Dashboard',
+    'setting' => 'Setting',
+    'role'  => 'Role',
+    'user_system_log' => 'User system log',
+    'add_new' => 'Add new',
+    'add_role' => 'Add role', 
 ];
