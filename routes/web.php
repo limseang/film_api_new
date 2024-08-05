@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SystemLogController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DirectorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,16 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [CategoryController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [CategoryController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [CategoryController::class, 'status'])->name('status');
+        });
+
+        Route::prefix('director')->name('director.')->group(function(){
+            Route::get('/', [DirectorController::class, 'index'])->name('index');
+            Route::get('/create', [DirectorController::class, 'create'])->name('create');
+            Route::post('/store', [DirectorController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [DirectorController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [DirectorController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [DirectorController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [DirectorController::class, 'status'])->name('status');
         });
     });
 });

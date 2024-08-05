@@ -60,7 +60,11 @@ var DateTimePickers = function() {
         // Single picker
         $('.daterange-single').daterangepicker({
             parentEl: '.content-inner',
-            singleDatePicker: true
+            singleDatePicker: true,
+            // format: 'MM/DD/YYYY',
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
         });
 
         // Display date dropdowns
@@ -185,6 +189,17 @@ var DateTimePickers = function() {
         const dpAutoHideElement = document.querySelector('.datepicker-autohide');
         if(dpAutoHideElement) {
             const dpAutoHide = new Datepicker(dpAutoHideElement, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                autohide: true
+            });
+        }
+
+        const dpAutoHideElement2 = document.querySelector('.datepicker-autohide2');
+        if(dpAutoHideElement) {
+            const dpAutoHide = new Datepicker(dpAutoHideElement2, {
                 container: '.content-inner',
                 buttonClass: 'btn',
                 prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',

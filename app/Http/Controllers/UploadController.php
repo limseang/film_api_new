@@ -100,7 +100,7 @@ class UploadController extends Controller
         try {
 
 
-            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+        $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
         $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
         $endpoint = env("ALIBABA_OSS_ENDPOINT");
         $bucket = env("ALIBABA_OSS_BUCKET");

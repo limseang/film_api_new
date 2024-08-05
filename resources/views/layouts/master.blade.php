@@ -13,7 +13,7 @@
 
 </head>
 
-<body class="{{ App::getLocale() == 'km' ? 'language_km': ''}}">
+<body class="{{ App::getLocale() == 'km' ? 'language_km': 'language_en'}}">
 
 	<!-- Main navbar -->
 	@include('layouts.includes.header-navbar')

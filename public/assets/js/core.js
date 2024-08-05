@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 
 function showImage(event) {
-    $('#view-img').modal();
+    $('#view-img').modal('show');
     var img_link = $(event).attr("src");
     img = jQuery('<img class="dynamic" style="width:100%;">');
     img.attr('src', img_link);

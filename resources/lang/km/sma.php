@@ -279,4 +279,15 @@
     'category_film' => 'ប្រភេទភាពយន្ត',
     'add_category_film' => 'បន្ថែមប្រភេទភាពយន្ត',
     'category_film_name' => 'ឈ្មោះប្រភេទភាពយន្ត',
+    'change_permission' => 'កែប្រែការអនុញ្ញាត',
+    'director' => 'អ្នកដឹកនាំ',
+    'director_name' => 'ឈ្មោះអ្នកដឹកនាំ',
+    'add_director' => 'បន្ថែមអ្នកដឹកនាំ',
+    'biography' => 'ប្រវត្តិរបស់អ្នកដឹកនាំ',
+    'avatar_director' => 'រូបភាពអ្នកដឹកនាំ',
+    'national_name' => 'សញ្ជាតិ',
+    'know_for' => 'ឈ្មោះហៅក្រៅ',
+    'birth_date' => 'ថ្ងៃកំណើត',
+    'death_date' => 'ថ្ងៃស្លាប់',
+    'nationality' => 'សញ្ជាតិ'
   ];

@@ -197,5 +197,17 @@
     'category_film' => 'Category Film',
     'add_category_film' => 'Add Category Film',
     'edit_category_film' => 'Edit Category Film',
-  ]
+    'save' => 'Save',
+    'save_new' => 'Save New',
+    'change_permission' => 'Change Permission',
+    'director' => 'Director',
+    'director_name' => 'Director Name',
+    'biography' => 'Biography',
+    'avatar_director' => 'Avatar Director',
+    'national_name' => 'National Name',
+    'know_for' => 'Know For',
+    'birth_date' => 'Birth Date',
+    'death_date' => 'Death Date',
+    'nationality' => 'Nationality'
+    ]
  ?>
