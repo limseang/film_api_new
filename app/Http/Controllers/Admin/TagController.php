@@ -133,7 +133,7 @@ class TagController extends Controller
 
         public function status($id)
         {
-            $tag = tag::find($id);
+            $tag = Tag::find($id);
             if(!$tag){
                 $notification = [
                     'type' => 'error',
@@ -156,7 +156,7 @@ class TagController extends Controller
 
         public function destroy($id)
         {
-            $tag = tag::find($id);
+            $tag = Tag::find($id);
             if(!$tag){
                 $notification = [
                     'type' => 'error',

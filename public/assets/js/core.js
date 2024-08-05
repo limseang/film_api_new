@@ -277,6 +277,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// textarea
+document.addEventListener('DOMContentLoaded', function() {
+    var requiredInputs = document.querySelectorAll('textarea[required]');
+    requiredInputs.forEach(function(input) {
+        var label = document.querySelector('label[for="' + input.name + '"]');
+        if (label) {
+            label.classList.add('required');
+        }
+    }
+    );
+});
 
 $(document).ready(function() {
     $('body').on('click', '.bpo-delete', function(e) {

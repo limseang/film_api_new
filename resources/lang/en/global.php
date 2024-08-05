@@ -44,4 +44,6 @@ return [
     'role_name' => 'Role Name',
     'people' => 'People',
     'director' => 'Director',
+    'user' => 'User',
+    'add' => 'Add',
 ];

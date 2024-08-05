@@ -38,8 +38,8 @@ class DirectorDataTable extends DataTable
                 return dateFormat($table->death_date);
             })
             ->editColumn('biography', function ($table) {
-                // limit the biography to 100 characters
-                return '<blockquote class="blockquote text-center py-2 mb-0">'.substr($table->biography, 0, 100).'...</blockquote>';
+                $biography = strlen($table->biography) > 50 ? substr($table->biography, 0, 50) . '...' : $table->biography;
+                return '<blockquote class="blockquote text-center py-2 mb-0">'.$biography.'</blockquote>';
             })
             ->editColumn('icon', function ($table) {
                 $pic = ($table->avatar_url) ? $table->avatar_url : 'default.png';

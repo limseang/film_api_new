@@ -208,6 +208,8 @@
     'know_for' => 'Know For',
     'birth_date' => 'Birth Date',
     'death_date' => 'Death Date',
-    'nationality' => 'Nationality'
+    'nationality' => 'Nationality',
+    'add_director' => 'Add Director',
+    'edit_director' => 'Edit Director',
     ]
  ?>
