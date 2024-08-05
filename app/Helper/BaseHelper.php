@@ -181,7 +181,7 @@ if (!function_exists('spacesForNumber')) {
             if (empty($date)) {
                 return '';
             }
-            return date($format, strtotime($date));
+            return Carbon::parse($date)->setTimezone(config('app.timezone'))->format(config('setup.date_format'));
         }
     }
 }
