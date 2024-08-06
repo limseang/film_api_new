@@ -4,29 +4,30 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\DataTables\TagDataTable;
-use App\Models\Tag;
+use App\Http\DataTables\DistributorDataTable;
+use App\Models\Distributor;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use App\Traits\AlibabaStorage;
 
-class TagController extends Controller
+class DistributorController extends Controller
 {
-    
+    use AlibabaStorage;
     public function __construct()
     {
         $this->middleware('lang');
     }
 
-    public function index(TagDataTable $dataTable)
+    public function index(DistributorDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.tag')]];
-        return $dataTable->render('tag.index', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.distributor')]];
+        return $dataTable->render('distributor.index', $data);
     }
 
     public function create()
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.tag')], ['link' => '#', 'page' => __('sma.add')]];
-        return view('tag.create', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.add')]];
+        return view('distributor.create', $data);
     }
 
     public function store(Request $request)
@@ -35,16 +36,18 @@ class TagController extends Controller
             'name' => 'required|unique:tags,name',
             'description' => 'nullable|max:255',
             'status' => 'required|in:1,2',
-            'type' => 'required',
         ]);
         try{
             DB::beginTransaction();
-            $tag = new Tag();
-            $tag->name = $request->name;
-            $tag->description = $request->description;
-            $tag->status = $request->status;
-            $tag->type = $request->type;
-            $tag->save();
+            $distributor = new Distributor();
+            if($request->hasFile('image')){
+                $avatar = $this->UploadFile($request->file('image'), 'Distibutor');
+            }
+            $distributor->name = $request->name;
+            $distributor->description = $request->description;
+            $distributor->status = $request->status;
+            $distributor->image = $avatar ?? null;
+            $distributor->save();
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -54,7 +57,7 @@ class TagController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.add_successfully'),
             ];
-            return redirect()->route('tag.'.$pageDirection)->with($notification);
+            return redirect()->route('distributor.'.$pageDirection)->with($notification);
         }catch(Exception $e){
             DB::rollBack();
             $notification = [
@@ -69,46 +72,51 @@ class TagController extends Controller
 
     public function edit($id)
     {
-        $data['tag'] = Tag::find($id);
-        if(!$data['tag']){
+        $data['distributor'] = Distributor::find($id);
+        if(!$data['distributor']){
             $notification = [
                 'type' => 'error',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
                 'text' =>  trans('sma.the_not_exist')
             ];
-            return redirect()->route('tag.index')->with($notification);
+            return redirect()->route('distributor.index')->with($notification);
         }
-        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.tag')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('tag.edit', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.edit')]];
+        return view('distributor.edit', $data);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|unique:tags,name,'.$id,
+            'name' => 'required',
             'status' => 'required|in:1,2',
-            'desctription' => 'nullable|max:255',
-            'type' => 'required',
+            'description' => 'required',
         ]);
 
         try{
             DB::beginTransaction();
-            $tag = Tag::find($id);
-                if(!$tag){
+            $distributor = Distributor::find($id);
+                if(!$distributor){
                     $notification = [
                         'type' => 'error',
                         'icon' => trans('global.icon_error'),
                         'title' => trans('global.title_error_exception'),
                         'text' => trans('sma.the_not_exist'),
                     ];
-                    return redirect()->route('tag.index')->with($notification);
+                    return redirect()->route('distributor.index')->with($notification);
                 }
-                $tag->name = $request->name;
-                $tag->description = $request->description;
-                $tag->status = $request->status;
-                $tag->type = $request->type;
-                $tag->save();
+                if($request->hasFile('image')){
+                    $avatar = $this->UploadFile($request->file('image'), 'Distributor');
+                    if($distributor->image){
+                        $this->deleteFile($distributor->image);
+                    }
+                    $distributor->image = $avatar;
+                }
+                $distributor->name = $request->name;
+                $distributor->description = $request->description;
+                $distributor->status = $request->status;
+                $distributor->save();
                 
                 DB::commit();
                 $notification = [
@@ -117,7 +125,7 @@ class TagController extends Controller
                     'title' => trans('global.title_updated'),
                     'text' => trans('sma.update_successfully'),
                 ];
-                return redirect()->route('tag.index')->with($notification);
+                return redirect()->route('distributor.index')->with($notification);
             }catch(Exception $e){
                 DB::rollBack();
                 $notification = [
@@ -133,56 +141,56 @@ class TagController extends Controller
 
         public function status($id)
         {
-            $tag = Tag::find($id);
-            if(!$tag){
+            $distributor = Distributor::find($id);
+            if(!$distributor){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('tag.index')->with($notification);
+                return redirect()->route('distributor.index')->with($notification);
             }
-            $tag->status = $tag->status == 1 ? 2 : 1;
-            $tag->save();
+            $distributor->status = $distributor->status == 1 ? 2 : 1;
+            $distributor->save();
             $notification = [
                'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('tag.index')->with($notification);
+            return redirect()->route('distributor.index')->with($notification);
         }
 
         public function destroy($id)
         {
-            $tag = Tag::find($id);
-            if(!$tag){
+            $distributor = Distributor::find($id);
+            if(!$distributor){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('tag.index')->with($notification);
+                return redirect()->route('distributor.index')->with($notification);
             }
-            $totalUsed = $tag->artical()->count() + $tag->film()->count();
+            $totalUsed = $distributor->films()->count();
             if($totalUsed> 0){
                 $notification = [
                     'type' => 'exception',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
-                    'text' => trans('sma.cant_delete_tag_being_used'),
+                    'text' => trans('sma.cant_delete_being_used'),
                 ];
-                return redirect()->route('tag.index')->with($notification);
+                return redirect()->route('distributor.index')->with($notification);
             }
-            $tag->delete();   
+            $distributor->delete();   
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
-                'text' => trans('sma.update_successfully'),
+                'text' => trans('sma.delete_successfully'),
             ];
-            return redirect()->route('tag.index')->with($notification);
+            return redirect()->route('distributor.index')->with($notification);
         }
 }

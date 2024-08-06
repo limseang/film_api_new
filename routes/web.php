@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Auth\AppleSigninController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
@@ -13,6 +11,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\ArtistController;
+use App\Http\Controllers\Admin\DistributorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +99,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [ArtistController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [ArtistController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [ArtistController::class, 'restore'])->name('restore');
+        });
+        // Distributor
+        Route::prefix('distributor')->name('distributor.')->group(function(){
+            Route::get('/', [DistributorController::class, 'index'])->name('index');
+            Route::get('/create', [DistributorController::class, 'create'])->name('create');
+            Route::post('/store', [DistributorController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [DistributorController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [DistributorController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [DistributorController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [DistributorController::class, 'status'])->name('status');
         });
     });
 });
