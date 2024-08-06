@@ -15,20 +15,20 @@
         <ul class="nav flex-row justify-content-end order-1 order-lg-2">
             <li class="nav-item nav-item-dropdown-lg dropdown language-switch">
                 @php
-                    $language_key = ['en' => 'English', 'km' => 'Khmer'];
+                    $language_key = ['en' => __('sma.english'), 'km' => __('sma.khmer')];
                 @endphp
                 <a href="#" class="navbar-nav-link navbar-nav-link-icon rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="rounded" src="{{ asset('img/'.App::getLocale().'.png') }}" height="22" width="36" alt="">
                     <span class="ms-2 d-none d-lg-inline-block me-1">{{ (App::getLocale() == 'en') ? $language_key['en'] : $language_key[App::getLocale()]  }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="{{ route('lang', 'en' )}}" class="dropdown-item en {{ (App::getLocale()  == 'en') ? 'active' : ''}} ">
-                        <img class="rounded"  src="{{ asset('img/en.png') }}" height="22" width="36" alt="">
-                        <span class="ms-2">{{ $language_key['en'] }}</span>
-                    </a>
                     <a href="{{ route('lang', 'km' )}}" class="dropdown-item kh {{ (App::getLocale()  == 'km') ? 'active' : ''}} ">
                         <img class="rounded"  src="{{ asset('img/km.png') }}" height="22" width="36"  alt="">
                         <span class="ms-2">{{ $language_key['km'] }}</span>
+                    </a>
+                    <a href="{{ route('lang', 'en' )}}" class="dropdown-item en {{ (App::getLocale()  == 'en') ? 'active' : ''}} ">
+                        <img class="rounded"  src="{{ asset('img/en.png') }}" height="22" width="36" alt="">
+                        <span class="ms-2">{{ $language_key['en'] }}</span>
                     </a>
                 </div>
             </li>

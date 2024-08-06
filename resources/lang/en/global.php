@@ -46,4 +46,27 @@ return [
     'director' => 'Director',
     'user' => 'User',
     'add' => 'Add',
+     //Form Messages
+     'title_created' => 'Created',
+     'title_updated' => 'Updated',
+     'title_deleted' => 'Deleted',
+     'title_restored' => 'Restored',
+     'title_export' => 'Export',
+     'title_error_exception' => 'Exception Error ',
+     'title_error_validation' => 'Validation Error',
+     'title_error_export' => 'Export Error',
+     'export_message_error' => 'Export error. Please try again',
+     'validation_message_error' => 'Validation error. Please try again',
+ 
+     'confirm_alert' => 'Are you sure?',
+     'confirm_comment' => 'You won\'t be able to revert this!',
+     'confirm_error' => 'Yes, delete it!',
+ 
+     //For Message Events
+     'title_access_error' => 'Access Error',
+     'title_cannot_access_error' => 'You cannot access this data.',
+     'title_edit_error' => 'Edit Error',
+     'title_cannot_error' => 'You cannot edit this data.',
+ 
+     'icon' => 'Icon',
 ];

@@ -44,7 +44,10 @@
                 <?php $arrRoutePeople = [
                 route('director.index'),
                 route('director.create'), 
-                request()->is('admin/director/edit/*'), 
+                request()->is('admin/director/edit/*'),
+                route('artist.index'),
+                route('artist.create'),
+                request()->is('admin/artist/edit/*'), 
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRoutePeople)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRoutePeople)) active @else '' @endif">
@@ -62,6 +65,12 @@
                         <li class="nav-item">
                             <a href="{{route('director.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteDirector)) active @else '' @endif">
                                 {{__('sma.director')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteArtist = [route('artist.index'), route('artist.create'), request()->is('admin/artist/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('artist.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArtist)) active @else '' @endif">
+                                {{__('sma.artist')}}
                             </a>
                         </li>
                     </ul>

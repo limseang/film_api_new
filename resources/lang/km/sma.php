@@ -291,4 +291,15 @@
     'death_date' => 'ថ្ងៃស្លាប់',
     'nationality' => 'សញ្ជាតិ',
     'edit_director' => 'កែប្រែអ្នកដឹកនាំ',
+    'artist' => 'អ្នកសម្ដែង',
+    'artist_name' => 'ឈ្មោះអ្នកសម្ដែង',
+    'artist_avatar' => 'រូបភាពអ្នកសម្ដែង',
+    'please_select_date' => 'សូមជ្រើសរើសថ្ងៃ',
+    'edit_artist' => 'កែប្រែអ្នកសម្ដែង',
+    'add_artist' => 'បន្ថែមអ្នកសម្ដែង',
+    'biography_artist' => 'ប្រវត្តិរបស់អ្នកសម្ដែង',
+    'avatar_artist' => 'រូបភាពអ្នកសម្ដែង',
+    'please_input' => 'សូមបញ្ចូលទិន្នន័យ',
+    'gender' => 'ភេទ',
+
   ];

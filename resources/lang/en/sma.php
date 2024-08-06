@@ -211,5 +211,19 @@
     'nationality' => 'Nationality',
     'add_director' => 'Add Director',
     'edit_director' => 'Edit Director',
+    'english' => 'English',
+    'khmer' => 'Khmer',
+    'artist' => 'Artist',
+    'artist_name' => 'Artist Name',
+    'artist_avatar' => 'Artist Avatar',
+    'please_select_date' => 'Please select date',
+    'add_artist' => 'Add Artist',
+    'edit_artist' => 'Edit Artist',
+    'biography_artist' => 'Biography Artist',
+    'avatar_artist' => 'Avatar Artist',
+    'please_input' => 'Please input',
+    'male' => 'Male',
+    'female' => 'Female',
+    'gender' => 'Gender'
     ]
  ?>
