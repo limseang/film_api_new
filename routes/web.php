@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DirectorController;
+use App\Http\Controllers\Admin\ArtistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,17 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [DirectorController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [DirectorController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [DirectorController::class, 'status'])->name('status');
+        });
+        //Artist
+        Route::prefix('artist')->name('artist.')->group(function(){
+            Route::get('/', [ArtistController::class, 'index'])->name('index');
+            Route::get('/create', [ArtistController::class, 'create'])->name('create');
+            Route::post('/store', [ArtistController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [ArtistController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [ArtistController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [ArtistController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [ArtistController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [ArtistController::class, 'restore'])->name('restore');
         });
     });
 });

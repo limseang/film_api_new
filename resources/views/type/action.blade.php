@@ -2,7 +2,8 @@
     <a href="#" type="button" data-click="bpo-status{{$table->id}}" class="bpo-status" style="padding: 0.10rem"
         data-action="{{ route('type.status', $table->id) }}" 
         data-html="true" data-placement="left">
-        <i class="fas fa-bars text-success text-opacity-10"></i>
+        <i class="{{$table->status == 1 ? 'fa fa-toggle-on
+ text-success danger-success' : 'fa fa-toggle-off text-danger'}} text-opacity-10" style="font-size: 25px"></i>
     </a>
     &nbsp;
     <a href="{{route('type.edit', $table->id)}}" class="text-success">
