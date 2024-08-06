@@ -48,7 +48,7 @@ class DirectorController extends Controller
             DB::beginTransaction();
             // dd($request->hasFile('image'));
             if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'));
+                $avatar = $this->UploadFile($request->file('image'), 'Director');
             }
             $birthDateFormat = date('d/m/Y', strtotime($request->birth_date));
             $deathDateFormat = $request->death_date ? date('d/m/Y', strtotime($request->death_date)) : null;
@@ -110,7 +110,7 @@ class DirectorController extends Controller
                 return redirect()->back()->with($notification);
             }
             if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'));
+                $avatar = $this->UploadFile($request->file('image'), 'Director');
                 if($director->avatar){
                     $this->deleteFile($director->avatar);
                 }

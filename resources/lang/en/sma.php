@@ -224,6 +224,14 @@
     'please_input' => 'Please input',
     'male' => 'Male',
     'female' => 'Female',
-    'gender' => 'Gender'
+    'gender' => 'Gender',
+    'cant_delete_being_used' => 'Can not delete being used.',
+    'distributor' => 'Distributor',
+    'distributor_name' => 'Distributor Name',
+    'add_distributor' => 'Add Distributor',
+    'edit_distributor' => 'Edit Distributor',
+    'total_film' => 'Total Film',
+    'image' => 'Image',
+
     ]
  ?>

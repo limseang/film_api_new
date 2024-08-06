@@ -8,14 +8,20 @@ use OSS\Core\OssException;
 trait AlibabaStorage
 { 
     
-    public  function UploadFile($file): int
+    public  function UploadFile($file, $folder = null): int
     {
         $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
         $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
         $endpoint = env("ALIBABA_OSS_ENDPOINT");
         $bucket = env("ALIBABA_OSS_BUCKET");
 
-        $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        // $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        if ($folder) {
+            // Add the specified folder to the path
+            $object = trim($folder, '/') . '/';
+        }else{
+            $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        }
         $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->getRealPath();
 

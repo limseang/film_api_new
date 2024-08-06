@@ -90,6 +90,9 @@
                 route('category.index'),
                 route('category.create'),
                 request()->is('admin/category/edit/*'),
+                route('distributor.index'),
+                route('distributor.create'),
+                request()->is('admin/distributor/edit/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteSetting)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRouteSetting)) active @else '' @endif">
@@ -113,6 +116,12 @@
                         <li class="nav-item">
                             <a href="{{route('tag.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteTag)) active @else '' @endif">
                                 {{__('sma.tag')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteDistributor = [route('distributor.index'), route('distributor.create'), request()->is('admin/distributor/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('distributor.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteDistributor)) active @else '' @endif">
+                                {{__('sma.distributor')}}
                             </a>
                         </li>
                         <?php $arrRouteCategory = [route('category.index'), route('category.create'), request()->is('admin/category/edit/*')]; ?>

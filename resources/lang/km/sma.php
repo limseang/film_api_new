@@ -107,7 +107,7 @@
 
     // Datatable
     'action' => 'សកម្មភាព',
-    'icon' => 'រូបតំណង',
+    'icon' => 'រូបតំណាង',
 
     'open'      => 'បើកដំណើការ',
     'closed'    => 'បិទដំណើការ',
@@ -301,5 +301,12 @@
     'avatar_artist' => 'រូបភាពអ្នកសម្ដែង',
     'please_input' => 'សូមបញ្ចូលទិន្នន័យ',
     'gender' => 'ភេទ',
+    'cant_delete_being_used' => 'មិនអាចលុបទិន្ទន័យដែលបានប្រើប្រាស់',
+    'distributor' => 'អ្នកចែកចាយ',
+    'distributor_name' => 'ឈ្មោះអ្នកចែកចាយ',
+    'add_distributor' => 'បន្ថែមអ្នកចែកចាយ',
+    'edit_distributor' => 'កែប្រែអ្នកចែកចាយ',
+    'total_film' => 'ចំនួនភាពយន្ត',
+    'image' => 'រូបភាព',
 
   ];

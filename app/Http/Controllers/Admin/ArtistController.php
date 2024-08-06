@@ -49,7 +49,7 @@ class ArtistController extends Controller
             DB::beginTransaction();
             // dd($request->hasFile('image'));
             if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'));
+                $avatar = $this->UploadFile($request->file('image'), 'Artist');
             }
             $birthDateFormat = date('d/m/Y', strtotime($request->birth_date));
             $deathDateFormat = $request->death_date ? date('d/m/Y', strtotime($request->death_date)) : null;
@@ -113,7 +113,7 @@ class ArtistController extends Controller
                 return redirect()->back()->with($notification);
             }
             if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'));
+                $avatar = $this->UploadFile($request->file('image'), 'Artist');
                 if($artist->profile){
                     $this->deleteFile($artist->avatar);
                 }
