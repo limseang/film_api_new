@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use GPBMetadata\Google\Api\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -10,10 +9,15 @@ use Laravel\Sanctum\HasApiTokens;
 //sof delete
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\AlibabaStorage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AlibabaStorage, LogsActivity;
 
 
     protected $fillable = [
@@ -23,7 +27,7 @@ class User extends Authenticatable
         'language',
         'phone',
         // 'telegram',
-        // 'avatar',
+        'avatar',
         'password',
     ];
 
@@ -36,6 +40,12 @@ class User extends Authenticatable
         // 'password',
         // 'role_id',
         'remember_token',
+    ];
+
+    protected $appends = [
+        'avatar_url',
+        'role_name',
+        'user_type_name'
     ];
 
     /**
@@ -66,11 +76,44 @@ class User extends Authenticatable
     }
 
     public function Usertype (){
-        return $this->belongsTo(UserType::class);
+        return $this->belongsTo(UserType::class, 'user_type','id');
     }
 
     public function UserPremium(){
         return $this->hasOne(PremiumUser::class,'user_id','id');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ? $this->getSignedUrl($this->avatar) : null;
+    }
+
+    public function getRoleNameAttribute()
+    {
+        return $this->role ? $this->role->name : null;
+    }
+
+    public function getUserTypeNameAttribute()
+    {
+        return $this->Usertype ? $this->Usertype->name : '';
+    }
+
+    protected static $logFillable = true;
+    protected static $logOnlyDirty = true;
+    protected static $dontSubmitEmptyLogs = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    public function tapActivity(Activity $activity)
+    {
+        $activity->default_field    = "{$this->name}";
+        $activity->log_name         = $this->table;
+        $activity->causer_id        = Auth::user()->id;
     }
 
 }

@@ -29,8 +29,8 @@ function showImage(event) {
     }, false);
 })();
 
-$('#password, #confirm_password').on('keyup', function() {
-
+$(document).ready(function(){
+    $('#password, #confirm_password').on('keyup', function() {
     $('.confirm-message').removeClass('success-message').removeClass('error-message');
 
     let password = $('#password').val();
@@ -54,7 +54,9 @@ $('#password, #confirm_password').on('keyup', function() {
         $('.update-btn').prop("disabled", true);
     }
 
-});
+    });
+  })
+
 
 
 

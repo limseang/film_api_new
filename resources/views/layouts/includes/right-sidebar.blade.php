@@ -48,6 +48,9 @@
                 route('artist.index'),
                 route('artist.create'),
                 request()->is('admin/artist/edit/*'), 
+                route('user.index'),
+                route('user.create'),
+                request()->is('admin/user/edit/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRoutePeople)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRoutePeople)) active @else '' @endif">
@@ -55,9 +58,9 @@
                         <span>{{__('global.people')}}</span>
                     </a>
                     <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRoutePeople)) show @else '' @endif">
-                        <?php $arrRouteRole = [route('role.index'), route('role.create'), request()->is('admin/role/edit/*'), request()->is('admin/role/permission/*')]; ?>
+                        <?php $arrRouteRole = [route('user.index'), route('user.create'), request()->is('admin/user/edit/*')]; ?>
                         <li class="nav-item">
-                            <a href="{{route('role.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteRole)) active @else '' @endif">
+                            <a href="{{route('user.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteRole)) active @else '' @endif">
                                 {{__('global.user')}}
                             </a>
                         </li>

@@ -36,6 +36,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Prefix for Admin
     Route::prefix('admin')->group(function () {
+        Route::prefix('user')->name('user.')->group(function(){
+            Route::get('/', [UserAdminController::class, 'index'])->name('index');
+            Route::get('/create', [UserAdminController::class, 'create'])->name('create');
+            Route::post('/store', [UserAdminController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [UserAdminController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [UserAdminController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [UserAdminController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [UserAdminController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [UserAdminController::class, 'restore'])->name('restore');
+        });
         Route::prefix('role')->name('role.')->group(function(){
             Route::get('/', [RoleController::class, 'index'])->name('index');
             Route::get('/create', [RoleController::class, 'create'])->name('create');
