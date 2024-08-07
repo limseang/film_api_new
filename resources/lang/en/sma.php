@@ -232,6 +232,12 @@
     'edit_distributor' => 'Edit Distributor',
     'total_film' => 'Total Film',
     'image' => 'Image',
+    'point' => 'Point',
+    'user_type_name' => 'User Type Name',
+    'confirm_password' => 'Confirm Password',
+    'user_type' => 'User Type',
+    'language' => 'Language',
+    'add_user' => 'Add User'
 
     ]
  ?>

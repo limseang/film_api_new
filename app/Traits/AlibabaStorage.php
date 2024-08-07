@@ -56,9 +56,12 @@ trait AlibabaStorage
             $timeout = 3600;
 
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+            if(empty($storage)){
+                return '';
+            }
             $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
 
-            return $signedUrl;
+            return $signedUrl ?? '';
         } catch (OssException $e) {
             Log::error($e->getErrorMessage());
             return $e->getMessage();
