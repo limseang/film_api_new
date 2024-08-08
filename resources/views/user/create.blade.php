@@ -14,11 +14,10 @@
         
         </div>
         <div class="card-body">
+          <form action="{{route('user.store')}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            @csrf
           <div class="row">
             <div class="col-12 col-lg-6 p-10">
-            
-              <form action="{{route('user.store')}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-                @csrf
                 <div class="mb-3">
                   <label class="form-label" for="name">{{__('sma.name')}}</label>
                   <input type="text" class="form-control" name="name" value="{{old('name')}}" id="name" placeholder="{{__('sma.please_input')}}" required>
@@ -103,17 +102,19 @@
                       The field is required.
                     </span>
                     </div>
-                <div class="mb-3">
-                  <p class="fw-semibold">{{trans('sma.avatar_artist')}}</p>
-							  <input type="file" class="file-input-caption2" name="image">
-                </div>
+
+                    <div class="mb-3">
+                      <p class="fw-semibold">{{trans('sma.image')}}</p>
+                    <input type="file" class="file-input-caption2" name="avatar">
+                    </div>
+                  
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="btn btn-outline-success mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
                   <button type="submit" class="btn btn-outline-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
                 </div>
-              </form>
           </div>
+        </form>
         </div>
       </div>
     </div>

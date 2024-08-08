@@ -14,103 +14,117 @@
         
         </div>
         <div class="card-body">
+          <form action="{{route('user.update',$user->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            @csrf
           <div class="row">
-            <div class="col-12 col-lg-8 p-10">
-            
-              <form action="{{route('artist.update', $artist->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-                @csrf
+            <div class="col-12 col-lg-6 p-10">
                 <div class="mb-3">
                   <label class="form-label" for="name">{{__('sma.name')}}</label>
-                  <input type="text" class="form-control" name="name" value="{{$artist->name}}" id="name" placeholder="Enter name" required>
+                  <input type="text" class="form-control" name="name" value="{{$user->name}}" id="name" placeholder="{{__('sma.please_input')}}" required>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
-
                 <div class="mb-3">
-                  <label class="form-label" for="known_for">{{__('sma.know_for')}}</label>
-                  <input type="text" class="form-control" name="known_for" value="{{$artist->known_for}}" id="known_for" placeholder="Enter know for" required>
-                  <span class="invalid-feedback">
-                    The field is required.
-                  </span>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="nationality">{{ trans('sma.nationality') }}</label>
-                  <select id="nationality" class="{{ config('setup.input_select2') }}" name="nationality" required>
+                  <label class="form-label" for="role_id">{{ trans('sma.role') }}</label>
+                  <select id="role_id" class="{{ config('setup.input_select2') }}" name="role_id" required>
                       <option value="">{{ __('global.please_select') }}</option>
-                      @foreach($countries as $value)
-                      <option value="{{ $value->id }}" {{$artist->nationality == $value->id ? 'selected':''}} >{{$value->name }}</option>
+                      @foreach($role as $value)
+                      <option value="{{ $value->id }}" {{$user->role_id == $value->id ? 'selected':''}} >{{$value->name }}</option>
                       @endforeach
                   </select>
-                  </div>
-                <div class="mb-3">
-                  <label class="form-label" for="birth_date">{{ trans('sma.birth_date') }}</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="ph-calendar"></i></span>
-                      <input type="text" class="form-control datepicker-autohide" value="{{date('d/m/Y', strtotime($artist->birth_date))}}" name="birth_date" placeholder="{{trans('sma.please_select_date')}}" required/>
-                    </div>
-
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="death_date">{{ trans('sma.death_date') }}</label>
-                  <div class="input-group">
-                    <span class="input-group-text">
-                      <i class="ph-calendar"></i>
+                    <span class="invalid-feedback">
+                      The field is required.
                     </span>
-                    <input type="text" class="form-control datepicker-autohide2" value="{{$artist->death_date ? date('d/m/Y', strtotime($artist->death_date)) : ''}}" name="death_date" placeholder="{{trans('sma.please_select_date')}}">
                   </div>
+                <div class="mb-3">
+                  <label for="email">{{ __('sma.email')}} </label>
+                  <input type="email" name="email" value="{{$user->email}}" class="form-control" id="email" required>
+                  <span class="invalid-feedback">
+                    {{trans('setting.the_field_is_required')}}
+                    </span>
+                </div>
+                <div class="mb-3">
+                  <label for="name" id="label_phone">{{__('sma.phone_number')}}</label>
+                  <input type="text" name="phone_number" value="{{$user->phone_number}}" class="form-control" id="phone_number" >
+                  <span class="invalid-feedback">
+                      The field is required.
+                    </span>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="user_type">{{ trans('sma.user_type') }}</label>
+                  <select id="user_type" class="{{ config('setup.input_select2') }}" name="user_type" required>
+                      <option value="">{{ __('global.please_select') }}</option>
+                      @foreach($userType as $value)
+                      <option value="{{ $value->id }}" {{$user->user_type == $value->id ? 'selected':''}} >{{$value->name }}</option>
+                      @endforeach
+                  </select>
+                    <span class="invalid-feedback">
+                      The field is required.
+                    </span>
+                  </div>
+                <div class="mb-3">
+                  <label class="form-label" for="password">{{ trans('sma.password') }}</label>
+                  <input type="password" class="form-control" name="password" id="password">
+                    <small class="text-danger">{{__('sma.keep_it_blank_to_use_the_old_password')}}</small>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="password_confirmation">{{ trans('sma.confirm_password') }}</label>
+                  <input type="password" class="form-control"  name="password_confirmation"  id="confirm_password">
+                  <span class="confirm-message">
+                  </span>
 
                 </div>
-                <div class="mb-3">
-                  <label class="form-label" for="gender">{{ trans('sma.gender') }}</label>
-                  <select id="gender" class="{{ config('setup.input_select2') }} form-select" name="gender" required="">
-                      <option value="">{{ __('global.please_select') }}</option>
-                      <option value="Male" {{$artist->gender == 'Male' ? 'selected':''}}>{{ __('sma.male') }}</option>
-                      <option value="Female" {{$artist->gender == 'Female' ? 'selected':''}}>{{ __('sma.female') }}</option>
-                  </select>
-                  <span class="invalid-feedback">
-                    The field is required.
-                  </span>
-                  </div>
-                <div class="mb-3">
-                  <label class="form-label" for="status">{{ trans('global.publish') }}</label>
-                  <select id="publish" class="{{ config('setup.input_select2') }}" name="status" required>
-                      <option value="">{{ __('global.please_select') }}</option>
-                      <option value="1" {{$artist->status == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
-                      <option value="2" {{$artist->status == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
-                  </select>
-                  </div>
-                <div class="mb-3">
-                  <label class="form-label" for="biography">{{trans('sma.biography')}}</label>
-                  <textarea rows="3" cols="3" name="biography" class="form-control" id="ckeditor_classic_prefilled2">
-                    {{$artist->biography}}
-                  </textarea>
                 </div>
-                <div class="mb-3">
-                  {{-- Preview imag --}}
-                  <p class="fw-semibold">{{trans('sma.avatar_artist')}}</p>
-                  <div class="file-input preview-update mb-1" style="padding: 4px; border;border-style: dashed; border-color:#f1f4f9; border-radius:0.375rem; border-width: cal(1px *2); border-color-translucent: rgba(0, 0, 0, 0.125)">
-                    <div class=" file-drop-zone clearfix">
-                      <div class="file-preview-thumbnails clearfix">
-                        <div class="file-preview-frame krajee-default  kv-preview-thumb rotatable" id="thumb-1rad2qred4-148090_Screenshot_202024-06-06_20152921.png" data-fileindex="0" data-fileid="148090_Screenshot_202024-06-06_20152921.png" data-filename="Screenshot 2024-06-06 152921.png" data-template="image" data-zoom="">
-                          <div class="kv-file-content">
-                          <img src="{{$artist->avatar_url}}" class="file-preview-image kv-preview-data" title="Screenshot 2024-06-06 152921.png" alt="Screenshot 2024-06-06 152921.png" style="width: auto; height: auto; max-width: 100%; max-height: 100%; image-orientation: from-image;">
-                        </div>
-                      </div>
-                      </div>
+                <div class="col-12 col-lg-6 p-10">
+                  <div class="mb-3">
+                    <label class="form-label" for="language">{{ trans('sma.language') }}</label>
+                    <select id="language" class="{{ config('setup.input_select2') }} form-select" name="language" required="">
+                        <option value="">{{ __('global.please_select') }}</option>
+                        <option value="km" {{$user->language == 'km' ? 'selected':''}}>{{ __('sma.khmer') }}</option>
+                        <option value="en" {{$user->status == 'en' ? 'selected':''}}>{{ __('sma.english') }}</option>
+                    </select>
+                    <span class="invalid-feedback">
+                      The field is required.
+                    </span>
                     </div>
-                    <br>
-                  </div>
-							    <input type="file" class="file-input-caption2" name="image">
-                </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="status">{{ trans('global.publish') }}</label>
+                    <select id="status" class="{{ config('setup.input_select2') }} form-select" name="status" required="">
+                        <option value="">{{ __('global.please_select') }}</option>
+                        <option value="1" {{$user->status == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
+                        <option value="2" {{$user->status == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
+                    </select>
+                    <span class="invalid-feedback">
+                      The field is required.
+                    </span>
+                    </div>
+
+                    <div class="mb-3">
+                      <p class="fw-semibold">{{trans('sma.image')}}</p>
+                      <div class="file-input preview-update mb-1" style="padding: 4px; border;border-style: dashed; border-color:#f1f4f9; border-radius:0.375rem; border-width: cal(1px *2); border-color-translucent: rgba(0, 0, 0, 0.125)">
+                        <div class=" file-drop-zone clearfix">
+                          <div class="file-preview-thumbnails clearfix">
+                            <div class="file-preview-frame krajee-default  kv-preview-thumb rotatable" id="thumb-1rad2qred4-148090_Screenshot_202024-06-06_20152921.png" data-fileindex="0" data-fileid="148090_Screenshot_202024-06-06_20152921.png" data-filename="Screenshot 2024-06-06 152921.png" data-template="image" data-zoom="">
+                              <div class="kv-file-content">
+                              <img src="{{$user->avatar_url}}" class="file-preview-image kv-preview-data" title="Screenshot 2024-06-06 152921.png" alt="Screenshot 2024-06-06 152921.png" style="width: auto; height: auto; max-width: 100%; max-height: 100%; image-orientation: from-image;">
+                            </div>
+                          </div>
+                          </div>
+                        </div>
+                        <br>
+                      </div>
+                      <p class="fw-semibold">{{trans('sma.image')}}</p>
+                    <input type="file" class="file-input-caption2" name="avatar">
+                    </div>
+                  
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="btn btn-outline-success mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
                 </div>
-              </form>
           </div>
+        </form>
         </div>
       </div>
     </div>
