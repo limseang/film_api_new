@@ -85,7 +85,11 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar ? $this->getSignedUrl($this->avatar) : null;
+        $social = ['Google', 'Apple', 'Facebook', 'Phone'];
+        if (in_array($this->comeFrom, $social)) {
+            return $this->avatar;
+        }
+        return $this->avatar ? $this->getSignedUrl($this->avatar) : URL('img/no_image.png');
     }
 
     public function getRoleNameAttribute()

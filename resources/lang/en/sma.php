@@ -237,7 +237,9 @@
     'confirm_password' => 'Confirm Password',
     'user_type' => 'User Type',
     'language' => 'Language',
-    'add_user' => 'Add User'
+    'add_user' => 'Add User',
+    'comeFrom' => 'Come From',
+    'keep_it_blank_to_use_the_old_password' => 'Keep it blank to use the old password',
 
     ]
  ?>

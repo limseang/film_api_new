@@ -42,18 +42,21 @@ class UserAdminDataTable extends DataTable
             ->editColumn('user_type_name', function($table){
                 return '<span class="'.config('setup.badge_primary').'">'.Str::ucfirst($table->user_type_name) .'</span>';
             })
+            ->editColumn('comeFrom', function($table){
+                return '<span class="'.config('setup.badge_primary').'">'.Str::ucfirst($table->comeFrom) .'</span>';
+            })
             ->editColumn('email', function ($table) {
                 return hiddenPrivacy($table->email);
             })
             ->editColumn('icon', function ($table) {
-                $pic = $table->avatar_url ? $table->avatar_url : 'default.png';
+                $pic = $table->avatar_url;
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
-            ->rawColumns(['status', 'icon','role_name','point','user_type_name']) #allowed for using html code here
+            ->rawColumns(['status', 'icon','role_name','point','user_type_name','comeFrom']) #allowed for using html code here
         ;
     }
 
@@ -63,7 +66,7 @@ class UserAdminDataTable extends DataTable
     public function query(User $model): QueryBuilder
     {
         $model = $model->newQuery();
-        $model->select(['id','name', 'email', 'avatar', 'phone', 'role_id', 'status', 'point' , 'user_type','created_at', 'deleted_at' ]);
+        $model->select(['id','name', 'email', 'avatar', 'phone', 'role_id','comeFrom', 'status', 'point' , 'user_type','created_at', 'deleted_at' ]);
         if (request('name')) {
             $model->where(function ($query) {
                 $query->orWhere('name', 'like', '%' . request('name') . '%');
@@ -127,6 +130,7 @@ class UserAdminDataTable extends DataTable
             Column::make('role_name')->title(trans('sma.role_name'))->width(10)->addClass('text-center'),
             Column::make('point')->title(trans('sma.point'))->width(10)->addClass('text-center'),
             Column::make('user_type_name')->title(trans('sma.user_type_name'))->width(10)->addClass('text-center'),
+            Column::make('comeFrom')->title(trans('sma.comeFrom'))->width(10)->addClass('text-center'),
             Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center'),
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
