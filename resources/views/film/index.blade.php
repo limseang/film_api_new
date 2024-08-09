@@ -1,10 +1,10 @@
 @extends('layouts.master')
 @section('title')
-{{__('global.director')}}
+{{__('global.film')}}
 @endsection
 @section('breadcrumb-topbar')
 <span data-toggle="tooltip" role="button" type="button" aria-haspopup="true" title="{{__('global.add_new')}}"> 
-    <a href="{{route('director.create')}}" type="button" class="{{config('setup.button_add')}}">
+    <a href="{{route('film.create')}}" type="button" class="{{config('setup.button_add')}}">
      <i class="ph-plus"></i>
   </a>
   </span>
