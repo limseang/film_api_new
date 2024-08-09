@@ -79,6 +79,27 @@
                     </ul>
                 </li>
                 {{-- end People --}}
+                {{-- Film --}}
+                <?php $arrRouteFilm = [
+                route('film.index'),
+                route('film.create'), 
+                request()->is('admin/film/edit/*'),
+                ]; ?>
+                <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteFilm)) nav-item-open @else '' @endif">
+                    <a href="" class="nav-link @if(in_array($currentURL, $arrRouteFilm)) active @else '' @endif">
+                        <i class="fa fa-video"></i>
+                        <span>{{__('sma.film')}}</span>
+                    </a>
+                    <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteFilm)) show @else '' @endif">
+                        <?php $arrRouteFilmList = [route('film.index'), route('film.create'), request()->is('admin/film/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteFilmList)) active @else '' @endif">
+                                {{__('sma.list_film')}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- End Film --}}
                 <?php $arrRouteSetting = [route('role.index'),
                 route('role.create'), 
                 request()->is('admin/role/edit/*'), 

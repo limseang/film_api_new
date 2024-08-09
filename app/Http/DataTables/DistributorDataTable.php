@@ -34,9 +34,6 @@ class DistributorDataTable extends DataTable
             ->editColumn('description', function ($table) {
                 return $table->description;
             })
-            ->editColumn('total_film', function ($table) {
-                return  '<span class="'.config('setup.badge_success').'">'.$table->total_film.'</span>';
-            })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -106,7 +103,6 @@ class DistributorDataTable extends DataTable
             Column::make('name', 'name')->title(trans('sma.name')),
             Column::make('description')->title(trans('global.description'))->width(10)->addClass('text-center'),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('total_film')->title(trans('sma.total_film'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];

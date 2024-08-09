@@ -21,8 +21,7 @@ class Distributor extends Model
     ];
 
     protected $appends = [
-        'image_url',
-        'total_film'
+        'image_url'
     ];
 
     public function films()
@@ -33,11 +32,6 @@ class Distributor extends Model
     public function getImageUrlAttribute()
     {
         return $this->image ? $this->getSignedUrl($this->image) : null;
-    }
-
-    public function getTotalFilmAttribute()
-    {
-        return $this->films->count() ?? 0;
     }
 
     protected static $logFillable = true;
