@@ -240,6 +240,9 @@
     'add_user' => 'Add User',
     'comeFrom' => 'Come From',
     'keep_it_blank_to_use_the_old_password' => 'Keep it blank to use the old password',
+    'genre' => 'Genre',
+    'add_genre' => 'Add Genre',
+    'edit_genre' => 'Edit Genre',
 
     ]
  ?>

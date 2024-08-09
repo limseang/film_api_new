@@ -95,7 +95,10 @@
                 request()->is('admin/category/edit/*'),
                 route('distributor.index'),
                 route('distributor.create'),
-                request()->is('admin/distributor/edit/*')
+                request()->is('admin/distributor/edit/*'),
+                route('genre.index'),
+                route('genre.create'),
+                request()->is('admin/genre/edit/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteSetting)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRouteSetting)) active @else '' @endif">
@@ -131,6 +134,12 @@
                         <li class="nav-item">
                             <a href="{{route('category.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteCategory)) active @else '' @endif">
                                 {{__('sma.category_film')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteGenre = [route('genre.index'), route('genre.create'), request()->is('admin/genre/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('genre.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteGenre)) active @else '' @endif">
+                                {{__('sma.genre')}}
                             </a>
                         </li>
                         <?php $arrRouteSystemLog = [route('system_log.index')]; ?>

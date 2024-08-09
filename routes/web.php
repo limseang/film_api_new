@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\DistributorController;
+use App\Http\Controllers\Admin\GenreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +120,16 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [DistributorController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [DistributorController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [DistributorController::class, 'status'])->name('status');
+        });
+           // Distributor
+           Route::prefix('genre')->name('genre.')->group(function(){
+            Route::get('/', [GenreController::class, 'index'])->name('index');
+            Route::get('/create', [GenreController::class, 'create'])->name('create');
+            Route::post('/store', [GenreController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [GenreController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [GenreController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [GenreController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [GenreController::class, 'status'])->name('status');
         });
     });
 });

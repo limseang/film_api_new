@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\DataTables\DistributorDataTable;
-use App\Models\Distributor;
+use App\Traits\AlibabaStorage;
+use App\Models\Genre;
+use App\Http\DataTables\GenreDataTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use App\Traits\AlibabaStorage;
 
-class DistributorController extends Controller
+class GenreController extends Controller
 {
     use AlibabaStorage;
     public function __construct()
@@ -18,16 +18,16 @@ class DistributorController extends Controller
         $this->middleware('lang');
     }
 
-    public function index(DistributorDataTable $dataTable)
+    public function index(GenreDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.distributor')]];
-        return $dataTable->render('distributor.index', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.genre')]];
+        return $dataTable->render('genre.index', $data);
     }
 
     public function create()
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.add')]];
-        return view('distributor.create', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.add')]];
+        return view('genre.create', $data);
     }
 
     public function store(Request $request)
@@ -39,15 +39,15 @@ class DistributorController extends Controller
         ]);
         try{
             DB::beginTransaction();
-            $distributor = new Distributor();
+            $genre = new Genre();
             if($request->hasFile('image')){
                 $avatar = $this->UploadFile($request->file('image'), 'Distibutor');
             }
-            $distributor->name = $request->name;
-            $distributor->description = $request->description;
-            $distributor->status = $request->status;
-            $distributor->image = $avatar ?? null;
-            $distributor->save();
+            $genre->name = $request->name;
+            $genre->description = $request->description;
+            $genre->status = $request->status;
+            $genre->image = $avatar ?? null;
+            $genre->save();
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -57,7 +57,7 @@ class DistributorController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.add_successfully'),
             ];
-            return redirect()->route('distributor.'.$pageDirection)->with($notification);
+            return redirect()->route('genre.'.$pageDirection)->with($notification);
         }catch(Exception $e){
             DB::rollBack();
             $notification = [
@@ -72,18 +72,18 @@ class DistributorController extends Controller
 
     public function edit($id)
     {
-        $data['distributor'] = Distributor::find($id);
-        if(!$data['distributor']){
+        $data['genre'] = Genre::find($id);
+        if(!$data['genre']){
             $notification = [
                 'type' => 'error',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
                 'text' =>  trans('sma.the_not_exist')
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('genre.index')->with($notification);
         }
-        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('distributor.edit', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.edit')]];
+        return view('genre.edit', $data);
     }
 
     public function update(Request $request, $id)
@@ -96,8 +96,8 @@ class DistributorController extends Controller
 
         try{
             DB::beginTransaction();
-            $distributor = Distributor::find($id);
-                if(!$distributor){
+            $genre = Genre::find($id);
+                if(!$genre){
                     $notification = [
                         'type' => 'error',
                         'icon' => trans('global.icon_error'),
@@ -108,15 +108,15 @@ class DistributorController extends Controller
                 }
                 if($request->hasFile('image')){
                     $avatar = $this->UploadFile($request->file('image'), 'Distributor');
-                    if($distributor->image){
-                        $this->deleteFile($distributor->image);
+                    if($genre->image){
+                        $this->deleteFile($genre->image);
                     }
-                    $distributor->image = $avatar;
+                    $genre->image = $avatar;
                 }
-                $distributor->name = $request->name;
-                $distributor->description = $request->description;
-                $distributor->status = $request->status;
-                $distributor->save();
+                $genre->name = $request->name;
+                $genre->description = $request->description;
+                $genre->status = $request->status;
+                $genre->save();
                 
                 DB::commit();
                 $notification = [
@@ -125,7 +125,7 @@ class DistributorController extends Controller
                     'title' => trans('global.title_updated'),
                     'text' => trans('sma.update_successfully'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('genre.index')->with($notification);
             }catch(Exception $e){
                 DB::rollBack();
                 $notification = [
@@ -141,56 +141,56 @@ class DistributorController extends Controller
 
         public function status($id)
         {
-            $distributor = Distributor::find($id);
-            if(!$distributor){
+            $genre = Genre::find($id);
+            if(!$genre){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('genre.index')->with($notification);
             }
-            $distributor->status = $distributor->status == 1 ? 2 : 1;
-            $distributor->save();
+            $genre->status = $genre->status == 1 ? 2 : 1;
+            $genre->save();
             $notification = [
                'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('genre.index')->with($notification);
         }
 
         public function destroy($id)
         {
-            $distributor = Distributor::find($id);
-            if(!$distributor){
+            $genre = Genre::find($id);
+            if(!$genre){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('genre.index')->with($notification);
             }
-            $totalUsed = $distributor->films()->count();
+            $totalUsed = $genre->films()->count();
             if($totalUsed> 0){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_being_used'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('genre.index')->with($notification);
             }
-            $distributor->delete();   
+            $genre->delete();   
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.delete_successfully'),
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('genre.index')->with($notification);
         }
 }
