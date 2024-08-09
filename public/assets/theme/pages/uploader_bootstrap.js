@@ -153,6 +153,25 @@ const FileUpload = function() {
             showUpload: false
         });
 
+        $('.file-input-caption3').fileinput({
+            browseLabel: 'Browse',
+            browseIcon: '<i class="ph-file-plus me-2"></i>',
+            // uploadIcon: '<i class="ph-file-arrow-up me-2"></i>',
+            removeIcon: '<i class="ph-x fs-base me-2"></i>',
+            layoutTemplates: {
+                icon: '<i class="ph-check"></i>'
+            },
+            // uploadClass: 'btn btn-light',
+            browseClass: 'btn btn-success opacity-10',
+            removeClass: 'btn btn-light',
+            initialCaption: "No file selected",
+            previewZoomButtonClasses: previewZoomButtonClasses,
+            previewZoomButtonIcons: previewZoomButtonIcons,
+            fileActionSettings: fileActionSettings,
+            showCaption: false,
+            dropZoneEnabled: false,
+            showUpload: false
+        });
 
         //
         // Template modifications

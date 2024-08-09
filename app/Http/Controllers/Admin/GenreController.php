@@ -26,7 +26,7 @@ class GenreController extends Controller
 
     public function create()
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.add')]];
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.add')]];
         return view('genre.create', $data);
     }
 
