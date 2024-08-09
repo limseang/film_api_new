@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\AlibabaStorage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Facades\Auth;
 
 class Genre extends Model
 {
-    use HasFactory;
+    use HasFactory, AlibabaStorage, LogsActivity;
     protected $fillable = [
         'name',
         'description',
@@ -15,8 +20,41 @@ class Genre extends Model
         'status'
     ];
 
+    protected $appends = [
+        'image_url',
+        'total_film'
+    ];
     public function films()
     {
         return $this->hasMany(Film::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? $this->getSignedUrl($this->image) : null;
+    }
+
+    public function getTotalFilmAttribute()
+    {
+        return $this->films->count() ?? 0;
+    }
+
+    
+    protected static $logFillable = true;
+    protected static $logOnlyDirty = true;
+    protected static $dontSubmitEmptyLogs = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    public function tapActivity(Activity $activity)
+    {
+        $activity->default_field    = "{$this->name}";
+        $activity->log_name         = $this->table;
+        $activity->causer_id        = Auth::user()->id;
     }
 }
