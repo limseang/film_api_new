@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use DateTime;
+use App\Traits\AlibabaStorage;
 class Film extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory , SoftDeletes, AlibabaStorage;
     protected $fillable = [
         'id',
         'title',
@@ -32,19 +33,22 @@ class Film extends Model
     ];
     protected $appends=[
         'release_date_format',
+        'genre_name',
+        'distributor_name',
+        'director_name',
+        'tag_name',
+        'film_category_name',
+        'poster_image',
+        'cover_image'
     ];
 
     public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category','id');
     }
     public function tags()
     {
         return $this->belongsTo(Tag::class,'tag','id');
-    }
-    public function ratings()
-    {
-        return $this->belongsTo(Rating::class,'rating','id');
     }
     public function types()
     {
@@ -91,15 +95,9 @@ class Film extends Model
         return $this->hasMany(Comment::class,'item_id','id')->where('type',2);
     }
 
-    public function getReleaseDateFormatAttribute()
-    {
-        $date = DateTime::createFromFormat('d/m/Y', $this->attributes['release_date']);
-        return $date->format('d/m/Y');
-    }
-
     public function genre()
     {
-        return $this->belongsTo(Genre::class,'genre_id','id');
+        return $this->belongsTo(Genre::class, 'genre_id','id');
     }
     public function distributors()
     {
@@ -120,6 +118,47 @@ public function subtitles()
 {
     return $this->hasMany(EpisodeSubtitle::class, 'film_id', 'id');
 }
+
+    public function getReleaseDateFormatAttribute()
+    {
+        return date('d/m/Y', strtotime($this->release_date));
+    }
+
+ 
+    public function getGenreNameAttribute()
+    {
+        return $this->genre->name ?? '';
+    }
+
+    public function getDistributorNameAttribute()
+    {
+        return $this->distributors->name ?? '';
+    }
+
+    public function getDirectorNameAttribute()
+    {
+        return $this->directors->name ?? '';
+    }
+
+    public function getTagNameAttribute()
+    {
+        return $this->tags->name ?? '';
+    }
+
+    public function getFilmCategoryNameAttribute()
+    {
+        return $this->categories->name ?? '';
+    }
+
+    public function getPosterImageAttribute()
+    {
+        return $this->poster ? $this->getSignedUrl($this->poster) : '';
+    }
+
+    public function getCoverImageAttribute()
+    {
+        return $this->cover ? $this->getSignedUrl($this->cover) : '';
+    }
 
 
 

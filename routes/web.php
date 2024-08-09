@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\DistributorController;
 use App\Http\Controllers\Admin\GenreController;
+use App\Http\Controllers\Admin\FilmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,8 +122,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [DistributorController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [DistributorController::class, 'status'])->name('status');
         });
-           // Distributor
-           Route::prefix('genre')->name('genre.')->group(function(){
+           // Genre
+        Route::prefix('genre')->name('genre.')->group(function(){
             Route::get('/', [GenreController::class, 'index'])->name('index');
             Route::get('/create', [GenreController::class, 'create'])->name('create');
             Route::post('/store', [GenreController::class, 'store'])->name('store');
@@ -131,6 +132,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [GenreController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [GenreController::class, 'status'])->name('status');
         });
+        // Genre
+        Route::prefix('film')->name('film.')->group(function(){
+            Route::get('/', [FilmController::class, 'index'])->name('index');
+            Route::get('/create', [FilmController::class, 'create'])->name('create');
+            Route::post('/store', [FilmController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [FilmController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [FilmController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [FilmController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [FilmController::class, 'status'])->name('status');
+    });
     });
 });
 

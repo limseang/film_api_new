@@ -243,6 +243,22 @@
     'genre' => 'Genre',
     'add_genre' => 'Add Genre',
     'edit_genre' => 'Edit Genre',
+    'list_film' => 'List Film',
+    'film' => 'Film',
+    'add_film' => 'Add Film',
+    'edit_film' => 'Edit Film',
+    'poster' => 'Poster',
+    'cover' => 'Cover',
+    'trailer' => 'Trailer',
+    'release_date' => 'Release Date',
+    'running_time' => 'Running Time',
+    'overview' => 'Overview',
+    'cast' => 'Cast',
+    'rating' => 'Rating',
+    'title' => 'Title',
+    'film_category_name' => 'Film Category Name',
+    'tag_name' => 'Tag name',
+    'total_view' => 'Total View'
 
     ]
  ?>

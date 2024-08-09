@@ -22,7 +22,6 @@ class Genre extends Model
 
     protected $appends = [
         'image_url',
-        'total_film'
     ];
     public function films()
     {
@@ -32,11 +31,6 @@ class Genre extends Model
     public function getImageUrlAttribute()
     {
         return $this->image ? $this->getSignedUrl($this->image) : null;
-    }
-
-    public function getTotalFilmAttribute()
-    {
-        return $this->films->count() ?? 0;
     }
 
     
