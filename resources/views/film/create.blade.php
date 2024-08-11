@@ -38,13 +38,6 @@
                     </span>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label" for="cast">{{__('sma.cast')}}</label>
-                    <input type="text" class="form-control" name="cast" value="{{old('cast')}}" id="cast" placeholder="{{__('sma.please_input')}}" >
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
                     <label class="form-label" for="release_date">{{ trans('sma.release_date') }}</label>
                     <div class="input-group">
                       <span class="input-group-text">
@@ -56,10 +49,9 @@
                   </div>
                 <div class="mb-3">
                   <label class="form-label" for="category">{{ trans('sma.category_film') }}</label>
-                  <select id="category" class="{{ config('setup.input_select2') }}" name="category" required>
-                      <option value="">{{ __('global.please_select') }}</option>
+                  <select id="category" class="{{ config('setup.input_select2') }}" multiple name="category[]" required data-placeholder="{{ __('global.please_select') }}">
                       @foreach($category as $value)
-                      <option value="{{ $value->id }}" {{old('category') == $value->id ? 'selected':''}} >{{$value->name }}</option>
+                      <option value="{{ $value->id }}" {{in_array($value->id, old('category', []))? 'selected':''}} >{{$value->name }}</option>
                       @endforeach
                   </select>
                     <span class="invalid-feedback">
@@ -74,18 +66,6 @@
                     </span>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label" for="overview">{{trans('sma.overview')}}</label>
-                    <textarea rows="10" cols="10" name="overview" class="form-control" id="ckeditor_classic_prefilled2" required>
-                      {{old('overview')}}
-                    </textarea>
-                  </div>
-                <div class="mb-3">
-                  <p class="fw-semibold">{{trans('sma.poster')}}</p>
-                <input type="file" class="file-input-caption2" name="poster">
-                </div>
-                </div>
-                <div class="col-12 col-lg-6 p-10">
-                  <div class="mb-3">
                     <label class="form-label" for="tag">{{ trans('sma.tag') }}</label>
                     <select id="tag" class="{{ config('setup.input_select2') }}" name="tag" required>
                         <option value="">{{ __('global.please_select') }}</option>
@@ -97,6 +77,18 @@
                         The field is required.
                       </span>
                     </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="overview">{{trans('sma.overview')}}</label>
+                    <textarea rows="10" cols="10" name="overview" class="form-control" id="ckeditor_classic_prefilled2" required>
+                      {{old('overview')}}
+                    </textarea>
+                  </div>
+                <div class="mb-3">
+                  <p class="fw-semibold">{{trans('sma.poster')}}</p>
+                <input type="file" class="file-input-caption2" name="poster">
+                </div>
+                </div>
+                <div class="col-12 col-lg-6 p-10">
                     <div class="mb-3">
                       <label class="form-label" for="type">{{ trans('sma.type') }}</label>
                       <select id="type" class="{{ config('setup.input_select2') }}" name="type" required>
@@ -147,8 +139,8 @@
                   
                 </div>
                 <div class="d-flex align-items-center">
-                  <button type="submit" class="btn btn-outline-success mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
-                  <button type="submit" class="btn btn-outline-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
+                  <button type="submit" class="btn btn-success mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
+                  <button type="submit" class="btn btn-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
                 </div>
           </div>
         </form>

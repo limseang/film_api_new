@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use DateTime;
 use App\Traits\AlibabaStorage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Facades\Auth;
 class Film extends Model
 {
-    use HasFactory , SoftDeletes, AlibabaStorage;
+    use HasFactory , SoftDeletes, AlibabaStorage, LogsActivity;
     protected $fillable = [
         'id',
         'title',
@@ -158,6 +162,25 @@ public function subtitles()
     public function getCoverImageAttribute()
     {
         return $this->cover ? $this->getSignedUrl($this->cover) : '';
+    }
+    
+
+    protected static $logFillable = true;
+    protected static $logOnlyDirty = true;
+    protected static $dontSubmitEmptyLogs = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    public function tapActivity(Activity $activity)
+    {
+        $activity->default_field    = "{$this->name}";
+        $activity->log_name         = $this->table;
+        $activity->causer_id        = Auth::user()->id ?? null;
     }
 
 
