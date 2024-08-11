@@ -1,5 +1,5 @@
 <script>
-    $(function() { // Shorthand for $( document ).ready()
+    $(function() {
         $('body').on('click','.show_log',function(){
            var log_id = $(this).attr('log_id');
            $.ajaxSetup({

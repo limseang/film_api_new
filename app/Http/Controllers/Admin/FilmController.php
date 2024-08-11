@@ -49,9 +49,8 @@ class FilmController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'director_id' => 'nullable|exists:directors,id',
-            'cast' => 'nullable',
             'release_date' => 'nullable|date',
-            'category' => 'required|exists:categories,id',
+            'category' => 'required|array|exists:categories,id',
             'running_time' => 'required|numeric',
             'overview' => 'required',
             'tag' => 'required|exists:tags,id',
@@ -74,7 +73,6 @@ class FilmController extends Controller
             $film->director = $request->director_id;
             $film->cast = $request->cast;
             $film->release_date = $birthDateFormat;
-            $film->category = $request->category;
             $film->running_time = $request->running_time;
             $film->overview = $request->overview;
             $film->tag = $request->tag;
@@ -86,6 +84,8 @@ class FilmController extends Controller
             $film->language = $request->language;
             $film->view = 0;
             $film->save();
+
+            $film->filmCategories()->sync($request->category);
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -121,6 +121,7 @@ class FilmController extends Controller
             return redirect()->route('film.index')->with($notification);
         }
         $data['category'] = Category::where('status', 1)->get();
+        $data['multiCategory'] = $data['film']->filmCategories->pluck('id')->toArray();
         $data['director'] = Director::where('status', 1)->get();
         $data['distributor'] = Distributor::where('status', 1)->get();
         $data['genre'] = Genre::where('status', 1)->get();
@@ -138,7 +139,7 @@ class FilmController extends Controller
             'director_id' => 'nullable|exists:directors,id',
             'cast' => 'nullable',
             'release_date' => 'nullable|date',
-            'category' => 'required|exists:categories,id',
+            'category' => 'required|array|exists:categories,id',
             'running_time' => 'required|numeric',
             'overview' => 'required',
             'tag' => 'required|exists:tags,id',
@@ -173,7 +174,6 @@ class FilmController extends Controller
             $film->director = $request->director_id;
             $film->cast = $request->cast;
             $film->release_date = $birthDateFormat;
-            $film->category = $request->category;
             $film->running_time = $request->running_time;
             $film->overview = $request->overview;
             $film->tag = $request->tag;
@@ -183,6 +183,8 @@ class FilmController extends Controller
             $film->language = $request->language;
             $film->view = 0;
             $film->save();
+
+            $film->filmCategories()->sync($request->category);
             DB::commit();
             $notification = [
                 'type' => 'success',

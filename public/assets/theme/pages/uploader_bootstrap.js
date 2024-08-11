@@ -142,7 +142,7 @@ const FileUpload = function() {
                 icon: '<i class="ph-check"></i>'
             },
             // uploadClass: 'btn btn-light',
-            browseClass: 'btn btn-success opacity-10',
+            browseClass: 'btn btn-info opacity-10',
             removeClass: 'btn btn-light',
             initialCaption: "No file selected",
             previewZoomButtonClasses: previewZoomButtonClasses,
@@ -162,7 +162,7 @@ const FileUpload = function() {
                 icon: '<i class="ph-check"></i>'
             },
             // uploadClass: 'btn btn-light',
-            browseClass: 'btn btn-success opacity-10',
+            browseClass: 'btn btn-info opacity-10',
             removeClass: 'btn btn-light',
             initialCaption: "No file selected",
             previewZoomButtonClasses: previewZoomButtonClasses,
