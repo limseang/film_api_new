@@ -43,7 +43,8 @@ class Film extends Model
         'tag_name',
         'film_category_name',
         'poster_image',
-        'cover_image'
+        'cover_image',
+        'multiple_category',
     ];
 
     public function categories()
@@ -162,6 +163,11 @@ public function subtitles()
     public function getCoverImageAttribute()
     {
         return $this->cover ? $this->getSignedUrl($this->cover) : '';
+    }
+
+    public function getMultipleCategoryAttribute()
+    {
+        return $this->filmCategories->pluck('name')->toArray();
     }
     
 

@@ -20,7 +20,7 @@
     <a href="#" type="button" data-click="bpo-status{{$table->id}}" class="bpo-status" style="padding: 0.10rem"
         data-action="{{ route('user.restore', $table->id) }}" 
         data-html="true" data-placement="left">
-        <i class="fas fa-trash-alt text-md text-info" style="font-size:14px"></i>
+        <i class="fas fa-sync text-md text-info" style="font-size:14px"></i>
     </a>
     @endif
 

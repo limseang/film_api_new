@@ -29,7 +29,7 @@
 
                 <div class="mb-3">
                   <label class="form-label" for="know_for">{{__('sma.know_for')}}</label>
-                  <input type="text" class="form-control" name="know_for" value="{{old('know_for')}}" id="know_for" placeholder="Enter know for" required>
+                  <input type="text" class="form-control" name="know_for" value="{{old('know_for')}}" id="know_for" placeholder="Enter know for">
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
@@ -91,8 +91,8 @@
                 </div>
                 </div>
                 <div class="d-flex align-items-center">
-                  <button type="submit" class="btn btn-success mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
-                  <button type="submit" class="btn btn-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
+                  <button type="submit" class="btn btn-outline-success mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
+                  <button type="submit" class="btn btn-outline-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
                 </div>
               </form>
           </div>

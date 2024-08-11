@@ -258,7 +258,12 @@
     'title' => 'Title',
     'film_category_name' => 'Film Category Name',
     'tag_name' => 'Tag name',
-    'total_view' => 'Total View'
+    'total_view' => 'Total View',
+    'add_cast' => 'Add Cast',
+    'edit_cast' => 'Edit Cast',	
+    'delete_cast' => 'Delete Cast',
+    'film_name' => 'Film Name',
+    'actor_name' => 'Actor Name',
 
     ]
  ?>

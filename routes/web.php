@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\DistributorController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\FilmController;
+use App\Http\Controllers\Admin\CastController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,7 +133,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [GenreController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [GenreController::class, 'status'])->name('status');
         });
-        // Genre
+        // Film
         Route::prefix('film')->name('film.')->group(function(){
             Route::get('/', [FilmController::class, 'index'])->name('index');
             Route::get('/create', [FilmController::class, 'create'])->name('create');
@@ -141,7 +142,18 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [FilmController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [FilmController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [FilmController::class, 'status'])->name('status');
-    });
+        });
+        // Cast
+        Route::prefix('cast')->name('cast.')->group(function(){
+            Route::get('/', [CastController::class, 'index'])->name('index');
+            Route::get('/create', [CastController::class, 'create'])->name('create');
+            Route::post('/store', [CastController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CastController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CastController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [CastController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [CastController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [CastController::class, 'restore'])->name('restore');
+        });
     });
 });
 

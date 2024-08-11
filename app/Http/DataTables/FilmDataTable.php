@@ -35,8 +35,18 @@ class FilmDataTable extends DataTable
                 $date = strtotime($table->release_date);
                 return dateFormat($date);
             })
-            ->editColumn('film_category_name', function ($table) {
-                return '<span class="'.config('setup.badge_primary').'">'.$table->film_category_name.'</span>';
+            ->editColumn('multiple_category', function ($table) {
+                // 
+                $ul = '<ul>';
+                $categories = $table->multiple_category ?? [];
+                if (count($categories) == 0) {
+                    return '';
+                }
+                foreach ($categories as $category) {
+                    $ul .= '<li class="'.config('setup.badge_info').' ms-2">'.$category.'</li><br>';
+                }
+                $ul .= '</ul>';
+                return $ul;
             })
             ->editColumn('genre_name', function ($table) {
                 return '<span class="'.config('setup.badge_info').'">'.$table->genre_name.'</span>';
@@ -61,7 +71,7 @@ class FilmDataTable extends DataTable
                 $pic = $table->cover_image ?? '';
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
-            ->rawColumns(['poster_image','view','film_category_name','genre_name','tag_name','running_time','cover_image','director_name']) #allowed for using html code here
+            ->rawColumns(['poster_image','view','multiple_category','genre_name','tag_name','running_time','cover_image','director_name']) #allowed for using html code here
         ;
     }
 
@@ -132,7 +142,7 @@ class FilmDataTable extends DataTable
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
             Column::make('cover_image')->title(trans('sma.cover'))->width(10)->addClass('text-center'),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
-            Column::make('film_category_name')->title(trans('sma.film_category_name'))->width(10)->addClass('text-center'),
+            Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->addClass('text-center'),
             Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->addClass('text-center'),
             Column::make('tag_name')->title(trans('sma.tag_name'))->width(10)->addClass('text-center'),
             Column::make('running_time')->title(trans('sma.running_time'))->width(10)->addClass('text-center'),

@@ -27,7 +27,7 @@ class FilmController extends Controller
 
     public function index(FilmDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.genre')]];
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.film')]];
         return $dataTable->render('film.index', $data);
     }
 
@@ -205,43 +205,19 @@ class FilmController extends Controller
             }
         }
 
-
-        public function status($id)
-        {
-            $genre = Genre::find($id);
-            if(!$genre){
-                $notification = [
-                    'type' => 'error',
-                    'icon' => trans('global.icon_error'),
-                    'title' => trans('global.title_error_exception'),
-                    'text' => trans('sma.the_not_exist'),
-                ];
-                return redirect()->route('genre.index')->with($notification);
-            }
-            $genre->status = $genre->status == 1 ? 2 : 1;
-            $genre->save();
-            $notification = [
-               'type' => 'success',
-                'icon' => trans('global.icon_success'),
-                'title' => trans('global.title_updated'),
-                'text' => trans('sma.update_successfully'),
-            ];
-            return redirect()->route('genre.index')->with($notification);
-        }
-
         public function destroy($id)
         {
-            $genre = Genre::find($id);
-            if(!$genre){
+            $film = Film::find($id);
+            if(!$film){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->route('film.index')->with($notification);
             }
-            $totalUsed = $genre->films()->count();
+            $totalUsed = $film->cast()->count();
             if($totalUsed> 0){
                 $notification = [
                     'type' => 'error',
@@ -249,15 +225,15 @@ class FilmController extends Controller
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_being_used'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->back()->with($notification);
             }
-            $genre->delete();   
+            $film->delete(); 
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.delete_successfully'),
             ];
-            return redirect()->route('genre.index')->with($notification);
+            return redirect()->back()->with($notification);
         }
 }

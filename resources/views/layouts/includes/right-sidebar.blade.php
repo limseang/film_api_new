@@ -84,6 +84,9 @@
                 route('film.index'),
                 route('film.create'), 
                 request()->is('admin/film/edit/*'),
+                route('cast.index'),
+                route('cast.create'),
+                request()->is('admin/cast/edit/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteFilm)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRouteFilm)) active @else '' @endif">
@@ -95,6 +98,12 @@
                         <li class="nav-item">
                             <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteFilmList)) active @else '' @endif">
                                 {{__('sma.list_film')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteCast = [route('cast.index'), route('cast.create'), request()->is('admin/cast/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('cast.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteCast)) active @else '' @endif">
+                                {{__('sma.cast')}}
                             </a>
                         </li>
                     </ul>
