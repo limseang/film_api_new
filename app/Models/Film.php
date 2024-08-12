@@ -184,7 +184,7 @@ public function subtitles()
     }
     public function tapActivity(Activity $activity)
     {
-        $activity->default_field    = "{$this->name}";
+        $activity->default_field    = "{$this->title}";
         $activity->log_name         = $this->table;
         $activity->causer_id        = Auth::user()->id ?? null;
     }
