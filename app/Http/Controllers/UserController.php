@@ -200,16 +200,16 @@ class UserController extends Controller
                 $user['avatar'] = 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/uploads/2023/05/31/220e277427af033f682f8709e54711ab.webp';
             }
 
-            $users = $user->toArray();
-            $response =[];
-            if(!empty($users)){
-                foreach ($users as  $key=> $value){
-                    $response[$key] = (string)$value;
-                }
-            }
+//            $users = $user->toArray();
+//            $response =[];
+//            if(!empty($users)){
+//                foreach ($users as  $key=> $value){
+//                    $response[$key] = (string)$value;
+//                }
+//            }
 
 
-            return $this->sendResponse($response);
+            return $this->sendResponse($user);
 
 
 
