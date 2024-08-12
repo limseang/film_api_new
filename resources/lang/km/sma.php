@@ -344,6 +344,21 @@
     'film_name' => 'ឈ្មោះភាពយន្ត',
     'actor_name' => 'ឈ្មោះអ្នកចូលរួមសម្ដែង',
     'character' => 'តួរសម្ដែង',
-    
+    'artical' => 'អត្ថបទ',
+    'add_artical' => 'បន្ថែមអត្ថបទ',
+    'edit_artical' => 'កែប្រែអត្ថបទ',
+    'artical_name' => 'ឈ្មោះអត្ថបទ',
+    'content' => 'មាតិកា',
+    'add_comment' => 'បន្ថែមមតិ',
+    'edit_comment' => 'កែប្រែមតិ',
+    'comment_name' => 'ឈ្មោះមតិ',
+    'comment_content' => 'មាតិកា',
+    'list_artical' => 'បញ្ជីអត្ថបទ',
+    'origin' => 'ប្រភពដើម',
+    'add_origin' => 'បន្ថែមប្រភពដើម',
+    'edit_origin' => 'កែប្រែប្រភពដើម',
+    'page_url' => 'ទំព័រ URL',
+    'page_title' => 'ចំណងជើងទំព័រ',
+    'page_id' => 'ទំព័រ ID',
 
   ];

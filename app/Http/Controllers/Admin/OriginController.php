@@ -5,49 +5,54 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\AlibabaStorage;
-use App\Models\Genre;
-use App\Http\DataTables\GenreDataTable;
+use App\Models\Origin;
+use App\Http\DataTables\OriginDataTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class GenreController extends Controller
+class OriginController extends Controller
 {
+    
     use AlibabaStorage;
     public function __construct()
     {
         $this->middleware('lang');
     }
 
-    public function index(GenreDataTable $dataTable)
+    public function index(OriginDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.genre')]];
-        return $dataTable->render('genre.index', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.origin')]];
+        return $dataTable->render('origin.index', $data);
     }
 
     public function create()
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.add')]];
-        return view('genre.create', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('origin.index'), 'page' => __('sma.origin')], ['link' => '#', 'page' => __('sma.add')]];
+        return view('origin.create', $data);
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:tags,name',
-            'description' => 'nullable|max:255',
+            'name' => 'required',
+            'description' => 'nullable',
+            'page_id' => 'required|max:255',
+            'url' => 'required|max:255',
             'status' => 'required|in:1,2',
         ]);
         try{
             DB::beginTransaction();
-            $genre = new Genre();
+            $origin = new Origin();
             if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'), 'Genre');
+                $avatar = $this->UploadFile($request->file('image'), 'Origin');
             }
-            $genre->name = $request->name;
-            $genre->description = $request->description;
-            $genre->status = $request->status;
-            $genre->image = $avatar ?? null;
-            $genre->save();
+            $origin->name = $request->name;
+            $origin->description = $request->description;
+            $origin->page_id = $request->page_id;
+            $origin->url = $request->url;
+            $origin->status = $request->status;
+            $origin->logo = $avatar ?? null;
+            $origin->save();
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -57,7 +62,7 @@ class GenreController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.add_successfully'),
             ];
-            return redirect()->route('genre.'.$pageDirection)->with($notification);
+            return redirect()->route('origin.'.$pageDirection)->with($notification);
         }catch(Exception $e){
             DB::rollBack();
             $notification = [
@@ -72,51 +77,55 @@ class GenreController extends Controller
 
     public function edit($id)
     {
-        $data['genre'] = Genre::find($id);
-        if(!$data['genre']){
+        $data['origin'] = Origin::find($id);
+        if(!$data['origin']){
             $notification = [
                 'type' => 'error',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
                 'text' =>  trans('sma.the_not_exist')
             ];
-            return redirect()->route('genre.index')->with($notification);
+            return redirect()->route('origin.index')->with($notification);
         }
-        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('genre.edit', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('origin.index'), 'page' => __('sma.origin')], ['link' => '#', 'page' => __('sma.edit')]];
+        return view('origin.edit', $data);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'name' => 'required',
+            'page_id' => 'required|max:255',
+            'url' => 'required|max:255',
             'status' => 'required|in:1,2',
-            'description' => 'required',
+            'description' => 'nullable',
         ]);
 
         try{
             DB::beginTransaction();
-            $genre = Genre::find($id);
-                if(!$genre){
+            $origin = Origin::find($id);
+                if(!$origin){
                     $notification = [
                         'type' => 'error',
                         'icon' => trans('global.icon_error'),
                         'title' => trans('global.title_error_exception'),
                         'text' => trans('sma.the_not_exist'),
                     ];
-                    return redirect()->route('genre.index')->with($notification);
+                    return redirect()->route('origin.index')->with($notification);
                 }
                 if($request->hasFile('image')){
-                    $avatar = $this->UploadFile($request->file('image'), 'Genre');
-                    if($genre->image){
-                        $this->deleteFile($genre->image);
+                    $avatar = $this->UploadFile($request->file('image'), 'Origin');
+                    if($origin->logo){
+                        $this->deleteFile($origin->image);
                     }
-                    $genre->image = $avatar;
+                    $origin->logo = $avatar;
                 }
-                $genre->name = $request->name;
-                $genre->description = $request->description;
-                $genre->status = $request->status;
-                $genre->save();
+                $origin->name = $request->name;
+                $origin->description = $request->description;
+                $origin->page_id = $request->page_id;
+                $origin->url = $request->url;
+                $origin->status = $request->status;
+                $origin->save();
                 
                 DB::commit();
                 $notification = [
@@ -125,7 +134,7 @@ class GenreController extends Controller
                     'title' => trans('global.title_updated'),
                     'text' => trans('sma.update_successfully'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->route('origin.index')->with($notification);
             }catch(Exception $e){
                 DB::rollBack();
                 $notification = [
@@ -141,40 +150,40 @@ class GenreController extends Controller
 
         public function status($id)
         {
-            $genre = Genre::find($id);
-            if(!$genre){
+            $origin = origin::find($id);
+            if(!$origin){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->route('origin.index')->with($notification);
             }
-            $genre->status = $genre->status == 1 ? 2 : 1;
-            $genre->save();
+            $origin->status = $origin->status == 1 ? 2 : 1;
+            $origin->save();
             $notification = [
                'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('genre.index')->with($notification);
+            return redirect()->route('origin.index')->with($notification);
         }
 
         public function destroy($id)
         {
-            $genre = Genre::find($id);
-            if(!$genre){
+            $origin = origin::find($id);
+            if(!$origin){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->route('origin.index')->with($notification);
             }
-            $totalUsed = $genre->films()->count();
+            $totalUsed = $origin->articals()->count();
             if($totalUsed> 0){
                 $notification = [
                     'type' => 'error',
@@ -182,15 +191,15 @@ class GenreController extends Controller
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_being_used'),
                 ];
-                return redirect()->route('genre.index')->with($notification);
+                return redirect()->route('origin.index')->with($notification);
             }
-            $genre->delete();   
+            $origin->delete();   
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.delete_successfully'),
             ];
-            return redirect()->route('genre.index')->with($notification);
+            return redirect()->route('origin.index')->with($notification);
         }
 }

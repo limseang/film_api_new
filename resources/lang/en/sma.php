@@ -264,6 +264,19 @@
     'delete_cast' => 'Delete Cast',
     'film_name' => 'Film Name',
     'actor_name' => 'Actor Name',
+    'artical' => 'Artical',
+    'list_artical' => 'List Artical',
+    'add_artical' => 'Add Artical',
+    'edit_artical' => 'Edit Artical',
+    'content' => 'Content',
+    'add_comment' => 'Add Comment',
+    'edit_comment' => 'Edit Comment',
+    'comment_content' => 'Comment Content',
+    'origin' => 'Origin',
+    'add_origin' => 'Add Origin',
+    'edit_origin' => 'Edit Origin',
+    'page_url' => 'Page Url',
+    'page_id' => 'Page Id',	
 
     ]
  ?>

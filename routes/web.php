@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\DistributorController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\FilmController;
 use App\Http\Controllers\Admin\CastController;
+use App\Http\Controllers\Admin\ArticalController;
+use App\Http\Controllers\Admin\OriginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -153,6 +155,28 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [CastController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [CastController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [CastController::class, 'restore'])->name('restore');
+        });
+        // artical
+        Route::prefix('artical')->name('artical.')->group(function(){
+            Route::get('/', [ArticalController::class, 'index'])->name('index');
+            Route::get('/create', [ArticalController::class, 'create'])->name('create');
+            Route::post('/store', [ArticalController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [ArticalController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [ArticalController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [ArticalController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [ArticalController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [ArticalController::class, 'restore'])->name('restore');
+        });
+
+        // Origin
+        Route::prefix('origin')->name('origin.')->group(function(){
+            Route::get('/', [OriginController::class, 'index'])->name('index');
+            Route::get('/create', [OriginController::class, 'create'])->name('create');
+            Route::post('/store', [OriginController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [OriginController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [OriginController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [OriginController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [OriginController::class, 'status'])->name('status');
         });
     });
 });

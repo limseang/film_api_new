@@ -42,9 +42,6 @@
                 </li>
                 {{-- People --}}
                 <?php $arrRoutePeople = [
-                route('director.index'),
-                route('director.create'), 
-                request()->is('admin/director/edit/*'),
                 route('artist.index'),
                 route('artist.create'),
                 request()->is('admin/artist/edit/*'), 
@@ -64,12 +61,6 @@
                                 {{__('global.user')}}
                             </a>
                         </li>
-                        <?php $arrRouteDirector = [route('director.index'), route('director.create'), request()->is('admin/director/edit/*')]; ?>
-                        <li class="nav-item">
-                            <a href="{{route('director.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteDirector)) active @else '' @endif">
-                                {{__('sma.director')}}
-                            </a>
-                        </li>
                         <?php $arrRouteArtist = [route('artist.index'), route('artist.create'), request()->is('admin/artist/edit/*')]; ?>
                         <li class="nav-item">
                             <a href="{{route('artist.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArtist)) active @else '' @endif">
@@ -78,7 +69,47 @@
                         </li>
                     </ul>
                 </li>
+
+                <?php $arrRouteDirector = [route('director.index'), route('director.create'), request()->is('admin/director/edit/*')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('director.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteDirector)) active @else '' @endif">
+                        <i class="fa fa-user-tie"></i>
+                        <span>
+                            {{__('sma.director')}}
+                        </span>
+                    </a>
+                </li>
                 {{-- end People --}}
+                {{-- Artical --}}
+                  <?php $arrRouteArtical = [
+                    route('artical.index'),
+                    route('artical.create'),
+                    request()->is('admin/artical/edit/*'),
+                    route('origin.index'),
+                    route('origin.create'),
+                    request()->is('admin/origin/edit/*')
+                    ]; ?>
+                    <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteArtical)) nav-item-open @else '' @endif">
+                        <a href="" class="nav-link @if(in_array($currentURL, $arrRouteArtical)) active @else '' @endif">
+                            <i class="ph-article"></i>
+                            <span>{{__('sma.artical')}}</span>
+                        </a>
+                        <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteArtical)) show @else '' @endif">
+                            <?php $arrRouteArticalList = [route('artical.index')]; ?>
+                            <li class="nav-item">
+                                <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArticalList)) active @else '' @endif">
+                                    {{__('sma.list_artical')}}
+                                </a>
+                            </li>
+                            <?php $arrRouteOrigin = [route('origin.index'), route('origin.create'), request()->is('admin/origin/edit/*')]; ?>
+                            <li class="nav-item">
+                                <a href="{{route('origin.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteOrigin)) active @else '' @endif">
+                                    {{__('sma.origin')}}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {{-- End Aritcal --}}
                 {{-- Film --}}
                 <?php $arrRouteFilm = [
                 route('film.index'),

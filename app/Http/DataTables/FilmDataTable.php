@@ -94,9 +94,7 @@ class FilmDataTable extends DataTable
             'release_date',
             'created_at' ]);
         if (request('name')) {
-            $model->where(function ($query) {
-                $query->orWhere('title', 'like', '%' . request('title') . '%');
-            });
+            $model->where('title', 'like', '%' . request('name') . '%');
         }
         if (request('publish')) {
             $model->where('status', request('publish'));
