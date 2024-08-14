@@ -9,10 +9,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\AlibabaStorage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Facades\Auth;
 
 class Artical extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, AlibabaStorage, LogsActivity;
     protected $fillable = [
         'title',
         'description',
@@ -30,6 +35,9 @@ class Artical extends Model
 
     ];
 
+    protected $append =[
+        'image_url',
+    ];
     /**
      * @return BelongsTo
      */
@@ -60,7 +68,7 @@ class Artical extends Model
     }
     public function tag(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class,'artical_tag','artical_id','tag_id');
     }
 
     public function categoryArtical()
@@ -73,6 +81,30 @@ class Artical extends Model
         return $this->hasMany(BookMark::class,'post_id','id');
     }
 
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? $this->getSignedUrl($this->image) : null;
+    }
+
+    
+    
+    protected static $logFillable = true;
+    protected static $logOnlyDirty = true;
+    protected static $dontSubmitEmptyLogs = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    public function tapActivity(Activity $activity)
+    {
+        $activity->default_field    = "{$this->name}";
+        $activity->log_name         = $this->table;
+        $activity->causer_id        = Auth::user()->id;
+    }
 
 
 }

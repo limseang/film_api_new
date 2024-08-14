@@ -95,9 +95,9 @@
                             <span>{{__('sma.artical')}}</span>
                         </a>
                         <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteArtical)) show @else '' @endif">
-                            <?php $arrRouteArticalList = [route('artical.index')]; ?>
+                            <?php $arrRouteArticalList = [route('artical.index'),route('artical.create')]; ?>
                             <li class="nav-item">
-                                <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArticalList)) active @else '' @endif">
+                                <a href="{{route('artical.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArticalList)) active @else '' @endif">
                                     {{__('sma.list_artical')}}
                                 </a>
                             </li>

@@ -277,6 +277,7 @@
     'edit_origin' => 'Edit Origin',
     'page_url' => 'Page Url',
     'page_id' => 'Page Id',	
+    'total_like' => 'Total Like'
 
     ]
  ?>
