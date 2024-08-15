@@ -107,7 +107,7 @@
                 </div>
                 </div>
                 <div class="d-flex align-items-center">
-                  <button type="submit" class="btn btn-success mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
+                  <button type="submit" class="btn btn-primary mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
                 </div>
               </form>
           </div>
