@@ -28,7 +28,7 @@ class ArtistController extends Controller
     public function create()
     {
         $data['countries'] = Country::all();
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('director.index'), 'page' => __('sma.artist')], ['link' => '#', 'page' => __('global.add')]];
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('artist.index'), 'page' => __('sma.artist')], ['link' => '#', 'page' => __('global.add')]];
         return view('artist.create', $data);
     }
 
