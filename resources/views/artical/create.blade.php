@@ -84,19 +84,20 @@
                             The field is required.
                           </span>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="description">{{trans('sma.description')}}</label>
-                            <textarea rows="3" cols="3" name="description" class="form-control" id="ckeditor_classic_prefilled" required>
-                              {{old('description')}}
-                            </textarea>
-                          </div>
-                    
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div class="mb-3">
-                            <p class="fw-semibold">{{trans('sma.image')}}</p>
-                          <input type="file" class="file-input-caption2" name="image">
-                          </div>
+                      <div class="mb-3">
+                          <p class="fw-semibold">{{trans('sma.image')}}</p>
+                        <input type="file" class="file-input-caption2" name="image">
+                        </div>
+                  </div>
+                    <div class="col-12 col-lg-12">
+                    <div class="mb-3">
+                      <label class="form-label" for="description">{{trans('sma.description')}}</label>
+                      <textarea rows="3" cols="3" name="description" class="form-control" id="ckeditor_classic_prefilled3" required>
+                        {{old('description')}}
+                      </textarea>
+                    </div>
                     </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="btn btn-primary mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
@@ -111,10 +112,91 @@
   </div>
   @section('scripts')
   <script>
+      function MyUploadAdapter(loader) {
+      this.loader = loader;
+  }
+
+  MyUploadAdapter.prototype.upload = function() {
+      return this.loader.file
+          .then(file => new Promise((resolve, reject) => {
+              const formData = new FormData();
+              formData.append('upload', file);
+              formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', '{{ route('artical.upload_image') }}', true);
+              xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+              xhr.onload = function() {
+                  if (xhr.status === 200) {
+                      resolve({ default: JSON.parse(xhr.responseText).url });
+                  } else {
+                      reject('Upload failed');
+                  }
+              };
+
+              xhr.onerror = function() {
+                  reject('Upload failed');
+              };
+
+              xhr.send(formData);
+          }));
+  };
+
+  MyUploadAdapter.prototype.abort = function() {
+      // Abort the upload process
+  };
+
     $(document).ready(function() {
-      $('.running_time').on('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
+      ClassicEditor.create(document.querySelector('#ckeditor_classic_prefilled3'), 
+        {
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                    { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                    { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+                ]
+            },
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'link',
+                    'bulletedList',
+                    'numberedList',
+                    'blockQuote',
+                    'insertTable',
+                    'imageUpload',
+                    'undo',
+                    'redo'
+                ]
+            },
+          //   ckfinder: {
+          //     uploadUrl: '{{ route('artical.upload_image') }}?command=QuickUpload&type=Files&responseType=json',
+          //     headers: {
+          //       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          //   }
+          // },
+          ckfinder: {
+        uploadUrl: '{{ route('artical.upload_image') }}'
+            }
+        }).then(editor => {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+
+            // hide: true
+        }).catch(error => {
+            console.error(error);
         });
+
+        // ajax ckfinder upload image
     });
 </script>
   @endsection 

@@ -25,7 +25,8 @@ const CKEditorClassic = function() {
         }
 
         // Editor with prefilled text
-        ClassicEditor.create(document.querySelector('#ckeditor_classic_prefilled'), {
+        ClassicEditor.create(document.querySelector('#ckeditor_classic_prefilled'), 
+        {
             heading: {
                 options: [
                     { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

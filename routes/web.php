@@ -166,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [ArticalController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [ArticalController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [ArticalController::class, 'restore'])->name('restore');
+            Route::post('/upload-image', [ArticalController::class, 'uploadImage'])->name('upload_image');
         });
 
         // Origin

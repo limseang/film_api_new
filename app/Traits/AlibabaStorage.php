@@ -27,9 +27,6 @@ trait AlibabaStorage
 
         $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
         $result = $ossClient->uploadFile($bucket, $object, $filePath);
-        // if use base64 upload
-        // $content = "base64";
-        // $ossClient->putObject($bucket, $object, $content);
 
         if (!empty($result)) {
             $params = [
@@ -42,6 +39,39 @@ trait AlibabaStorage
         }
         else{
             return 0;
+        }
+    }
+
+    public function uploadUrl($file, $folder = null): array
+    {
+        $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+        $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+        $endpoint = env("ALIBABA_OSS_ENDPOINT");
+        $bucket = env("ALIBABA_OSS_BUCKET");
+
+        // $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        if ($folder) {
+            // Add the specified folder to the path
+            $object = trim($folder, '/') . '/';
+        }else{
+            $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+        }
+        $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
+        $filePath = $file->getRealPath();
+
+        $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+        $result = $ossClient->uploadFile($bucket, $object, $filePath);
+        if (!empty($result)) {
+            $params = [
+                'path' => $object,
+                'extension' => $file->getClientOriginalExtension(),
+                'size' => $file->getSize()
+            ];
+            Storages::query()->create($params);
+            return $params;
+        }
+        else{
+            return [];
         }
     }
     public function getSignedUrl($id): string

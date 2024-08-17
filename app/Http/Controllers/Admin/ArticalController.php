@@ -39,4 +39,35 @@ class ArticalController extends Controller
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('artical.index'), 'page' => __('sma.artical')], ['link' => '#', 'page' => __('global.add')]];
         return view('artical.create', $data);
     }
+
+    public function uploadImage(Request $request)
+    {
+        $file = $request->file('upload');
+        if(empty($file)){
+            return response()->json([
+                'uploaded' => 0,
+                'error' => [
+                    'message' => 'error'
+                ]
+            ]);
+        }
+        $folder = 'artical';
+        $result = $this->uploadUrl($file, $folder);
+        if ($result) {
+            return response()->json([
+                'uploaded' => 1,
+                'fileName' => $result['path'],
+                'url' => url('')
+            ]);
+        } else {
+            return response()->json([
+                'uploaded' => 0,
+                'error' => [
+                    'message' => 'error'
+                ]
+            ]);
+        }
+    }
+
+
 }
