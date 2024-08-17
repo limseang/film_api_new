@@ -64,7 +64,7 @@ class GenreController extends Controller
                 'type' => 'exception',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
-                'text' => $e->getMessage()
+                'text' => $e->getMessage().$e->getLine().$e->getFile()
             ];
             return redirect()->back()->withInput()->with($notification);
         }
