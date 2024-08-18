@@ -12,7 +12,7 @@ use Yajra\DataTables\Services\DataTable;
 
 class ArticalDataTable extends DataTable
 {
-    private $tableName = 'artical';
+    private $tableName = 'articals';
     /**
      * Build the DataTable class.
      *
@@ -93,13 +93,22 @@ class ArticalDataTable extends DataTable
             'view',
             'film_id',
             'status',	
-            'created_at' ]);
+            'created_at',
+            'deleted_at',
+            'updated_at'
+         ]);
         $model->with(['category','type','origin','tag','likes','comments']);
         if (request('name')) {
             $model->where('title', 'like', '%' . request('name') . '%');
         }
-        if (request('publish')) {
-            $model->where('status', request('publish'));
+        if (request('soft_delete')) {
+            if (request('soft_delete') == 'deleted') {
+                $model->withTrashed();
+                $model->where($this->tableName . '.deleted_at', '!=', null);
+            }
+            elseif (request('soft_delete') == 'all_records') {
+                $model->withTrashed();
+            }
         }
         $model->orderBy('updated_at', 'DESC');
         return $model;

@@ -95,7 +95,7 @@
                             <span>{{__('sma.artical')}}</span>
                         </a>
                         <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteArtical)) show @else '' @endif">
-                            <?php $arrRouteArticalList = [route('artical.index'),route('artical.create')]; ?>
+                            <?php $arrRouteArticalList = [route('artical.index'),route('artical.create'),request()->is('admin/artical/edit/*')]; ?>
                             <li class="nav-item">
                                 <a href="{{route('artical.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArticalList)) active @else '' @endif">
                                     {{__('sma.list_artical')}}

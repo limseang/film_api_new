@@ -54,7 +54,7 @@ class Artist extends Model
 
     public function getAvatarUrlAttribute(){
 
-        return $this->profile ? $this->getSignedUrl($this->profile) : null;
+        return $this->image ? $this->getSignedUrl($this->image) : null;
     }
 
     protected static $logFillable = true;

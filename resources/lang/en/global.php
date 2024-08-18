@@ -69,4 +69,6 @@ return [
      'title_cannot_error' => 'You cannot edit this data.',
  
      'icon' => 'Icon',
+     'artical' => 'Artical',
+     'film' => 'Film',
 ];
