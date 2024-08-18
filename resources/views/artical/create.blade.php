@@ -38,10 +38,10 @@
                     </span>
                   </div>
                 <div class="mb-3">
-                  <label class="form-label" for="tag">{{ trans('sma.tag') }}</label>
-                  <select id="tag" class="{{ config('setup.input_select2') }}" multiple name="tag[]" required data-placeholder="{{ __('global.please_select') }}">
+                  <label class="form-label" for="tag_id">{{ trans('sma.tag') }}</label>
+                  <select id="tag_id" class="{{ config('setup.input_select2') }}" multiple name="tag_id[]" required data-placeholder="{{ __('global.please_select') }}">
                       @foreach($tag as $value)
-                      <option value="{{ $value->id }}" {{in_array($value->id, old('tag', []))? 'selected':''}} >{{$value->name }}</option>
+                      <option value="{{ $value->id }}" {{in_array($value->id, old('tag_id', []))? 'selected':''}} >{{$value->name }}</option>
                       @endforeach
                   </select>
                     <span class="invalid-feedback">
@@ -49,11 +49,11 @@
                     </span>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label" for="type">{{ trans('sma.type') }}</label>
-                    <select id="type" class="{{ config('setup.input_select2') }}" name="type" required>
+                    <label class="form-label" for="type_id">{{ trans('sma.type') }}</label>
+                    <select id="type_id" class="{{ config('setup.input_select2') }}" name="type_id" required>
                         <option value="">{{ __('global.please_select') }}</option>
                         @foreach($type as $value)
-                        <option value="{{ $value->id }}" {{old('type') == $value->id ? 'selected':''}} >{{$value->name }}</option>
+                        <option value="{{ $value->id }}" {{old('type_id') == $value->id ? 'selected':''}} >{{$value->name }}</option>
                         @endforeach
                     </select>
                       <span class="invalid-feedback">
@@ -61,11 +61,11 @@
                       </span>
                     </div>
                     <div class="mb-3">
-                      <label class="form-label" for="film">{{ trans('sma.film') }}</label>
-                      <select id="film" class="{{ config('setup.input_select2') }}" name="film">
+                      <label class="form-label" for="film_id">{{ trans('sma.film') }}</label>
+                      <select id="film_id" class="{{ config('setup.input_select2') }}" name="film_id">
                           <option value="">{{ __('global.please_select') }}</option>
                           @foreach($film as $value)
-                          <option value="{{ $value->id }}" {{old('film') == $value->id ? 'selected':''}} >{{$value->title }}</option>
+                          <option value="{{ $value->id }}" {{old('film_id') == $value->id ? 'selected':''}} >{{$value->title }}</option>
                           @endforeach
                       </select>
                         <span class="invalid-feedback">
@@ -98,7 +98,7 @@
                         {{old('description')}}
                       </textarea>
                     </div>
-                    </div>
+                </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="btn btn-primary mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
                   <button type="submit" class="btn btn-success mb-3 ms-3" name="submit" value="Save_New">{{trans('sma.save_new')}} <i class="{{config('setup.save_new_icon')}} ms-2"></i></button>
@@ -112,40 +112,43 @@
   </div>
   @section('scripts')
   <script>
-      function MyUploadAdapter(loader) {
-      this.loader = loader;
-  }
+   function MyUploadAdapter(loader) {
+    this.loader = loader;
+    }
 
-  MyUploadAdapter.prototype.upload = function() {
+    MyUploadAdapter.prototype.upload = function() {
       return this.loader.file
           .then(file => new Promise((resolve, reject) => {
               const formData = new FormData();
               formData.append('upload', file);
               formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-              const xhr = new XMLHttpRequest();
-              xhr.open('POST', '{{ route('artical.upload_image') }}', true);
-              xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-              xhr.onload = function() {
-                  if (xhr.status === 200) {
-                      resolve({ default: JSON.parse(xhr.responseText).url });
-                  } else {
+              $.ajax({
+                  url: '{{ route('artical.upload_image') }}',
+                  type: 'POST',
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  headers: {
+                      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                  },
+                  success: function(response) {
+                      if (response.url) {
+                          resolve({ default: response.url });
+                      } else {
+                          reject('Upload failed');
+                      }
+                  },
+                  error: function() {
                       reject('Upload failed');
                   }
-              };
-
-              xhr.onerror = function() {
-                  reject('Upload failed');
-              };
-
-              xhr.send(formData);
+              });
           }));
-  };
+    };
 
-  MyUploadAdapter.prototype.abort = function() {
-      // Abort the upload process
-  };
+    MyUploadAdapter.prototype.abort = function() {
+      // Handle abort if needed
+    };
 
     $(document).ready(function() {
       ClassicEditor.create(document.querySelector('#ckeditor_classic_prefilled3'), 
@@ -165,38 +168,30 @@
                 items: [
                     'heading',
                     '|',
+                    'fontFamily',
+                    'fontSize',
+                    '|',
                     'bold',
                     'italic',
                     'link',
                     'bulletedList',
                     'numberedList',
                     'blockQuote',
-                    'insertTable',
                     'imageUpload',
                     'undo',
                     'redo'
                 ]
             },
-          //   ckfinder: {
-          //     uploadUrl: '{{ route('artical.upload_image') }}?command=QuickUpload&type=Files&responseType=json',
-          //     headers: {
-          //       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-          //   }
-          // },
           ckfinder: {
-        uploadUrl: '{{ route('artical.upload_image') }}'
-            }
-        }).then(editor => {
-            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                return new MyUploadAdapter(loader);
-            };
-
-            // hide: true
+            uploadUrl: '{{ route('artical.upload_image') }}'
+                }
+            }).then(editor => {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader);
+                };
         }).catch(error => {
             console.error(error);
         });
-
-        // ajax ckfinder upload image
     });
 </script>
   @endsection 

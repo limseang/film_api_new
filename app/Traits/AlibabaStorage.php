@@ -65,7 +65,8 @@ trait AlibabaStorage
             $params = [
                 'path' => $object,
                 'extension' => $file->getClientOriginalExtension(),
-                'size' => $file->getSize()
+                'size' => $file->getSize(),
+                'url' => $ossClient->signUrl($bucket,$object,3600,"GET",null)
             ];
             Storages::query()->create($params);
             return $params;

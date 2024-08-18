@@ -21,11 +21,11 @@
                         <input type="text" id="name" name="name" placeholder="{{ trans('global.search_by_title') }}" class="form-control">
                     </div>
                     <div class="col-lg-4">
-                        <label class="form-label">{{ trans('global.publish') }}</label>
-                        <select id="publish" class="{{ config('setup.input_select2') }}" >
-                            <option value="">{{ __('global.please_select') }}</option>
-                            <option value="Y">{{ __('global.publish_yes') }}</option>
-                            <option value="N">{{ __('global.publish_no') }}</option>
+                        <label class="form-label">{{ trans('sma.action_record') }}</label>
+                        <select id="soft_delete" class="{{ config('setup.input_select2') }}">
+                            <option value="active_records">{{ __('sma.active_records') }}</option>
+                            <option value="deleted">{{ __('sma.deleted') }}</option>
+                            <option value="all_records">{{ __('sma.all_records') }}</option>
                         </select>
                     </div>
                 </div>

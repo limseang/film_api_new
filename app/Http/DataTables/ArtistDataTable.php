@@ -38,7 +38,7 @@ class ArtistDataTable extends DataTable
                 return $table->death_date;
             })
             ->editColumn('icon', function ($table) {
-                $pic = ($table->avatar_url) ? $table->avatar_url : 'default.png';
+                $pic =  $table->image_url ?? '';
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
             ->editColumn('status', function ($table) {

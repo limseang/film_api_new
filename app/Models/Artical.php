@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 class Artical extends Model
 {
     use HasFactory, SoftDeletes, AlibabaStorage, LogsActivity;
+
+    protected $table ='articals';
     protected $fillable = [
         'title',
         'description',
@@ -101,7 +103,7 @@ class Artical extends Model
     }
     public function tapActivity(Activity $activity)
     {
-        $activity->default_field    = "{$this->name}";
+        $activity->default_field    = "{$this->title}";
         $activity->log_name         = $this->table;
         $activity->causer_id        = Auth::user()->id;
     }
