@@ -82,6 +82,7 @@ class GenreController extends Controller
             ];
             return redirect()->route('genre.index')->with($notification);
         }
+        $data['image'] = $this->getSignUrlNameSize($data['genre']->image);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('genre.edit', $data);
     }

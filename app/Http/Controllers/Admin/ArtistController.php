@@ -165,6 +165,7 @@ class ArtistController extends Controller
                 return redirect()->back()->with($notification);
             }
         $data['countries'] = Country::all();
+        $data['image'] = $this->getSignUrlNameSize($data['artist']->profile);
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('artist.index'), 'page' => __('global.artist')], ['link' => '#', 'page' => __('global.edit')]];
         return view('artist.edit', $data);
     }

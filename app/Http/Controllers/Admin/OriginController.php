@@ -87,6 +87,7 @@ class OriginController extends Controller
             ];
             return redirect()->route('origin.index')->with($notification);
         }
+        $data['image'] = $this->getSignUrlNameSize($data['origin']->logo);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('origin.index'), 'page' => __('sma.origin')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('origin.edit', $data);
     }

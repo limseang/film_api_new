@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class Type extends Model
 {
     use HasFactory, LogsActivity;
+
+    protected $table = 'types';
     protected $fillable = [
         'name',
         'description',

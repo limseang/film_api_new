@@ -128,6 +128,8 @@ class FilmController extends Controller
         $data['tag'] = Tag::where('status', 1)->get();
         $data['type'] = Type::where('status', 1)->get();
         $data['countries'] = Country::all();
+        $data['image'] = $this->getSignUrlNameSize($data['film']->poster);
+        $data['cover'] = $this->getSignUrlNameSize($data['film']->cover);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('film.edit', $data);
     }

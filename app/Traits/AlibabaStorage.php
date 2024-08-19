@@ -99,6 +99,34 @@ trait AlibabaStorage
         }
     }
 
+    public function getSignUrlNameSize($id): array
+    {
+        try {
+            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+            $endpoint = env("ALIBABA_OSS_ENDPOINT");
+            $bucket = env("ALIBABA_OSS_BUCKET");
+
+            $storage = Storages::query()->find($id);
+            $timeout = 3600;
+
+            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+            if(empty($storage)){
+                return [];
+            }
+            $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
+
+            return [
+                'url' => $signedUrl ?? '',
+                'name' => $storage->path,
+                'size' => $storage->size
+            ];
+        } catch (OssException $e) {
+            Log::error($e->getErrorMessage());
+            return [];
+        }
+    }
+
     public function deleteFile($id)
     {
         try {

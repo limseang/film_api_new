@@ -93,6 +93,7 @@ class CastController extends Controller
             return redirect()->back()->with($notification);
         }
         $data['artist'] = Artist::where('status', 1)->get();
+        $data['image'] = $this->getSignUrlNameSize($data['cast']->image);
         $data['film'] = Film::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('cast.index'), 'page' => __('sma.cast')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('cast.edit', $data);

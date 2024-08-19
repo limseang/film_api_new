@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class Origin extends Model
 {
     use HasFactory, AlibabaStorage, LogsActivity;
+
+    protected $table = 'origins';
     protected $fillable = [
         'name',
         'description',

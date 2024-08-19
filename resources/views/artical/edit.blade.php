@@ -195,6 +195,7 @@
                     'numberedList',
                     'blockQuote',
                     'imageUpload',
+                    'mediaEmbed',
                     'undo',
                     'redo'
                 ]

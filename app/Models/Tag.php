@@ -13,6 +13,7 @@ class Tag extends Model
 {
     use HasFactory, LogsActivity;
 
+    protected $table = 'tags';
     protected $fillable = [
         'name',
         'description',
