@@ -35,7 +35,6 @@
 <script src="{{URL::asset('assets/theme/pages/editor_ckeditor_classic.js')}}"></script>
 <script src="{{URL::asset('assets/theme/pages/picker_date.js')}}"></script>
 <script src="{{URL::asset('assets/theme/pages/uploader_bootstrap.js')}}"></script>
-{{-- <script src="{{URL::asset('assets/theme/pages/datatables_basic.js')}}"></script> --}}
-{{-- <script src="{{URL::asset('assets/thems/pages/datatables_extension_row_reorder.js')}}"></script> --}}
+
 
 @yield('scripts')	

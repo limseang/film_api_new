@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 class Artist extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity, AlibabaStorage;
+
+    protected $table = 'artists';
     protected $fillable = [
         'id',
         'name',
@@ -54,7 +56,7 @@ class Artist extends Model
 
     public function getAvatarUrlAttribute(){
 
-        return $this->image ? $this->getSignedUrl($this->image) : null;
+        return $this->profile ? $this->getSignedUrl($this->profile) : null;
     }
 
     protected static $logFillable = true;

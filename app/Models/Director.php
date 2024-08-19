@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class Director extends Model
 {
     use HasFactory, AlibabaStorage, LogsActivity;
+
+    protected $table = 'directors';
     protected $fillable = [
         'name',
         'birth_date',

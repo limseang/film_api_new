@@ -161,6 +161,7 @@ class DirectorController extends Controller
                 return redirect()->back()->with($notification);
             }
         $data['countries'] = Country::all();
+        $data['image'] = $this->getSignUrlNameSize($data['director']->avatar);
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('director.index'), 'page' => __('global.director')], ['link' => '#', 'page' => __('global.edit')]];
         return view('director.edit', $data);
     }

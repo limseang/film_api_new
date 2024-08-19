@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class Genre extends Model
 {
     use HasFactory, AlibabaStorage, LogsActivity;
+
+    protected $table = 'genres';
     protected $fillable = [
         'name',
         'description',

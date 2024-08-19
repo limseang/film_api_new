@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class Category extends Model
 {
     use HasFactory, LogsActivity;
+
+    protected $table = 'categories';
     protected $fillable = [
         'name',
         'image',

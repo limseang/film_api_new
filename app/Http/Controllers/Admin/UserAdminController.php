@@ -102,6 +102,7 @@ class UserAdminController extends Controller
         }
         $data['role'] = Role::where('id', '!=',1)->get();
         $data['userType'] = UserType::all();
+        $data['image'] = $this->getSignUrlNameSize($data['user']->avatar);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('user.index'), 'page' => __('sma.user')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('user.edit', $data);
     }

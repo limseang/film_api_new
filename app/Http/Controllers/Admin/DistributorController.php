@@ -82,6 +82,7 @@ class DistributorController extends Controller
             ];
             return redirect()->route('distributor.index')->with($notification);
         }
+        $data['image'] = $this->getSignUrlNameSize($data['distributor']->image);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('distributor.edit', $data);
     }

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class Distributor extends Model
 {
     use HasFactory, AlibabaStorage, LogsActivity;
+
+    protected $table = 'distributors';
     protected $fillable = [
         'name',
         'description',

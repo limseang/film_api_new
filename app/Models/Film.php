@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 class Film extends Model
 {
     use HasFactory , SoftDeletes, AlibabaStorage, LogsActivity;
+
+    protected $table = 'films';
     protected $fillable = [
         'id',
         'title',

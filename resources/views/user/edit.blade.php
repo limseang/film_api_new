@@ -103,20 +103,7 @@
 
                     <div class="mb-3">
                       <p class="fw-semibold">{{trans('sma.image')}}</p>
-                      <div class="file-input preview-update mb-1" style="padding: 4px; border;border-style: dashed; border-color:#f1f4f9; border-radius:0.375rem; border-width: cal(1px *2); border-color-translucent: rgba(0, 0, 0, 0.125)">
-                        <div class=" file-drop-zone clearfix">
-                          <div class="file-preview-thumbnails clearfix">
-                            <div class="file-preview-frame krajee-default  kv-preview-thumb rotatable" id="thumb-1rad2qred4-148090_Screenshot_202024-06-06_20152921.png" data-fileindex="0" data-fileid="148090_Screenshot_202024-06-06_20152921.png" data-filename="Screenshot 2024-06-06 152921.png" data-template="image" data-zoom="">
-                              <div class="kv-file-content">
-                              <img src="{{$user->avatar_url}}" class="file-preview-image kv-preview-data" title="Screenshot 2024-06-06 152921.png" alt="Screenshot 2024-06-06 152921.png" style="width: auto; height: auto; max-width: 100%; max-height: 100%; image-orientation: from-image;">
-                            </div>
-                          </div>
-                          </div>
-                        </div>
-                        <br>
-                      </div>
-                      <p class="fw-semibold">{{trans('sma.image')}}</p>
-                    <input type="file" class="file-input-caption2" name="avatar">
+                    <input type="file" class="file-input-caption-edit" name="avatar">
                     </div>
                   
                 </div>
@@ -133,10 +120,63 @@
   @section('scripts')
   <script>
     $(document).ready(function() {
+      var initialPreview = [
+        "<img src='{{ $image['url'] }}' class='file-preview-image kv-preview-data' alt='{{ $image['name'] }}' title='{{ $image['name'] }}'>"
+      ];
+          // Buttons inside zoom modal
+          const previewZoomButtonClasses = {
+            rotate: 'btn btn-light btn-icon btn-sm',
+            toggleheader: 'btn btn-light btn-icon btn-header-toggle btn-sm',
+            fullscreen: 'btn btn-light btn-icon btn-sm',
+            borderless: 'btn btn-light btn-icon btn-sm',
+            close: 'btn btn-light btn-icon btn-sm'
+        };
+
+        // Icons inside zoom modal classes
+        const previewZoomButtonIcons = {
+            prev: document.dir == 'rtl' ? '<i class="ph-arrow-right"></i>' : '<i class="ph-arrow-left"></i>',
+            next: document.dir == 'rtl' ? '<i class="ph-arrow-left"></i>' : '<i class="ph-arrow-right"></i>',
+            rotate: '<i class="ph-arrow-clockwise"></i>',
+            toggleheader: '<i class="ph-arrows-down-up"></i>',
+            fullscreen: '<i class="ph-corners-out"></i>',
+            borderless: '<i class="ph-frame-corners"></i>',
+            close: '<i class="ph-x"></i>'
+        };
+
+        // File actions
+        const fileActionSettings = {
+            zoomClass: '',
+            zoomIcon: '<i class="ph-magnifying-glass-plus"></i>',
+            dragClass: 'p-2',
+            dragIcon: '<i class="ph-dots-six"></i>',
+            removeClass: '',
+            removeErrorClass: 'text-danger',
+            indicatorNew: '<i class="ph-file-plus text-success"></i>',
+            indicatorSuccess: '<i class="ph-check file-icon-large text-success"></i>',
+            indicatorError: '<i class="ph-x text-danger"></i>',
+            indicatorLoading: '<i class="ph-spinner spinner text-muted"></i>'
+        };
       // when upload file displan none in class preview-update
-      $('.file-input-caption2').change(function() {
-        $('.preview-update').css('display', 'none');
-      });
+      $('.file-input-caption-edit').fileinput({
+           browseLabel: 'Browse',
+            browseIcon: '<i class="ph-file-plus me-2"></i>',
+            removeIcon: '<i class="ph-x fs-base me-2"></i>',
+            layoutTemplates: {
+                icon: '<i class="ph-check"></i>'
+            },
+            // uploadClass: 'btn btn-light',
+            browseClass: 'btn btn-info opacity-10',
+            removeClass: 'btn btn-light',
+            initialCaption: "No file selected",
+            previewZoomButtonClasses: previewZoomButtonClasses,
+            previewZoomButtonIcons: previewZoomButtonIcons,
+            fileActionSettings: fileActionSettings,
+            initialPreview: initialPreview,
+            showCaption: true,
+            dropZoneEnabled: true,
+            showUpload: false,
+            showRemove: false,
+        });
     });
   </script>
   @endsection
