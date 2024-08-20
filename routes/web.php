@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\FilmController;
 use App\Http\Controllers\Admin\CastController;
 use App\Http\Controllers\Admin\ArticalController;
 use App\Http\Controllers\Admin\OriginController;
+use App\Http\Controllers\Admin\EpisodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -179,6 +180,17 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [OriginController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [OriginController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [OriginController::class, 'status'])->name('status');
+        });
+        // Episode
+        Route::prefix('episode')->name('episode.')->group(function(){
+            Route::get('/', [EpisodeController::class, 'index'])->name('index');
+            Route::get('/create/{film_id}', [EpisodeController::class, 'create'])->name('create');
+            Route::post('/store', [EpisodeController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [EpisodeController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [EpisodeController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [EpisodeController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [EpisodeController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [EpisodeController::class, 'restore'])->name('restore');
         });
     });
 });

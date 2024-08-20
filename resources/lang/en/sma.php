@@ -279,9 +279,12 @@
     'page_id' => 'Page Id',	
     'total_like' => 'Total Like',
     'show_episodes' => 'Show Episodes',
+    'show_episode' => 'Show Episode',
     'edit_this_record' => 'Edit this record',
     'episode' => 'Episode',
+    'add_episode' => 'Add Episode',
     'season' => 'Season',
+    'video' => 'Video',
 
     ]
  ?>
