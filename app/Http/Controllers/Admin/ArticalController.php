@@ -135,6 +135,7 @@ class ArticalController extends Controller
         $data['type'] = Type::where('status',1)->get();
         $data['tag'] = Tag::where('status',1)->get();
         $data['film'] = Film::all();
+        $data['image'] = $this->getSignUrlNameSize($data['artical']->image);
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('artical.index'), 'page' => __('global.artical')], ['link' => '#', 'page' => __('global.edit')]];
         return view('artical.edit', $data);
     }

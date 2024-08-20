@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\DataTables\FilmDataTable;
+use App\Http\DataTables\EpisodeDataTable;
 use Illuminate\Http\Request;
 use App\Traits\AlibabaStorage;
 use Exception;
@@ -207,6 +208,24 @@ class FilmController extends Controller
             }
         }
 
+        public function showEpisode(EpisodeDataTable $episodeDataTable, $id)
+        {
+            $data['film'] = Film::find($id);
+            if(!$data['film']){
+                $notification = [
+                    'type' => 'error',
+                    'icon' => trans('global.icon_error'),
+                    'title' => trans('global.title_error_exception'),
+                    'text' =>  trans('sma.the_not_exist')
+                ];
+                return redirect()->route('film.index')->with($notification);
+            }
+            $data['title'] = $data['film']->title ?? '';
+            $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.episode')]];
+            return $episodeDataTable->with('film_id', $id)->render('film.show_episode', $data);
+                     
+        }
+
         public function destroy($id)
         {
             $film = Film::find($id);
@@ -220,7 +239,7 @@ class FilmController extends Controller
                 return redirect()->route('film.index')->with($notification);
             }
             $totalUsed = $film->cast()->count();
-            if($totalUsed> 0){
+            if($totalUsed > 0){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),

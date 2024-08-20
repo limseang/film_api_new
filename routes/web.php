@@ -144,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [FilmController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [FilmController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [FilmController::class, 'status'])->name('status');
+            Route::get('/show-episode/{id}', [FilmController::class, 'showEpisode'])->name('show-episode');
         });
         // Cast
         Route::prefix('cast')->name('cast.')->group(function(){

@@ -115,6 +115,7 @@
                 route('film.index'),
                 route('film.create'), 
                 request()->is('admin/film/edit/*'),
+                request()->is('admin/film/show-episode/*'),
                 route('cast.index'),
                 route('cast.create'),
                 request()->is('admin/cast/edit/*')
@@ -125,7 +126,7 @@
                         <span>{{__('sma.film')}}</span>
                     </a>
                     <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteFilm)) show @else '' @endif">
-                        <?php $arrRouteFilmList = [route('film.index'), route('film.create'), request()->is('admin/film/edit/*')]; ?>
+                        <?php $arrRouteFilmList = [route('film.index'), route('film.create'), request()->is('admin/film/edit/*'),  request()->is('admin/film/show-episode/*')]; ?>
                         <li class="nav-item">
                             <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteFilmList)) active @else '' @endif">
                                 {{__('sma.list_film')}}

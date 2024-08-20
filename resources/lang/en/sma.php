@@ -277,7 +277,11 @@
     'edit_origin' => 'Edit Origin',
     'page_url' => 'Page Url',
     'page_id' => 'Page Id',	
-    'total_like' => 'Total Like'
+    'total_like' => 'Total Like',
+    'show_episodes' => 'Show Episodes',
+    'edit_this_record' => 'Edit this record',
+    'episode' => 'Episode',
+    'season' => 'Season',
 
     ]
  ?>
