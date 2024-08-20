@@ -26,7 +26,7 @@ class EpisodeDataTable extends DataTable
                 return "row_reload_".$table->id;
             })
             ->addColumn('action', function ($table) {
-                return view('film.action_episode', ['table' => $table]);
+                return view('episode.action', ['table' => $table]);
             })
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->created_at);

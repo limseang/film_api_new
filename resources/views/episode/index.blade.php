@@ -1,10 +1,10 @@
 @extends('layouts.master')
 @section('title')
-{{__('sma.show_episode')}}
+{{__('sma.cast')}}
 @endsection
 @section('breadcrumb-topbar')
 <span data-toggle="tooltip" role="button" type="button" aria-haspopup="true" title="{{__('global.add_new')}}"> 
-    <a href="{{route('episode.create', $film_id)}}" type="button" class="{{config('setup.button_add')}}">
+    <a href="{{route('cast.create')}}" type="button" class="{{config('setup.button_add')}}">
      <i class="ph-plus"></i>
   </a>
   </span>
@@ -28,6 +28,14 @@
                             <option value="N">{{ __('global.publish_no') }}</option>
                         </select>
                     </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">{{ trans('sma.action_record') }}</label>
+                        <select id="soft_delete" class="{{ config('setup.input_select2') }}">
+                            <option value="active_records">{{ __('sma.active_records') }}</option>
+                            <option value="deleted">{{ __('sma.deleted') }}</option>
+                            <option value="all_records">{{ __('sma.all_records') }}</option>
+                        </select>
+                    </div>
                 </div>
 
 
@@ -47,8 +55,6 @@
             {{-- {{ $data['page_name'] }} --}}
     <div class="card">
         <div class="car-body">
-            <br>
-            <span class="badge bg-light border-start border-width-3 text-body rounded-start-0 border-teal" style="font-size: 0.8rem">{{$title}}</span>
             <div class="m-2">
             {{ $dataTable->table(['class' => config('setup.card_datatable'), true]) }}
             </div>

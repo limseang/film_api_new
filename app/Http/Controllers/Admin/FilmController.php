@@ -221,6 +221,7 @@ class FilmController extends Controller
                 return redirect()->route('film.index')->with($notification);
             }
             $data['title'] = $data['film']->title ?? '';
+            $data['film_id'] = $id;
             $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.episode')]];
             return $episodeDataTable->with('film_id', $id)->render('film.show_episode', $data);
                      
