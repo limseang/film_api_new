@@ -118,11 +118,11 @@ class CastDataTable extends DataTable
     {
         return [
             Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center'),
+            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false),
             Column::make('character', 'character')->title(trans('sma.character'))->addClass('text-center'),
             Column::make('position')->title(trans('sma.position'))->width(10)->addClass('text-center'),
-            Column::make('actor_name')->title(trans('sma.actor_name'))->width(10)->addClass('text-center'),
-            Column::make('film_name')->title(trans('sma.film_name'))->width(10)->addClass('text-center'),
+            Column::make('actor_name')->title(trans('sma.actor_name'))->width(10)->addClass('text-center')->orderable(false),
+            Column::make('film_name')->title(trans('sma.film_name'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),

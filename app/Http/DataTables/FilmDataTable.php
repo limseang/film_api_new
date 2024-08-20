@@ -137,12 +137,12 @@ class FilmDataTable extends DataTable
     {
         return [
             Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
-            Column::make('cover_image')->title(trans('sma.cover'))->width(10)->addClass('text-center'),
+            Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center')->orderable(false),
+            Column::make('cover_image')->title(trans('sma.cover'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
-            Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->addClass('text-center'),
-            Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->addClass('text-center'),
-            Column::make('tag_name')->title(trans('sma.tag_name'))->width(10)->addClass('text-center'),
+            Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->addClass('text-center')->orderable(false),
+            Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->addClass('text-center')->orderable(false),
+            Column::make('tag_name')->title(trans('sma.tag_name'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('running_time')->title(trans('sma.running_time'))->width(10)->addClass('text-center'),
             Column::make('view')->title(trans('sma.total_view'))->width(10)->addClass('text-center'),
             Column::make('director_name')->title(trans('sma.director_name'))->width(10)->addClass('text-center'),

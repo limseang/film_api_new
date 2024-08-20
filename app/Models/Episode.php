@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\AlibabaStorage;
 
 class Episode extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory , SoftDeletes, AlibabaStorage;
     protected $fillable = [
         'id',
         'film_id',
@@ -21,6 +22,7 @@ class Episode extends Model
 
     protected $appends = [
         'is_subtitled',
+        'poster_image',
     ];
 
     public function film()
@@ -36,5 +38,10 @@ class Episode extends Model
     public function getIsSubtitledAttribute()
     {
         return $this->subtitles()->exists();
+    }
+
+    public function getPosterImageAttribute()
+    {
+        return $this->poster ? $this->getSignedUrl($this->poster) : '';
     }
 }
