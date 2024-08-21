@@ -15,7 +15,6 @@ trait AlibabaStorage
         $endpoint = env("ALIBABA_OSS_ENDPOINT");
         $bucket = env("ALIBABA_OSS_BUCKET");
 
-        // $object = 'uploads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
         if ($folder) {
             // Add the specified folder to the path
             $object = trim($folder, '/') . '/';
@@ -94,7 +93,6 @@ trait AlibabaStorage
 
             return $signedUrl ?? '';
         } catch (OssException $e) {
-            Log::error($e->getErrorMessage());
             return $e->getMessage();
         }
     }
@@ -108,7 +106,6 @@ trait AlibabaStorage
             $bucket = env("ALIBABA_OSS_BUCKET");
 
             $storage = Storages::query()->find($id);
-            $timeout = 3600;
 
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
             if(empty($storage)){
@@ -122,7 +119,6 @@ trait AlibabaStorage
                 'size' => $storage->size
             ];
         } catch (OssException $e) {
-            Log::error($e->getErrorMessage());
             return [];
         }
     }
@@ -144,7 +140,6 @@ trait AlibabaStorage
             $storage->delete();
             return true;
         } catch (OssException $e) {
-            Log::error($e->getErrorMessage());
             return $e->getMessage();
         }
     }

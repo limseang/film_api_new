@@ -156,10 +156,10 @@
             this.value = this.value.replace(/[^0-9]/g, '');
         });
       var initialPreviewImage = [
-        "<img src='{{ $image['url'] }}' class='file-preview-image kv-preview-data' alt='{{ $image['name'] }}' title='{{ $image['name'] }}'>"
+        "<img src='{{ $image['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $image['name']  ?? ''}}' title='{{ $image['name'] ?? '' }}'>"
       ];
       var initialPreviewCover = [
-        "<img src='{{ $cover['url'] }}' class='file-preview-image kv-preview-data' alt='{{ $cover['name'] }}' title='{{ $cover['name'] }}'>"
+        "<img src='{{ $cover['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $cover['name'] ?? '' }}' title='{{ $cover['name'] ?? '' }}'>"
       ];
           // Buttons inside zoom modal
           const previewZoomButtonClasses = {
