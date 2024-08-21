@@ -23,7 +23,6 @@ trait AlibabaStorage
         }
         $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->getRealPath();
-
         $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
         $result = $ossClient->uploadFile($bucket, $object, $filePath);
 

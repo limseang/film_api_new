@@ -80,7 +80,7 @@
                 <div class="col-12 col-lg-6 p-10">
                   <div class="mb-3">
                     <p class="fw-semibold">{{trans('sma.video')}}</p>
-                    <input type="file" class="file-input-video" data-show-caption="true" data-show-upload="true" accept="video/*">
+                    <input type="file" class="file-input-video" data-show-caption="true" name="video" data-show-upload="true" accept="video/*">
                   </div>
                 </div>
                 <div class="d-flex align-items-center">
@@ -126,7 +126,7 @@
         $('.file-input-video').fileinput({
             browseLabel: 'video',
             browseClass: 'btn btn-info',
-            uploadUrl: "http://localhost", // server upload action
+            uploadUrl: "{{route('episode.upload_video')}}", // server upload action
             uploadAsync: true,
             maxFileCount: 5,
             initialPreview: [],
@@ -152,7 +152,16 @@
             removeClass: 'btn btn-light',
             initialCaption: 'No file selected',
             previewZoomButtonClasses: previewZoomButtonClasses,
-            previewZoomButtonIcons: previewZoomButtonIcons
+            previewZoomButtonIcons: previewZoomButtonIcons,
+            uploadExtraData: function() {
+                return {
+                    _token: $("input[name='_token']").val(),
+                };
+            }
+        }).on('fileuploaded', function(event, previewId, index, fileId) {
+             if(event.response.success){
+                $('#video').val(event.response.success);
+             }
         });
     });
 </script>
