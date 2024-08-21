@@ -114,7 +114,7 @@
     $(document).ready(function() {
       // when upload file displan none in class preview-update
       var initialPreview = [
-        "<img src='{{ $image['url'] }}' class='file-preview-image kv-preview-data' alt='{{ $image['name'] }}' title='{{ $image['name'] }}'>"
+        "<img src='{{ $image['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $image['name'] ?? ''}}' title='{{ $image['name'] ?? '' }}'>"
       ];
           // Buttons inside zoom modal
           const previewZoomButtonClasses = {
