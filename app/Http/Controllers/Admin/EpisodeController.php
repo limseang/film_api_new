@@ -137,6 +137,8 @@ class EpisodeController extends Controller
                 $episode->poster = $poster;
             }
             if($request->video_id != $episode->file){
+                $this->deleteFile($episode->file);
+                Storages::where('id', $request->video_id)->update(['is_used' => 'Y']);
                 $episode->file = $request->video_id;
             }
             $birthDateFormat = date('d/m/Y', strtotime($request->release_date));
@@ -147,10 +149,6 @@ class EpisodeController extends Controller
             $episode->release_date = $birthDateFormat;
             $episode->status = $request->status;
             $episode->save();
-            if($request->video_id != $episode->file){
-                $this->deleteFile($episode->file);
-                Storages::where('id', $request->video_id)->update(['is_used' => 'Y']);
-            }
             DB::commit();
 
             $notification = [

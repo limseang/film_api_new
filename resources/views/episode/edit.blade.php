@@ -124,7 +124,7 @@
                     <input type="file" class="file-input-video" name="video" data-show-caption="true" data-show-upload="true" accept="video/*">
                   </div>
                   <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID</span></label>
-                  <input type="text" name="video_id" class="form-control" id="video" value='{{$episode->file}}' readonly>
+                  <input type="text" name="video_id" class="form-control" id="video_id" value='{{$episode->file}}' readonly>
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="btn btn-primary mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
@@ -187,7 +187,7 @@
     $(document).ready(function() {
      // before submit form to server side check if video is value is empty or 0
         $('form').submit(function() {
-            if($('#video').val() == 0) {
+            if($('#video_id').val() == 0) {
                 new Noty({
                     text: '<i class="fa fa-exclamation-circle text-danger"></i> Please upload a video file first',
                     type: 'warning'
@@ -263,7 +263,7 @@
       }).on('fileuploaded', function(event, previewId, index, response) {
            var result = previewId.response;
           if (result.success) {
-                $('#video').val(result.file_id);
+                $('#video_id').val(result.file_id);
               new Noty({
                     text: '<i class="fa fa-check-circle text-success"></i> Upload successful',
                     type: 'success'
