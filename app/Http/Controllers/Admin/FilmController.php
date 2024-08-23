@@ -196,15 +196,15 @@ class FilmController extends Controller
                 'text' => trans('sma.update_successfully'),
             ];
             return redirect()->route('film.index')->with($notification);
-            }catch(Exception $e){
-                DB::rollBack();
-                $notification = [
-                    'type' => 'exception',
-                    'icon' => trans('global.icon_error'),
-                    'title' => trans('global.title_error_exception'),
-                    'text' => $e->getMessage()
-                ];
-                return redirect()->back()->withInput()->with($notification);
+        }catch(Exception $e){
+            DB::rollBack();
+            $notification = [
+                'type' => 'exception',
+                'icon' => trans('global.icon_error'),
+                'title' => trans('global.title_error_exception'),
+                'text' => $e->getMessage()
+            ];
+            return redirect()->back()->withInput()->with($notification);
             }
         }
 
