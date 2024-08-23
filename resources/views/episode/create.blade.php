@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-{{__('global.add_cast')}}
+{{__('global.add_episode')}}
 @endsection
 @section('content')
   <div class="row">
@@ -229,10 +229,13 @@
                     type: 'warning'
                 }).show();
           } 
-      })
-    //   .on('fileclear', function(event) {
-    //       $('#video').val(''); 
-    //   });
+      }).on('fileuploaderror', function(event, data, msg) {
+          // Show the error message
+          new Noty({
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Something went wrong, please try again',
+                    type: 'warning'
+                }).show();
+      });
 
     });
 </script>
