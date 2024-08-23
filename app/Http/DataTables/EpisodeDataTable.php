@@ -45,11 +45,15 @@ class EpisodeDataTable extends DataTable
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
+            ->editColumn('description', function ($table) {
+                // html_entity_decode() is used to convert the HTML entities to their corresponding characters
+                return html_entity_decode($table->description);
+            })
             ->editColumn('poster_image', function ($table) {
                 $pic = $table->poster_image ?? '';
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
-            ->rawColumns(['poster_image','season','episode','status']) #allowed for using html code here
+            ->rawColumns(['poster_image','season','episode','status','description']) #allowed for using html code here
         ;
     }
 

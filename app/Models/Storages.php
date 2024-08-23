@@ -12,6 +12,8 @@ class Storages extends Model
         'path',
         'extension',
         'size',
+        'type',
+        'is_used',
     ];
 
 }
