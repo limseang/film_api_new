@@ -209,7 +209,7 @@ class EpisodeController extends Controller
         $totalUsed = $episode->subtitles()->count();
         if($totalUsed> 0){
             $notification = [
-                'type' => 'exception',
+                'type' => 'warning',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
                 'text' => trans('sma.cant_delete_being_used'),
