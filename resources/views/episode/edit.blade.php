@@ -140,7 +140,7 @@
   <script>
    var initialPreviewVideo = [
           '<video class="kv-preview-data file-preview-video" controls="" style="width: 213px; height: 160px;">' +
-              '<source src="{{$video["url"]}}" type="video/mp4">' +
+              '<source src="{{$video["url"] ?? ''}}" type="video/mp4">' +
               '<div class="file-preview-other">' +
                   '<span class="file-other-icon"><i class="bi-file-earmark-fill"></i></span>' +
               '</div>' +
