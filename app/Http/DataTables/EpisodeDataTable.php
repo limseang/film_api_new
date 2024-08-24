@@ -132,7 +132,8 @@ class EpisodeDataTable extends DataTable
     {
         $soft_delete = request('soft_delete');
         $columns = [
-            Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
+            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
             Column::make('description')->title(trans('sma.description'))->width(10)->addClass('text-center'),
@@ -146,7 +147,6 @@ class EpisodeDataTable extends DataTable
         }else{
             $columns[]= Column::make('created_at','created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
         }
-        $columns[] =  Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
 
         return $columns;
     }
