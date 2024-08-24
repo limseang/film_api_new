@@ -279,4 +279,12 @@ class EpisodeController extends Controller
 
     }
 
+    public function addSubtitle($id)
+    {
+        $data['episode'] = Episode::find($id);
+        $data['film'] = Film::find($data['episode']->film_id);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$data['episode']->film_id), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.edit')]];
+        return view('episode.add_subtitle', $data);
+    }
+
 }
