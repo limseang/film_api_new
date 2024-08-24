@@ -188,6 +188,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/store', [EpisodeController::class, 'store'])->name('store');
             Route::get('/edit/{id}', [EpisodeController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [EpisodeController::class, 'update'])->name('update');
+            Route::get('/add-subtitle/{id}', [EpisodeController::class, 'addSubtitle'])->name('add-subtitle');
             Route::get('/delete/{id}', [EpisodeController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [EpisodeController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [EpisodeController::class, 'restore'])->name('restore');

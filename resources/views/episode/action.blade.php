@@ -1,5 +1,11 @@
 <div class="d-inline-flex"> 
-    @if(!($table->deleted_at)) 
+    @if(!($table->deleted_at))
+    <a href="{{route('episode.add-subtitle', $table->id)}}" class="dropdown-item">
+        <span style="white-space: nowrap">
+            <i class="ph-file-plus text-success" style="font-size:22px; text-bold"></i>
+        </span>
+    </a>
+    &nbsp;
     <a href="#" type="button" data-click="bpo-status{{$table->id}}" class="bpo-status" style="padding: 0.10rem"
         data-action="{{ route('episode.status', $table->id) }}" 
         data-html="true" data-placement="left">

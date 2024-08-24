@@ -285,6 +285,12 @@
     'add_episode' => 'Add Episode',
     'season' => 'Season',
     'video' => 'Video',
+    'add_subtitles' => 'Add Subtitles',
+    'add_sutttile' => 'Add Sutttile',
+    'subtitles' => 'Subtitles',
+    'subtitle' => 'Subtitle',
+    'edit_subtitle' => 'Edit Subtitle',
+    'episode_name' => 'Episode Name',
 
     ]
  ?>
