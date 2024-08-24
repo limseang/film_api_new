@@ -31,6 +31,9 @@ class EpisodeDataTable extends DataTable
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->created_at);
             })
+            ->editColumn('deleted_at', function ($table) {
+                return dateTimeFormat($table->deleted_at);
+            })
             ->editColumn('releas_date', function ($table) {
                 $date = strtotime($table->release_date);
                 return dateFormat($date);
@@ -72,13 +75,23 @@ class EpisodeDataTable extends DataTable
             'release_date',
             'poster',
             'status',
-            'created_at' ]);
+            'created_at',
+            'deleted_at']);
         $model->where('film_id', $this->film_id);
         if (request('name')) {
             $model->where('title', 'like', '%' . request('name') . '%');
         }
         if (request('publish')) {
             $model->where('status', request('publish'));
+        }
+        if (request('soft_delete')) {
+            if (request('soft_delete') == 'deleted') {
+                $model->withTrashed();
+                $model->where($this->tableName . '.deleted_at', '!=', null);
+            }
+            elseif (request('soft_delete') == 'all_records') {
+                $model->withTrashed();
+            }
         }
         $model->orderBy('created_at', 'ASC')
                 ->orderBy('episode', 'ASC');
@@ -117,8 +130,10 @@ class EpisodeDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
+        $soft_delete = request('soft_delete');
+        $columns = [
+            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
             Column::make('description')->title(trans('sma.description'))->width(10)->addClass('text-center'),
@@ -126,9 +141,14 @@ class EpisodeDataTable extends DataTable
             Column::make('episode')->title(trans('sma.episode'))->width(10)->addClass('text-center'),
             Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
+        if($soft_delete== 'deleted'){
+            $columns[] = Column::make('deleted_at')->title(trans('global.deleted_at'))->width(10)->addClass('text-center');
+        }else{
+            $columns[]= Column::make('created_at','created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        }
+
+        return $columns;
     }
 
     /**

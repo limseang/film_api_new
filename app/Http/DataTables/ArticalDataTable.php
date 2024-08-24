@@ -147,7 +147,8 @@ class ArticalDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
+            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('image_url')->title(trans('sma.image'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-right'),
             Column::make('origin_name')->title(trans('sma.origin'))->width(10)->addClass('text-center')->orderable(false),
@@ -159,7 +160,6 @@ class ArticalDataTable extends DataTable
             Column::make('total_comment')->title(trans('sma.total_comment'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
     }
 

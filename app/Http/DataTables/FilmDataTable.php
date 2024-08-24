@@ -136,7 +136,8 @@ class FilmDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
+            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('cover_image')->title(trans('sma.cover'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
@@ -148,7 +149,6 @@ class FilmDataTable extends DataTable
             Column::make('director_name')->title(trans('sma.director_name'))->width(10)->addClass('text-center'),
             Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
     }
 
