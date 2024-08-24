@@ -71,4 +71,5 @@ return [
      'icon' => 'Icon',
      'artical' => 'Artical',
      'film' => 'Film',
+     'deleted_at' => 'Deleted at',
 ];

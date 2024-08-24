@@ -223,4 +223,60 @@ class EpisodeController extends Controller
         ];
         return redirect()->back()->with($notification);
     }
+
+    public function restore($id){
+        $episode = Episode::withTrashed()->find($id);
+        if($episode){
+            $episode->restore();
+            $notification = [
+                'type' => 'success',
+                'icon' => trans('global.icon_success'),
+                'title' => trans('global.title_restored'),
+                'text' => trans('sma.restored_successfully'),
+            ];
+            return redirect()->back()->with($notification);
+        }
+        $notification = [
+            'type' => 'errror',
+            'icon' => trans('global.icon_error'),
+            'title' => trans('global.title_error_exception'),
+            'text' =>  trans('sma.the_not_exist'),
+        ];
+        return redirect()->back()->with($notification);
+    }
+
+    public function deleteTrash($id){
+
+        try{
+            $episode = Episode::withTrashed()->find($id);
+            if(!$episode){
+                $notification = [
+                    'type' => 'errror',
+                    'icon' => trans('global.icon_error'),
+                    'title' => trans('global.title_error_exception'),
+                    'text' =>  trans('sma.the_not_exist'),
+                ];
+                return redirect()->back()->with($notification);
+            }
+            $this->deleteFile($episode->file);
+            $episode->forceDelete();
+            $notification = [
+                'type' => 'success',
+                'icon' => trans('global.icon_success'),
+                'title' => trans('global.title_restored'),
+                'text' => trans('sma.restored_successfully'),
+            ];
+        return redirect()->back()->with($notification);
+    }catch(Exception $e){
+        $notification = [
+            'type' => 'exception',
+            'icon' => trans('global.icon_error'),
+            'title' => trans('global.title_error_exception'),
+            'text' => $e->getMessage()
+        ];
+        return redirect()->back()->withInput()->with($notification);
+    }
+
+    }
+
 }
