@@ -144,8 +144,8 @@ trait AlibabaStorage
             if(empty($storage)){
                 return [];
             }
-            // timeout 10 years
-            $timeout =  10 * 365 * 24 * 3600;
+            // timeout 1000 years
+            $timeout =  1000 * 365 * 24 * 3600;
             $signedUrl = $ossClient->signUrl($bucket,$storage->path,$timeout,"GET",null);
 
             return [
