@@ -291,6 +291,7 @@
     'subtitle' => 'Subtitle',
     'edit_subtitle' => 'Edit Subtitle',
     'episode_name' => 'Episode Name',
+    'file_subtitle' => 'File Subtitle',
 
     ]
  ?>

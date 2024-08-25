@@ -65,8 +65,6 @@
 {!! $dataTable->scripts() !!}
     <script src="{{asset('assets/datatables/datatables_customize_'.app()->getLocale().'.js')}}"></script>
     <script src="{{asset('assets/js/core.js')}}"></script>
-<script>
 
-</script>
 @endsection
 @endsection

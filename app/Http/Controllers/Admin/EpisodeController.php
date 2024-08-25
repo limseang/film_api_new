@@ -8,6 +8,7 @@ use App\Traits\AlibabaStorage;
 use App\Models\Episode;
 use App\Models\Film;
 use App\Models\Storages;
+use App\Models\Country;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -283,6 +284,7 @@ class EpisodeController extends Controller
     {
         $data['episode'] = Episode::find($id);
         $data['film'] = Film::find($data['episode']->film_id);
+        $data['country'] = Country::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$data['episode']->film_id), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('episode.add_subtitle', $data);
     }
