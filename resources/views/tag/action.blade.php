@@ -3,7 +3,7 @@
         data-action="{{ route('tag.status', $table->id) }}" 
         data-html="true" data-placement="left">
         <span class="{{$table->status == 1 ? config('setup.button-opacity-success') : config('setup.button-opacity-danger')}} p-1">
-            <i class="{{$table->status == 1 ? 'ph-toggle-left' : 'ph-toggle-right'}}" style="font-size:14px"></i>
+            <i class="{{$table->status == 1 ? 'ph-toggle-right' : 'ph-toggle-left'}}" style="font-size:14px"></i>
             </span>
     </a>
     &nbsp;
