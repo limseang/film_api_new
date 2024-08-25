@@ -83,6 +83,27 @@ const FileUpload = function() {
             previewZoomButtonIcons: previewZoomButtonIcons,
             fileActionSettings: fileActionSettings
         });
+        // file-multi-input with data-file attribute
+       // Initialize file input dynamically based on data-file attribute
+        $('[data-file]').each(function () {
+            $(this).fileinput({
+                browseLabel: 'Browse',
+                browseIcon: '<i class="ph-file-plus me-2"></i>',
+                uploadIcon: '<i class="ph-file-arrow-up me-2"></i>',
+                removeIcon: '<i class="ph-x fs-base me-2"></i>',
+                layoutTemplates: {
+                    icon: '<i class="ph-check"></i>'
+                },
+                uploadClass: 'btn btn-light',
+                removeClass: 'btn btn-light',
+                initialCaption: "No file selected",
+                previewZoomButtonClasses: previewZoomButtonClasses,
+                previewZoomButtonIcons: previewZoomButtonIcons,
+                fileActionSettings: fileActionSettings,
+                showUpload: false,
+            });
+        });
+
 
         $('.file-input-drop').fileinput({
             browseLabel: 'Browse',

@@ -194,6 +194,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/restore/{id}', [EpisodeController::class, 'restore'])->name('restore');
             Route::get('/delete-trash/{id}', [EpisodeController::class, 'deleteTrash'])->name('delete-trash');
             Route::post('/upload-video', [EpisodeController::class, 'uploadVideo'])->name('upload_video');
+            Route::post('/store-subtitle', [EpisodeController::class, 'storeSubtitle'])->name('store_subtitle');
         });
     });
 });
