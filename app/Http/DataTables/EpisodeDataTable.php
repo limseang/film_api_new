@@ -44,6 +44,20 @@ class EpisodeDataTable extends DataTable
             ->editColumn('episode', function ($table) {
                 return  '<span class="'.config('setup.badge_success').'">'.$table->episode.'</span>';
             })
+            ->editColumn('mutile_subtitle', function ($table) {
+                // 
+                $ul = '<ul>';
+                $subtitle = $table->subtitles ?? [];
+                if (count($subtitle) == 0) {
+                    return '';
+                }
+                foreach ($subtitle as $value) {
+                    $name = $value->language->name ?? '';
+                    $ul .= '<li class="'.config('setup.badge_info').' ms-2">'.$name.'</li><br>';
+                }
+                $ul .= '</ul>';
+                return $ul;
+            })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -56,7 +70,7 @@ class EpisodeDataTable extends DataTable
                 $pic = $table->poster_image ?? '';
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
-            ->rawColumns(['poster_image','season','episode','status','description']) #allowed for using html code here
+            ->rawColumns(['poster_image','season','episode','status','description','mutile_subtitle']) #allowed for using html code here
         ;
     }
 
@@ -77,6 +91,7 @@ class EpisodeDataTable extends DataTable
             'status',
             'created_at',
             'deleted_at']);
+        $model->with('subtitles');
         $model->where('film_id', $this->film_id);
         if (request('name')) {
             $model->where('title', 'like', '%' . request('name') . '%');
@@ -133,12 +148,12 @@ class EpisodeDataTable extends DataTable
         $soft_delete = request('soft_delete');
         $columns = [
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
             Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
             Column::make('description')->title(trans('sma.description'))->width(10)->addClass('text-center'),
             Column::make('season')->title(trans('sma.season'))->width(10)->addClass('text-center'),
             Column::make('episode')->title(trans('sma.episode'))->width(10)->addClass('text-center'),
+            Column::make('mutile_subtitle')->title(trans('sma.subtitle'))->width(10)->addClass('text-center'),
             Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
         ];
