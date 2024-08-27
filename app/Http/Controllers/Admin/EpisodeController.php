@@ -10,6 +10,7 @@ use App\Models\Film;
 use App\Models\Storages;
 use App\Models\Country;
 use Illuminate\Support\Facades\DB;
+use App\Models\EpisodeSubtitle;
 use Exception;
 
 class EpisodeController extends Controller
@@ -284,10 +285,55 @@ class EpisodeController extends Controller
     {
         $data['episode'] = Episode::find($id);
         $data['film'] = Film::find($data['episode']->film_id);
-        $data['country'] = Country::all();
-        $data['subtitles'] = $data['episode']->subtitles ?? [];
+        $data['country'] = Country::whereNotIn('id', $data['episode']->subtitles->pluck('language_id'))->get();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$data['episode']->film_id), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('episode.add_subtitle', $data);
     }
+
+    public function storeSubtitle(Request $request)
+    {
+        $this->validate($request, [
+            'language_id' => 'required|array',
+            'file' => 'required|array',
+            'episode_id' => 'required|exists:episodes,id',
+            'film_id' => 'required|exists:films,id',
+        ]);
+        try{
+            DB::beginTransaction();
+            $subtitle = new EpisodeSubtitle();
+            // upload array file to alibaba
+            $files = $request->file('file');
+            $storages = [];
+            foreach($files as $file){
+                $storages[] = $this->UploadFile($file, 'Subtitle');
+            }
+            foreach($request->language_id as $key => $value){
+                $subtitle = new EpisodeSubtitle();
+                $subtitle->language_id = $value;
+                $subtitle->url = $storages[$key];
+                $subtitle->film_id = $request->film_id;
+                $subtitle->episode_id = $request->episode_id;
+                $subtitle->save();
+            }
+            DB::commit();
+            $notification = [
+                'type' => 'success',
+                'icon' => trans('global.icon_success'),
+                'title' => trans('global.title_updated'),
+                'text' => trans('sma.update_successfully'),
+            ];
+            return redirect()->route('film.show-episode', $request->film_id)->with($notification);
+        }catch(Exception $e){
+            DB::rollBack();
+            $notification = [
+                'type' => 'exception',
+                'icon' => trans('global.icon_error'),
+                'title' => trans('global.title_error_exception'),
+                'text' => $e->getMessage()
+            ];
+            return redirect()->back()->withInput()->with($notification);
+            }
+        }
+
 
 }

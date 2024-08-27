@@ -15,7 +15,6 @@ class EpisodeSubtitle extends Model
         'film_id',
         'episode_id'
     ];
-
     public function film()
     {
         return $this->belongsTo(Film::class);
