@@ -335,5 +335,37 @@ class EpisodeController extends Controller
             }
         }
 
+        public function editSubtitle($id)
+        {
+            $data['episode'] = Episode::find($id);
+            $data['film'] = Film::find($data['episode']->film_id);
+            $data['episodeSubtitles'] = EpisodeSubtitle::where('episode_id', $id)->get();
+            $data['country'] = Country::whereNotIn('id', $data['episodeSubtitles']->pluck('language_id'))->get();
+            $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$data['episode']->film_id), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.edit')]];
+            return view('episode.edit_subtitle', $data);
+        }
+
+        public function deleteSubtitle($id)
+        {
+            $subtitle = EpisodeSubtitle::find($id);
+            if(!$subtitle){
+                $notification = [
+                    'type' => 'error',
+                    'icon' => trans('global.icon_error'),
+                    'title' => trans('global.title_error_exception'),
+                    'text' =>  trans('sma.the_not_exist')
+                ];
+                return redirect()->back()->with($notification);
+            }
+            $this->deleteFile($subtitle->url);
+            $subtitle->delete();
+            $notification = [
+                'type' => 'success',
+                'icon' => trans('global.icon_success'),
+                'title' => trans('global.title_updated'),
+                'text' => trans('sma.delete_successfully'),
+            ];
+            return redirect()->back()->with($notification);
+        }
 
 }

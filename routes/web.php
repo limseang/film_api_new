@@ -195,6 +195,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete-trash/{id}', [EpisodeController::class, 'deleteTrash'])->name('delete-trash');
             Route::post('/upload-video', [EpisodeController::class, 'uploadVideo'])->name('upload_video');
             Route::post('/store-subtitle', [EpisodeController::class, 'storeSubtitle'])->name('store_subtitle');
+            Route::get('/delete-subtitle/{id}', [EpisodeController::class, 'deleteSubtitle'])->name('delete_subtitle');
+            Route::get('/edit-subtitle/{id}', [EpisodeController::class, 'editSubtitle'])->name('edit_subtitle');
         });
     });
 });

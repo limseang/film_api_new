@@ -28,6 +28,42 @@
                             <option value="all_records">{{ __('sma.all_records') }}</option>
                         </select>
                     </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="type">{{ trans('sma.origin') }}</label>
+                      <select id="origin" class="{{ config('setup.input_select2') }}" name="origin" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($origins as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="type">{{ trans('sma.type') }}</label>
+                      <select id="type" class="{{ config('setup.input_select2') }}" name="type" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($type as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="catgeory">{{ trans('sma.category') }}</label>
+                      <select id="category" class="{{ config('setup.input_select2') }}" name="catgeory" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($categories as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">{{trans('sma.film')}}</label>
+                        <select id="film" class="{{ config('setup.input_select2') }}" name="film" >
+                            <option value="">{{ __('global.please_select') }}</option>
+                            @foreach($film as $value)
+                            <option value="{{ $value->id }}">{{$value->title }}</option>
+                            @endforeach
+                        </select>
+                </div>
                 </div>
 
 

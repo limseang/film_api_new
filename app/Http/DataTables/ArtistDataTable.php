@@ -64,6 +64,20 @@ class ArtistDataTable extends DataTable
         if (request('publish')) {
             $model->where('status', request('publish'));
         }
+        if (request('origin')) {
+            $model->where('origin_id', request('origin'));
+        }
+        if (request('film')) {
+            $model->where('film_id', request('film'));
+        }
+
+        if (request('category')) {
+            $model->where('category_id', request('category'));
+        }
+
+        if (request('type')) {
+            $model->where('type_id', request('type'));
+        }
 
         if (request('soft_delete')) {
             if (request('soft_delete') == 'deleted') {
@@ -90,6 +104,10 @@ class ArtistDataTable extends DataTable
                 'data' => 'function(d) {
                             d.name = $("#name").val();
                             d.publish = $("#publish").val();
+                            d.origin = $("#origin").val();
+                            d.film = $("#film").val();
+                            d.category = $("#category").val();
+                            d.type = $("#type").val();
                             d.soft_delete = $("#soft_delete").val();
                         }'
             ])
