@@ -13,7 +13,7 @@
                     {{trans('sma.add_subtitle')}}
                 </span>
             </a>
-            <a href="{{route('episode.add-subtitle', $table->id)}}" class="dropdown-item">
+            <a href="{{route('episode.edit_subtitle', $table->id)}}" class="dropdown-item">
                 <span style="white-space: nowrap">
                     <span style="white-space: nowrap;" class="{{config('setup.button-opacity-primary')}}">
                         <i class="ph-file-text" style="font-size:14px; text-bold"></i>

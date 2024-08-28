@@ -121,7 +121,8 @@
                 request()->is('admin/cast/edit/*'),
                 request()->is('admin/episode/create/*'),
                 request()->is('admin/episode/edit/*'),
-                request()->is('admin/episode/add-subtitle/*')
+                request()->is('admin/episode/add-subtitle/*'),
+                request()->is('admin/episode/edit-subtitle/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteFilm)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRouteFilm)) active @else '' @endif">
@@ -129,7 +130,8 @@
                         <span>{{__('sma.film')}}</span>
                     </a>
                     <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteFilm)) show @else '' @endif">
-                        <?php $arrRouteFilmList = [route('film.index'), route('film.create'), request()->is('admin/film/edit/*'),  request()->is('admin/film/show-episode/*'),  request()->is('admin/episode/create/*'), request()->is('admin/episode/edit/*'), request()->is('admin/episode/add-subtitle/*')]; ?>
+                        <?php $arrRouteFilmList = [route('film.index'), route('film.create'), request()->is('admin/film/edit/*'),  request()->is('admin/film/show-episode/*'),  request()->is('admin/episode/create/*'), request()->is('admin/episode/edit/*'), request()->is('admin/episode/add-subtitle/*'),
+                    request()->is('admin/episode/edit-subtitle/*')]; ?>
                         <li class="nav-item">
                             <a href="{{route('film.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteFilmList)) active @else '' @endif">
                                 {{__('sma.list_film')}}
