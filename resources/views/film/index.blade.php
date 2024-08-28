@@ -28,10 +28,43 @@
                             <option value="N">{{ __('global.publish_no') }}</option>
                         </select>
                     </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="type">{{ trans('sma.genre') }}</label>
+                      <select id="genre" class="{{ config('setup.input_select2') }}" name="genre" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($genre as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="type">{{ trans('sma.type') }}</label>
+                      <select id="type" class="{{ config('setup.input_select2') }}" name="type" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($type as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label" for="type">{{ trans('sma.tag') }}</label>
+                      <select id="tag" class="{{ config('setup.input_select2') }}" name="tag" >
+                          <option value="">{{ __('global.please_select') }}</option>
+                          @foreach($tag as $value)
+                          <option value="{{ $value->id }}" >{{$value->name }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">{{trans('sma.language')}}</label>
+                        <select id="language" class="{{ config('setup.input_select2') }}" name="language" >
+                            <option value="">{{ __('global.please_select') }}</option>
+                            @foreach($countries as $value)
+                            <option value="{{ $value->id }}">{{$value->name }}</option>
+                            @endforeach
+                        </select>
                 </div>
-
-
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" style="margin-top:4px">
                     <button type="submit" class="btn btn-success">
                         <i class="ph-magnifying-glass me-2"></i>
                         {{ __('global.search') }}

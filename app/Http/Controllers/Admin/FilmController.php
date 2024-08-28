@@ -28,6 +28,10 @@ class FilmController extends Controller
 
     public function index(FilmDataTable $dataTable)
     {
+        $data['genre'] = Genre::where('status', 1)->get();
+        $data['tag'] = Tag::where('status', 1)->get();
+        $data['type'] = Type::where('status', 1)->get();
+        $data['countries'] = Country::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.film')]];
         return $dataTable->render('film.index', $data);
     }
