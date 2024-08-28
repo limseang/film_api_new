@@ -292,6 +292,10 @@
     'edit_subtitle' => 'Edit Subtitle',
     'episode_name' => 'Episode Name',
     'file_subtitle' => 'File Subtitle',
+    'genre_name' => 'Genre Name',
+    'character' => 'Character',
+    'if_language_is_already_used_cannt_show_or_disable_at_dropdown_list' => 'If the language is already in use, can not be viewed or disabled in the drop-down list.',
+    'icon' => 'Icon',
 
     ]
  ?>

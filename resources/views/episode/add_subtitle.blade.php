@@ -58,6 +58,7 @@
             <input type="hidden" name="film_id" value="{{$film->id}}">
             <div class="row">
             <div class="col-12 col-lg-12 p-10">
+                <p class="badge bg-light border-start border-width-3 text-body rounded-start-0 border-warning">Note: {{trans('sma.if_language_is_already_used_cannt_show_or_disable_at_dropdown_list')}}</p>
                 <table class="table table-borderless">
                     <thead class="table-primary bg-opacity-10 table-borderless">
                         <tr style="border: none">
@@ -102,7 +103,7 @@
           </div>
           <br>
           <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-primary mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
+            <button type="submit" class="btn link-primary border-primary p-2 add-subtitle" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
         </div>
         </form>
         </div>
@@ -166,14 +167,14 @@
         var selectedValues = [];
 
         // Collect selected values from all dropdowns
-        $('select[name="language[]"]').each(function() {
+        $('select[name="language_id[]"]').each(function() {
             if ($(this).val()) {
                 selectedValues.push($(this).val());
             }
         });
 
         // Update each dropdown to disable selected options in others
-        $('select[name="language[]"]').each(function() {
+        $('select[name="language_id[]"]').each(function() {
             var currentVal = $(this).val(); // Current value of this select
             $(this).find('option').each(function() {
                 $(this).prop('disabled', false); // Enable all options initially
@@ -194,7 +195,7 @@
     });
 
     // Event listener for dropdown changes
-    $(document).on('change', 'select[name="language[]"]', function() {
+    $(document).on('change', 'select[name="language_id[]"]', function() {
         updateDropdownOptions();
     });
 
