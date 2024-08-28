@@ -374,5 +374,6 @@
     'subttile_name' => 'ឈ្មោះអក្សររត់ពីរក្រោម',
     'episode_name' => 'ឈ្មោះភាគ',
     'file_subtitle' => 'ឯកសារអក្សររត់ពីរក្រោម',
+    'if_language_is_already_used_cannt_show_or_disable_at_dropdown_list' => 'ប្រសិនបើភាសាត្រូវបានប្រើប្រាស់រួចហើយ មិនអាចមើល ឬត្រូវបានបិទនៅក្នុងបញ្ជីទម្លាក់។',
 
   ];
