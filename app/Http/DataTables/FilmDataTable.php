@@ -99,6 +99,18 @@ class FilmDataTable extends DataTable
         if (request('publish')) {
             $model->where('status', request('publish'));
         }
+        if (request('language')) {
+            $model->where('language', request('language'));
+        }
+        if (request('tag')) {
+            $model->where('tag', request('tag'));
+        }
+        if (request('genre')) {
+            $model->where('genre_id', request('genre'));
+        }
+        if (request('type')) {
+            $model->where('type', request('type'));
+        }
         $model->orderBy('updated_at', 'DESC');
         return $model;
     }
@@ -115,6 +127,10 @@ class FilmDataTable extends DataTable
                 'data' => 'function(d) {
                             d.name = $("#name").val();
                             d.publish = $("#publish").val();
+                            d.language = $("#language").val();
+                            d.tag = $("#tag").val();
+                            d.genre = $("#genre").val();
+                            d.type = $("#type").val();
                             d.soft_delete = $("#soft_delete").val();
                         }'
             ])
