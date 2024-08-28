@@ -42,7 +42,7 @@
                                 <tr>
                                     <td> <span class="{{config('setup.badge_success')}}">{{$subtitle->language->name}}</span></td>
                                     <td>
-                                        <a href="{{asset('storage/'.$subtitle->file)}}" target="_blank" class="btn btn-flat-success btn-sm rounded-pill p-2">
+                                        <a href="#" target="_blank" class="btn btn-flat-success btn-sm rounded-pill p-2 coming-soon" data-coming-soon={{$subtitle->id}}>
                                             <i class="ph-download"></i>
                                         </a>
                                     </td>
@@ -92,7 +92,7 @@
                                   </span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-flat-success btn-sm rounded-pill p-2">
+                                <button type="button" class="btn btn-flat-success btn-sm rounded-pill p-2 remove-first-index">
                                     <i class="ph-check"></i>
                                 </button>
                             </td>
@@ -113,6 +113,21 @@
   @section('scripts')
   <script>
    $(document).ready(function() {
+    // Initialize select2 for the first row
+    $('.remove-first-index').click(function() {
+        new Noty({
+                    text: 'You can not remove the first row',
+                    type: 'warning',
+                }).show();
+    });
+    // coming-soon button
+    $('.coming-soon').click(function(e) {
+        e.preventDefault();
+        new Noty({
+                    text: 'Unavailable functionality coming soon.',
+                    type: 'warning',
+                }).show();
+    });
     var count = 1;
 
     // Function to render a row for a subtitle
@@ -204,6 +219,7 @@
         $(this).closest('tr').remove();
         updateDropdownOptions();
 
+        count--;
         // Update the row numbers after a row is removed
         $('.t-body tr').each(function(index) {
             $(this).find('td:first-child .badge').text(index + 1);
