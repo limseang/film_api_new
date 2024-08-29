@@ -44,6 +44,11 @@ return[
 
     #DataTable
     // 'card_datatable' => 'display table datatables text-nowrap table-hover',
+    'button_opacity_success' => 'btn bg-success bg-opacity-10 text-success',
+    'button_opacity_primary' => 'btn bg-primary bg-opacity-10 text-primary',
+    'button_opacity_danger' => 'btn bg-danger bg-opacity-10 text-danger',
+    'button_opacity_warning' => 'btn bg-warning bg-opacity-10 text-warning',
+    'button_opacity_info' => 'btn bg-info bg-opacity-10 text-info',
     'card_datatable' => 'table dataTable dtr-inline text-nowrap table-hover',
     'badge_primary' => 'badge bg-primary bg-opacity-10 text-primary',
     'badge_success' => 'badge bg-success bg-opacity-10 text-success',

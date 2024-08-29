@@ -32,7 +32,7 @@
 
 
                 <div class="d-flex align-items-center">
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="{{config('setup.button_opacity_success')}}">
                         <i class="ph-magnifying-glass me-2"></i>
                         {{ __('global.search') }}
                     </button>

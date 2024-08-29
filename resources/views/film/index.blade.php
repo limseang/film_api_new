@@ -65,7 +65,7 @@
                         </select>
                 </div>
                 <div class="d-flex align-items-center" style="margin-top:4px">
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="{{config('setup.button_opacity_success')}}">
                         <i class="ph-magnifying-glass me-2"></i>
                         {{ __('global.search') }}
                     </button>
