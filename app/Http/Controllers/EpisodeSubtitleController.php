@@ -16,16 +16,17 @@ class EpisodeSubtitleController extends Controller
      */
     public function index()
     {
-        try{ $uploadController = new UploadController();
+        try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::with('film','episode','language')->get();
             $data = [];
             foreach ($episodeSubtitle as $item){
                 $data[] = [
                     'id' => $item->id,
                     'language' => $item->language->name,
-                    'url' => $item->url,
-                    'film' => $item->film->title,
-                    'episode' => $item->episode->title,
+                    'url' => $uploadController->getSubtileUrl($item->url),
+                    'film' => $item->film->title ?? '',
+                    'episode' => $item->film->id ?? '',
                 ];
             }
             return $this->sendResponse($data );

@@ -134,6 +134,7 @@ class FilmController extends Controller
     {
         $episode = Episode::where('film_id',$film_id)->get();
         $film = Film::find($film_id);
+        $uploadController = new UploadController();
         $filmEpisode = [];
         $episode = $episode->sortBy('episode');
         foreach ($episode as $item){
@@ -144,7 +145,7 @@ class FilmController extends Controller
                 'episode' => $item->episode,
                 'season' => $item->season,
                 'release_date' => $item->release_date,
-                'file' => $item->file,
+                'file' => $item->file ? $uploadController->getSignedUrl($item->file) : null,
                 'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
 //                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
             ];
@@ -436,7 +437,8 @@ public function updateFilm(Request $request,$id)
                                     ];
                                 })
                             ];
-                        }else{
+                        }
+                        else{
                             return  [
                                 'id' => $comment->id,
                                 'comment' => $comment->comment,
