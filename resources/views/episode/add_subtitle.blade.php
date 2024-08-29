@@ -103,7 +103,7 @@
           </div>
           <br>
           <div class="d-flex align-items-center">
-            <button type="submit" class="btn link-primary border-primary p-2 add-subtitle" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
+            <button type="submit" class="btn link-primary border-primary p-2" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
         </div>
         </form>
         </div>
