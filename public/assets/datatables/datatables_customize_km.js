@@ -30,7 +30,7 @@ const DatatableBasic = function() {
             buttons: {
                 dom: {
                     button: {
-                        className: 'btn btn-light'
+                        className: 'btn bg-success bg-opacity-10 text-success'
                     }
                 },
                 buttons: [
