@@ -345,6 +345,13 @@ class EpisodeController extends Controller
             return view('episode.edit_subtitle', $data);
         }
 
+        public function editFileSubtitle(request $request){
+
+            $id = $request->language_id;
+            $subtitle = EpisodeSubtitle::find($id);
+            return view('episode.modal_edit_file', compact('subtitle'));
+        }
+
         public function deleteSubtitle($id)
         {
             $subtitle = EpisodeSubtitle::find($id);
@@ -367,5 +374,27 @@ class EpisodeController extends Controller
             ];
             return redirect()->back()->with($notification);
         }
+
+        public function updateSubtitle(Request $request, $id)
+        {
+            // update subtitle from ajax request
+            $this->validate($request, [
+                'file' => 'required',
+            ]);
+            try{
+                DB::beginTransaction();
+                $subtitle = EpisodeSubtitle::find($id);
+                $this->deleteFile($subtitle->url);
+                $storages = $this->UploadFile($request->file, 'Subtitle');
+                $subtitle->url = $storages;
+                $subtitle->save();
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'success']);
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            }
+        }
+                     
 
 }
