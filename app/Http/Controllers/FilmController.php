@@ -140,13 +140,10 @@ class FilmController extends Controller
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
-                'title' => $item->title,
                 'description' => $item->description,
                 'episode' => $item->episode,
-                'season' => $item->season,
-                'release_date' => $item->release_date,
                 'file' => $item->file ? $uploadController->getSignedUrl($item->file) : null,
-                'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+//                'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
 //                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
             ];
         }
