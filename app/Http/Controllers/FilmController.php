@@ -404,7 +404,7 @@ public function updateFilm(Request $request,$id)
                             'user_id' => (string)$comment->user_id,
                             'rate' => (string)$film->rate->where('user_id',$comment->user_id)->first() ?(string) $film->rate->where('user_id',$comment->user_id)->first()->rate : null,
                             'user' => 'Anonymous',
-                            'avatar' => 'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+                            'avatar' => 'https://cinemagic.oss-ap-southeast-1.aliyuncs.com/User/398790-PCT3BY-905.jpg?OSSAccessKeyId=LTAI5tE3dUVa8vcQwYcDZJgV&Expires=1725024509&Signature=yaK56QyO8dQDYLpS6sqgp2931P8%3D',
                             'created_at' => $comment->created_at,
                             'confess' => $comment->confess,
 
@@ -420,19 +420,19 @@ public function updateFilm(Request $request,$id)
                                 'user_id' => (string)$comment->user_id,
                                 'user' => $comment->user->name ?? 'Anonymous',
                                 'rate' => (string)$film->rate->where('user_id', $comment->user_id)->first() ? (string)$film->rate->where('user_id', $comment->user_id)->first()->rate : null,
-                                'avatar' =>  'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
+                                'avatar' =>  $comment->user->avatar ? $uploadController->getSignedUrl($comment->user->avatar) : null,
                                 'created_at' => $comment->created_at,
-                                'reply' => $comment->reply->map(function ($reply) use ($film, $uploadController) {
-                                    return [
-                                        'id' => $reply->id,
-                                        'comment' => $reply->comment,
-                                        'user' => $reply->user->name,
-                                        'user_id' => (string)$reply->user_id,
-                                        'rate' => (string)$film->rate->where('user_id', $reply->user->id)->first() ? (string)$film->rate->where('user_id', $reply->user->id)->first()->rate : null,
-                                        'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
-                                        'created_at' => $reply->created_at->format('d/m/Y'),
-                                    ];
-                                })
+//                                'reply' => $comment->reply->map(function ($reply) use ($film, $uploadController) {
+//                                    return [
+//                                        'id' => $reply->id,
+//                                        'comment' => $reply->comment,
+//                                        'user' => $reply->user->name,
+//                                        'user_id' => (string)$reply->user_id,
+//                                        'rate' => (string)$film->rate->where('user_id', $reply->user->id)->first() ? (string)$film->rate->where('user_id', $reply->user->id)->first()->rate : null,
+//                                        'avatar' => $reply->user->avatar ? $uploadController->getSignedUrl($reply->user->avatar) : null,
+//                                        'created_at' => $reply->created_at->format('d/m/Y'),
+//                                    ];
+//                                })
                             ];
                         }
                         else{
