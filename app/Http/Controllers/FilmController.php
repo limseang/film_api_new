@@ -140,7 +140,7 @@ class FilmController extends Controller
         foreach ($episode as $item){
             $filmEpisode[] = [
                 'id' => $item->id,
-                'description' => $item->description,
+//                'description' => $item->description,
                 'episode' => $item->episode,
                 'file' => $item->file ? $uploadController->getSignedUrl($item->file) : null,
 //                'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
@@ -394,7 +394,7 @@ public function updateFilm(Request $request,$id)
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
-                'genre' => $film->genre ?? null,
+                'genre' => $film->genre->description ?? null,
                 'genre_id' => $film->genre->id ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                     if($comment->confess == 1){
