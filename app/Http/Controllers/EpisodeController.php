@@ -23,6 +23,7 @@ class EpisodeController extends Controller
             $uploadController = new UploadController();
             foreach ($episodes as $episode) {
                 $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
+
             }
             return response()->json([
                 'message' => 'successfully',

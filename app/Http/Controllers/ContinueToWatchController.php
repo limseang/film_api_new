@@ -231,7 +231,7 @@ class ContinueToWatchController extends Controller
     public function detailByFilm($id)
     {
         try{
-            $uploadController = new UploadController();
+
             $film = Film::with(['episode','continueToWatch','subtitles'])
                 ->where('id', $id)
                 ->first();
@@ -263,6 +263,7 @@ class ContinueToWatchController extends Controller
                 if ($duration != 0 && $progressing != 0) {
                     $percentage = $progressing / $duration * 100;
                 }
+                $uploadController = new UploadController();
 
                 return [
                     'id' => $item->id,
@@ -270,7 +271,7 @@ class ContinueToWatchController extends Controller
                     'episode' => $item->episode,
                     'season' => $item->season,
                     'status' => $status,
-                    'file' => $item->file,
+                    'file' => $item->file !=  null ? $uploadController->getSignedUrl($item->file) : null,
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
