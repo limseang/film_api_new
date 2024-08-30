@@ -378,7 +378,7 @@ public function updateFilm(Request $request,$id)
                 'overview' => $film->overview ?? null,
                 'release_date' => $film->release_date ?? null,
                 'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
-                'category_ids' => $film->categories ?? $this->getCategoryIdArrayResource($film->filmCategories),
+//                'category_ids' => $film->categories ?? $this->getCategoryIdArrayResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
                 'tag_id' => $film->tag ?? 'N/A',
                 'distributors' => $film->distributors->name ?? 'N/A',
