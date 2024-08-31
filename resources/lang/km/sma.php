@@ -375,5 +375,17 @@
     'episode_name' => 'ឈ្មោះភាគ',
     'file_subtitle' => 'ឯកសារអក្សររត់ពីរក្រោម',
     'if_language_is_already_used_cannt_show_or_disable_at_dropdown_list' => 'ប្រសិនបើភាសាត្រូវបានប្រើប្រាស់រួចហើយ មិនអាចមើល ឬត្រូវបានបិទនៅក្នុងបញ្ជីទម្លាក់។',
+    'version' => 'កំណែ',
+    'add_version' => 'បន្ថែមកំណែ',
+    'edit_version' => 'កែប្រែកំណែ',
+    'platform' => 'Platform',
+    'available_in' => 'មាននៅក្នុង',
+    'add_available_in' => 'បន្ថែមមាននៅក្នុង',
+    'edit_available_in' => 'កែប្រែមាននៅក្នុង',
+    'cinema' => 'រោងកុន',
+    'add_cinema' => 'បន្ថែមរោងកុន',
+    'edit_cinema' => 'កែប្រែរោងកុន',
+    'url' => 'URL',
+    'assign_film' => 'ចាត់តាំងភាពយន្ត',
 
   ];

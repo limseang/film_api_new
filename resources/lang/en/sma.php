@@ -296,6 +296,19 @@
     'character' => 'Character',
     'if_language_is_already_used_cannt_show_or_disable_at_dropdown_list' => 'If the language is already in use, can not be viewed or disabled in the drop-down list.',
     'icon' => 'Icon',
+    'version' => 'Version',
+    'add_version' => 'Add Version',
+    'edit_version' => 'Edit Version',
+    'update_version' => 'Update Version',
+    'platform' => 'Platform',
+    'available_in' => 'Available In',
+    'add_available_in' => 'Add Available In',
+    'edit_available_in' => 'Edit Available In',
+    'cinema' => 'Cinema',
+    'add_cinema' => 'Add Cinema',
+    'edit_cinema' => 'Edit Cinema',
+    'url' => 'Url',
+    'assign_film' => 'Assign Film',
 
     ]
  ?>
