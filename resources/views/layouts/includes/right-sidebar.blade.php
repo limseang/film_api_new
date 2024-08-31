@@ -79,7 +79,16 @@
                         </span>
                     </a>
                 </li>
-                {{-- end People --}}
+
+                <?php $arrRouteAvailableIn = [route('available_in.index'), route('available_in.create'), request()->is('admin/available_in/edit/*'), request()->is('admin/available_in/assign-film/*')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('available_in.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteAvailableIn)) active @else '' @endif">
+                        <i class="ph-folder-notch-open"></i>
+                        <span>
+                            {{__('sma.cinema')}}
+                        </span>
+                    </a>
+                </li>
                 {{-- Artical --}}
                   <?php $arrRouteArtical = [
                     route('artical.index'),
@@ -165,7 +174,10 @@
                 request()->is('admin/distributor/edit/*'),
                 route('genre.index'),
                 route('genre.create'),
-                request()->is('admin/genre/edit/*')
+                request()->is('admin/genre/edit/*'),
+                route('version.index'),
+                route('version.create'),
+                request()->is('admin/version/edit/*')
                 ]; ?>
                 <li class="nav-item nav-item-submenu @if(in_array($currentURL, $arrRouteSetting)) nav-item-open @else '' @endif">
                     <a href="" class="nav-link @if(in_array($currentURL, $arrRouteSetting)) active @else '' @endif">
@@ -207,6 +219,12 @@
                         <li class="nav-item">
                             <a href="{{route('genre.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteGenre)) active @else '' @endif">
                                 {{__('sma.genre')}}
+                            </a>
+                        </li>
+                        <?php $arrRouteVersion = [route('version.index'), route('version.create'), request()->is('admin/version/edit/*')]; ?>
+                        <li class="nav-item">
+                            <a href="{{route('version.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteVersion)) active @else '' @endif">
+                                {{__('sma.version')}}
                             </a>
                         </li>
                         <?php $arrRouteSystemLog = [route('system_log.index')]; ?>
