@@ -309,6 +309,7 @@
     'edit_cinema' => 'Edit Cinema',
     'url' => 'Url',
     'assign_film' => 'Assign Film',
+    'assign_cinema' => 'Assign Cinema',
 
     ]
  ?>

@@ -164,7 +164,7 @@ class TypeController extends Controller
             $totalUsed = $type->artical()->count() + $type->film()->count();
             if($totalUsed> 0){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_type_being_used'),

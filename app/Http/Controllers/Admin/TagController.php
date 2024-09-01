@@ -169,7 +169,7 @@ class TagController extends Controller
             $totalUsed = $tag->artical()->count() + $tag->film()->count();
             if($totalUsed> 0){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_tag_being_used'),

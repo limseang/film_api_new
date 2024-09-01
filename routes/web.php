@@ -148,6 +148,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [FilmController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [FilmController::class, 'status'])->name('status');
             Route::get('/show-episode/{id}', [FilmController::class, 'showEpisode'])->name('show-episode');
+            Route::get('/assign-available/{id}', [FilmController::class, 'assignAvailable'])->name('assign_available');
+            Route::post('/assign-avaliable/store', [FilmController::class, 'storeAvailable'])->name('store_available');
+            Route::get('/add-film-available-in', [FilmController::class, 'addFilmAvailableIn'])->name('add_film_available_in');
+            Route::get('/delete-assigned-available/{id}', [FilmController::class, 'deleteAssignedAvailable'])->name('delete_assigned_available');
         });
         // Cast
         Route::prefix('cast')->name('cast.')->group(function(){
@@ -224,7 +228,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/status/{id}', [AvailableInController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [AvailableInController::class, 'restore'])->name('restore');
             Route::get('/assign-film/{id}', [AvailableInController::class, 'assignFilm'])->name('assign_film');
-            Route::post('/assign-film/store/{id}', [AvailableInController::class, 'storeFilm'])->name('store_film');
+            Route::post('/assign-film/store', [AvailableInController::class, 'storeFilm'])->name('store_film');
+            Route::get('/add-available-in-film', [AvailableInController::class, 'addAvailableInFilm'])->name('add_available_in_film');
+            Route::get('/delete-assigned-film/{id}', [AvailableInController::class, 'deleteAssignedFilm'])->name('delete_assigned_film');
         });
     });
 });

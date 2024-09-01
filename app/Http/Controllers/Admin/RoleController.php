@@ -172,7 +172,7 @@ class RoleController extends Controller
             $role = Role::find($id);
             if(!$role){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
@@ -181,7 +181,7 @@ class RoleController extends Controller
             }
             if($role->user()->count() > 0){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_role_being_used'),
