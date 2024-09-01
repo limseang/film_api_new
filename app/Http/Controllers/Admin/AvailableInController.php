@@ -153,7 +153,7 @@ class AvailableInController extends Controller
     {
         $this->validate($request, [
            'name' => 'required|unique:available_ins,name,'. $id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'url' => 'required|url',
             'type' => 'nullable',
         ]);
@@ -181,7 +181,7 @@ class AvailableInController extends Controller
                 $availableIn->url = $request->url;
                 $availableIn->type = $request->type;
                 $availableIn->save();
-                
+
                 DB::commit();
                 $notification = [
                     'type' => 'success',
@@ -226,7 +226,7 @@ class AvailableInController extends Controller
                 return redirect()->route('available_in.index')->with($notification);
             }
             $this->deleteFile($availableIn->logo);
-            $availableIn->delete();   
+            $availableIn->delete();
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
