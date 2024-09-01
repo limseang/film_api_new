@@ -13,9 +13,9 @@
                         <input type="text" id="name" name="name" placeholder="{{ trans('global.search_by_title') }}" class="form-control">
                     </div>
                     <div class="col-lg-4">
-                        <label class="form-label">{{ trans('sma.cinema') }}</label>
-                        <input type="text" id="available" name="available" value="{{$available_in->name ?? ''}}" class="form-control bg-primary bg-opacity-10 text-primary">
-                        <input type="hidden" id="available_id" name="available_id" value="{{$available_in->id ?? ''}}">
+                        <label class="form-label">{{ trans('sma.film') }}</label>
+                        <input type="text" id="film_id_show" name="available" value="{{$film->title ?? ''}}" class="form-control bg-primary bg-opacity-10 text-primary">
+                        <input type="hidden" id="film_id" name="film_id" value="{{$film->id ?? ''}}">
                     </div>
                 </div>
 
@@ -26,7 +26,7 @@
                         {{ __('global.search') }}
                     </button>
                     &nbsp;
-                    <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_film')}}</a>
+                    <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_cinema')}}</a>
                 </div>
             </form>
         </div>
@@ -60,13 +60,13 @@
    $(document).ready(function() {
      $('.add_available_film').on('click', function(e) {
         e.preventDefault();
-        var available_id = $('#available_id').val();
+        var film_id = $('#film_id').val();
         var $button = $(this);
         $.ajax({
-            url: "{{ route('available_in.add_available_in_film') }}",
+            url: "{{ route('film.add_film_available_in') }}",
             type: 'GET',
             data: {
-                available_id: available_id
+                film_id: film_id
             },
             beforeSend: function() {
                 // show_properties  find data-language-id and add spinner

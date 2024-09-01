@@ -24,7 +24,7 @@ const DatatableBasic = function() {
             // scrollY: "380px",
             scrollX: true,
             searching: false,
-            pageLength: 25,
+            pageLength: 50,
             lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
             dom: '<"datatable-header justify-content-start"f<"ms-sm-auto"l><"ms-sm-3"B>><"datatable-scroll-wrap"t><"datatable-footer"ip>',
             buttons: {

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Traits\AlibabaStorage;
 use App\Models\Film;
+use App\Http\DataTables\AvailableInFilmDataTable;
+use App\Models\FilmAvailable;
 
 class AvailableInController extends Controller
 {
@@ -35,7 +37,7 @@ class AvailableInController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:available_ins,name',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'url' => 'required|url',
             'type' => 'nullable',
         ]);
@@ -90,7 +92,7 @@ class AvailableInController extends Controller
     }
 
 
-    public function assignFilm($id)
+    public function assignFilm(AvailableInFilmDataTable $dataTable,$id)
     {
         $data['available_in'] = AvailableIn::find($id);
         if(!$data['available_in']){
@@ -102,21 +104,47 @@ class AvailableInController extends Controller
             ];
             return redirect()->route('available_in.index')->with($notification);
         }
-        $data['available_film'] = $data['available_in']->filmAvailables()->pluck('film_id')->toArray();
-        $data['films'] = Film::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('available_in.index'), 'page' => __('sma.cinema')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('available_in.assign_film', $data);
+        return $dataTable->with('available_id', $id)->render('available_in.assign_film', $data);
     }
 
-    public function storeFilm(Request $request, $id)
+
+    public function addAvailableInFilm(request $request){
+
+        $id = $request->available_id;
+        $availableIn = AvailableIn::find($id);
+        $filmIdArray = $availableIn->films ? $availableIn->films->pluck('id')->toArray() : [];
+        $films = Film::whereNotIn('id', $filmIdArray)->get();
+        return view('available_in.modal_add_film', compact('availableIn', 'films'));
+    }
+    
+    public function deleteAssignedFilm($id)
     {
-        $this->validate($request, [
-            'film_id' => 'required|array',
-            'film_id.*' => 'required|exists:films,id',
-        ]);
+        $filmAvailableIn = FilmAvailable::find($id);
+        if(!$filmAvailableIn){
+            $notification = [
+                'type' => 'error',
+                'icon' => trans('global.icon_error'),
+                'title' => trans('global.title_error_exception'),
+                'text' => trans('sma.the_not_exist'),
+            ];
+            return redirect()->back()->with($notification);
+        }
+        $filmAvailableIn->delete();   
+        $notification = [
+            'type' => 'success',
+            'icon' => trans('global.icon_success'),
+            'title' => trans('global.title_updated'),
+            'text' => trans('sma.delete_successfully'),
+        ];
+        return redirect()->back()->with($notification);
+    }
+
+    public function storeFilm(Request $request)
+    {
         try{
             DB::beginTransaction();
-            $availableIn = AvailableIn::find($id);
+            $availableIn = AvailableIn::find($request->available_id);
             if(!$availableIn){
                 $notification = [
                     'type' => 'error',
@@ -126,26 +154,15 @@ class AvailableInController extends Controller
                 ];
                 return redirect()->route('available_in.index')->with($notification);
             }
-            $availableIn->films()->sync($request->film_id);
+            $filmAvailable = new FilmAvailable();
+            $filmAvailable->film_id = $request->film_id;
+            $filmAvailable->available_id = $request->available_id;
+            $filmAvailable->save();
             DB::commit();
-            // assign_film, $id
-            $pageDirection = 'index';
-            $notification = [
-                'type' => 'success',
-                'icon' => trans('global.icon_success'),
-                'title' => trans('global.title_updated'),
-                'text' => trans('sma.add_successfully'),
-            ];
-            return redirect()->route('available_in.'.$pageDirection)->with($notification);
+            return response()->json(['success' => true, 'message' => 'success']);
         }catch(Exception $e){
             DB::rollBack();
-            $notification = [
-                'type' => 'exception',
-                'icon' => trans('global.icon_error'),
-                'title' => trans('global.title_error_exception'),
-                'text' => $e->getMessage()
-            ];
-            return redirect()->back()->withInput()->with($notification);
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
@@ -218,7 +235,7 @@ class AvailableInController extends Controller
             $totalUsed = $availableIn->cinemaBranches()->count() + $availableIn->filmAvailables()->count();
             if($totalUsed> 0){
                 $notification = [
-                    'type' => 'exception',
+                    'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.cant_delete_being_used'),

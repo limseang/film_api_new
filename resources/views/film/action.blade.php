@@ -12,6 +12,14 @@
                      {{trans('sma.show_episodes')}}
                 </span>
             </a>
+            <a href="{{route('film.assign_available', $table->id)}}" class="dropdown-item">
+                <span style="white-space: nowrap">
+                    <span class="{{config('setup.button-opacity-info')}}">
+                    <i class="ph-folder-notch-open text-info" style="font-size:17px"></i>
+                    </span>
+                     {{trans('sma.assign_cinema')}}
+                </span>
+            </a>
             <a href="{{route('film.edit', $table->id)}}" class="dropdown-item">
                 <span style="white-space: nowrap">
                     <span class="{{config('setup.button-opacity-success')}}">
