@@ -108,6 +108,7 @@ class ContinueToWatchController extends Controller
     public function detail($id)
     {
         try{
+            $uploadController = new UploadController();
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
                 ->where('id', $id)
                 ->first();
@@ -144,7 +145,7 @@ class ContinueToWatchController extends Controller
                'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title ?? '',
                'episodes' => $continueToWatch->episodes->episode,
-               'url' => $episode->file,
+               'url' => $uploadController->getSignedUrl($episode->file),
                'episode_id' => $continueToWatch->episode_id,
                'progressing' => $continueToWatch->progressing,
                'duration' => $continueToWatch->duration,
