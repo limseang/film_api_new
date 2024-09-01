@@ -368,13 +368,13 @@ public function updateFilm(Request $request,$id)
     public function showByID($id){
         try{
             $uploadController = new UploadController();
-            $film = Film::with([ 'languages','categories','directors','tags','types','filmAvailable','filmComment','genre','distributors'])->find($id);
+            $film = Film::with([ 'languages','filmCategories','directors','tags','types','filmAvailable','filmComment','genre','distributors'])->find($id);
             $data = [
                 'id' => $film->id,
                 'title' => $film->title ?? null,
                 'overview' => $film->overview ?? null,
                 'release_date' => $film->release_date ?? null,
-                'category' => $film->categories ?? $this->getCategoryResource($film->filmCategories),
+                'category' => $this->getCategoryResource($film->filmCategories) ?? null,
 //                'category_ids' => $film->categories ?? $this->getCategoryIdArrayResource($film->filmCategories),
                 'tag' => $film->tags->name ?? '',
                 'tag_id' => $film->tag ?? 'N/A',
