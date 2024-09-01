@@ -111,6 +111,7 @@ class EpisodeSubtitleController extends Controller
     public function showByEpisode($id)
     {
         try{
+            $uploadController = new UploadController();
             $episodeSubtitle = EpisodeSubtitle::with('language')->where('episode_id',$id)->get();
             if(!$episodeSubtitle)
                 return $this->sendError('Episode ID is not found', );
@@ -119,7 +120,7 @@ class EpisodeSubtitleController extends Controller
                 $data[] = [
                     'id' => $item->id,
                     'language' => $item->language->name,
-                    'url' => $item->url,
+                    'url' => $uploadController->getSubtileUrl($item->url),
                     'language_code' => $item->language->code,
                     'status' => $item->status == 1 ? 'Premium' : 'Free',
                 ];
