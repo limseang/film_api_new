@@ -17,6 +17,9 @@ use App\Models\Type;
 use Illuminate\Support\Facades\DB;
 use App\Models\Film;
 use App\Models\Country;
+use App\Models\AvailableIn;
+use App\Models\FilmAvailable;
+use App\Http\DataTables\FilmAvailableInDataTable;
 
 class FilmController extends Controller
 {
@@ -262,4 +265,70 @@ class FilmController extends Controller
             ];
             return redirect()->back()->with($notification);
         }
+
+
+    public function assignAvailable(FilmAvailableInDataTable $dataTable,$id)
+    {
+        $data['film'] = Film::find($id);
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.assign_cinema')]];
+        return $dataTable->with('film_id', $id)->render('film.assign_available', $data);
+    }
+
+
+    public function addFilmAvailableIn(request $request){
+
+        $id = $request->film_id;
+        $film = Film::find($id);
+        $availableIDArray = $film->filmAvailable ? $film->filmAvailable->pluck('available_id')->toArray() : [];
+        $availables = AvailableIn::whereNotIn('id', $availableIDArray)->get();
+        return view('film.modal_add_available', compact('film', 'availables'));
+    }
+    
+    public function deleteAssignedAvailable($id)
+    {
+        $filmAvailableIn = FilmAvailable::find($id);
+        if(!$filmAvailableIn){
+            $notification = [
+                'type' => 'error',
+                'icon' => trans('global.icon_error'),
+                'title' => trans('global.title_error_exception'),
+                'text' => trans('sma.the_not_exist'),
+            ];
+            return redirect()->back()->with($notification);
+        }
+        $filmAvailableIn->delete();   
+        $notification = [
+            'type' => 'success',
+            'icon' => trans('global.icon_success'),
+            'title' => trans('global.title_updated'),
+            'text' => trans('sma.delete_successfully'),
+        ];
+        return redirect()->back()->with($notification);
+    }
+
+    public function storeAvailable(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $availableIn = AvailableIn::find($request->available_id);
+            if(!$availableIn){
+                $notification = [
+                    'type' => 'error',
+                    'icon' => trans('global.icon_error'),
+                    'title' => trans('global.title_error_exception'),
+                    'text' =>  trans('sma.the_not_exist')
+                ];
+                return redirect()->route('available_in.index')->with($notification);
+            }
+            $filmAvailable = new FilmAvailable();
+            $filmAvailable->film_id = $request->film_id;
+            $filmAvailable->available_id = $request->available_id;
+            $filmAvailable->save();
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'success']);
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }
