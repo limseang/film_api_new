@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\CastController;
 use App\Http\Controllers\Admin\ArticalController;
 use App\Http\Controllers\Admin\OriginController;
 use App\Http\Controllers\Admin\EpisodeController;
+use App\Http\Controllers\Admin\VersionController;
+use App\Http\Controllers\Admin\AvailableInController;
 
 /*
 |--------------------------------------------------------------------------
@@ -197,6 +199,32 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/store-subtitle', [EpisodeController::class, 'storeSubtitle'])->name('store_subtitle');
             Route::get('/delete-subtitle/{id}', [EpisodeController::class, 'deleteSubtitle'])->name('delete_subtitle');
             Route::get('/edit-subtitle/{id}', [EpisodeController::class, 'editSubtitle'])->name('edit_subtitle');
+            Route::get('/edit-file-subtitle', [EpisodeController::class, 'editFileSubtitle'])->name('edit_file_subtitle');
+            Route::post('/update-subtitle/{id}', [EpisodeController::class, 'updateSubtitle'])->name('update_subtitle');
+        });
+
+        // Version
+        Route::prefix('version')->name('version.')->group(function(){
+            Route::get('/', [VersionController::class, 'index'])->name('index');
+            Route::get('/create', [VersionController::class, 'create'])->name('create');
+            Route::post('/store', [VersionController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [VersionController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [VersionController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [VersionController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [VersionController::class, 'status'])->name('status');
+        });
+        // AvailableIn
+        Route::prefix('available_in')->name('available_in.')->group(function(){
+            Route::get('/', [AvailableInController::class, 'index'])->name('index');
+            Route::get('/create', [AvailableInController::class, 'create'])->name('create');
+            Route::post('/store', [AvailableInController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [AvailableInController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [AvailableInController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [AvailableInController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [AvailableInController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [AvailableInController::class, 'restore'])->name('restore');
+            Route::get('/assign-film/{id}', [AvailableInController::class, 'assignFilm'])->name('assign_film');
+            Route::post('/assign-film/store/{id}', [AvailableInController::class, 'storeFilm'])->name('store_film');
         });
     });
 });

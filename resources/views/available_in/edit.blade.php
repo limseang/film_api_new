@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-{{__('sma.edit_distributor')}}
+{{__('sma.edit_cinema')}}
 @endsection
 @section('content')
   <div class="row">
@@ -16,28 +16,25 @@
           <div class="row">
             <div class="col-12 col-lg-8 p-10">
             
-              <form method="POST" action="{{route('distributor.update', $distributor->id)}}" enctype="multipart/form-data" class="needs-validation" novalidate>
+              <form method="POST" action="{{route('available_in.update', $available_in->id)}}" enctype="multipart/form-data" class="needs-validation" novalidate>
                 @csrf
                 <div class="mb-3">
                   <label class="form-label" for="name">{{__('sma.name')}}</label>
-                  <input type="text" class="form-control" name="name" value="{{$distributor->name}}" id="name" placeholder="Enter name" required>
+                  <input type="text" class="form-control" name="name" value="{{$available_in->name}}" id="name" placeholder="Enter name" required>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
                 <div class="mb-3">
-                <label class="form-label">{{ trans('global.publish') }}</label>
-                <select id="publish" class="{{ config('setup.input_select2') }}" name="status">
-                    <option value="">{{ __('global.please_select') }}</option>
-                    <option value="1" {{$distributor->status == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
-                    <option value="2" {{$distributor->status == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
-                </select>
+                  <label class="form-label" for="url">{{__('sma.url')}}</label>
+                  <input type="url" class="form-control" name="url" value="{{$available_in->url}}" id="url" placeholder="Enter url" required>
+                  <span class="invalid-feedback">
+                    The field is required.
+                  </span>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label" for="description">{{trans('sma.description')}}</label>
-                  <textarea rows="3" cols="3" name="description" class="form-control" id="ckeditor_classic_prefilled2">
-                    {{$distributor->description}}
-                  </textarea>
+                  <label class="form-label" for="type">{{__('sma.type')}}</label>
+                  <input type="text" class="form-control" name="type" value="{{$available_in->type}}" id="type" placeholder="Enter type">
                 </div>
                 <div class="mb-3">
                   {{-- Preview imag --}}

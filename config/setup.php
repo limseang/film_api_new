@@ -62,7 +62,7 @@ return[
     'text_info' => 'text-info',
     'text_warning' => 'text-warning',
     'text_secondary' => 'text-secondary',
-    'button_add' => 'btn btn-outline-success btn-icon w-32px h-32px rounded-pill ms-3',
+    'button_add' => 'badge bg-success text-white text-bold btn-icon w-32px h-32px rounded-pill ms-3',
     'button-opacity-success' => 'btn btn-flat-success btn-sm rounded-pill p-2',
     'button-opacity-primary' => 'btn btn-flat-primary btn-sm rounded-pill p-2',
     'button-opacity-danger' => 'btn btn-flat-danger btn-sm rounded-pill p-2',

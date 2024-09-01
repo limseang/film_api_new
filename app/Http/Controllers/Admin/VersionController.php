@@ -4,50 +4,44 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\DataTables\DistributorDataTable;
-use App\Models\Distributor;
+use App\Http\DataTables\VersionDataTable;
+use App\Models\VersionCheck;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use App\Traits\AlibabaStorage;
 
-class DistributorController extends Controller
+class VersionController extends Controller
 {
-    use AlibabaStorage;
     public function __construct()
     {
         $this->middleware('lang');
     }
 
-    public function index(DistributorDataTable $dataTable)
+    public function index(VersionDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.distributor')]];
-        return $dataTable->render('distributor.index', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.version')]];
+        return $dataTable->render('version.index', $data);
     }
 
     public function create()
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.add')]];
-        return view('distributor.create', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('type.index'), 'page' => __('sma.version')], ['link' => '#', 'page' => __('sma.add')]];
+        return view('version.create', $data);
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:distributors,name',
-            'description' => 'nullable|max:255',
+            'version' => 'required|unique:version_checks,version',
+            'platform' => 'required',
             'status' => 'required|in:1,2',
         ]);
         try{
             DB::beginTransaction();
-            $distributor = new Distributor();
-            if($request->hasFile('image')){
-                $avatar = $this->UploadFile($request->file('image'), 'Distibutor');
-            }
-            $distributor->name = $request->name;
-            $distributor->description = $request->description;
-            $distributor->status = $request->status;
-            $distributor->image = $avatar ?? null;
-            $distributor->save();
+            $type = new VersionCheck();
+            $type->version = $request->version;
+            $type->platform = $request->platform;
+            $type->status = $request->status;
+            $type->save();
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -57,7 +51,7 @@ class DistributorController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.add_successfully'),
             ];
-            return redirect()->route('distributor.'.$pageDirection)->with($notification);
+            return redirect()->route('version.'.$pageDirection)->with($notification);
         }catch(Exception $e){
             DB::rollBack();
             $notification = [
@@ -72,52 +66,44 @@ class DistributorController extends Controller
 
     public function edit($id)
     {
-        $data['distributor'] = Distributor::find($id);
-        if(!$data['distributor']){
+        $data['version'] = VersionCheck::find($id);
+        if(!$data['version']){
             $notification = [
                 'type' => 'error',
                 'icon' => trans('global.icon_error'),
                 'title' => trans('global.title_error_exception'),
                 'text' =>  trans('sma.the_not_exist')
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('version.index')->with($notification);
         }
-        $data['image'] = $this->getSignUrlNameSize($data['distributor']->image);
-        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('distributor.index'), 'page' => __('sma.distributor')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('distributor.edit', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('version.index'), 'page' => __('sma.version')], ['link' => '#', 'page' => __('sma.edit')]];
+        return view('version.edit', $data);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'version' => 'required|unique:version_checks,version,'.$id,
+            'platform' => 'required',
             'status' => 'required|in:1,2',
-            'description' => 'required',
         ]);
 
         try{
             DB::beginTransaction();
-            $distributor = Distributor::find($id);
-                if(!$distributor){
+            $version = VersionCheck::find($id);
+                if(!$version){
                     $notification = [
-                        'type' => 'error',
+                        'type' => 'exception',
                         'icon' => trans('global.icon_error'),
                         'title' => trans('global.title_error_exception'),
                         'text' => trans('sma.the_not_exist'),
                     ];
-                    return redirect()->route('distributor.index')->with($notification);
+                    return redirect()->route('version.index')->with($notification);
                 }
-                if($request->hasFile('image')){
-                    $avatar = $this->UploadFile($request->file('image'), 'Distributor');
-                    if($distributor->image){
-                        $this->deleteFile($distributor->image);
-                    }
-                    $distributor->image = $avatar;
-                }
-                $distributor->name = $request->name;
-                $distributor->description = $request->description;
-                $distributor->status = $request->status;
-                $distributor->save();
+                $version->version = $request->version;
+                $version->platform = $request->platform;
+                $version->status = $request->status;
+                $version->save();
                 
                 DB::commit();
                 $notification = [
@@ -126,7 +112,7 @@ class DistributorController extends Controller
                     'title' => trans('global.title_updated'),
                     'text' => trans('sma.update_successfully'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('type.index')->with($notification);
             }catch(Exception $e){
                 DB::rollBack();
                 $notification = [
@@ -142,56 +128,46 @@ class DistributorController extends Controller
 
         public function status($id)
         {
-            $distributor = Distributor::find($id);
-            if(!$distributor){
+            $version = VersionCheck::find($id);
+            if(!$version){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('type.index')->with($notification);
             }
-            $distributor->status = $distributor->status == 1 ? 2 : 1;
-            $distributor->save();
+            $version->status = $version->status == 1 ? 2 : 1;
+            $version->save();
             $notification = [
                'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('version.index')->with($notification);
         }
 
         public function destroy($id)
         {
-            $distributor = Distributor::find($id);
-            if(!$distributor){
+            $version = VersionCheck::find($id);
+            if(!$version){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
                     'title' => trans('global.title_error_exception'),
                     'text' => trans('sma.the_not_exist'),
                 ];
-                return redirect()->route('distributor.index')->with($notification);
+                return redirect()->route('type.index')->with($notification);
             }
-            $totalUsed = $distributor->films()->count();
-            if($totalUsed> 0){
-                $notification = [
-                    'type' => 'exception',
-                    'icon' => trans('global.icon_error'),
-                    'title' => trans('global.title_error_exception'),
-                    'text' => trans('sma.cant_delete_being_used'),
-                ];
-                return redirect()->route('distributor.index')->with($notification);
-            }
-            $distributor->delete();   
+            $version->delete();   
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
                 'title' => trans('global.title_updated'),
-                'text' => trans('sma.delete_successfully'),
+                'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('distributor.index')->with($notification);
+            return redirect()->route('version.index')->with($notification);
         }
 }
