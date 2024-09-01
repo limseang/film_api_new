@@ -128,11 +128,13 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $continueToWatch->episode_id)
                 ->get();
             if($episodeSubtitle){
+
                 $data['subtitles'] = $episodeSubtitle->map(function ($item) {
+                    $uploadController = new UploadController();
                     return [
                         'id' => $item->id,
                         'language' => $item->language->name,
-                        'url' => $item->url,
+                        'url' => $uploadController->getSubtileUrl($item->url),
                     ];
                 });
             }
