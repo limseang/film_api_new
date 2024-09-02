@@ -63,6 +63,7 @@
                 allowClear: true, // Allow clearing the selection
                 width: '100%', // Full width of the container
                 dropdownAutoWidth: true, // Make the dropdown auto width
+                dropdownParent: $('#modal_form_inline')
             });
             $('.button-submit').on('click', function(e) {
                 e.preventDefault();
