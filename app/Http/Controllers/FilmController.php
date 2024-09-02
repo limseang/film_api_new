@@ -142,9 +142,9 @@ class FilmController extends Controller
                 'id' => $item->id,
 //                'description' => $item->description,
                 'episode' => $item->episode,
-                'file' => $item->file ? $uploadController->getSignedUrl($item->file) : null,
-//                'poster' =>'https://cinemagickh.oss-ap-southeast-7.aliyuncs.com/398790-PCT3BY-905.jpg',
-//                'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                //if uploadController->getSignedUrl return 'null' then return  $item->file
+                'file' => $item->file ? $uploadController->getSignedUrl($item->file) : $item->file,
+
             ];
         }
         return $filmEpisode;

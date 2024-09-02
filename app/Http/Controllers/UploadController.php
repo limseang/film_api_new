@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use OSS\OssClient;
 use App\Models\Storages;
 use OSS\Core\OssException;
@@ -98,23 +99,29 @@ class UploadController extends Controller
     public function getSignedUrl($id): string
     {
         try {
-
-
-        $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-        $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-        $endpoint = env("ALIBABA_OSS_ENDPOINT");
-        $bucket = env("ALIBABA_OSS_BUCKET");
+            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+            $endpoint = env("ALIBABA_OSS_ENDPOINT");
+            $bucket = env("ALIBABA_OSS_BUCKET");
 
             $storage = Storages::query()->find($id);
-            $timeout = 3600;
 
+            // Check if storage is null
+            if ($storage === null) {
+                //return null if storage is null
+                throw new Exception('null');
+            }
+
+            $timeout = 3600;
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-            $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
-            // $ossClient->signUrl($bucket, $storage->path, $timeout);
+            $signedUrl = $ossClient->signUrl($bucket, $storage->path, $timeout, "GET", null);
 
             return $signedUrl;
         } catch (OssException $e) {
             Log::error($e->getErrorMessage());
+            return $e->getMessage();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
             return $e->getMessage();
         }
     }
