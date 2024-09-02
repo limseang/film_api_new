@@ -32,8 +32,8 @@ class AvailableInFilmDataTable extends DataTable
                 return dateTimeFormat($table->created_at);
             })
             ->editColumn('releas_date', function ($table) {
-                $date = strtotime($table->films->release_date);
-                return dateFormat($date);
+                $date = $table->films->release_date ?  strtotime($table->films->release_date) : '';
+                return $date ? dateFormat($date) : '';
             })
 
             ->editColumn('poster_image', function ($table) {
