@@ -11,6 +11,9 @@
                 @endif
             @endforeach 
          </ol>
+         <a href="#breadcrumb_elements" class="p-0 border-transparent btn btn-light align-self-center collapsed d-lg-none rounded-pill ms-auto" data-bs-toggle="collapse">
+            <i class="m-1 ph-caret-down collapsible-indicator ph-sm"></i>
+        </a>
     </div>
     <div class="collapse d-lg-block ms-lg-auto" id="breadcrumb_elements">
         <div class="d-lg-flex mb-2 mb-lg-0">

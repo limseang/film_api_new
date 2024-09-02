@@ -31,9 +31,13 @@ class AvailableInFilmDataTable extends DataTable
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->created_at);
             })
-            ->editColumn('releas_date', function ($table) {
-                $date = strtotime($table->films->release_date);
-                return dateFormat($date);
+            ->editColumn('films_release_date', function ($table) {
+                $real_date = $table->films->release_date ?? '';
+                $date = $real_date ?  strtotime($real_date) : '';
+                return $date ? dateFormat($date) : '';
+            })
+            ->editColumn('title_film', function ($table) {
+                return $table->films->title ?? '';
             })
 
             ->editColumn('poster_image', function ($table) {
@@ -91,8 +95,8 @@ class AvailableInFilmDataTable extends DataTable
         return [
             Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('films.title', 'films.title')->title(trans('sma.title'))->addClass('text-center'),
-            Column::make('films.release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
+            Column::make('title_film', 'title_film')->title(trans('sma.title'))->addClass('text-center'),
+            Column::make('films_release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
     }

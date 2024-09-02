@@ -3,12 +3,9 @@
 {{__('global.user')}}
 @endsection
 @section('breadcrumb-topbar')
-<span data-toggle="tooltip" role="button" type="button" aria-haspopup="true" title="{{__('global.add_new')}}"> 
-    <a href="{{route('user.create')}}" type="button" class="{{config('setup.button_add')}}">
-     <i class="ph-plus"></i>
+  <a href="{{route('user.create')}}" data-toggle="tooltip" role="button" type="button" aria-haspopup="true" class="d-flex align-items-center text-body">
+    <span class="{{config('setup.button_add')}}"> <i class="ph-plus"></i> </span> &nbsp; <span> {{__('global.add_new')}} </span>
   </a>
-  </span>
-
 @endsection
 @section('content')
     <!-- Search field -->

@@ -128,7 +128,7 @@ public function subtitles()
 
     public function getReleaseDateFormatAttribute()
     {
-        return date('d/m/Y', strtotime($this->release_date));
+        return $this->release_date ? date('d/m/Y', strtotime($this->release_date)) : '';
     }
 
  

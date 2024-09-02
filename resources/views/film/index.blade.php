@@ -3,12 +3,9 @@
 {{__('global.film')}}
 @endsection
 @section('breadcrumb-topbar')
-<span data-toggle="tooltip" role="button" type="button" aria-haspopup="true" title="{{__('global.add_new')}}"> 
-    <a href="{{route('film.create')}}" type="button" class="{{config('setup.button_add')}}">
-     <i class="ph-plus"></i>
+  <a href="{{route('film.create')}}" data-toggle="tooltip" role="button" type="button" aria-haspopup="true" class="d-flex align-items-center text-body">
+    <span class="{{config('setup.button_add')}}"> <i class="ph-plus"></i> </span> &nbsp; <span> {{__('global.add_new')}} </span>
   </a>
-  </span>
-
 @endsection
 @section('content')
     <!-- Search field -->
