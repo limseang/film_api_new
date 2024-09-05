@@ -202,21 +202,21 @@ class SubcriptController extends Controller
 //    }
 //
 //
-//    public function verifySubscription(Request $request)
-//    {
-//        // Step 1: Validate the request
-//        $request->validate([
-//            'receipt' => 'required|string',
-//        ]);
-//
-//        $receiptData = $request->input('receipt');
-//
-//        // Step 2: Send the receipt to Apple's servers for validation
-//        $response = $this->sendReceiptToApple($receiptData);
-//
-//        // Step 3: Handle the response and check if the subscription is valid
-//        return $this->handleAppleResponse($response);
-//    }
+    public function verifySubscription(Request $request)
+    {
+        // Step 1: Validate the request
+        $request->validate([
+            'receipt' => 'required|string',
+        ]);
+
+        $receiptData = $request->input('receipt');
+
+        // Step 2: Send the receipt to Apple's servers for validation
+        $response = $this->sendReceiptToApple($receiptData);
+
+        // Step 3: Handle the response and check if the subscription is valid
+        return $this->handleAppleResponse($response);
+    }
 
     private function callAppleApi($url, $postData)
     {
