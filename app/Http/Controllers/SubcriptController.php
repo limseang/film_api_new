@@ -143,11 +143,12 @@ class SubcriptController extends Controller
 
         // First, try verifying with the production URL
 //        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
+//        $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
         $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
 
         if (isset($response['status']) && $response['status'] == 21007) {
             // 21007 means the receipt is from the sandbox environment, so try the sandbox URL
-            $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
+
         }
 
         return $response;
