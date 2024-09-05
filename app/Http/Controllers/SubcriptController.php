@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\crf;
+use App\Models\Subcript;
+use App\Models\Supplier;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
+class SubcriptController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try{
+            $subcripts = Subcript::all();
+            return $this->sendResponse($subcripts, );
+        }
+        catch (\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        try{
+            $subcript = new Subcript();
+           $subcript->supplier_code = $request->supplier_code;
+           if($subcript->supplier_code) {
+               $supplier = Supplier::where('supplier_code', $subcript->supplier_code)->first();
+               if (!$supplier) {
+                   return $this->sendError('Supplier not found');
+               }
+           }
+
+            $subcript->name = $request->name;
+            $subcript->duration = $request->duration;
+            $subcript->price = $request->price;
+            $subcript->description = $request->description;
+            $subcript->status = $request->status;
+            $subcript->supplier_code = $request->supplier_code;
+            $subcript->uuid = rand(1000000000, 9999999999);
+            $subcript->save();
+            //random 10 digit uuid
+            return $this->sendResponse($subcript, );
+        }
+        catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(crf $crf)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(crf $crf)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, crf $crf)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        try{
+            $subcript = Subcript::find($id);
+            $subcript->delete();
+            return $this->sendResponse($subcript);
+        }
+        catch (\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    private $appleSandboxUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
+    private $appleProductionUrl = 'https://buy.itunes.apple.com/verifyReceipt';
+
+    public function verifySubscription(Request $request)
+    {
+        // Step 1: Validate the request
+        $request->validate([
+            'receipt' => 'required|string',
+        ]);
+
+        $receiptData = $request->input('receipt');
+
+        // Step 2: Send the receipt to Apple's servers for validation
+        $response = $this->sendReceiptToApple($receiptData);
+
+        // Step 3: Handle the response and check if the subscription is valid
+        return $this->handleAppleResponse($response);
+    }
+
+    private function sendReceiptToApple($receiptData)
+    {
+        $postData = json_encode([
+            'receipt-data' => $receiptData,
+            'password' => config('8fc07755cb854f4a8e5c98f53945252c'), // The shared secret
+        ]);
+
+        // First, try verifying with the production URL
+        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
+
+        if ($response['status'] == 21007) {
+            // 21007 means the receipt is from the sandbox environment, so try the sandbox URL
+            $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
+        }
+
+        return $response;
+    }
+
+    private function callAppleApi($url, $postData)
+    {
+        // Send the POST request to Apple's servers
+        $response = Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post($url, $postData);
+
+        return json_decode($response->body(), true);
+    }
+
+    private function handleAppleResponse($response)
+    {
+        if ($response['status'] == 0) {
+            // The receipt is valid, check the latest subscription status
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscription is valid.',
+                'data' => $response['receipt'],
+            ], 200);
+        } else {
+            // The receipt is invalid or there was an error
+            return response()->json([
+                'success' => false,
+                'message' => 'Subscription validation failed.',
+                'error_code' => $response['status'],
+            ], 400);
+        }
+    }
+}

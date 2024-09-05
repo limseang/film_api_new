@@ -36,6 +36,8 @@ use App\Http\Controllers\ReportCommentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestFilmController;
 use App\Http\Controllers\ShareLinkController;
+use App\Http\Controllers\SubcriptController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
@@ -616,6 +618,32 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 Route::get('/verify-payment', [UserController::class, 'verifyPayment'])->name('verify-payment');
 Route::post('/webhook/payment', [UserController::class, 'handlePaymentWebhook'])->name('webhook.payment');
+
+
+// Suplier Route
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/supplier', [SupplierController::class, 'index']);
+    Route::get('/supplier/{id}', [SupplierController::class, 'detail']);
+   Route::group(['middleware' => ['postpermission']], function () {
+       Route::post('/supplier/create', [SupplierController::class, 'create']);
+       Route::get('/supplier', [SupplierController::class, 'index']);
+       Route::delete('/supplier/delete/{id}', [SupplierController::class, 'destroy']);
+       Route::post('/supplier/update/{id}', [SupplierController::class, 'update']);
+   });
+});
+
+// subcription
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/subscription', [SubcriptController::class, 'index']);
+    Route::get('/subscription/{id}', [SubcriptController::class, 'detail']);
+    Route::group(['middleware' => ['postpermission']], function () {
+      Route::post('/subscription/create', [SubcriptController::class, 'create']);
+      Route::delete('/subscription/delete/{id}', [SubcriptController::class, 'destroy']);
+      Route::post('/subscription/update/{id}', [SubcriptController::class, 'update']);
+  });
+});
+Route::post('/subscription/subscribe/verify', [SubcriptController::class, 'verifySubscription']);
+
 
 
 
