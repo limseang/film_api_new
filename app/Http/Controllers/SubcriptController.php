@@ -106,105 +106,9 @@ class SubcriptController extends Controller
     private $appleSandboxUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
     private $appleProductionUrl = 'https://buy.itunes.apple.com/verifyReceipt';
 
-//    public function verifySubscription(Request $request)
-//    {
-//        // Step 1: Validate the request
-//        $request->validate([
-//            'receipt' => 'required|string',
-//        ]);
-//
-//        $receiptData = $request->input('receipt');
-//
-//        // Step 2: Send the receipt to Apple's servers for validation
-//        $response = $this->sendReceiptToApple($receiptData);
-//
-//        // Step 3: Handle the response and check if the subscription is valid
-//        return $this->handleAppleResponse($response);
-//    }
-
-//    private function callAppleApi($url, $postData)
-//    {
-//        try {
-//            $response = Http::withHeaders([
-//                'Content-Type' => 'application/json',
-//            ])->post($url, $postData);
-//
-//            return $response->json();
-//        } catch (\Exception $e) {
-//            Log::error('Error calling Apple API', ['exception' => $e->getMessage()]);
-//            return [
-//                'status' => 'error',
-//                'message' => 'Failed to connect to Apple API',
-//            ];
-//        }
-//    }
-
-//    private function sendReceiptToApple($receiptData)
-//    {
-//        $postData = json_encode([
-//            'receipt-data' => $receiptData,
-//            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
-//        ]);
-//
-//        // First, try verifying with the production URL
-//        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
-//
-//        // If status 21007 is returned, try the sandbox URL
-//        if (isset($response['status']) && $response['status'] == 21007) {
-//            $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
-//        }
-//
-//        return $response;
-//    }
-//
-//    private function handleAppleResponse($response)
-//    {
-//        // Log the response from Apple
-//        Log::info('Response from Apple: ', $response);
-//
-//        if (isset($response['status']) && $response['status'] == 0) {
-//            // The receipt is valid
-//            return response()->json([
-//                'success' => true,
-//                'message' => 'Subscription is valid.',
-//                'data' => $response,  // Optionally include receipt data
-//            ], 200);
-//        } else {
-//            // Log the response details for debugging
-//            Log::error('Apple subscription validation failed', [
-//                'response' => $response,
-//                'error_code' => $response['status'] ?? 'Unknown',
-//            ]);
-//
-//            // The receipt is invalid or there was an error
-//            $errorMessage = 'Subscription validation failed.';
-//            if (isset($response['status'])) {
-//                switch ($response['status']) {
-//                    case 21002:
-//                        $errorMessage = 'The data in the receipt-data property was malformed or missing.';
-//                        break;
-//                    case 21007:
-//                        $errorMessage = 'The receipt is from the test environment, but it was sent to the production environment.';
-//                        break;
-//                    case 21199:
-//                        $errorMessage = 'Internal data access error.';
-//                        break;
-//                    // Add more cases as needed for other error codes
-//                }
-//            }
-//
-//            return response()->json([
-//                'success' => false,
-//                'message' => $errorMessage,
-//                'error_code' => $response['status'] ?? 'Unknown',
-//            ], 400);
-//        }
-//    }
-//
-//
     public function verifySubscription(Request $request)
     {
-        // Step 1: Validate the request
+        // Step 1: Validate the request to ensure receipt is present
         $request->validate([
             'receipt' => 'required|string',
         ]);
@@ -214,89 +118,90 @@ class SubcriptController extends Controller
         // Step 2: Send the receipt to Apple's servers for validation
         $response = $this->sendReceiptToApple($receiptData);
 
-        // Step 3: Handle the response and check if the subscription is valid
+        // Step 3: Handle the response and return appropriate result
         return $this->handleAppleResponse($response);
     }
 
-    private function callAppleApi($url, $postData)
-    {
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($url, $postData);
-
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error('Error calling Apple API', ['exception' => $e->getMessage()]);
-            return [
-                'status' => 'error',
-                'message' => 'Failed to connect to Apple API',
-            ];
-        }
-    }
-
+    /**
+     * Send the receipt data to Apple's servers for verification.
+     */
     private function sendReceiptToApple($receiptData)
     {
         $postData = json_encode([
-            'receipt-data' => $receiptData,
-            'password' => '0c5e8bbd617e4665963964d5649dcc9a', // Fetch shared secret from config
+            'receipt-data' => $receiptData,  // Base64-encoded receipt
+            'password' => '0c5e8bbd617e4665963964d5649dcc9a',  // Replace with your shared secret
         ]);
 
-        // First, try verifying with the production URL
+        // Log the request data for debugging purposes
+        Log::info('Sending receipt to Apple', ['postData' => $postData]);
+
+        // Try verifying with the production URL first
         $response = $this->callAppleApi($this->appleProductionUrl, $postData);
 
-        // If status 21007 is returned, try the sandbox URL
+        // If 21007 is returned, retry with the sandbox URL
         if (isset($response['status']) && $response['status'] == 21007) {
+            Log::info('Switching to sandbox URL due to status 21007');
             $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
         }
 
         return $response;
     }
 
+    /**
+     * Make a POST request to the Apple API to verify the receipt.
+     */
+    private function callAppleApi($url, $postData)
+    {
+        try {
+            // Send the POST request to Apple's server
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post($url, $postData);
+
+            // Log the raw response for debugging
+            Log::info('Response from Apple', ['response' => $response->body()]);
+
+            // Decode the JSON response from Apple
+            return json_decode($response->body(), true);
+        } catch (\Exception $e) {
+            // Log any errors in case of failure
+            Log::error('Error communicating with Apple', ['error' => $e->getMessage()]);
+
+            return [
+                'status' => 21199,  // Custom error code for internal failure
+                'message' => 'Internal data access error.',
+            ];
+        }
+    }
+
+    /**
+     * Handle the response from Apple and return an appropriate result.
+     */
     private function handleAppleResponse($response)
     {
-        // Log the response from Apple
-        Log::info('Response from Apple: ', $response);
-
+        // Check if Apple responded with a valid status
         if (isset($response['status']) && $response['status'] == 0) {
-            // The receipt is valid
+            // The receipt is valid, subscription is successful
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response,  // Optionally include receipt data
+                'data' => $response,  // Optionally include additional data
             ], 200);
         } else {
-            // Log the response details for debugging
+            // Log the failure for debugging
             Log::error('Apple subscription validation failed', [
                 'response' => $response,
                 'error_code' => $response['status'] ?? 'Unknown',
             ]);
 
-            // The receipt is invalid or there was an error
-            $errorMessage = 'Subscription validation failed.';
-            if (isset($response['status'])) {
-                switch ($response['status']) {
-                    case 21002:
-                        $errorMessage = 'The data in the receipt-data property was malformed or missing.';
-                        break;
-                    case 21007:
-                        $errorMessage = 'The receipt is from the test environment, but it was sent to the production environment.';
-                        break;
-                    case 21199:
-                        $errorMessage = 'Internal data access error.';
-                        break;
-                    // Add more cases as needed for other error codes
-                }
-            }
-
+            // Return failure response to the client
             return response()->json([
                 'success' => false,
-                'message' => $errorMessage,
+                'message' => $response['message'] ?? 'Subscription validation failed.',
                 'error_code' => $response['status'] ?? 'Unknown',
             ], 400);
         }
     }
-
 
 
 }
