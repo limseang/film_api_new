@@ -7,6 +7,7 @@ use App\Models\Subcript;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SubcriptController extends Controller
 {
@@ -125,18 +126,18 @@ class SubcriptController extends Controller
     {
         $postData = json_encode([
             'receipt-data' => $receiptData,
-            'password' => config('8fc07755cb854f4a8e5c98f53945252c'), // The shared secret
+            'password' => config('7f3ca98c91d643fe93fc5f796f8d73bc'), // Fetch shared secret from config
         ]);
 
         // First, try verifying with the production URL
         $response = $this->callAppleApi($this->appleProductionUrl, $postData);
 
-        if ($response['status'] == 21007) {
+        if (isset($response['status']) && $response['status'] == 21007) {
             // 21007 means the receipt is from the sandbox environment, so try the sandbox URL
             $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
         }
 
-        return $response;
+        return $this->handleAppleResponse($response);
     }
 
     private function callAppleApi($url, $postData)
@@ -150,7 +151,7 @@ class SubcriptController extends Controller
 
     private function handleAppleResponse($response)
     {
-        if ($response['status'] == 0) {
+        if (isset($response['status']) && $response['status'] == 0) {
             // The receipt is valid, check the latest subscription status
             return response()->json([
                 'success' => true,
@@ -158,12 +159,20 @@ class SubcriptController extends Controller
                 'data' => $response['receipt'],
             ], 200);
         } else {
+            // Log the response details for debugging
+            Log::error('Apple subscription validation failed', [
+                'response' => $response,
+                'error_code' => $response['status'] ?? 'Unknown',
+            ]);
+
             // The receipt is invalid or there was an error
             return response()->json([
                 'success' => false,
                 'message' => 'Subscription validation failed.',
-                'error_code' => $response['status'],
+                'error_code' => $response['status'] ?? 'Unknown',
             ], 400);
         }
     }
+
+
 }
