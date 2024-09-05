@@ -152,15 +152,14 @@ class SubcriptController extends Controller
     private function handleAppleResponse($response)
     {
         // Directly access the array data
-        print_r($response);
-        dd(123);
+
         if (isset($response['status']) && $response['status'] == 0) {
             // The receipt is valid, check the latest subscription status
 
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response['receipt'],  // Make sure the receipt key exists in the response
+                'data' => $response,  // Make sure the receipt key exists in the response
             ], 200);
         } else {
             // Log the response details for debugging
