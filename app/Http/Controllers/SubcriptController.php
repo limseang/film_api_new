@@ -124,19 +124,26 @@ class SubcriptController extends Controller
 
     private function callAppleApi($url, $postData)
     {
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post($url, $postData);
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post($url, $postData);
 
-        return $response->json();
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Error calling Apple API', ['exception' => $e->getMessage()]);
+            return [
+                'status' => 'error',
+                'message' => 'Failed to connect to Apple API',
+            ];
+        }
     }
-
 
     private function sendReceiptToApple($receiptData)
     {
         $postData = json_encode([
             'receipt-data' => $receiptData,
-            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
+            'password' => '0c5e8bbd617e4665963964d5649dcc9a', // Fetch shared secret from config
         ]);
 
         // First, try verifying with the production URL
@@ -149,7 +156,6 @@ class SubcriptController extends Controller
 
         return $response;
     }
-
 
     private function handleAppleResponse($response)
     {
@@ -171,15 +177,29 @@ class SubcriptController extends Controller
             ]);
 
             // The receipt is invalid or there was an error
+            $errorMessage = 'Subscription validation failed.';
+            if (isset($response['status'])) {
+                switch ($response['status']) {
+                    case 21002:
+                        $errorMessage = 'The data in the receipt-data property was malformed or missing.';
+                        break;
+                    case 21007:
+                        $errorMessage = 'The receipt is from the test environment, but it was sent to the production environment.';
+                        break;
+                    case 21199:
+                        $errorMessage = 'Internal data access error.';
+                        break;
+                    // Add more cases as needed for other error codes
+                }
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => 'Subscription validation failed.',
+                'message' => $errorMessage,
                 'error_code' => $response['status'] ?? 'Unknown',
             ], 400);
         }
     }
-
-
 
 
 
