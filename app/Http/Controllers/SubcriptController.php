@@ -123,10 +123,10 @@ class SubcriptController extends Controller
 
     private function sendReceiptToApple($receiptData)
     {
-        $postData = json_encode([
+        $postData = [
             'receipt-data' => base64_encode($receiptData),
-            'password' => '0c5e8bbd617e4665963964d5649dcc9a',
-        ]);
+            'password' => base64_encode('0c5e8bbd617e4665963964d5649dcc9a'),
+        ];
 
         Log::info('Sending receipt to Apple', ['postData' => $postData]);
 
