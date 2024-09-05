@@ -636,13 +636,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/subscription', [SubcriptController::class, 'index']);
     Route::get('/subscription/{id}', [SubcriptController::class, 'detail']);
+    Route::post('/subscription/subscribe/verify', [SubcriptController::class, 'verifySubscription']);
     Route::group(['middleware' => ['postpermission']], function () {
       Route::post('/subscription/create', [SubcriptController::class, 'create']);
       Route::delete('/subscription/delete/{id}', [SubcriptController::class, 'destroy']);
       Route::post('/subscription/update/{id}', [SubcriptController::class, 'update']);
   });
 });
-Route::post('/subscription/subscribe/verify', [SubcriptController::class, 'verifySubscription']);
+
 
 
 
