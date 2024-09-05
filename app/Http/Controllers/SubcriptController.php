@@ -126,7 +126,7 @@ class SubcriptController extends Controller
     {
         $postData = json_encode([
             'receipt-data' => $receiptData,
-            'password' => config('7f3ca98c91d643fe93fc5f796f8d73bc'), // Fetch shared secret from config
+            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc'
         ]);
 
         // First, try verifying with the production URL
@@ -137,7 +137,7 @@ class SubcriptController extends Controller
             $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
         }
 
-        return $this->handleAppleResponse($response);
+        return $response;
     }
 
     private function callAppleApi($url, $postData)
