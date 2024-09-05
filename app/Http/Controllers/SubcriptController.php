@@ -122,6 +122,18 @@ class SubcriptController extends Controller
         return $this->handleAppleResponse($response);
     }
 
+    private function callAppleApi($url, $postData)
+    {
+        $response = Http::post($url, [
+            'body' => $postData,
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        return $response->json();
+    }
+
     private function sendReceiptToApple($receiptData)
     {
         $postData = json_encode([
