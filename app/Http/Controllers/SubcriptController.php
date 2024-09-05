@@ -124,15 +124,15 @@ class SubcriptController extends Controller
 
     private function callAppleApi($url, $postData)
     {
-        $response = Http::post($url, [
-            'body' => $postData,
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-        ]);
+        // Send the POST request with raw JSON data
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post($url, $postData);
 
+        // Return the JSON response
         return $response->json();
     }
+
 
     private function sendReceiptToApple($receiptData)
     {
@@ -142,31 +142,25 @@ class SubcriptController extends Controller
         ]);
 
         // First, try verifying with the production URL
-//        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
-//        $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
-        $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
+        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
 
+        // If status 21007 is returned, try the sandbox URL
         if (isset($response['status']) && $response['status'] == 21007) {
-            // 21007 means the receipt is from the sandbox environment, so try the sandbox URL
-
+            $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
         }
 
         return $response;
     }
 
+
     private function handleAppleResponse($response)
     {
-        // Check if the response is a JsonResponse and decode it
-        if ($response instanceof \Illuminate\Http\JsonResponse) {
-            $response = $response->getData(true); // Convert JsonResponse to array
-        }
-
         if (isset($response['status']) && $response['status'] == 0) {
-            // The receipt is valid, check the latest subscription status
+            // The receipt is valid
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response,  // Make sure the receipt key exists in the response
+                'data' => $response,  // Optionally include receipt data here
             ], 200);
         } else {
             // Log the response details for debugging
@@ -175,7 +169,7 @@ class SubcriptController extends Controller
                 'error_code' => $response['status'] ?? 'Unknown',
             ]);
 
-            // The receipt is invalid or there was an error
+            // Return error response
             return response()->json([
                 'success' => false,
                 'message' => 'Subscription validation failed.',
@@ -183,6 +177,7 @@ class SubcriptController extends Controller
             ], 400);
         }
     }
+
 
 
 
