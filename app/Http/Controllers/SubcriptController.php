@@ -154,7 +154,12 @@ class SubcriptController extends Controller
         // Directly access the array data
         if (isset($response['status']) && $response['status'] == 0) {
             // The receipt is valid, check the latest subscription status
-            return $this->sendResponse($response);
+            dd($response);
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscription is valid.',
+                'data' => $response['receipt'],  // Make sure the receipt key exists in the response
+            ], 200);
         } else {
             // Log the response details for debugging
             Log::error('Apple subscription validation failed', [
