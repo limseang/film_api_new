@@ -151,11 +151,13 @@ class SubcriptController extends Controller
 
     private function handleAppleResponse($response)
     {
-        // Directly access the array data
+        // Check if the response is a JsonResponse and decode it
+        if ($response instanceof \Illuminate\Http\JsonResponse) {
+            $response = $response->getData(true); // Convert JsonResponse to array
+        }
 
         if (isset($response['status']) && $response['status'] == 0) {
             // The receipt is valid, check the latest subscription status
-
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
