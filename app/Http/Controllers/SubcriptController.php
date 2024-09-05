@@ -135,7 +135,7 @@ class SubcriptController extends Controller
     private function sendReceiptToApple($receiptData)
     {
         $postData = [
-            'receipt-data' => json_decode($receiptData, true),
+            'receipt-data' => json_encode($receiptData),
             'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
         ];
 
