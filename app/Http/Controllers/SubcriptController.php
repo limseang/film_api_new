@@ -106,6 +106,9 @@ class SubcriptController extends Controller
     private $appleSandboxUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
     private $appleProductionUrl = 'https://buy.itunes.apple.com/verifyReceipt';
 
+    /**
+     * Verify the iOS subscription receipt with Apple.
+     */
     public function verifySubscription(Request $request)
     {
         // Step 1: Validate the request
@@ -113,20 +116,11 @@ class SubcriptController extends Controller
             'receipt' => 'required|string',  // Expecting Base64-encoded receipt
         ]);
 
-        // Step 2: Get and decode the Base64-encoded receipt
+        // Step 2: Get the Base64-encoded receipt
         $encodedReceipt = $request->input('receipt');
-        $decodedReceipt = base64_decode($encodedReceipt);
 
-        // Check if the receipt is properly decoded
-        if ($decodedReceipt === false) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Base64 receipt data.',
-            ], 400);
-        }
-
-        // Step 3: Send the decoded receipt to Apple's servers for validation
-        $response = $this->sendReceiptToApple($encodedReceipt); // Apple expects Base64-encoded receipt
+        // Step 3: Send the receipt to Apple's servers for validation
+        $response = $this->sendReceiptToApple($encodedReceipt);
 
         // Step 4: Handle the response and return appropriate result
         return $this->handleAppleResponse($response);
@@ -137,13 +131,12 @@ class SubcriptController extends Controller
      */
     private function sendReceiptToApple($encodedReceipt)
     {
-        // Prepare data for Apple's verification API
         $postData = json_encode([
-            'receipt-data' => $encodedReceipt,  // Send the Base64-encoded receipt directly to Apple
+            'receipt-data' => $encodedReceipt,  // Base64-encoded receipt
             'password' => '7f3ca98c91d643fe93fc5f796f8d73bc',  // Apple Shared Secret
         ]);
 
-        // Log the request data for debugging purposes
+        // Log the request data for debugging
         Log::info('Sending receipt to Apple', ['postData' => $postData]);
 
         // Try verifying with the production URL first
@@ -164,18 +157,15 @@ class SubcriptController extends Controller
     private function callAppleApi($url, $postData)
     {
         try {
-            // Send the POST request to Apple's server
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($url, $postData);
 
-            // Log the raw response from Apple
-            Log::info('Raw response from Apple', ['response' => $response->body()]);
+            // Log the raw response from Apple for debugging
+            Log::info('Apple Response:', ['response' => $response->body()]);
 
-            // Decode the JSON response from Apple
             return json_decode($response->body(), true);
         } catch (\Exception $e) {
-            // Log any errors that occur
             Log::error('Error communicating with Apple', ['error' => $e->getMessage()]);
 
             return [
@@ -191,27 +181,23 @@ class SubcriptController extends Controller
     private function handleAppleResponse($response)
     {
         if (isset($response['status']) && $response['status'] == 0) {
-            // The receipt is valid, subscription is successful
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response,  // Include the response from Apple
+                'data' => $response,
             ], 200);
         } else {
-            // Log the failure for debugging
             Log::error('Apple subscription validation failed', [
                 'response' => $response,
                 'error_code' => $response['status'] ?? 'Unknown',
             ]);
 
-            // Return failure response to the client
             return response()->json([
                 'success' => false,
-                'message' => $response['message'] ?? 'Subscription validation failed.',
+                'message' => 'Subscription validation failed.',
                 'error_code' => $response['status'] ?? 'Unknown',
             ], 400);
         }
     }
-
 
 }
