@@ -151,28 +151,33 @@ class SubcriptController extends Controller
 
     private function handleAppleResponse($response)
     {
-        if (isset($response['status']) && $response['status'] == 0) {
-            // The receipt is valid, check the latest subscription status
+        // Decode the JsonResponse to get the actual data
+        $decodedResponse = $response->getData(true); // true converts it to an associative array
+
+        // Check if the response from Apple is valid
+        if (isset($decodedResponse['status']) && $decodedResponse['status'] == 0) {
+            // The receipt is valid
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response['receipt'],
+                'data' => $decodedResponse['receipt'],  // Make sure receipt is available
             ], 200);
         } else {
             // Log the response details for debugging
             Log::error('Apple subscription validation failed', [
-                'response' => $response,
-                'error_code' => $response['status'] ?? 'Unknown',
+                'response' => $decodedResponse,
+                'error_code' => $decodedResponse['status'] ?? 'Unknown',
             ]);
 
-            // The receipt is invalid or there was an error
+            // Return error response
             return response()->json([
                 'success' => false,
                 'message' => 'Subscription validation failed.',
-                'error_code' => $response['status'] ?? 'Unknown',
+                'error_code' => $decodedResponse['status'] ?? 'Unknown',
             ], 400);
         }
     }
+
 
 
 }
