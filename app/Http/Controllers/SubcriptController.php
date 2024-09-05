@@ -134,10 +134,10 @@ class SubcriptController extends Controller
 
     private function sendReceiptToApple($receiptData)
     {
-        $postData = [
-            'receipt-data' => json_encode($receiptData),
+        $postData = json_encode([
+            'receipt-data' => $receiptData,
             'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
-        ];
+        ]);
 
         // First, try verifying with the production URL
         $response = $this->callAppleApi($this->appleProductionUrl, $postData);
