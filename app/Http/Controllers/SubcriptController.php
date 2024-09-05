@@ -108,30 +108,46 @@ class SubcriptController extends Controller
 
     public function verifySubscription(Request $request)
     {
+        // Step 1: Validate the request
         $request->validate([
-            'receipt' => 'required|string',
+            'receipt' => 'required|string',  // Expecting Base64-encoded receipt
         ]);
 
-        $receiptData = $request->input('receipt');
+        // Step 2: Get and decode the Base64-encoded receipt
+        $encodedReceipt = $request->input('receipt');
+        $decodedReceipt = base64_decode($encodedReceipt);
 
-        // Step 2: Send the receipt to Apple's servers for validation
-        $response = $this->sendReceiptToApple($receiptData);
+        // Check if the receipt is properly decoded
+        if ($decodedReceipt === false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Base64 receipt data.',
+            ], 400);
+        }
 
-        // Step 3: Handle the response and return appropriate result
+        // Step 3: Send the decoded receipt to Apple's servers for validation
+        $response = $this->sendReceiptToApple($encodedReceipt); // Apple expects Base64-encoded receipt
+
+        // Step 4: Handle the response and return appropriate result
         return $this->handleAppleResponse($response);
     }
 
-    private function sendReceiptToApple($receiptData)
+    /**
+     * Send the receipt data to Apple's servers for verification.
+     */
+    private function sendReceiptToApple($encodedReceipt)
     {
+        // Prepare data for Apple's verification API
         $postData = json_encode([
-            'receipt-data' => $receiptData,
-            'password' => '0c5e8bbd617e4665963964d5649dcc9a',
+            'receipt-data' => $encodedReceipt,  // Send the Base64-encoded receipt directly to Apple
+            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc',  // Apple Shared Secret
         ]);
 
+        // Log the request data for debugging purposes
         Log::info('Sending receipt to Apple', ['postData' => $postData]);
 
         // Try verifying with the production URL first
-        $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
+        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
 
         // If 21007 is returned, retry with the sandbox URL
         if (isset($response['status']) && $response['status'] == 21007) {
@@ -142,40 +158,53 @@ class SubcriptController extends Controller
         return $response;
     }
 
+    /**
+     * Make a POST request to the Apple API to verify the receipt.
+     */
     private function callAppleApi($url, $postData)
     {
         try {
+            // Send the POST request to Apple's server
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($url, $postData);
 
+            // Log the raw response from Apple
             Log::info('Raw response from Apple', ['response' => $response->body()]);
 
+            // Decode the JSON response from Apple
             return json_decode($response->body(), true);
         } catch (\Exception $e) {
+            // Log any errors that occur
             Log::error('Error communicating with Apple', ['error' => $e->getMessage()]);
 
             return [
-                'status' => 21199,
+                'status' => 21199,  // Custom error code for internal failure
                 'message' => 'Internal data access error.',
             ];
         }
     }
 
+    /**
+     * Handle the response from Apple and return an appropriate result.
+     */
     private function handleAppleResponse($response)
     {
         if (isset($response['status']) && $response['status'] == 0) {
+            // The receipt is valid, subscription is successful
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription is valid.',
-                'data' => $response,
+                'data' => $response,  // Include the response from Apple
             ], 200);
         } else {
+            // Log the failure for debugging
             Log::error('Apple subscription validation failed', [
                 'response' => $response,
                 'error_code' => $response['status'] ?? 'Unknown',
             ]);
 
+            // Return failure response to the client
             return response()->json([
                 'success' => false,
                 'message' => $response['message'] ?? 'Subscription validation failed.',
