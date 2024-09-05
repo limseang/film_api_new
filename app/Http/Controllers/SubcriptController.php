@@ -126,7 +126,7 @@ class SubcriptController extends Controller
     {
         $postData = json_encode([
             'receipt-data' => $receiptData,
-            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc'
+            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
         ]);
 
         // First, try verifying with the production URL
@@ -138,15 +138,6 @@ class SubcriptController extends Controller
         }
 
         return $response;
-    }
-
-    private function callAppleApi($url, $postData)
-    {
-        // Send the POST request to Apple's servers
-        $response = Http::withHeaders(['Content-Type' => 'application/json'])
-            ->post($url, $postData);
-
-        return json_decode($response->body(), true);
     }
 
     private function handleAppleResponse($response)
