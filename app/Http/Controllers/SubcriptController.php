@@ -239,7 +239,7 @@ class SubcriptController extends Controller
     {
         $postData = json_encode([
             'receipt-data' => $receiptData,
-            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc', // Fetch shared secret from config
+            'password' => '0c5e8bbd617e4665963964d5649dcc9a', // Fetch shared secret from config
         ]);
 
         // First, try verifying with the production URL
