@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\crf;
 use App\Models\Subcript;
 use App\Models\Supplier;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -129,75 +130,41 @@ class SubcriptController extends Controller
     /**
      * Send the receipt data to Apple's servers for verification.
      */
-    private function sendReceiptToApple($encodedReceipt)
+    function generateAppleJWT()
     {
-        $postData = json_encode([
-            'receipt-data' => $encodedReceipt,  // Base64-encoded receipt
-            'password' => '7f3ca98c91d643fe93fc5f796f8d73bc',  // Apple Shared Secret
-        ]);
+        $privateKey = file_get_contents(storage_path('app/AuthKey_Y86Q74HSM8.p8'));
+        $keyId = 'Y86Q74HSM8'; // Your Apple Key ID
+        $issuerId = 'VZU47BRDUA'; // Your Apple Developer Team ID
 
-        // Log the request data for debugging
-        Log::info('Sending receipt to Apple', ['postData' => $postData]);
+        $now = time();
+        $token = [
+            'iss' => $issuerId,
+            'iat' => $now,
+            'exp' => $now + 3600, // Token expiration (1 hour)
+            'aud' => 'appstoreconnect-v1',
+            'sub' => $issuerId,
+        ];
 
-        // Try verifying with the production URL first
-        $response = $this->callAppleApi($this->appleProductionUrl, $postData);
+        $jwt = JWT::encode($token, $privateKey, 'ES256', $keyId);
 
-        // If 21007 is returned, retry with the sandbox URL
-        if (isset($response['status']) && $response['status'] == 21007) {
-            Log::info('Switching to sandbox URL due to status 21007');
-            $response = $this->callAppleApi($this->appleSandboxUrl, $postData);
-        }
-
-        return $response;
+        return $jwt;
     }
 
-    /**
-     * Make a POST request to the Apple API to verify the receipt.
-     */
-    private function callAppleApi($url, $postData)
+    function fetchSubscriptionData($transactionId)
     {
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($url, $postData);
+        // Call the JWT generation function
+        $jwt = $this->generateAppleJWT();
 
-            // Log the raw response from Apple for debugging
-            Log::info('Apple Response:', ['response' => $response->body()]);
+        // Send a GET request to the Apple API with the JWT in the Authorization header
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $jwt,
+        ])->get("https://api.appstoreconnect.apple.com/v1/transactions/{$transactionId}");
 
-            return json_decode($response->body(), true);
-        } catch (\Exception $e) {
-            Log::error('Error communicating with Apple', ['error' => $e->getMessage()]);
-
-            return [
-                'status' => 21199,  // Custom error code for internal failure
-                'message' => 'Internal data access error.',
-            ];
-        }
-    }
-
-    /**
-     * Handle the response from Apple and return an appropriate result.
-     */
-    private function handleAppleResponse($response)
-    {
-        if (isset($response['status']) && $response['status'] == 0) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Subscription is valid.',
-                'data' => $response,
-            ], 200);
+        // Handle the response (optional error checking)
+        if ($response->successful()) {
+            return $response->json();  // Return the JSON response
         } else {
-            Log::error('Apple subscription validation failed', [
-                'response' => $response,
-                'error_code' => $response['status'] ?? 'Unknown',
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Subscription validation failed.',
-                'error_code' => $response['status'] ?? 'Unknown',
-            ], 400);
+            return $response->body();  // Return error details
         }
     }
-
 }
