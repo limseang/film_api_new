@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'user' => \App\Http\Middleware\UserPermission::class,
         'postpermission' => \App\Http\Middleware\PostPermission::class,
         'lang' => \App\Http\Middleware\Localization::class,
+        'apple.jwt' => \App\Http\Middleware\AppleJWT::class,
     ];
 }

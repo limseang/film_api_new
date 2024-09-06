@@ -644,6 +644,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   });
 });
 
+Route::group(['middleware' => ['apple.jwt']], function () {
+
+
+});
+Route::get('/subscription/verify/{transactionId}', [SubcriptController::class, 'getApps']);
+
+//->middleware('apple.jwt');
+
 
 
 

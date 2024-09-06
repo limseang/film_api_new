@@ -130,41 +130,78 @@ class SubcriptController extends Controller
     /**
      * Send the receipt data to Apple's servers for verification.
      */
-    function generateAppleJWT()
-    {
-        $privateKey = file_get_contents(storage_path('storage/app/AuthKey_Y86Q74HSM8.p8'));
-        $keyId = 'Y86Q74HSM8'; // Your Apple Key ID
-        $issuerId = 'VZU47BRDUA'; // Your Apple Developer Team ID
+//    function generateAppleJWT()
+//    {
+//        $privateKey = env('APPLE_PRIVATE_KEY');
+//        $keyId = 'Y86Q74HSM8'; // Your Apple Key ID
+//        $issuerId = 'VZU47BRDUA'; // Your Apple Developer Team ID
+//
+//        $now = time();
+//        $token = [
+//            'iss' => $issuerId,
+//            'iat' => $now,
+//            'exp' => $now + 3600, // Token expiration (1 hour)
+//            'aud' => 'appstoreconnect-v1',
+//            'sub' => $issuerId,
+//        ];
+//
+//        $jwt = JWT::encode($token, $privateKey, 'ES256', $keyId);
+//
+//        return $jwt;
+//    }
+//
+//    // app/Http/Controllers/SubcriptController.php
 
-        $now = time();
-        $token = [
-            'iss' => $issuerId,
-            'iat' => $now,
-            'exp' => $now + 3600, // Token expiration (1 hour)
-            'aud' => 'appstoreconnect-v1',
-            'sub' => $issuerId,
+    public function getApps()
+    {
+        // Key ID, Private Key, and Issuer ID from App Store Connect API
+        $apple_key_id = 'NM6QRRGT5K';  // Your Key ID from App Store Connect
+
+        // Your Apple Private Key (.p8 file content)
+        $apple_key = <<<EOD
+-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgr9gY1hXg1SWPcvfg
+v794xalFutgRF3M9vvIyvPnFVRKgCgYIKoZIzj0DAQehRANCAASKd8AgVRH3+6o3
+3KSqgQU8cEGquyXs5D8ElH5K1NBEnbHv6ATfC5av8y+zWYmWgSKp5KvZWLsU/jMj
+ZFLR0/dM
+-----END PRIVATE KEY-----
+EOD;
+
+        $apple_issuer_id = '710b826a-8de4-4ca1-8a02-80f67cf863cd';  // Your Issuer ID from App Store Connect
+
+        // Create JWT payload array
+        $payload_array = [
+            'iss' => $apple_issuer_id,       // Issuer ID from App Store Connect
+            'aud' => 'appstoreconnect-v1',   // Audience is always appstoreconnect-v1
+            'iat' => time(),                 // Issued at time
+            'exp' => time() + (60 * 5)       // Expiration time (5 minutes)
         ];
 
-        $jwt = JWT::encode($token, $privateKey, 'ES256', $keyId);
+        // Create JWT payload header
+        $payload_header = [
+            "kid" => $apple_key_id,    // Key ID from App Store Connect
+            "typ" => "JWT"
+        ];
 
-        return $jwt;
-    }
+        // Generate JWT token using ES256 algorithm
+        $jwtToken = JWT::encode($payload_array, $apple_key, 'ES256', $apple_key_id, $payload_header);
 
-    function fetchSubscriptionData($transactionId)
-    {
-        // Call the JWT generation function
-        $jwt = $this->generateAppleJWT();
+        // Log or print the JWT token (optional for debugging)
+        Log::info('Generated Apple JWT: ' . $jwtToken);
 
-        // Send a GET request to the Apple API with the JWT in the Authorization header
+        // Make the API request to App Store Connect using the JWT token
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $jwt,
-        ])->get("https://api.appstoreconnect.apple.com/v1/transactions/{$transactionId}");
+            'Authorization' => 'Bearer ' . $jwtToken
+        ])->get('https://api.appstoreconnect.apple.com/v1/apps');
 
-        // Handle the response (optional error checking)
+        // Handle the response
         if ($response->successful()) {
-            return $response->json();  // Return the JSON response
+            return response()->json($response->json());  // Return the API response as JSON
         } else {
-            return $response->body();  // Return error details
+            return response()->json([
+                'error' => 'Failed to fetch apps from App Store Connect',
+                'details' => $response->body()
+            ], $response->status());
         }
     }
 }
