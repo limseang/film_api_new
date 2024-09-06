@@ -132,7 +132,7 @@ class SubcriptController extends Controller
      */
     function generateAppleJWT()
     {
-        $privateKey = env('APPLE_PRIVATE_KEY'); // Fetch from .env
+        $privateKey = file_get_contents(storage_path('storage/app/AuthKey_Y86Q74HSM8.p8'));
         $keyId = 'Y86Q74HSM8'; // Your Apple Key ID
         $issuerId = 'VZU47BRDUA'; // Your Apple Developer Team ID
 
