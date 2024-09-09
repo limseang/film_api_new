@@ -130,29 +130,8 @@ class SubcriptController extends Controller
     /**
      * Send the receipt data to Apple's servers for verification.
      */
-//    function generateAppleJWT()
-//    {
-//        $privateKey = env('APPLE_PRIVATE_KEY');
-//        $keyId = 'Y86Q74HSM8'; // Your Apple Key ID
-//        $issuerId = 'VZU47BRDUA'; // Your Apple Developer Team ID
-//
-//        $now = time();
-//        $token = [
-//            'iss' => $issuerId,
-//            'iat' => $now,
-//            'exp' => $now + 3600, // Token expiration (1 hour)
-//            'aud' => 'appstoreconnect-v1',
-//            'sub' => $issuerId,
-//        ];
-//
-//        $jwt = JWT::encode($token, $privateKey, 'ES256', $keyId);
-//
-//        return $jwt;
-//    }
-//
-//    // app/Http/Controllers/SubcriptController.php
 
-    public function getApps()
+    public function getApps($transactionId)
     {
         // Key ID, Private Key, and Issuer ID from App Store Connect API
         $apple_key_id = 'NM6QRRGT5K';  // Your Key ID from App Store Connect
@@ -192,7 +171,7 @@ EOD;
         // Make the API request to App Store Connect using the JWT token
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $jwtToken
-        ])->get('https://api.appstoreconnect.apple.com/v1/apps');
+        ])->get('https://api.storekit.itunes.apple.com/inApps/v1/history/{transactionId}} ');
 
         // Handle the response
         if ($response->successful()) {

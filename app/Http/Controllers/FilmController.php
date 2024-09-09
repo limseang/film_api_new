@@ -765,7 +765,11 @@ public function updateFilm(Request $request,$id)
             })->values()->all();
 
             $watch = $films->values()->filter(function ($film) {
-                return $film->type == 5 || $film->type == 6 || $film->type == 7 || $film->type == 8;
+                $total_episode = count($film->episode);
+                return ($film->type == 5 || $film->type == 6 || $film->type == 7 || $film->type == 8) && $total_episode > 0;
+
+                //if total episode > 1 then return
+
             });
             $watch = $watch->sortByDesc('created_at')->take(6)->map(function ($film) use ($uploadController) {
                 return [
