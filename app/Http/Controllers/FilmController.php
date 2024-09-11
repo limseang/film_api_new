@@ -475,20 +475,32 @@ public function updateFilm(Request $request,$id)
     {
         try {
             $uploadController = new UploadController();
+
+            // Get the films with related data
             $films = Film::query()->where('type', 10)
                 ->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])
                 ->get()
                 ->sortBy(function($film) {
-                    return DateTime::createFromFormat('d/m/Y', $film->release_date)->format('Ym');
+                    // Check for valid date before formatting
+                    if (DateTime::createFromFormat('d/m/Y', $film->release_date)) {
+                        return DateTime::createFromFormat('d/m/Y', $film->release_date)->format('Ym');
+                    }
+                    return null; // Handle invalid date
                 });
+
             $data = [];
-            $groupByMonth = collect($films)->groupBy(function ($item) {
-                return DateTime::createFromFormat('d/m/Y', $item->release_date_format)->format('F Y');
+
+            // Group by month and year (F Y)
+            $groupByMonth = collect($films)->groupBy(function ($film) {
+                if (DateTime::createFromFormat('d/m/Y', $film->release_date)) {
+                    return DateTime::createFromFormat('d/m/Y', $film->release_date)->format('F Y');
+                }
+                return 'Unknown Date'; // Handle invalid date format
             });
 
-            foreach ($groupByMonth as $key => $item) {
-                // order by release date
-                $data[$key] = $item->map(function ($film) use ($uploadController) {
+            foreach ($groupByMonth as $key => $filmsGroup) {
+                // Order by release date within each month group
+                $data[$key] = $filmsGroup->map(function ($film) use ($uploadController) {
                     return [
                         'id' => $film->id,
                         'title' => $film->title,
@@ -499,16 +511,17 @@ public function updateFilm(Request $request,$id)
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
-                        'cast' => $film->Cast ? $this->getCastResource($film->Cast) : null,
+                        'cast' => $film->cast ? $this->getCastResource($film->cast) : null, // Fixed cast case sensitivity
                     ];
                 })->sortBy('release_date')->values()->all();
             }
+
             return $this->sendResponse($data);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
-
     }
+
 
 
     public function showByRate(Request $request)
