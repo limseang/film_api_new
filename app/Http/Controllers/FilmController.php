@@ -753,7 +753,7 @@ public function updateFilm(Request $request,$id)
             $nowShowing = $films->values()->filter(function ($film) {
                 return $film->type == 9;
             });
-            $nowShowing = $nowShowing->sortByDesc('created_at')->map(function ($film) use ($uploadController) {
+            $nowShowing = $nowShowing->sortByDesc('updated_at')->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
                     'name' => $film->title,
