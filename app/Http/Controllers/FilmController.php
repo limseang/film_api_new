@@ -784,7 +784,7 @@ public function updateFilm(Request $request,$id)
                 //if total episode > 1 then return
 
             });
-            $watch = $watch->sortByDesc('created_at')->take(6)->map(function ($film) use ($uploadController) {
+            $watch = $watch->sortByDesc('updated_at')->take(6)->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
                     'name' => $film->title,
