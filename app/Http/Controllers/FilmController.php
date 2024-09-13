@@ -825,7 +825,14 @@ public function updateFilm(Request $request,$id)
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5,6,7,8])->whereHas('episode')->paginate(21, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5,6,7,8])->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
+            //show only $film->episode > 1
+            if($films){
+                $films = $films->filter(function ($film) {
+                    $total_episode = count($film->episode);
+                    return $total_episode > 0;
+                });
+            }
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -838,7 +845,12 @@ public function updateFilm(Request $request,$id)
                     'total_episode' => count($film->episode),
                 ];
             });
-
+            return $this->sendResponse([
+                'current_page' => $films->currentPage(),
+                'total_pages' => $films->lastPage(),
+                'total_count' => $films->total(),
+                'films' => $data->sortByDesc('created_at')->values()->all(),
+            ]);
         }
         catch (Exception $e){
             return $this->sendError($e->getMessage());
