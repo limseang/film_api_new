@@ -825,7 +825,7 @@ public function updateFilm(Request $request,$id)
         $page = $request->get('page', 1);
         try{
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5])->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
+            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', 5)->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                     return [
                         'id' => $film->id,
