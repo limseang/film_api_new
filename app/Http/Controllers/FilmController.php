@@ -826,24 +826,19 @@ public function updateFilm(Request $request,$id)
         try{
             $uploadController = new UploadController();
             $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5,6,7,8])->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
-            //show only $film->episode > 1
-            if($films){
-                $films = $films->filter(function ($film) {
-                    $total_episode = count($film->episode);
-                    return $total_episode > 0;
-                });
-            }
             $data = $films->map(function ($film) use ($uploadController) {
-                return [
-                    'id' => $film->id,
-                    'title' => $film->title,
-                    'release_date' => $film->release_date,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => (string) $this->countRate($film->id),
-                    'rate_people' => $this->countRatePeople($film->id),
-                    'type' => $film->types ? $film->types->name : null,
-                    'total_episode' => count($film->episode),
-                ];
+                   if($film->episode->count() > 0){
+                       return [
+                           'id' => $film->id,
+                           'title' => $film->title,
+                           'release_date' => $film->release_date,
+                           'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                           'rating' => (string) $this->countRate($film->id),
+                           'rate_people' => $this->countRatePeople($film->id),
+                           'type' => $film->types ? $film->types->name : null,
+                           'total_episode' => count($film->episode),
+                       ];
+                   }
             });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
