@@ -310,6 +310,13 @@
     'url' => 'Url',
     'assign_film' => 'Assign Film',
     'assign_cinema' => 'Assign Cinema',
+    'cinema_branch' => 'Cinema Branch',
+    'cinema_name' => 'Cinema Name',
+    'ticket_price' => 'Ticket Price',
+    'show_type' => 'Show Type',
+    'add_cinema_branch' => 'Add Cinema Branch',
+    'edit_cinema_branch' => 'Edit Cinema Branch',
+    'link' => 'Link'
 
     ]
  ?>

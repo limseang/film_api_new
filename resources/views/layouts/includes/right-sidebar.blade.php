@@ -89,6 +89,15 @@
                         </span>
                     </a>
                 </li>
+                <?php $arrRouteCinemaBranch = [route('cinema_branch.index'), route('cinema_branch.create'), request()->is('admin/cinema_branch/edit/*')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('cinema_branch.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteCinemaBranch)) active @else '' @endif">
+                        <i class="ph-buildings"></i>
+                        <span>
+                            {{__('sma.cinema_branch')}}
+                        </span>
+                    </a>
+                </li>
                 {{-- Artical --}}
                   <?php $arrRouteArtical = [
                     route('artical.index'),
