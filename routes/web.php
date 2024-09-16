@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\OriginController;
 use App\Http\Controllers\Admin\EpisodeController;
 use App\Http\Controllers\Admin\VersionController;
 use App\Http\Controllers\Admin\AvailableInController;
+use App\Http\Controllers\Admin\CinemaBranchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -231,6 +232,18 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/assign-film/store', [AvailableInController::class, 'storeFilm'])->name('store_film');
             Route::get('/add-available-in-film', [AvailableInController::class, 'addAvailableInFilm'])->name('add_available_in_film');
             Route::get('/delete-assigned-film/{id}', [AvailableInController::class, 'deleteAssignedFilm'])->name('delete_assigned_film');
+        });
+
+         // Cinema Branch
+         Route::prefix('cinema_branch')->name('cinema_branch.')->group(function(){
+            Route::get('/', [CinemaBranchController::class, 'index'])->name('index');
+            Route::get('/create', [CinemaBranchController::class, 'create'])->name('create');
+            Route::post('/store', [CinemaBranchController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CinemaBranchController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CinemaBranchController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [CinemaBranchController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [CinemaBranchController::class, 'status'])->name('status');
+            Route::get('/show_detail', [CinemaBranchController::class, 'showDetail'])->name('show_detail');
         });
     });
 });

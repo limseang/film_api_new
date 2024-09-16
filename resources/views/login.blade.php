@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--favicon-->
-    <link rel="icon" href="assets/images/favicon-32x32.png" type="image/png" />
+    <link rel="icon" href="img/logo.jpg" type="image/png" />
     <!--plugins-->
     <link href="{{URL::asset('assets/plugins/simplebar/css/simplebar.css')}}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css')}}" rel="stylesheet" />
@@ -44,7 +44,7 @@
                         <div class="card-body p-sm-5">
                             <div class="">
                                 <div class="mb-3 text-center">
-                                    <img src="{{asset('assets/images/logo-icon.png')}}" width="60" alt="">
+                                    <img src="{{asset('img/logo.jpg')}}" width="60" alt="">
                                 </div>
                                 <div class="text-center mb-4">
                                     <h5 class="">Cinemagickh Admin</h5>

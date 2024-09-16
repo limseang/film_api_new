@@ -388,5 +388,12 @@
     'url' => 'URL',
     'assign_film' => 'ចាត់តាំងភាពយន្ត',
     'assign_cinema' => 'ចាត់តាំងរោងកុន',
+    'cinema_branch' => 'សាខារោងកុន',
+    'cinema_name' => 'ឈ្មោះរោងកុន',
+    'add_cinema_branch' => 'បន្ថែមសាខារោងកុន',
+    'edit_cinema_branch' => 'កែប្រែសាខារោងកុន',
+    'ticket_price' => 'តម្លៃសំបុត្រ',
+    'show_type' => 'បង្ហាញប្រភេទ',
+    'link' => 'តណភ្ជាប់'
 
   ];
