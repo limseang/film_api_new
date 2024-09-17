@@ -98,6 +98,16 @@
                         </span>
                     </a>
                 </li>
+
+                <?php $arrRouteGift = [route('gift.index'), route('gift.create'), request()->is('admin/gift/edit/*')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('gift.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteGift)) active @else '' @endif">
+                        <i class="ph-gift"></i>
+                        <span>
+                            {{__('sma.gift')}}
+                        </span>
+                    </a>
+                </li>
                 {{-- Artical --}}
                   <?php $arrRouteArtical = [
                     route('artical.index'),
