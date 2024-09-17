@@ -316,7 +316,10 @@
     'show_type' => 'Show Type',
     'add_cinema_branch' => 'Add Cinema Branch',
     'edit_cinema_branch' => 'Edit Cinema Branch',
-    'link' => 'Link'
+    'link' => 'Link',
+    'gift' => 'Gift',
+    'noted' => 'Noted',
+    'expired_date' => 'Expired Date',
 
     ]
  ?>

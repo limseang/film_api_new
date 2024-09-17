@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\AlibabaStorage;
-use App\Http\DataTables\CinemaBranchDataTable;
-use App\Models\CinemBranch;
+use App\Http\DataTables\GiftDataTable;
+use App\Models\Gift;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\Models\AvailableIn;
 
-class CinemaBranchController extends Controller
+class GiftController extends Controller
 {
+    
     use AlibabaStorage;
     public function __construct()
     {
@@ -20,17 +20,16 @@ class CinemaBranchController extends Controller
     }
 
    
-    public function index(CinemaBranchDataTable $dataTable)
+    public function index(GiftDataTable $dataTable)
     {
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.cinema_branch')]];
-        return $dataTable->render('cinema_branch.index', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.gift')]];
+        return $dataTable->render('gift.index', $data);
     }
 
     public function create()
     {
-        $data['cinema'] = AvailableIn::all();
-        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('cinema_branch.index'), 'page' => __('sma.cinema_branch')], ['link' => '#', 'page' => __('sma.add')]];
-        return view('cinema_branch.create', $data);
+        $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('gift.index'), 'page' => __('sma.gift')], ['link' => '#', 'page' => __('sma.add')]];
+        return view('gift.create', $data);
     }
 
     public function store(Request $request)
@@ -55,7 +54,7 @@ class CinemaBranchController extends Controller
         ]);
         try{
             DB::beginTransaction();
-            $cinemaBranch = new CinemBranch();
+            $cinemaBranch = new Gift();
             if($request->hasFile('image')){
                 $image = $this->UploadFile($request->file('image'), 'CinemaBranch');
             }
@@ -100,7 +99,7 @@ class CinemaBranchController extends Controller
 
     public function edit($id)
     {
-        $data['cinemaBranch'] = CinemBranch::find($id);
+        $data['gift'] = Gift::find($id);
         if(!$data['cinemaBranch']){
             $notification = [
                 'type' => 'error',
@@ -110,9 +109,8 @@ class CinemaBranchController extends Controller
             ];
             return redirect()->back()->with($notification);
         }
-        $data['cinema'] = AvailableIn::all();
         $data['image'] = $this->getSignUrlNameSize($data['cinemaBranch']->image);
-        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('cinema_branch.index'), 'page' => __('sma.cinema_branch')], ['link' => '#', 'page' => __('sma.edit')]];
+        $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('cast.index'), 'page' => __('sma.cast')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('cinema_branch.edit', $data);
     }
 
@@ -138,7 +136,7 @@ class CinemaBranchController extends Controller
         ]);
         try{
             DB::beginTransaction();
-            $cinemaBranch = CinemBranch::find($id);
+            $cinemaBranch = Gift::find($id);
             if(!$cinemaBranch){
                 $notification = [
                     'type' => 'error',
@@ -191,7 +189,7 @@ class CinemaBranchController extends Controller
 
         public function destroy($id)
         {
-            $cinemaBranch = CinemBranch::find($id);
+            $cinemaBranch = Gift::find($id);
             if(!$cinemaBranch){
                 $notification = [
                     'type' => 'error',
@@ -213,7 +211,7 @@ class CinemaBranchController extends Controller
 
         public function status($id)
         {
-            $cinemaBranch = CinemBranch::find($id);
+            $cinemaBranch = Gift::find($id);
             if(!$cinemaBranch){
                 $notification = [
                     'type' => 'error',
@@ -232,12 +230,5 @@ class CinemaBranchController extends Controller
                 'text' => trans('sma.update_successfully'),
             ];
             return redirect()->back()->with($notification);
-        }
-        public function showDetail(request $request){
-            $cineBranch = CinemBranch::find($request->cinema_branch_id);
-            if(!$cineBranch){
-               return response()->json(['status' => 'error', 'message' => 'Data not found']);
-            }
-           return view('cinema_branch.modal_detail', compact('cineBranch'));
         }
 }

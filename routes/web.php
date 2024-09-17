@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\EpisodeController;
 use App\Http\Controllers\Admin\VersionController;
 use App\Http\Controllers\Admin\AvailableInController;
 use App\Http\Controllers\Admin\CinemaBranchController;
+use App\Http\Controllers\Admin\GiftController;
 
 /*
 |--------------------------------------------------------------------------
@@ -244,6 +245,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [CinemaBranchController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [CinemaBranchController::class, 'status'])->name('status');
             Route::get('/show_detail', [CinemaBranchController::class, 'showDetail'])->name('show_detail');
+        });
+         // Cinema Branch
+         Route::prefix('gift')->name('gift.')->group(function(){
+            Route::get('/', [GiftController::class, 'index'])->name('index');
+            Route::get('/create', [GiftController::class, 'create'])->name('create');
+            Route::post('/store', [GiftController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [GiftController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [GiftController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [GiftController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}', [GiftController::class, 'status'])->name('status');
+            Route::get('/restore/{id}', [GiftController::class, 'restore'])->name('restore');
         });
     });
 });
