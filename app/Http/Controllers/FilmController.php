@@ -760,6 +760,8 @@ public function updateFilm(Request $request,$id)
                     'rating' => (string) $this->countRate($film->id),
                     'release_date' => $film->release_date,
                     'type' => $film->types ? $film->types->name : null,
+                    'trailer' => $film->trailer,
+                    'people_rate' => $this->countRatePeople($film->id),
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                 ];
             })->values()->all();
