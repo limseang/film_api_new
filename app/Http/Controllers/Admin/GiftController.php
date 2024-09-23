@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\AlibabaStorage;
 use App\Http\DataTables\GiftDataTable;
@@ -36,45 +37,33 @@ class GiftController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'cinema_id' => 'required|exists:available_ins,id',
-            'address' => 'required',
-            'phone' => 'required',
-            'link' => 'required',
-            'show_type' => 'required',
-            'email' => 'nullable|email',
-            'map_link' => 'required',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'facebook' => 'nullable',
-            'instagram' => 'nullable',
-            'youtube' => 'nullable',
-            'ticket_price' => 'required',
-            'image' => 'nullable',
+            'code' => 'required',
+            'noted' => 'nullable',
+            'point' => 'required',
+            'quantity' => 'required',
+            'expired_date' => 'required',
+            'description' => 'required',
+            'image' => 'required',
             'status' => 'required|in:1,2',
         ]);
         try{
             DB::beginTransaction();
-            $cinemaBranch = new Gift();
+            $gift = new Gift();
             if($request->hasFile('image')){
-                $image = $this->UploadFile($request->file('image'), 'CinemaBranch');
+                $image = $this->UploadFile($request->file('image'), 'Gift');
             }
-            $cinemaBranch->cinema_id = $request->cinema_id;
-            $cinemaBranch->name = $request->name;
-            $cinemaBranch->address = $request->address;
-            $cinemaBranch->phone = $request->phone;
-            $cinemaBranch->link = $request->link;
-            $cinemaBranch->show_type = $request->show_type;
-            $cinemaBranch->email = $request->email;
-            $cinemaBranch->map_link = $request->map_link;
-            $cinemaBranch->lat = $request->lat;
-            $cinemaBranch->lng = $request->lng;
-            $cinemaBranch->facebook = $request->facebook;
-            $cinemaBranch->instagram = $request->instagram;
-            $cinemaBranch->youtube = $request->youtube;
-            $cinemaBranch->ticket_price = $request->ticket_price;
-            $cinemaBranch->image = $image ?? null;
-            $cinemaBranch->status = $request->status;
-            $cinemaBranch->save();
+            $convertedDate = Carbon::createFromFormat('d/m/Y H:i:s', time: $request->expired_date)->format('Y-m-d H:i:s');
+            $gift->name = $request->name;
+            $gift->code = $request->code;
+            $gift->noted = $request->noted;
+            $gift->point = $request->point;
+            $gift->quantity = $request->quantity;
+            $gift->expired_date = $convertedDate;
+            $gift->description = $request->description;
+            $gift->image = $image;
+            $gift->status = $request->status;
+            $gift->save();
+           
             DB::commit();
 
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
@@ -84,7 +73,7 @@ class GiftController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.add_successfully'),
             ];
-            return redirect()->route('cinema_branch.'.$pageDirection)->with($notification);
+            return redirect()->route('gift.'.$pageDirection)->with($notification);
         }catch(Exception $e){
             DB::rollBack();
             $notification = [
@@ -100,7 +89,7 @@ class GiftController extends Controller
     public function edit($id)
     {
         $data['gift'] = Gift::find($id);
-        if(!$data['cinemaBranch']){
+        if(!$data['gift']){
             $notification = [
                 'type' => 'error',
                 'icon' => trans('global.icon_error'),
@@ -109,35 +98,28 @@ class GiftController extends Controller
             ];
             return redirect()->back()->with($notification);
         }
-        $data['image'] = $this->getSignUrlNameSize($data['cinemaBranch']->image);
+        $data['image'] = $this->getSignUrlNameSize($data['gift']->image);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('cast.index'), 'page' => __('sma.cast')], ['link' => '#', 'page' => __('sma.edit')]];
-        return view('cinema_branch.edit', $data);
+        return view('gift.edit', $data);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'name' => 'required',
-            'cinema_id' => 'required|exists:available_ins,id',
-            'address' => 'required',
-            'phone' => 'required',
-            'link' => 'required',
-            'show_type' => 'required',
-            'email' => 'nullable|email',
-            'map_link' => 'required',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'facebook' => 'nullable',
-            'instagram' => 'nullable',
-            'youtube' => 'nullable',
-            'ticket_price' => 'required',
+            'code' => 'required',
+            'noted' => 'nullable',
+            'point' => 'required',
+            'quantity' => 'required',
+            'expired_date' => 'required',
+            'description' => 'required',
             'image' => 'nullable',
             'status' => 'required|in:1,2',
         ]);
         try{
             DB::beginTransaction();
-            $cinemaBranch = Gift::find($id);
-            if(!$cinemaBranch){
+            $gift = Gift::find($id);
+            if(!$gift){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
@@ -148,25 +130,19 @@ class GiftController extends Controller
             }
 
             if($request->hasFile('image')){
-                $image = $this->UploadFile($request->file('image'), 'CinemaBranch');
-                $cinemaBranch->image = $image;
+                $image = $this->UploadFile($request->file('image'), 'Gift');
+                $gift->image = $image;
             }
-            $cinemaBranch->cinema_id = $request->cinema_id;
-            $cinemaBranch->name = $request->name;
-            $cinemaBranch->address = $request->address;
-            $cinemaBranch->phone = $request->phone;
-            $cinemaBranch->link = $request->link;
-            $cinemaBranch->show_type = $request->show_type;
-            $cinemaBranch->email = $request->email;
-            $cinemaBranch->map_link = $request->map_link;
-            $cinemaBranch->lat = $request->lat;
-            $cinemaBranch->lng = $request->lng;
-            $cinemaBranch->facebook = $request->facebook;
-            $cinemaBranch->instagram = $request->instagram;
-            $cinemaBranch->youtube = $request->youtube;
-            $cinemaBranch->ticket_price = $request->ticket_price;
-            $cinemaBranch->status = $request->status;
-            $cinemaBranch->save();
+            $convertedDate = Carbon::createFromFormat('d/m/Y H:i:s', time: $request->expired_date)->format('Y-m-d H:i:s');
+            $gift->name = $request->name;
+            $gift->code = $request->code;
+            $gift->noted = $request->noted;
+            $gift->point = $request->point;
+            $gift->quantity = $request->quantity;
+            $gift->expired_date = $convertedDate;
+            $gift->description = $request->description;
+            $gift->status = $request->status;
+            $gift->save();
             DB::commit();
             $notification = [
                 'type' => 'success',
@@ -174,7 +150,7 @@ class GiftController extends Controller
                 'title' => trans('global.title_updated'),
                 'text' => trans('sma.update_successfully'),
             ];
-            return redirect()->route('cinema_branch.index')->with($notification);
+            return redirect()->route('gift.index')->with($notification);
             }catch(Exception $e){
                 DB::rollBack();
                 $notification = [

@@ -64,7 +64,19 @@ var DateTimePickers = function() {
             // format: 'MM/DD/YYYY',
             locale: {
                 format: 'DD/MM/YYYY'
-            }
+            },
+        });
+
+         // Single picker
+         $('.daterange-single2').daterangepicker({
+            parentEl: '.content-inner',
+            singleDatePicker: true,
+            // format: 'MM/DD/YYYY',
+            locale: {
+                format: 'DD/MM/YYYY h:mm:ss'
+            },
+            // show time
+            timePicker: true,
         });
 
         // Display date dropdowns
@@ -204,7 +216,8 @@ var DateTimePickers = function() {
                 buttonClass: 'btn',
                 prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
                 nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
-                autohide: true
+                autohide: true,
+
             });
         }
 
@@ -361,6 +374,24 @@ var DateTimePickers = function() {
                 prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
                 nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
                 todayBtn: true
+            });
+        }
+
+        const dpTodayButtonElemente = document.querySelector('.datepicker-date-today2');
+        if(dpTodayButtonElemente) {
+            const dpTodayButton = new Datepicker(dpTodayButtonElemente, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                todayBtn: true,
+                todayHighlight: true,
+                // show time
+                timePicker: true,
+                locale: {
+                    format: 'DD/MM/YYYY h:mm a'
+                }
+
             });
         }
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-{{__('global.edit_cinema_branch')}}
+{{__('global.edit_gift')}}
 @endsection
 @section('content')
   <div class="row">
@@ -9,125 +9,79 @@
         <div class="card-header">
           <h6 class="card-title text-success text-bold">
             <i class="fas fa-edit"></i>
-              &nbsp;  &nbsp;<span>{{__('sma.edit_cinema_branch')}}</span>
+              &nbsp;  &nbsp;<span>{{__('sma.edit_gift')}}</span>
           </h6>
         
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-12 col-lg-6 p-10">
+            <div class="col-12 col-lg-8 p-10">
             
-              <form action="{{route('cinema_branch.update',$cinemaBranch->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+              <form action="{{route('gift.update',$gift->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                 @csrf
                 <div class="mb-3">
                   <label class="form-label" for="name">{{__('sma.name')}}</label>
-                  <input type="text" class="form-control" name="name" value="{{$cinemaBranch->name}}" id="name" placeholder="{{trans('sma.please_input')}}" required>
+                  <input type="text" class="form-control" name="name" value="{{$gift->name}}" id="name" placeholder="{{trans('sma.please_input')}}" required>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label" for="address">{{__('sma.address')}}</label>
-                  <input type="text" class="form-control" name="address" value="{{$cinemaBranch->address}}" id="address" placeholder="{{trans('sma.please_input')}}" required>
+                  <label class="form-label" for="code">{{__('sma.code')}}</label>
+                  <input type="text" class="form-control" name="code" value="{{$gift->code}}" id="code" placeholder="{{trans('sma.please_input')}}" required>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label" for="phone">{{__('sma.phone')}}</label>
-                  <input type="text" class="form-control" name="phone" value="{{$cinemaBranch->phone}}" id="phone" placeholder="{{trans('sma.please_input')}}" required>
+                  <label class="form-label" for="phone">{{__('sma.noted')}}</label>
+                  <input type="text" class="form-control" name="noted" value="{{$gift->noted}}" id="noted" placeholder="{{trans('sma.please_input')}}">
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label" for="show_type">{{__('sma.show_type')}}</label>
-                  <input type="text" class="form-control" name="show_type" value="{{$cinemaBranch->show_type}}" id="show_type" placeholder="{{trans('sma.please_input')}}" required>
+                  <label class="form-label" for="point">{{__('sma.point')}}</label>
+                  <input type="text" class="form-control" name="point" value="{{$gift->point}}" id="point" placeholder="{{trans('sma.please_input')}}" required>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label" for="show_type">{{__('sma.email')}}</label>
-                  <input type="email" class="form-control" name="email" value="{{$cinemaBranch->email}}" id="email" placeholder="{{trans('sma.please_input')}}">
+                  <label class="form-label" for="show_type">{{__('sma.quantity')}}</label>
+                  <input type="number" class="form-control" name="quantity" value="{{$gift->quantity}}" id="quantity" placeholder="{{trans('sma.please_input')}}">
                 </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="cinema_id">{{ trans('sma.cinema') }}</label>
-                    <select id="cinema_id" class="{{ config('setup.input_select2') }}" name="cinema_id" required>
-                        <option value="">{{ __('global.please_select') }}</option>
-                        @foreach($cinema as $value)
-                        <option value="{{ $value->id }}" {{$cinemaBranch->cinema_id == $value->id ? 'selected':''}} >{{$value->name }}</option>
-                        @endforeach
-                    </select>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                    </div>
                 <div class="mb-3">
                   <label class="form-label" for="status">{{ trans('global.publish') }}</label>
                   <select id="status" class="{{ config('setup.input_select2') }} form-select" name="status" required="">
                       <option value="">{{ __('global.please_select') }}</option>
-                      <option value="1" {{$cinemaBranch->status == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
-                      <option value="2" {{$cinemaBranch->status == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
+                      <option value="1" {{$gift->status == '1' ? 'selected':''}}>{{ __('global.publish_yes') }}</option>
+                      <option value="2" {{$gift->status == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
                   </select>
                   <span class="invalid-feedback">
                     The field is required.
                   </span>
                   </div>
                   <div class="mb-3">
-                    {{-- Preview imag --}}
-                    <p class="fw-semibold">{{trans('sma.image')}}</p>
-                    <input type="file" class="file-input-caption-edit" name="image">
+                    <label class="form-label" for="expired_date">{{ trans('sma.expired_date') }}</label>
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="ph-calendar"></i>
+                      </span>
+                      <input type="text" class="form-control daterange-single2"  value="{{ date('d/m/Y H:i:s', strtotime($gift->expired_date)) }}" name="expired_date" placeholder="{{__('sma.please_select_date')}}">
+                    </div>
+  
                   </div>
+                <div class="mb-3">
+                  <p class="fw-semibold">{{trans('sma.image')}}</p>
+							  <input type="file" class="file-input-caption-edit" name="image">
                 </div>
-                <div class="col-12 col-lg-6 p-10">
-                  <div class="mb-3">
-                    <label class="form-label" for="link">{{__('sma.link')}}</label>
-                    <input type="text" class="form-control" name="link" value="{{$cinemaBranch->link}}" id="link" placeholder="{{trans('sma.please_input')}}" required>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="map_link">{{__('Map Link')}}</label>
-                    <input type="text" class="form-control" name="map_link" value="{{$cinemaBranch->map_link}}" id="map_link" placeholder="{{trans('sma.please_input')}}" required>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="lat">{{__('Lat')}}</label>
-                    <input type="text" class="form-control" name="lat" value="{{$cinemaBranch->lat}}" id="lat" placeholder="{{trans('sma.please_input')}}" required>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="lng">{{__('Lng')}}</label>
-                    <input type="text" class="form-control" name="lng" value="{{$cinemaBranch->lng}}" id="lng" placeholder="{{trans('sma.please_input')}}" required>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="ticket_price">{{__('sma.ticket_price')}}</label>
-                    <input type="text" class="form-control" name="ticket_price" value="{{$cinemaBranch->ticket_price}}" id="ticket_price" placeholder="{{trans('sma.please_input')}}" required>
-                    <span class="invalid-feedback">
-                      The field is required.
-                    </span>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="facebook">{{__('Facebook')}}</label>
-                    <input type="url" class="form-control" name="facebook" value="{{$cinemaBranch->facebook}}" id="facebook" placeholder="{{trans('sma.please_input')}}">
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="instagram">{{__('Instagram')}}</label>
-                    <input type="url" class="form-control" name="instagram" value="{{$cinemaBranch->instagram}}" id="instagram" placeholder="{{trans('sma.please_input')}}">
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="youtube">{{__('Youtube')}}</label>
-                    <input type="url" class="form-control" name="youtube" value="{{$cinemaBranch->youtube}}" id="youtube" placeholder="{{trans('sma.please_input')}}">
+                <div class="mb-3">
+                    <label class="form-label" for="description">{{trans('sma.description')}}</label>
+                    <textarea rows="3" cols="3" name="description" class="form-control" id="ckeditor_classic_prefilled3" required>
+                      {{$gift->description}}
+                    </textarea>
                   </div>
                 </div>
                 <div class="d-flex align-items-center">
@@ -145,6 +99,40 @@
   @section('scripts')
   <script>
     $(document).ready(function() {
+      ClassicEditor.create(document.querySelector('#ckeditor_classic_prefilled3'), 
+        {
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                    { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                    { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+                ]
+            },
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'fontFamily',
+                    'fontSize',
+                    '|',
+                    'bold',
+                    'italic',
+                    'link',
+                    'bulletedList',
+                    'numberedList',
+                    'blockQuote',
+                    'undo',
+                    'redo'
+                ]
+            }
+        })
+   $('#point').on('input', function() {
+        this.value = this.value.replace(/[^0-9.]/g, '');
+    });
       var initialPreview = [
         "<img src='{{ $image['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $image['name'] ?? '' }}' title='{{ $image['name'] ?? '' }}'>"
       ];
