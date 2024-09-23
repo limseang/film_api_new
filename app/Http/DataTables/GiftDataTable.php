@@ -51,7 +51,10 @@ class GiftDataTable extends DataTable
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
-            ->rawColumns(['image_url','code','status','point']) #allowed for using html code here
+            ->editColumn('description', function ($table) {
+                return $table->description;
+            })
+            ->rawColumns(['image_url','code','status','point','description']) #allowed for using html code here
         ;
     }
 
