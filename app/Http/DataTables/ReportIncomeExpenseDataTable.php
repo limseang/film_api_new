@@ -4,16 +4,16 @@ namespace App\Http\DataTables;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use App\Models\Gift;
+use App\Models\ReportIncomeExpense;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class GiftDataTable extends DataTable
+class ReportIncomeExpenseDataTable extends DataTable
 {
-    private $tableName = 'gifts';
+    private $tableName = 'report_income_expense';
     /**
      * Build the DataTable class.
      *
@@ -27,52 +27,53 @@ class GiftDataTable extends DataTable
                 return "row_reload_".$table->id;
             })
             ->addColumn('action', function ($table) {
-                return view('gift.action', ['table' => $table]);
+                return view('report_income_expense.action', ['table' => $table]);
             })
             ->editColumn('created_at', function ($table) {
-                return dateTimeFormat($table->created_at);
+                return dateTimeFormat($table->date_at);
             })
-            ->editColumn('expired_date', function ($table) {
-                // convert date to string format after using dateTimeFormat() function
-                $dateExpired = date('d-m-Y h:i:s', strtotime($table->expired_date));
-                return $dateExpired;
-            })  
-            ->editColumn('code', function($table){
-                return '<span class="'.config('setup.badge_info').'">'.$table->code ?? ''.'</span>';
-            })
-            ->editColumn('point', function($table){
-                return '<span class="'.config('setup.badge_primary').'">'.$table->point ?? ''.'</span>';
-            })
-            ->editColumn('image_url', function ($table) {
-                $pic = $table->image_url ?? '';
+            ->editColumn('attachment_url', function ($table) {
+                $pic = $table->attachment_url ?? '';
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
-            ->editColumn('status', function ($table) {
-                $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
+            ->editColumn('amount', function($table){
+                return number_format($table->amount, 2);
+            })
+            ->editColumn('currency', function($table){
+                return '<span class="'.config('setup.badge_primary').'">'.$table->currency ?? ''.'</span>';
+            })
+            ->editColumn('type', function ($table) {
+                $publish_status = ($table->type == '1') ? '<span class="'.config('setup.badge_warning').'">'.trans('sma.expense').'</span>' : '<span class="'.config('setup.badge_success').'">'.trans('sma.income').'</span>';
                 return $publish_status;
             })
-            ->editColumn('description', function ($table) {
-                return $table->description;
+            ->editColumn('noted', function ($table) {
+                return $table->noted;
             })
-            ->rawColumns(['image_url','code','status','point','description']) #allowed for using html code here
+            ->editColumn('created_by_name', function ($table) {
+                return $table->createdby->name ?? '';
+            })
+            ->editColumn('updated_by_name', function ($table) {
+                return $table->updatedby->name ?? '';
+            })
+            ->rawColumns(['attachment_url','type','noted','currency']) #allowed for using html code here
         ;
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Gift $model): QueryBuilder
+    public function query(ReportIncomeExpense $model): QueryBuilder
     {
         $model = $model->newQuery();
         $model->select([
-            'id','name','description','image','code','noted','point','quantity','status', 'expired_date','created_at','updated_at','deleted_at']);
+            'id','name','reference','type','amount','attachment','noted','updated_by','created_by','currency','created_at','updated_at','deleted_at','date_at']);
         if (request('name')) {
             $model->where(function ($query) {
-                $query->orWhere('character', 'like', '%' . request('name') . '%');
+                $query->orWhere('name', 'like', '%' . request('name') . '%');
             });
         }
         if (request('publish')) {
-            $model->where('status', request('publish'));
+            $model->where('type', request('publish'));
         }
         if (request('soft_delete')) {
             if (request('soft_delete') == 'deleted') {
@@ -121,17 +122,16 @@ class GiftDataTable extends DataTable
     {
         return [
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false),
-            Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center'),
-            Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center'),
-            Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center'),
-            Column::make('noted', 'noted')->title(trans('sma.noted'))->addClass('text-center'),
-            Column::make('quantity', 'quantity')->title(trans('sma.quantity'))->width(10)->addClass('text-center'),
-            Column::make('expired_date', 'expired_date')->title(trans('sma.expired_date'))->width(10)->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('description', 'description')->title(trans('sma.description'))->width(20),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
+            Column::make('attachment_url')->title(trans('sma.attachment_url'))->width(20)->addClass('text-center')->orderable(false),
+            Column::make('name')->title(trans('sma.name'))->width(10),
+            Column::make('type', 'code')->title(trans('sma.type'))->addClass('text-center'),
+            Column::make('reference', 'reference')->title(trans('sma.reference'))->orderable(false),
+            Column::make('amount', 'amount')->title(trans('sma.amount'))->addClass('text-center'),
+            Column::make('currency')->title(trans('sma.currency'))->addClass('text-center'),
+            Column::make('noted', 'noted')->title(trans('sma.noted'))->width(20)->orderable(false),
+            Column::make('created_by_name', 'created_by_name')->title(trans('sma.created_by'))->width(10)->addClass('text-center')->orderable(false),
+            Column::make('updated_by_name', 'updated_by_name')->title(trans('sma.updated_by'))->width(10)->addClass('text-center')->orderable(false),
         ];
     }
 

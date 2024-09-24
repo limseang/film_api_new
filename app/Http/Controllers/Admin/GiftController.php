@@ -151,22 +151,22 @@ class GiftController extends Controller
                 'text' => trans('sma.update_successfully'),
             ];
             return redirect()->route('gift.index')->with($notification);
-            }catch(Exception $e){
-                DB::rollBack();
-                $notification = [
-                    'type' => 'exception',
-                    'icon' => trans('global.icon_error'),
-                    'title' => trans('global.title_error_exception'),
-                    'text' => $e->getMessage()
-                ];
-                return redirect()->back()->withInput()->with($notification);
+        }catch(Exception $e){
+            DB::rollBack();
+            $notification = [
+                'type' => 'exception',
+                'icon' => trans('global.icon_error'),
+                'title' => trans('global.title_error_exception'),
+                'text' => $e->getMessage()
+            ];
+            return redirect()->back()->withInput()->with($notification);
             }
         }
 
         public function destroy($id)
         {
-            $cinemaBranch = Gift::find($id);
-            if(!$cinemaBranch){
+            $gift = Gift::find($id);
+            if(!$gift){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
@@ -175,7 +175,7 @@ class GiftController extends Controller
                 ];
                 return redirect()->route('cast.index')->with($notification);
             }
-            $cinemaBranch->delete(); 
+            $gift->delete(); 
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
@@ -187,8 +187,8 @@ class GiftController extends Controller
 
         public function status($id)
         {
-            $cinemaBranch = Gift::find($id);
-            if(!$cinemaBranch){
+            $gift = Gift::find($id);
+            if(!$gift){
                 $notification = [
                     'type' => 'error',
                     'icon' => trans('global.icon_error'),
@@ -197,8 +197,8 @@ class GiftController extends Controller
                 ];
                 return redirect()->route('cast.index')->with($notification);
             }
-            $cinemaBranch->status = $cinemaBranch->status == 1 ? 2 : 1;
-            $cinemaBranch->save();
+            $gift->status = $gift->status == 1 ? 2 : 1;
+            $gift->save();
             $notification = [
                'type' => 'success',
                 'icon' => trans('global.icon_success'),

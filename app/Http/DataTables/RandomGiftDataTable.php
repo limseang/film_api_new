@@ -4,16 +4,16 @@ namespace App\Http\DataTables;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use App\Models\Gift;
+use App\Models\RendomPoint;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class GiftDataTable extends DataTable
+class RandomGiftDataTable extends DataTable
 {
-    private $tableName = 'gifts';
+    private $tableName = 'random_gifts';
     /**
      * Build the DataTable class.
      *
@@ -27,16 +27,11 @@ class GiftDataTable extends DataTable
                 return "row_reload_".$table->id;
             })
             ->addColumn('action', function ($table) {
-                return view('gift.action', ['table' => $table]);
+                return view('random_gift.action', ['table' => $table]);
             })
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->created_at);
-            })
-            ->editColumn('expired_date', function ($table) {
-                // convert date to string format after using dateTimeFormat() function
-                $dateExpired = date('d-m-Y h:i:s', strtotime($table->expired_date));
-                return $dateExpired;
-            })  
+            }) 
             ->editColumn('code', function($table){
                 return '<span class="'.config('setup.badge_info').'">'.$table->code ?? ''.'</span>';
             })
@@ -48,24 +43,54 @@ class GiftDataTable extends DataTable
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
             ->editColumn('status', function ($table) {
-                $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
-                return $publish_status;
+                if ($table->status == 1) {
+                    $statusName = trans('sma.publish_yes');
+                    $bgColor = 'btn-flat-success';
+                } elseif ($table->status == 2) {
+                    $statusName = trans('sma.publish_no');
+                    $bgColor = 'btn-flat-danger';
+                } elseif ($table->status == 3) {
+                    $statusName = trans('sma.publish_cancel');
+                    $bgColor = 'btn-flat-warning';
+                }
+            
+                return '
+                    <div class="btn-group">
+                        <a href="#" class="btn ' . $bgColor . ' rounded-pill btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            ' . $statusName . '
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="javascript:void(0)" class="dropdown-item bpo-status ' . ($table->status == 1 ? 'active' : '') . '" data-click="bpo-status' . $table->id . $table->status . '" data-action="' . route('random_gift.status', [$table->id, 1]) . '">
+                                ' . trans('sma.publish_yes') . '
+                            </a>
+                            <a href="javascript:void(0)" class="dropdown-item bpo-status ' . ($table->status == 2 ? 'active' : '') . '" data-click="bpo-status' . $table->id . $table->status . '" data-action="' . route('random_gift.status', [$table->id, 2]) . '">
+                                ' . trans('sma.publish_no') . '
+                            </a>
+                            <a href="javascript:void(0)" class="dropdown-item bpo-status ' . ($table->status == 3 ? 'active' : '') . '" data-click="bpo-status' . $table->id . $table->status . '" data-action="' . route('random_gift.status', [$table->id, 3]) . '">
+                                ' . trans('sma.publish_cancel') . '
+                            </a>
+                        </div>
+                    </div>';
             })
-            ->editColumn('description', function ($table) {
-                return $table->description;
+            
+            ->editColumn('gift_name', function ($table) {
+                return $table->gifts->name ?? '';
             })
-            ->rawColumns(['image_url','code','status','point','description']) #allowed for using html code here
+            ->editColumn('user_name', function ($table) {
+                return $table->users->name ?? '';
+            })
+            ->rawColumns(['image_url','code','status','point']) #allowed for using html code here
         ;
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Gift $model): QueryBuilder
+    public function query(RendomPoint $model): QueryBuilder
     {
         $model = $model->newQuery();
         $model->select([
-            'id','name','description','image','code','noted','point','quantity','status', 'expired_date','created_at','updated_at','deleted_at']);
+            'id','user_id','gift_id','point','phone_number','code','status','created_at','updated_at','deleted_at']);
         if (request('name')) {
             $model->where(function ($query) {
                 $query->orWhere('character', 'like', '%' . request('name') . '%');
@@ -121,16 +146,12 @@ class GiftDataTable extends DataTable
     {
         return [
             Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false),
-            Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center'),
+            Column::make('gift_name')->title(trans('sma.gift_name'))->orderable(false),
+            Column::make('user_name')->title(trans('sma.user_name'))->orderable(false),
+            Column::make('phone_number')->title(trans('sma.phone_number'))->orderable(false),
             Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center'),
             Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center'),
-            Column::make('noted', 'noted')->title(trans('sma.noted'))->addClass('text-center'),
-            Column::make('quantity', 'quantity')->title(trans('sma.quantity'))->width(10)->addClass('text-center'),
-            Column::make('expired_date', 'expired_date')->title(trans('sma.expired_date'))->width(10)->addClass('text-center'),
             Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('description', 'description')->title(trans('sma.description'))->width(20),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
         ];
     }

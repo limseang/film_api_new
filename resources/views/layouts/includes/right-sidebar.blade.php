@@ -108,6 +108,15 @@
                         </span>
                     </a>
                 </li>
+                <?php $arrRouteRandomGift = [route('random_gift.index')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('random_gift.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteRandomGift)) active @else '' @endif">
+                        <i class="ph-confetti"></i>
+                        <span>
+                            {{__('sma.random_gift')}}
+                        </span>
+                    </a>
+                </li>
                 {{-- Artical --}}
                   <?php $arrRouteArtical = [
                     route('artical.index'),
@@ -173,6 +182,15 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+                <?php $arrRouteExpense = [route('report_income_expense.index'), route('report_income_expense.create'), request()->is('admin/report_income_expense/edit/*')]; ?>
+                <li class="nav-item">
+                    <a href="{{route('report_income_expense.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteExpense)) active @else '' @endif">
+                        <i class="ph-currency-circle-dollar"></i>
+                        <span>
+                            {{__('sma.report_income_and_expense')}}
+                        </span>
+                    </a>
                 </li>
                 {{-- End Film --}}
                 <?php $arrRouteSetting = [route('role.index'),

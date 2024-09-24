@@ -49,7 +49,7 @@ return[
     'button_opacity_danger' => 'btn bg-danger bg-opacity-10 text-danger',
     'button_opacity_warning' => 'btn bg-warning bg-opacity-10 text-warning',
     'button_opacity_info' => 'btn bg-info bg-opacity-10 text-info',
-    'card_datatable' => 'table dataTable dtr-inline text-nowrap table-hover',
+    'card_datatable' => 'table dataTable dtr-inline text-nowrap table-hover datatable-loading-custom',
     'badge_primary' => 'badge bg-primary bg-opacity-10 text-primary',
     'badge_success' => 'badge bg-success bg-opacity-10 text-success',
     'badge_danger' => 'badge bg-danger bg-opacity-10 text-danger',
