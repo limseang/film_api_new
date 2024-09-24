@@ -320,6 +320,19 @@
     'gift' => 'Gift',
     'noted' => 'Noted',
     'expired_date' => 'Expired Date',
+    'random_gift' => 'Random Gift',
+    'gift_name' => 'Gift Name',
+    'publish_cancel' => 'Cancel',
+    'report_income_and_expense' => 'Report Income And Expense',
+    'report_income_expense' => 'Report Income Expense',
+    'add_income_expense' => 'Add Income Expense',	
+    'edit_income_expense' => 'Edit Income Expense',
+    'attachment_url' => 'Attachment Url',
+    'reference' => 'Reference',
+    'expense' => 'Expense',
+    'income' => 'Income',
+    'USD' => 'USD',
+    'KHR' => 'KHR',
 
     ]
  ?>

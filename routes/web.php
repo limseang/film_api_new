@@ -22,6 +22,8 @@ use App\Http\Controllers\Admin\VersionController;
 use App\Http\Controllers\Admin\AvailableInController;
 use App\Http\Controllers\Admin\CinemaBranchController;
 use App\Http\Controllers\Admin\GiftController;
+use App\Http\Controllers\Admin\RandomGiftController;
+use App\Http\Controllers\Admin\ReportIncomeExpenseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -246,7 +248,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/status/{id}', [CinemaBranchController::class, 'status'])->name('status');
             Route::get('/show_detail', [CinemaBranchController::class, 'showDetail'])->name('show_detail');
         });
-         // Cinema Branch
+         // Gift
          Route::prefix('gift')->name('gift.')->group(function(){
             Route::get('/', [GiftController::class, 'index'])->name('index');
             Route::get('/create', [GiftController::class, 'create'])->name('create');
@@ -256,6 +258,22 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [GiftController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [GiftController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [GiftController::class, 'restore'])->name('restore');
+        });
+         // Gift
+         Route::prefix('random_gift')->name('random_gift.')->group(function(){
+            Route::get('/', [RandomGiftController::class, 'index'])->name('index');
+            Route::get('/delete/{id}', [RandomGiftController::class, 'destroy'])->name('delete');
+            Route::get('/status/{id}/{status}', [RandomGiftController::class, 'status'])->name('status');
+        });
+
+         // Report Income and Expense
+         Route::prefix('report_income_expense')->name('report_income_expense.')->group(function(){
+            Route::get('/', [ReportIncomeExpenseController::class, 'index'])->name('index');
+            Route::get('/create', [ReportIncomeExpenseController::class, 'create'])->name('create');
+            Route::post('/store', [ReportIncomeExpenseController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [ReportIncomeExpenseController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [ReportIncomeExpenseController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [ReportIncomeExpenseController::class, 'destroy'])->name('delete');
         });
     });
 });

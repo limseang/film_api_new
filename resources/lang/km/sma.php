@@ -400,5 +400,18 @@
     'add_gift' => 'បន្ថែមការដូរផ្សេងៗ',
     'edit_gift' => 'កែប្រែការដូរផ្សេងៗ',	
     'expired_date' => 'កាលបរិច្ឆេទផុតកំណត់',
+    'random_gift' => 'ការដូរចៃដន្យ',
+    'gift_name' => 'ឈ្មោះការដូរ',
+    'publish_cancel' => 'បោះបង់',
+    'report_income_and_expense' => 'របាយការណ៍ចំណូលនិងការចំណាយ',
+    'report_income_expense' => 'របាយការណ៍ចំណូលនិងការចំណាយ',
+    'add_income_expense' => 'បន្ថែមចំណូលនិងការចំណាយ',
+    'edit_income_expense' => 'កែប្រែចំណូលនិងការចំណាយ',
+    'attachment_url' => 'តណភ្ជាប់ឯកសារ',
+    'reference' => 'យោង',
+    'expense' => 'ការចំណាយ',
+    'income' => 'ចំណូល',
+    'USD' => 'ដុល្លារអាមេរិក',
+    'KHR' => 'រៀលកម្ពុជា',
 
   ];

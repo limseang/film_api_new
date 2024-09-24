@@ -63,7 +63,19 @@ const DatatableBasic = function() {
                 loadingRecords: "Loading...",
                 zeroRecords: "No data available in table",
                 processing: "Loading...",
-            }
+            },
+            ajax: {
+                beforeSend: function() {
+                   var tableBody = $('.datatable-loading-custom').find('tbody');
+                   var colspan = tableBody.find("tr:first td").length;
+                   tableBody.html("<tr><td colspan='" + colspan + 
+                    "class='text-center'><span class='d-flex justify-content-center align-items-center'><i class='ph-spinner-gap text-success' style='font-size:35px;' id='loadingDataTable'></i>" +
+                    "Pleas Wait, Loading...</span></td></tr>");
+                },
+                complete: function() {
+                    $('datatable-loading-custom').find('tbody').find("#loadingDataTable").remove();
+                }
+            },
         });
     };
 
