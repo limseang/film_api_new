@@ -12,6 +12,7 @@ use App\Traits\AlibabaStorage;
 use App\Models\Film;
 use App\Http\DataTables\AvailableInFilmDataTable;
 use App\Models\FilmAvailable;
+use App\Constant\RolePermissionConstant;
 
 class AvailableInController extends Controller
 {
@@ -23,18 +24,27 @@ class AvailableInController extends Controller
 
     public function index(AvailableInDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.cinema')]];
         return $dataTable->render('available_in.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('available_in.index'), 'page' => __('sma.cinema')], ['link' => '#', 'page' => __('sma.add')]];
         return view('available_in.create', $data);
     }
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|unique:available_ins,name',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
@@ -76,6 +86,9 @@ class AvailableInController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['available_in'] = AvailableIn::find($id);
         if(!$data['available_in']){
             $notification = [
@@ -94,6 +107,10 @@ class AvailableInController extends Controller
 
     public function assignFilm(AvailableInFilmDataTable $dataTable,$id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ASSIGN_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
+
         $data['available_in'] = AvailableIn::find($id);
         if(!$data['available_in']){
             $notification = [
@@ -111,6 +128,9 @@ class AvailableInController extends Controller
 
     public function addAvailableInFilm(request $request){
 
+        if(!authorize(RolePermissionConstant::PERMISSION_ADD_ASSIGN_AVAILABLE_IN)){
+            return response()->json(['success' => false, 'message' => authorizeMessage()]);
+        }
         $id = $request->available_id;
         $availableIn = AvailableIn::find($id);
         $filmIdArray = $availableIn->films ? $availableIn->films->pluck('id')->toArray() : [];
@@ -120,6 +140,9 @@ class AvailableInController extends Controller
     
     public function deleteAssignedFilm($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DELETE_ASSIGN_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $filmAvailableIn = FilmAvailable::find($id);
         if(!$filmAvailableIn){
             $notification = [
@@ -142,6 +165,9 @@ class AvailableInController extends Controller
 
     public function storeFilm(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ADD_ASSIGN_AVAILABLE_IN)){
+            return response()->json(['success' => false, 'message' => authorizeMessage()]);
+        }
         try{
             DB::beginTransaction();
             $availableIn = AvailableIn::find($request->available_id);
@@ -168,6 +194,9 @@ class AvailableInController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
            'name' => 'required|unique:available_ins,name,'. $id,
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -222,6 +251,9 @@ class AvailableInController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $availableIn = AvailableIn::find($id);
             if(!$availableIn){
                 $notification = [
@@ -255,6 +287,9 @@ class AvailableInController extends Controller
 
         public function restore($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_AVAILABLE_IN_RESTORE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cast = AvailableIn::withTrashed()->find($id);
             if(!$cast){
                 $notification = [

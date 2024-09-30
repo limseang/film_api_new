@@ -2,6 +2,7 @@
 
 namespace App\Http\DataTables;
 
+use App\Constant\RolePermissionConstant;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use App\Models\FilmAvailable;
 use Yajra\DataTables\EloquentDataTable;
@@ -87,15 +88,18 @@ class FilmAvailableInDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $columns = [
             Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('image_url')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('availables.name', 'availables.name')->title(trans('sma.name')),
             Column::make('url')->title(trans('URL'))->width(10)->addClass('text-center'),
             Column::make('availables.type')->title(trans('sma.type'))->width(10)->addClass('text-center'),
             Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
+        if(authorize(RolePermissionConstant::PERMISSION_FILM_DELETE_AVAILABLE_IN)){
+            $columns[] =  Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
+        return $columns;
     }
 
     /**

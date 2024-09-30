@@ -14,6 +14,7 @@ use App\Models\Origin;
 use App\Models\Film;
 use App\Models\Tag;
 use App\Models\Type;
+use App\Constant\RolePermissionConstant;
 
 class ArticalController extends Controller
 {
@@ -25,6 +26,10 @@ class ArticalController extends Controller
 
     public function index(ArticalDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
+
         $data['origins'] = Origin::where('status',1)->get();
         $data['categories'] = Category::where('status',1)->get();
         $data['type'] = Type::where('status',1)->get();
@@ -35,6 +40,9 @@ class ArticalController extends Controller
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $data['origins'] = Origin::where('status',1)->get();
         $data['categories'] = Category::where('status',1)->get();
         $data['type'] = Type::where('status',1)->get();
@@ -75,6 +83,9 @@ class ArticalController extends Controller
 
     public function store(request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $this->validate($request, [
             'title' => 'required',
             'origin_id' => 'required|exists:origins,id',
@@ -123,6 +134,9 @@ class ArticalController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $data['artical'] = Artical::find($id);
         if(!$data['artical']){
             $notification = [
@@ -146,6 +160,9 @@ class ArticalController extends Controller
 
     public function update(request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $this->validate($request, [
             'title' => 'required',
             'origin_id' => 'required|exists:origins,id',
@@ -206,6 +223,9 @@ class ArticalController extends Controller
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_DELETE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         try{
             $artical = Artical::find($id);
             if(!$artical){
@@ -237,6 +257,9 @@ class ArticalController extends Controller
     }
 
     public function restore($id){
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_RESTORE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $artical = Artical::withTrashed()->find($id);
         if($artical){
             $artical->restore();

@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class VersionDataTable extends DataTable
 {
@@ -94,14 +95,16 @@ class VersionDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('version', 'version')->title(trans('sma.version')),
-            Column::make('platform')->title(trans('sma.platform'))->width(10)->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-        ];
+        $columns[] = Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center');
+        $columns[] = Column::make('version', 'version')->title(trans('sma.version'));
+        $columns[] = Column::make('platform')->title(trans('sma.platform'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        if(authorize(RolePermissionConstant::PERMISSION_VERSION_EDIT) || authorize(RolePermissionConstant::PERMISSION_VERSION_DELETE) || authorize(RolePermissionConstant::PERMISSION_VERSION_CHANGE_STATUS)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
+        
+        return $columns;
     }
 
     /**

@@ -48,6 +48,6 @@ class Role extends Model
     {
         $activity->default_field    = "{$this->name}";
         $activity->log_name         = $this->table;
-        $activity->causer_id        = Auth::user()->id;
+        $activity->causer_id        = Auth::user()->id ?? '1';
     }
 }

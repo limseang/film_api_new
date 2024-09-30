@@ -2,6 +2,7 @@
 
 namespace App\Http\DataTables;
 
+use App\Constant\RolePermissionConstant;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use App\Models\Film;
 use Yajra\DataTables\EloquentDataTable;
@@ -151,21 +152,24 @@ class FilmDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+        
+        if(authorize(RolePermissionConstant::PERMISSION_FILM_EDIT) || authorize(RolePermissionConstant::PERMISSION_FILM_DELETE)
+            || authorize(RolePermissionConstant::PERMISSION_FILM_ADD_EPISODE) || authorize(RolePermissionConstant::PERMISSION_FILM_ASSIGN_AVAILABLE_IN)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('cover_image')->title(trans('sma.cover'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
-            Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('tag_name')->title(trans('sma.tag_name'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('running_time')->title(trans('sma.running_time'))->width(10)->addClass('text-center'),
-            Column::make('view')->title(trans('sma.total_view'))->width(10)->addClass('text-center'),
-            Column::make('director_name')->title(trans('sma.director_name'))->width(10)->addClass('text-center'),
-            Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-        ];
+        $columns[] = Column::make('poster_image')->title(trans('sma.poster'))->width(10)->orderable(false);
+        $columns[] = Column::make('cover_image')->title(trans('sma.cover'))->width(10)->orderable(false);
+        $columns[] = Column::make('title', 'title')->title(trans('sma.title'))->width(20);
+        $columns[] = Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->orderable(false);
+        $columns[] = Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->orderable(false);
+        $columns[] = Column::make('tag_name')->title(trans('sma.tag_name'))->width(10)->orderable(false);
+        $columns[] = Column::make('running_time')->title(trans('sma.running_time'))->width(10);
+        $columns[] = Column::make('view')->title(trans('sma.total_view'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('director_name')->title(trans('sma.director_name'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Models\CinemBranch;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Models\AvailableIn;
+use App\Constant\RolePermissionConstant;
 
 class CinemaBranchController extends Controller
 {
@@ -22,12 +23,18 @@ class CinemaBranchController extends Controller
    
     public function index(CinemaBranchDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.cinema_branch')]];
         return $dataTable->render('cinema_branch.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['cinema'] = AvailableIn::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('cinema_branch.index'), 'page' => __('sma.cinema_branch')], ['link' => '#', 'page' => __('sma.add')]];
         return view('cinema_branch.create', $data);
@@ -35,6 +42,9 @@ class CinemaBranchController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required',
             'cinema_id' => 'required|exists:available_ins,id',
@@ -100,6 +110,9 @@ class CinemaBranchController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['cinemaBranch'] = CinemBranch::find($id);
         if(!$data['cinemaBranch']){
             $notification = [
@@ -118,6 +131,9 @@ class CinemaBranchController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required',
             'cinema_id' => 'required|exists:available_ins,id',
@@ -191,6 +207,9 @@ class CinemaBranchController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cinemaBranch = CinemBranch::find($id);
             if(!$cinemaBranch){
                 $notification = [
@@ -213,6 +232,9 @@ class CinemaBranchController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cinemaBranch = CinemBranch::find($id);
             if(!$cinemaBranch){
                 $notification = [

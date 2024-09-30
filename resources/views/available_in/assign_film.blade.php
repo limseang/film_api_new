@@ -26,7 +26,9 @@
                         {{ __('global.search') }}
                     </button>
                     &nbsp;
-                    <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_film')}}</a>
+                    @if(authorize('can add assign available in'))
+                        <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_film')}}</a>
+                    @endif
                 </div>
             </form>
         </div>

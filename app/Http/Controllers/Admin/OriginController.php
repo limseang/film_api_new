@@ -9,6 +9,7 @@ use App\Models\Origin;
 use App\Http\DataTables\OriginDataTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use App\Constant\RolePermissionConstant;
 
 class OriginController extends Controller
 {
@@ -21,12 +22,18 @@ class OriginController extends Controller
 
     public function index(OriginDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ORIGIN_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.origin')]];
         return $dataTable->render('origin.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ORIGIN_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('origin.index'), 'page' => __('sma.origin')], ['link' => '#', 'page' => __('sma.add')]];
         return view('origin.create', $data);
     }
@@ -77,6 +84,9 @@ class OriginController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ORIGIN_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['origin'] = Origin::find($id);
         if(!$data['origin']){
             $notification = [
@@ -151,6 +161,9 @@ class OriginController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_ORIGIN_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }   
             $origin = origin::find($id);
             if(!$origin){
                 $notification = [
@@ -174,6 +187,9 @@ class OriginController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_ORIGIN_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $origin = origin::find($id);
             if(!$origin){
                 $notification = [

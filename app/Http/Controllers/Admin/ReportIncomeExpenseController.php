@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\ReportIncomeExpense;
+use App\Constant\RolePermissionConstant;
 
 class ReportIncomeExpenseController extends Controller
 {
@@ -23,6 +24,9 @@ class ReportIncomeExpenseController extends Controller
    
     public function index(ReportIncomeExpenseDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_REPORT_INCOME_EXPENSE_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $groupByStatus = ReportIncomeExpense::select('type','currency', DB::raw('SUM(amount) as total'))->groupBy('type','currency')->get() ?? [];
         $data['groupByStatus'] = $groupByStatus;
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.report_income_expense')]];
@@ -31,6 +35,9 @@ class ReportIncomeExpenseController extends Controller
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_REPORT_INCOME_EXPENSE_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('gift.index'), 'page' => __('sma.report_income_and_expense')], ['link' => '#', 'page' => __('sma.add')]];
         return view('report_income_expense.create', $data);
     }
@@ -90,6 +97,9 @@ class ReportIncomeExpenseController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_REPORT_INCOME_EXPENSE_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['reportIncomeExpense'] = ReportIncomeExpense::find($id);
         if(!$data['reportIncomeExpense']){
             $notification = [
@@ -168,6 +178,9 @@ class ReportIncomeExpenseController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_REPORT_INCOME_EXPENSE_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $reportIncomeExpense = ReportIncomeExpense::find($id);
             if(!$reportIncomeExpense){
                 $notification = [

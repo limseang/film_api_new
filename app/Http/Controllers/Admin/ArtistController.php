@@ -10,6 +10,7 @@ use App\Models\Artist;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Traits\AlibabaStorage;
+use App\Constant\RolePermissionConstant;
 
 class ArtistController extends Controller
 {
@@ -21,12 +22,19 @@ class ArtistController extends Controller
 
     public function index(ArtistDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
+
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.artist')]];
         return $dataTable->render('artist.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $data['countries'] = Country::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('artist.index'), 'page' => __('sma.artist')], ['link' => '#', 'page' => __('global.add')]];
         return view('artist.create', $data);
@@ -34,6 +42,9 @@ class ArtistController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $this->validate($request, [
             'name' => 'required|min:2',
             'known_for' => 'required|min:2',
@@ -89,6 +100,9 @@ class ArtistController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $this->validate($request, [
             'name' => 'required|min:2',
             'known_for' => 'required|min:2',
@@ -154,6 +168,9 @@ class ArtistController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $data['artist'] = Artist::find($id);
         if(!$data['artist']){
             $notification = [
@@ -173,6 +190,9 @@ class ArtistController extends Controller
 
     public function status($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_CHANGE_STATUS)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         $artist = Artist::find($id);
         if(!$artist){
             $notification = [
@@ -196,6 +216,9 @@ class ArtistController extends Controller
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ARTIST_DELETE)){
+            return redirect()->back()->with('error', authorizeMessage());
+         }
         try{
             $artist = Artist::find($id);
             if(!$artist){
