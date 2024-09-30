@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\DataTables\TagDataTable;
 use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
+use App\Constant\RolePermissionConstant;
 use Exception;
 
 class TagController extends Controller
@@ -19,12 +20,18 @@ class TagController extends Controller
 
     public function index(TagDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TAG_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.tag')]];
         return $dataTable->render('tag.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TAG_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('tag.index'), 'page' => __('sma.tag')], ['link' => '#', 'page' => __('sma.add')]];
         return view('tag.create', $data);
     }
@@ -69,6 +76,9 @@ class TagController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TAG_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['tag'] = Tag::find($id);
         if(!$data['tag']){
             $notification = [
@@ -129,10 +139,11 @@ class TagController extends Controller
                 return redirect()->back()->withInput()->with($notification);
             }
         }
-
-
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_TAG_EDIT)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $tag = Tag::find($id);
             if(!$tag){
                 $notification = [
@@ -156,6 +167,9 @@ class TagController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_TAG_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $tag = Tag::find($id);
             if(!$tag){
                 $notification = [

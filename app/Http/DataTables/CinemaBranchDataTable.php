@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class CinemaBranchDataTable extends DataTable
 {
@@ -117,19 +118,21 @@ class CinemaBranchDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+        
+        if(authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_DELETE) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_EDIT) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_VIEW_DETAIL) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_DELETE)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false),
-            Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center'),
-            Column::make('cinema_name', 'cinema_name')->title(trans('sma.cinema_name'))->addClass('text-center'),
-            Column::make('ticket_price', 'ticket_price')->title(trans('sma.ticket_price'))->addClass('text-center'),
-            Column::make('show_type', 'show_type')->title(trans('sma.show_type'))->addClass('text-center'),
-            Column::make('phone', 'phone')->title(trans('sma.phone'))->addClass('text-center'),
-            Column::make('address', 'address')->title(trans('sma.address'))->width(20),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-        ];
+        $columns[] =     Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
+        $columns[] = Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('cinema_name', 'cinema_name')->title(trans('sma.cinema_name'))->addClass('text-center');
+        $columns[] = Column::make('ticket_price', 'ticket_price')->title(trans('sma.ticket_price'))->addClass('text-center');
+        $columns[] = Column::make('show_type', 'show_type')->title(trans('sma.show_type'))->addClass('text-center');
+        $columns[] = Column::make('phone', 'phone')->title(trans('sma.phone'))->addClass('text-center');
+        $columns[] = Column::make('address', 'address')->title(trans('sma.address'))->width(20);
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

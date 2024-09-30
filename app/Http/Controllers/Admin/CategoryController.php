@@ -8,6 +8,7 @@ use App\Http\DataTables\CategoryDataTable;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use App\Constant\RolePermissionConstant;
 
 class CategoryController extends Controller
 {
@@ -18,18 +19,27 @@ class CategoryController extends Controller
 
     public function index(CategoryDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.category_film')]];
         return $dataTable->render('category.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('category.index'), 'page' => __('sma.category_film')], ['link' => '#', 'page' => __('sma.add')]];
         return view('category.create', $data);
     }
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|unique:types,name',
             'description' => 'nullable|max:255',
@@ -66,6 +76,9 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['category'] = Category::find($id);
         if(!$data['category']){
             $notification = [
@@ -82,6 +95,9 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|unique:categories,name,'.$id,
             'status' => 'required|in:1,2',
@@ -128,6 +144,9 @@ class CategoryController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $category = Category::find($id);
             if(!$category){
                 $notification = [
@@ -151,6 +170,9 @@ class CategoryController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CATEGORY_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $category = Category::find($id);
             if(!$category){
                 $notification = [

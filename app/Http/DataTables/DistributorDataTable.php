@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class DistributorDataTable extends DataTable
 {
@@ -97,15 +98,16 @@ class DistributorDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+        if(authorize(RolePermissionConstant::PERMISSION_DISTRIBUTOR_EDIT) || authorize(RolePermissionConstant::PERMISSION_DISTRIBUTOR_DELETE) || authorize(RolePermissionConstant::PERMISSION_DISTRIBUTOR_CHANGE_STATUS)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('name', 'name')->title(trans('sma.name')),
-            Column::make('description')->title(trans('global.description'))->width(10)->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-        ];
+        $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false);
+        $columns[] = Column::make('name', 'name')->title(trans('sma.name'));
+        $columns[] = Column::make('description')->title(trans('global.description'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\DataTables\CastDataTable;
 use App\Models\Artist;
 use App\Models\Cast;
-use App\Models\Country;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Traits\AlibabaStorage;
 use App\Models\Film;
+use App\Constant\RolePermissionConstant;
 
 class CastController extends Controller
 {
@@ -23,12 +23,18 @@ class CastController extends Controller
 
     public function index(CastDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CAST_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.cast')]];
         return $dataTable->render('cast.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CAST_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['artist'] = Artist::where('status', 1)->get();
         $data['film'] = Film::get();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.add')]];
@@ -37,6 +43,9 @@ class CastController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CAST_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'character' => 'required',
             'actor_id' => 'required|exists:artists,id',
@@ -82,6 +91,9 @@ class CastController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CAST_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['cast'] = Cast::find($id);
         if(!$data['cast']){
             $notification = [
@@ -101,6 +113,9 @@ class CastController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_CAST_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'character' => 'required',
             'actor_id' => 'required|exists:artists,id',
@@ -154,6 +169,9 @@ class CastController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CAST_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cast = Cast::find($id);
             if(!$cast){
                 $notification = [
@@ -176,6 +194,9 @@ class CastController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CAST_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cast = Cast::find($id);
             if(!$cast){
                 $notification = [
@@ -199,6 +220,9 @@ class CastController extends Controller
 
         public function restore($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_CAST_RESTORE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $cast = Cast::withTrashed()->find($id);
             if(!$cast){
                 $notification = [

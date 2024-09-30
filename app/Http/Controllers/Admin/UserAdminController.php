@@ -12,6 +12,7 @@ use App\Models\UserType;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Traits\AlibabaStorage;
+use App\Constant\RolePermissionConstant;
 
 class UserAdminController extends Controller
 {
@@ -23,13 +24,19 @@ class UserAdminController extends Controller
 
     public function index(UserAdminDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.user')]];
         return $dataTable->render('user.index', $data);
     }
 
     public function create()
     {
-        $data['role'] = Role::where('id', '!=',1)->get();
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
+        $data['role'] = Role::where('name', '!=','Owner')->get();
         $data['userType'] = UserType::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('user.index'), 'page' => __('global.user')], ['link' => '#', 'page' => __('global.add')]];
         return view('user.create', $data);
@@ -90,6 +97,9 @@ class UserAdminController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['user'] = User::find($id);
         if(!$data['user']){
             $notification = [
@@ -100,7 +110,7 @@ class UserAdminController extends Controller
             ];
             return redirect()->route('user.index')->with($notification);
         }
-        $data['role'] = Role::where('id', '!=',1)->get();
+        $data['role'] = Role::where('name', '!=','Owner')->get();
         $data['userType'] = UserType::all();
         $data['image'] = $this->getSignUrlNameSize($data['user']->avatar);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('user.index'), 'page' => __('sma.user')], ['link' => '#', 'page' => __('sma.edit')]];
@@ -176,6 +186,9 @@ class UserAdminController extends Controller
 
     public function status($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_CHANGE_STATUS)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $user = User::find($id);
         if(!$user){
             $notification = [
@@ -200,6 +213,9 @@ class UserAdminController extends Controller
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_DELETE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $user = User::find($id);
         if(!$user){
             $notification = [
@@ -223,6 +239,9 @@ class UserAdminController extends Controller
 
     public function restore($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_USER_RESTORE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $user = User::withTrashed()->find($id);
         if(!$user){
             $notification = [

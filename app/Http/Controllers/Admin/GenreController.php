@@ -9,6 +9,7 @@ use App\Models\Genre;
 use App\Http\DataTables\GenreDataTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use App\Constant\RolePermissionConstant;
 
 class GenreController extends Controller
 {
@@ -20,18 +21,27 @@ class GenreController extends Controller
 
     public function index(GenreDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GENRE_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.genre')]];
         return $dataTable->render('genre.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GENRE_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('genre.index'), 'page' => __('sma.genre')], ['link' => '#', 'page' => __('sma.add')]];
         return view('genre.create', $data);
     }
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GENRE_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|unique:tags,name',
             'description' => 'nullable|max:255',
@@ -72,6 +82,9 @@ class GenreController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GENRE_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['genre'] = Genre::find($id);
         if(!$data['genre']){
             $notification = [
@@ -89,6 +102,9 @@ class GenreController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GENRE_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required',
             'status' => 'required|in:1,2',
@@ -142,6 +158,9 @@ class GenreController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_GENRE_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $genre = Genre::find($id);
             if(!$genre){
                 $notification = [
@@ -165,6 +184,9 @@ class GenreController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_GENRE_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $genre = Genre::find($id);
             if(!$genre){
                 $notification = [

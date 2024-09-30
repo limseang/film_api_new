@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\DataTables\RoleDataTable;
 use App\Models\Role;
 use App\Models\Permission;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Models\RolePermission;
+use App\Constant\RolePermissionConstant;
+use Exception;
 
 class RoleController extends Controller
 {
@@ -20,12 +21,18 @@ class RoleController extends Controller
 
     public function index(RoleDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ROLE_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('global.role')]];
         return $dataTable->render('role.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ROLE_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['permissions'] = Permission::with('children')->where('parent_id', 0)->get();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('role.index'), 'page' => __('sma.role')], ['link' => '#', 'page' => __('sma.add')]];
         return view('role.create', $data);
@@ -92,6 +99,9 @@ class RoleController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_ROLE_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['role'] = Role::find($id);
         if(!$data['role']){
             $notification = [
@@ -169,6 +179,9 @@ class RoleController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_ROLE_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $role = Role::find($id);
             if(!$role){
                 $notification = [
@@ -202,9 +215,9 @@ class RoleController extends Controller
     
         public function rolePermission($id)
         {
-            // if(!authorize(RolePermissionConstant::PERMISSION_CHANGE_PERMISSION)){
-            //     return redirect()->back()->with('error', authorizeMessage());
-            //   }
+            if(!authorize(RolePermissionConstant::PERMISSION_CHANGE_PERMISSION)){
+                return redirect()->back()->with('error', authorizeMessage());
+              }
             $role = Role::where('id', $id)->first();
             if(empty($role)){
                 $notification = [
@@ -224,12 +237,12 @@ class RoleController extends Controller
     
         public function storeRolePermission(Request $request)
         {
-            // if(!authorize(RolePermissionConstant::PERMISSION_CHANGE_PERMISSION)){
-            //     return redirect()->back()->with('error', authorizeMessage());
-            //   }
+            if(!authorize(RolePermissionConstant::PERMISSION_CHANGE_PERMISSION)){
+                return redirect()->back()->with('error', authorizeMessage());
+              }
             $request->validate([
                 'role_id' => 'required',
-                'permissions' => 'required'
+                'permissions' => 'nullable',
             ]);
             $role = Role::find($request->role_id);
             if(empty($role)){
@@ -237,6 +250,16 @@ class RoleController extends Controller
             }
             $permissions = $request->permissions;
             $allPermissions = [];
+            if(empty($permissions)){
+                $role->roleHasPermssions()->delete();
+                $notification = [
+                    'type' => 'success',
+                    'icon' => trans('global.icon_success'),
+                    'title' => trans('global.title_updated'),
+                    'text' => trans('sma.update_successfully'),
+                ];
+                return redirect()->route('role.index')->with($notification);
+            }
             foreach ($permissions as $permission) {
                 $parentPermission = Permission::find($permission);
                 if ($parentPermission->parent_id != 0) {

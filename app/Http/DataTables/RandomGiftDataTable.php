@@ -10,6 +10,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class RandomGiftDataTable extends DataTable
 {
@@ -144,16 +145,18 @@ class RandomGiftDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            Column::make('gift_name')->title(trans('sma.gift_name'))->orderable(false),
-            Column::make('user_name')->title(trans('sma.user_name'))->orderable(false),
-            Column::make('phone_number')->title(trans('sma.phone_number'))->orderable(false),
-            Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center'),
-            Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-        ];
+        
+        if(authorize(RolePermissionConstant::PERMISSION_RANDOM_GIFT_DELETE)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
+        $columns[] = Column::make('gift_name')->title(trans('sma.gift_name'))->orderable(false);
+        $columns[] = Column::make('user_name')->title(trans('sma.user_name'))->orderable(false);
+        $columns[] = Column::make('phone_number')->title(trans('sma.phone_number'))->orderable(false);
+        $columns[] = Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center');
+        $columns[] = Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center');
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\DataTables\VersionDataTable;
 use App\Models\VersionCheck;
 use Illuminate\Support\Facades\DB;
+use App\Constant\RolePermissionConstant;
 use Exception;
 
 class VersionController extends Controller
@@ -18,12 +19,18 @@ class VersionController extends Controller
 
     public function index(VersionDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_VERSION_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.version')]];
         return $dataTable->render('version.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_VERSION_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('type.index'), 'page' => __('sma.version')], ['link' => '#', 'page' => __('sma.add')]];
         return view('version.create', $data);
     }
@@ -66,6 +73,9 @@ class VersionController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_VERSION_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['version'] = VersionCheck::find($id);
         if(!$data['version']){
             $notification = [
@@ -128,6 +138,9 @@ class VersionController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_VERSION_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $version = VersionCheck::find($id);
             if(!$version){
                 $notification = [
@@ -151,6 +164,9 @@ class VersionController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_VERSION_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $version = VersionCheck::find($id);
             if(!$version){
                 $notification = [

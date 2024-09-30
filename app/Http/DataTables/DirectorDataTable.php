@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class DirectorDataTable extends DataTable
 {
@@ -104,19 +105,20 @@ class DirectorDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+       if(authorize(RolePermissionConstant::PERMISSION_DIRECTOR_EDIT) || authorize(RolePermissionConstant::PERMISSION_DIRECTOR_DELETE) || authorize(RolePermissionConstant::PERMISSION_DIRECTOR_CHANGE_STATUS)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+       }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('icon')->title(trans('sma.avatar_director'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('name', 'name')->title(trans('sma.director_name'))->width(30),
-            Column::make('know_for')->title(trans('sma.know_for'))->width(10)->addClass('text-center'),	
-            Column::make('nationality_name')->title(trans('sma.national_name'))->width(10)->addClass('text-center')->orderable(false),
-            Column::make('birth_date')->title(trans('sma.birth_date'))->width(10)->addClass('text-center'),
-            Column::make('death_date')->title(trans('sma.death_date'))->width(10)->addClass('text-center'),
-            Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('biography')->title(trans('sma.biography'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center'),
-        ];
+        $columns[] = Column::make('icon')->title(trans('sma.avatar_director'))->width(10)->addClass('text-center')->orderable(false);
+        $columns[] = Column::make('name', 'name')->title(trans('sma.director_name'))->width(30);
+        $columns[] = Column::make('know_for')->title(trans('sma.know_for'))->width(10)->addClass('text-center');	
+        $columns[] = Column::make('nationality_name')->title(trans('sma.national_name'))->width(10)->addClass('text-center')->orderable(false);
+        $columns[] = Column::make('birth_date')->title(trans('sma.birth_date'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('death_date')->title(trans('sma.death_date'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('biography')->title(trans('sma.biography'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

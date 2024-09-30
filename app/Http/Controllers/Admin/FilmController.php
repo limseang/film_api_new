@@ -20,6 +20,7 @@ use App\Models\Country;
 use App\Models\AvailableIn;
 use App\Models\FilmAvailable;
 use App\Http\DataTables\FilmAvailableInDataTable;
+use App\Constant\RolePermissionConstant;
 
 class FilmController extends Controller
 {
@@ -31,6 +32,9 @@ class FilmController extends Controller
 
     public function index(FilmDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['genre'] = Genre::where('status', 1)->get();
         $data['tag'] = Tag::where('status', 1)->get();
         $data['type'] = Type::where('status', 1)->get();
@@ -41,6 +45,9 @@ class FilmController extends Controller
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['category'] = Category::where('status', 1)->get();
         $data['director'] = Director::where('status', 1)->get();
         $data['distributor'] = Distributor::where('status', 1)->get();
@@ -54,6 +61,9 @@ class FilmController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'title' => 'required',
             'director_id' => 'nullable|exists:directors,id',
@@ -118,6 +128,9 @@ class FilmController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['film'] = Film::find($id);
         if(!$data['film']){
             $notification = [
@@ -144,6 +157,9 @@ class FilmController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'title' => 'required',
             'director_id' => 'nullable|exists:directors,id',
@@ -217,6 +233,9 @@ class FilmController extends Controller
 
         public function showEpisode(EpisodeDataTable $episodeDataTable, $id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_FILM_SHOW_EPISODE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $data['film'] = Film::find($id);
             if(!$data['film']){
                 $notification = [
@@ -236,6 +255,9 @@ class FilmController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_FILM_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $film = Film::find($id);
             if(!$film){
                 $notification = [
@@ -269,14 +291,20 @@ class FilmController extends Controller
 
     public function assignAvailable(FilmAvailableInDataTable $dataTable,$id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_ASSIGN_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['film'] = Film::find($id);
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.assign_cinema')]];
         return $dataTable->with('film_id', $id)->render('film.assign_available', $data);
     }
 
 
-    public function addFilmAvailableIn(request $request){
-
+    public function addFilmAvailableIn(request $request)
+    {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_ADD_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $id = $request->film_id;
         $film = Film::find($id);
         $availableIDArray = $film->filmAvailable ? $film->filmAvailable->pluck('available_id')->toArray() : [];
@@ -286,6 +314,9 @@ class FilmController extends Controller
     
     public function deleteAssignedAvailable($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_DELETE_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $filmAvailableIn = FilmAvailable::find($id);
         if(!$filmAvailableIn){
             $notification = [
@@ -308,6 +339,9 @@ class FilmController extends Controller
 
     public function storeAvailable(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_ADD_AVAILABLE_IN)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         try{
             DB::beginTransaction();
             $availableIn = AvailableIn::find($request->available_id);
