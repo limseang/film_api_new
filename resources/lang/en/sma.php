@@ -336,6 +336,8 @@
     'my_profile' => 'My Profile',
     'incorect_email_or_password' => 'Incorect email or password!',
     'permission' => 'Permission',
+    'video_720' => 'Video 720',
+    'video_required_or_720' => 'Video or Video 720 is required',
 
     ]
  ?>

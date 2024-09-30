@@ -119,12 +119,22 @@
                 </div>
                 </div>
                 <div class="col-12 col-lg-6 p-10">
-                  <div class="mb-3">
-                    <p class="fw-semibold">{{trans('sma.video')}}</p>
-                    <input type="file" class="file-input-video" name="video" data-show-caption="true" data-show-upload="true" accept="video/*">
+                  <div class="col-lg-12 mb-3">
+                    <div class="mb-3">
+                      <p class="fw-semibold">{{trans('sma.video')}}</p>
+                      <input type="file" class="file-input-video" name="video" data-show-caption="true" data-show-upload="true" accept="video/*">
+                    </div>
+                    <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID</span></label>
+                    <input type="text" name="video_id" class="form-control" id="video" value='{{old('video_id')}}' readonly>
                   </div>
-                  <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID</span></label>
-                  <input type="text" name="video_id" class="form-control" id="video" value='{{old('video_id')}}' readonly>
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <p class="fw-semibold">{{trans('sma.video_720')}}</p>
+                      <input type="file" class="file_input_video_720" name="video_720" data-show-caption="true" data-show-upload="true" accept="video/*">
+                    </div>
+                    <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID 720</span></label>
+                    <input type="text" name="video_id_720" class="form-control" id="video_720" value='{{old('video_id_720')}}' readonly>
+                  </div>
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="{{config('setup.button_opacity_primary')}} mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
@@ -162,9 +172,13 @@
     $(document).ready(function() {
      // before submit form to server side check if video is value is empty or 0
         $('form').submit(function() {
-            if($('#video').val() == 0) {
+            var video = $('#video').val();
+            var video720 = $('#video_720').val();
+
+            // Check if both are empty or if video is empty but video_720 is not empty
+            if (video == 0 && video720 == 0) {
                 new Noty({
-                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Please upload a video file first',
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> {{trans('sma.video_required_or_720')}}',
                     type: 'warning'
                 }).show();
                 
@@ -237,6 +251,64 @@
                 }).show();
       });
 
+      $('.file_input_video_720').fileinput({
+          browseLabel: 'video',
+          browseClass: 'btn btn-info',
+          uploadUrl: "{{ route('episode.upload_video_720') }}", // server upload action
+          uploadAsync: true,
+          maxFileCount: 1,
+          autoReplace: true,
+          overwriteInitial: true,
+          browseIcon: '<i class="ph-file-plus me-2"></i>',
+          uploadIcon: '<i class="ph-file-arrow-up me-2"></i>',
+          removeIcon: '<i class="ph-x fs-base me-2"></i>',
+          fileActionSettings: {
+              removeIcon: '<i class="ph-trash"></i>',
+              removeClass: '',
+              uploadIcon: '<i class="ph-upload-simple"></i>',
+              uploadClass: '',
+              zoomIcon: '<i class="ph-magnifying-glass-plus"></i>',
+              zoomClass: '',
+              indicatorNew: '<i class="ph-file-plus text-success"></i>',
+              indicatorSuccess: '<i class="ph-check file-icon-large text-success"></i>',
+              indicatorError: '<i class="ph-x text-danger"></i>',
+              indicatorLoading: '<i class="ph-spinner spinner text-muted"></i>',
+          },
+          layoutTemplates: {
+              icon: '<i class="ph-check"></i>'
+          },
+          uploadClass: 'btn btn-light',
+          removeClass: 'btn btn-light',
+          initialCaption: 'No file selected',
+          previewZoomButtonClasses: previewZoomButtonClasses,
+          previewZoomButtonIcons: previewZoomButtonIcons,
+          uploadExtraData: function() {
+              return {
+                  _token: $("input[name='_token']").val(),
+              };
+          }
+      }).on('fileuploaded', function(event, previewId, index, response) {
+           var result = previewId.response;
+          if (result.success) {
+                $('#video_720').val(result.file_id);
+              new Noty({
+                    text: '<i class="fa fa-check-circle text-success"></i> Upload successful',
+                    type: 'success'
+                }).show();
+          } else {
+              // Show the error message
+              new Noty({
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Something went wrong, please try again',
+                    type: 'warning'
+                }).show();
+          } 
+      }).on('fileuploaderror', function(event, data, msg) {
+          // Show the error message
+          new Noty({
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Something went wrong, please try again',
+                    type: 'warning'
+                }).show();
+      });
     });
 </script>
   @endsection

@@ -119,12 +119,22 @@
                 </div>
                 </div>
                 <div class="col-12 col-lg-6 p-10">
-                  <div class="mb-3">
-                    <p class="fw-semibold">{{trans('sma.video')}}</p>
-                    <input type="file" class="file-input-video" name="video" data-show-caption="true" data-show-upload="true" accept="video/*">
-                  </div>
-                  <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID</span></label>
-                  <input type="text" name="video_id" class="form-control" id="video_id" value='{{$episode->file}}' readonly>
+                    <div class="col-12 mb-3">
+                        <div class="mb-3">
+                            <p class="fw-semibold">{{trans('sma.video')}}</p>
+                            <input type="file" class="file-input-video" name="video" data-show-caption="true" data-show-upload="true" accept="video/*">
+                        </div>
+                        <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID</span></label>
+                        <input type="text" name="video_id" class="form-control" id="video_id" value='{{$episode->file}}' readonly>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <p class="fw-semibold">{{trans('sma.video_720')}}</p>
+                            <input type="file" class="file-input-video-720" name="video_720" data-show-caption="true" data-show-upload="true" accept="video/*">
+                        </div>
+                        <label class="form-label"> <span class="badge bg-success bg-opacity-20 text-success">Video ID 720</span></label>
+                        <input type="text" name="video_id_720" class="form-control" id="video_id_720" value='{{$episode->video_720}}' readonly>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="{{config('setup.button_opacity_primary')}} mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
@@ -147,6 +157,16 @@
           '</video>'
       ];
     var nameVideo = "{{ $video['name'] ?? '' }}";
+
+    var initialPreviewVideo720 = [
+          '<video class="kv-preview-data file-preview-video" controls="" style="width: 213px; height: 160px;">' +
+              '<source src="{{$video_720["url"] ?? ''}}" type="video/mp4">' +
+              '<div class="file-preview-other">' +
+                  '<span class="file-other-icon"><i class="bi-file-earmark-fill"></i></span>' +
+              '</div>' +
+          '</video>'
+      ];
+    var nameVideo720 = "{{ $video_720['name'] ?? '' }}"
   
     var initialPreviewPoster = [
         "<img src='{{ $poster['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $poster['name'] ?? '' }}' title='{{ $poster['name'] ?? '' }}'>"
@@ -187,7 +207,7 @@
     $(document).ready(function() {
      // before submit form to server side check if video is value is empty or 0
         $('form').submit(function() {
-            if($('#video_id').val() == 0) {
+            if($('#video_id').val() == 0 && $('#video_id_720').val() == '') {
                 new Noty({
                     text: '<i class="fa fa-exclamation-circle text-danger"></i> Please upload a video file first',
                     type: 'warning'
@@ -264,6 +284,66 @@
            var result = previewId.response;
           if (result.success) {
                 $('#video_id').val(result.file_id);
+              new Noty({
+                    text: '<i class="fa fa-check-circle text-success"></i> Upload successful',
+                    type: 'success'
+                }).show();
+          } else {
+              // Show the error message
+              new Noty({
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Something went wrong, please try again',
+                    type: 'warning'
+                }).show();
+          } 
+      }).on('fileuploaderror', function(event, data, msg) {
+          // Show the error message
+          new Noty({
+                    text: '<i class="fa fa-exclamation-circle text-danger"></i> Something went wrong, please try again',
+                    type: 'warning'
+                }).show();
+      });
+
+      $('.file-input-video-720').fileinput({
+          browseLabel: 'video',
+          browseClass: 'btn btn-info',
+          uploadUrl: "{{ route('episode.upload_video_720') }}", // server upload action
+          uploadAsync: true,
+          maxFileCount: 1,
+          autoReplace: true,
+          overwriteInitial: true,
+          browseIcon: '<i class="ph-file-plus me-2"></i>',
+          uploadIcon: '<i class="ph-file-arrow-up me-2"></i>',
+          removeIcon: '<i class="ph-x fs-base me-2"></i>',
+          fileActionSettings: {
+              removeIcon: '<i class="ph-trash"></i>',
+              removeClass: '',
+              uploadIcon: '<i class="ph-upload-simple"></i>',
+              uploadClass: '',
+              zoomIcon: '<i class="ph-magnifying-glass-plus"></i>',
+              zoomClass: '',
+              indicatorNew: '<i class="ph-file-plus text-success"></i>',
+              indicatorSuccess: '<i class="ph-check file-icon-large text-success"></i>',
+              indicatorError: '<i class="ph-x text-danger"></i>',
+              indicatorLoading: '<i class="ph-spinner spinner text-muted"></i>',
+          },
+          layoutTemplates: {
+              icon: '<i class="ph-check"></i>'
+          },
+          uploadClass: 'btn btn-light',
+          removeClass: 'btn btn-light',
+          initialCaption: nameVideo720,
+          previewZoomButtonClasses: previewZoomButtonClasses,
+          previewZoomButtonIcons: previewZoomButtonIcons,
+          initialPreview: initialPreviewVideo720,
+          uploadExtraData: function() {
+              return {
+                  _token: $("input[name='_token']").val(),
+              };
+          }
+      }).on('fileuploaded', function(event, previewId, index, response) {
+           var result = previewId.response;
+          if (result.success) {
+                $('#video_id_720').val(result.file_id);
               new Noty({
                     text: '<i class="fa fa-check-circle text-success"></i> Upload successful',
                     type: 'success'
