@@ -14,7 +14,7 @@
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="CineMagicKH">
-    <meta property="fb:app_id" content="834525820555880"> <!-- Add this line with your app ID -->
+    <meta property="fb:app_id" content="834525820555880">
 
     <!-- Additional Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -28,8 +28,21 @@
 
     <!-- Page Title -->
     <title>{{ $title }}</title>
+
+    <!-- Add JavaScript to handle redirection -->
+    <script>
+        // Wait until the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Redirect URL (update with your base URL and dynamic ID/title)
+            const redirectUrl = `https://cinemagickh.com/movie/detail/{{ $id }}/{{ Str::slug($title, '-') }}`;
+
+            // Redirect to the desired URL
+            window.location.href = redirectUrl;
+        });
+    </script>
 </head>
 <body>
+<!-- Open Graph Content for Facebook Sharing -->
 <img src="{{ $image }}" alt="Movie Image">
 <h1>{{ $title }}</h1>
 <p>{{ $content }}</p>
