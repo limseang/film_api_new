@@ -7,14 +7,14 @@ use App\Models\RolePermission;
 
 if(!function_exists('isOwner')){
     function isOwner(){
-        return auth()->guard('admin')->user()->role_id == UserConstant::ROLE_OWNER;
+        return auth()->user()->role->name == UserConstant::ROLE_OWNER;
     }
 }
 if(!function_exists('authorize')){
     function authorize($permission){
        $permission = Permission::where('name', $permission)->first();
        if(empty($permission)){
-           return false;
+           return true;
        }
        if(isOwner()){
            return true;

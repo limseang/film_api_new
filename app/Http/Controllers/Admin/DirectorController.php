@@ -10,6 +10,7 @@ use App\Models\Director;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Traits\AlibabaStorage;
+use App\Constant\RolePermissionConstant;
 
 class DirectorController extends Controller
 {
@@ -21,12 +22,18 @@ class DirectorController extends Controller
 
     public function index(DirectorDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('global.director')]];
         return $dataTable->render('director.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['countries'] = Country::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('director.index'), 'page' => __('global.director')], ['link' => '#', 'page' => __('global.add')]];
         return view('director.create', $data);
@@ -34,6 +41,9 @@ class DirectorController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|min:2',
             'know_for' => 'required|min:2',
@@ -87,6 +97,9 @@ class DirectorController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'name' => 'required|min:2',
             'know_for' => 'required|min:2',
@@ -150,6 +163,9 @@ class DirectorController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['director'] = Director::find($id);
         if(!$data['director']){
             $notification = [
@@ -169,6 +185,9 @@ class DirectorController extends Controller
 
     public function status($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_CHANGE_STATUS)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $tag = Director::find($id);
         if(!$tag){
             $notification = [
@@ -192,6 +211,9 @@ class DirectorController extends Controller
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_DIRECTOR_DELETE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         try{
             $director = Director::find($id);
             if(!$director){

@@ -23,9 +23,9 @@
     <div class="row g-3 align-items-center p-2">
         <div class="col-6">
             <label class="form-label">{{trans('sma.film')}}</label>
-            <input type="text" id="film_id_show" class="form-control bg-primary bg-opacity-10 text-primary" value="{{$film->title ?? ''}}" readonly>
+            <input type="text" id="film_id_show" class="form-control bg-primary bg-opacity-10 text-primary is-not-invalid" value="{{$film->title ?? ''}}" readonly>
             <span class="invalid-feedback-success">
-                The valid cinema is success.
+                The valid film is success.
             </span>
             <input type="hidden" name="film_id" id="film_id" value="{{$film->id ?? ''}}">
         </div>
@@ -72,9 +72,8 @@
                 var film_id = $('#film_id').val();
                 var available_id = $('#available_id').val();
     
-                // Validation: Check if the film_id array is empty but available ID is not
-                if (film_id.length ===0 && available_id != '') {
-                    $('#film_in_show').addClass('is-not-invalid');
+                if (available_id.length ===0 && film_id !=  '') {
+                    $('#film_id_show').addClass('is-not-invalid');
                     $('#available_id').addClass('is-invalid');
                     return false;
                 } else {

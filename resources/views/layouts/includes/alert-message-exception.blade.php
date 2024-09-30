@@ -10,13 +10,12 @@
 
 @endif
 @if(Session::has('error'))
-    <div class="alert alert-warning border-0 alert-dismissible fade show" role="alert">
-        <div>
+    <div class="alert alert-warning alert-icon-start alert-dismissible fade show">
+        <span class="alert-icon bg-warning text-white">
+            <i class="ph-warning-circle"></i>
+        </span>
         {{session('error')}}
-        </div>
-        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-           
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
   @if(Session::has('warning'))
@@ -24,7 +23,7 @@
         <div>
             {{session('warning')}}
         </div>
-        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </button>
     </div>
 @endif

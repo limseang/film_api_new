@@ -23,11 +23,11 @@
                 @foreach($permissions as $permission)
                 <div class="col-12 col-lg-12">
                   <ul class="list-group mb-4">
-                    <li class="list-group-item bg-success bg-opacity-20" aria-current="true">
+                    <li class="list-group-item" aria-current="true">
                       
-                      <div class="icheck-success d-inline">
-                        <input type="checkbox" style="cursor: pointer;"  class="form-check-input form-check-input-success" name="permission_id[]" id="permission_parent{{$permission->id}}" data-permission={{$permission->id}}  {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }} value="{{$permission->id}}">
-                        <label class="form-check-label" style="cursor: pointer;"  for="permission_parent{{$permission->id}}"> <span style="font-size: 12px; color:#343a40;"> {{__('permission.'.$permission->name)}}</span>
+                      <div class="icheck-success d-inline align-items-center">
+                        <input type="checkbox" style="cursor: pointer;"  class="form-check-input form-check-input-success mt-1" name="permission_id[]" id="permission_parent{{$permission->id}}" data-permission={{$permission->id}}  {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }} value="{{$permission->id}}">
+                        <label class="form-check-label" style="cursor: pointer;"  for="permission_parent{{$permission->id}}"> <span style="font-size: 14px; color:#0f0f0f;"> {{__('permission.'.$permission->name)}}  <span class="{{config('setup.button-opacity-success')}}"><i class="{{$permission->icon ? $permission->icon : 'ph-file'}}" style="font-size: 14px"></i></span></span>
                         </label>
                     </div>
                     </li>
@@ -39,7 +39,7 @@
                                         <div class="p-2 border mt-1 mb-2">
                                             <div class="icheck-success d-inline">
                                                 <input type="checkbox" style="cursor: pointer;"  class="form-check-input form-check-input-success" name="permissions[]" data-parent-permssion={{$permission->id}} data-child-permision={{$child->id}} id="permission{{$child->id}}"  {{ in_array($child->id, $rolePermissions) ? 'checked' : '' }} value="{{$child->id}}">
-                                                <label class="form-check-label"  style="cursor: pointer;" for="permission{{$child->id}}"> <span style="font-size: 12px; color:#343a40;">{{__('permission.'.$child->name)}}</span>
+                                                <label class="form-check-label"  style="cursor: pointer;" for="permission{{$child->id}}"> <span style="font-size: 13px; color:#242527;">{{__('permission.'.$child->name)}}</span>
                                                 </label>
                                             </div>
                                         </div>

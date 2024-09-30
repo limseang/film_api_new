@@ -2,11 +2,13 @@
 @section('title')
 {{__('sma.report_income_expense')}}
 @endsection
-@section('breadcrumb-topbar')
-  <a href="{{route('report_income_expense.create')}}" data-toggle="tooltip" role="button" type="button" aria-haspopup="true" class="d-flex align-items-center text-body">
-    <span class="{{config('setup.button_add')}}"> <i class="ph-plus"></i> </span> &nbsp; <span> {{__('global.add_new')}} </span>
-  </a>
-@endsection
+@if(authorize('can create report income and expense'))
+    @section('breadcrumb-topbar')
+    <a href="{{route('report_income_expense.create')}}" data-toggle="tooltip" role="button" type="button" aria-haspopup="true" class="d-flex align-items-center text-body">
+        <span class="{{config('setup.button_add')}}"> <i class="ph-plus"></i> </span> &nbsp; <span> {{__('global.add_new')}} </span>
+    </a>
+    @endsection
+@endif
 @section('content')
     <!-- Search field -->
     <div class="card">

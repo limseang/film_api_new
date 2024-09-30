@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\DataTables\RandomGiftDataTable;
 use App\Models\RendomPoint;
-use Exception;
-use Illuminate\Support\Facades\DB;
+use App\Constant\RolePermissionConstant;
 
 class RandomGiftController extends Controller
 {
@@ -19,12 +18,18 @@ class RandomGiftController extends Controller
    
     public function index(RandomGiftDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_RANDOM_GIFT_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.random_gift')]];
         return $dataTable->render('random_gift.index', $data);
     }
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_RANDOM_GIFT_DELETE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $randomGift = RendomPoint::find($id);
         if(!$randomGift){
             $notification = [

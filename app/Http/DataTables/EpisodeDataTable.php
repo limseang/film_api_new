@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class EpisodeDataTable extends DataTable
 {
@@ -136,7 +137,7 @@ class EpisodeDataTable extends DataTable
                             });
                         }'
             ])
-            ->orderBy([0, "ASC"])
+            ->orderBy([2, "ASC"])
         ;
     }
 
@@ -146,17 +147,21 @@ class EpisodeDataTable extends DataTable
     public function getColumns(): array
     {
         $soft_delete = request('soft_delete');
-        $columns = [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center'),
-            Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center'),
-            Column::make('description')->title(trans('sma.description'))->width(10)->addClass('text-center'),
-            Column::make('season')->title(trans('sma.season'))->width(10)->addClass('text-center'),
-            Column::make('episode')->title(trans('sma.episode'))->width(10)->addClass('text-center'),
-            Column::make('mutile_subtitle')->title(trans('sma.subtitle'))->width(10)->addClass('text-center'),
-            Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-        ];
+        if(authorize(RolePermissionConstant::PERMISSION_FILM_DELETE_EPISODE) || authorize(RolePermissionConstant::PERMISSION_FILM_EDIT_EPISODE)
+        || authorize(RolePermissionConstant::PERMISSION_FILM_CHANGE_STATUS_EPISODE) || authorize(RolePermissionConstant::PERMISSION_FILM_ADD_EPISODE_SUBTITLE)
+        || authorize(RolePermissionConstant::PERMISSION_FILM_EDIT_EPISODE_SUBTITLE))
+        {
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
+        $columns[] = Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-center');
+        $columns[] = Column::make('description')->title(trans('sma.description'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('season')->title(trans('sma.season'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('episode')->title(trans('sma.episode'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('mutile_subtitle')->title(trans('sma.subtitle'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        
         if($soft_delete== 'deleted'){
             $columns[] = Column::make('deleted_at')->title(trans('global.deleted_at'))->width(10)->addClass('text-center');
         }else{

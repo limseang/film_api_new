@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 // str
 use Illuminate\Support\Str;
+use App\Constant\RolePermissionConstant;
 
 class UserAdminDataTable extends DataTable
 {
@@ -121,20 +122,23 @@ class UserAdminDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
-            // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center'),
-            Column::make('name', 'name')->title(trans('sma.name'))->width(30),
-            Column::make('email')->title(trans('sma.email'))->width(10)->addClass('text-center'),	
-            Column::make('phone')->title(trans('sma.phone'))->width(10)->addClass('text-center'),
-            Column::make('role_name')->title(trans('sma.role_name'))->width(10)->addClass('text-center'),
-            Column::make('point')->title(trans('sma.point'))->width(10)->addClass('text-center'),
-            Column::make('user_type_name')->title(trans('sma.user_type_name'))->width(10)->addClass('text-center'),
-            Column::make('comeFrom')->title(trans('sma.comeFrom'))->width(10)->addClass('text-center'),
-            Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center'),
-        ];
+        if(authorize(RolePermissionConstant::PERMISSION_USER_EDIT) || authorize(RolePermissionConstant::PERMISSION_USER_DELETE) || authorize(RolePermissionConstant::PERMISSION_USER_CHANGE_STATUS)){
+            $columns= [
+                Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center')
+            ];
+        }
+        $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('name', 'name')->title(trans('sma.name'))->width(30);
+        $columns[] = Column::make('email')->title(trans('sma.email'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('phone')->title(trans('sma.phone'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('role_name')->title(trans('sma.role_name'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('point')->title(trans('sma.point'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('user_type_name')->title(trans('sma.user_type_name'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('comeFrom')->title(trans('sma.comeFrom'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center');
+            
+        return $columns;
     }
 
     /**

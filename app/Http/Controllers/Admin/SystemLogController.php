@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SystemLog;
 use App\Http\DataTables\SystemLogDataTable;
+use App\Constant\RolePermissionConstant;
 
 class SystemLogController extends Controller
 {
@@ -15,6 +16,9 @@ class SystemLogController extends Controller
     }
     public function index(SystemLogDataTable $dataTable)
     { 
+        if(!authorize(RolePermissionConstant::PERMISSION_SYSTEM_LOG_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => '#', 'page' => __('sma.system_user_log')]];
         return $dataTable->render('system_log.index', $data);
     }

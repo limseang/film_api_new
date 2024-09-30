@@ -51,6 +51,15 @@
                                     <p class="mb-0">Welcome to our World</p>
                                 </div>
                                 <div class="form-body">
+                                    {{-- Check Error --}}
+                                    @if ($errors->any())
+                                        <span class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <strong>Whoops!</strong> {{ __('sma.incorect_email_or_password') }}<br><br>
+                                        </span>
+                                    @endif
+                                    {{-- <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span> --}}
                                     <form method="POST" action="{{ route('admin.login') }}" class="row g-3">
                                         @csrf
                                         <div class="col-12">

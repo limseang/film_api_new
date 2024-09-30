@@ -10,6 +10,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class GiftDataTable extends DataTable
 {
@@ -119,20 +120,21 @@ class GiftDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
+        if(authorize(RolePermissionConstant::PERMISSION_GIFT_EDIT) || authorize(RolePermissionConstant::PERMISSION_GIFT_DELETE) || authorize(RolePermissionConstant::PERMISSION_GIFT_CHANGE_STATUS) || authorize(RolePermissionConstant::PERMISSION_GIFT_DELETE)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-            Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false),
-            Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center'),
-            Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center'),
-            Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center'),
-            Column::make('noted', 'noted')->title(trans('sma.noted'))->addClass('text-center'),
-            Column::make('quantity', 'quantity')->title(trans('sma.quantity'))->width(10)->addClass('text-center'),
-            Column::make('expired_date', 'expired_date')->title(trans('sma.expired_date'))->width(10)->addClass('text-center'),
-            Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center'),
-            Column::make('description', 'description')->title(trans('sma.description'))->width(20),
-            Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center'),
-        ];
+        $columns[] = Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
+        $columns[] = Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center');
+        $columns[] = Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center');
+        $columns[] = Column::make('noted', 'noted')->title(trans('sma.noted'))->addClass('text-center');
+        $columns[] = Column::make('quantity', 'quantity')->title(trans('sma.quantity'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('expired_date', 'expired_date')->title(trans('sma.expired_date'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
+        $columns[] = Column::make('description', 'description')->title(trans('sma.description'))->width(20);
+        $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
+        return $columns;
     }
 
     /**

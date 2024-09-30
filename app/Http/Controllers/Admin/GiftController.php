@@ -10,6 +10,7 @@ use App\Http\DataTables\GiftDataTable;
 use App\Models\Gift;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\Constant\RolePermissionConstant;
 
 class GiftController extends Controller
 {
@@ -23,12 +24,18 @@ class GiftController extends Controller
    
     public function index(GiftDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GIFT_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.gift')]];
         return $dataTable->render('gift.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GIFT_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('gift.index'), 'page' => __('sma.gift')], ['link' => '#', 'page' => __('sma.add')]];
         return view('gift.create', $data);
     }
@@ -88,6 +95,9 @@ class GiftController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_GIFT_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['gift'] = Gift::find($id);
         if(!$data['gift']){
             $notification = [
@@ -165,6 +175,9 @@ class GiftController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_GIFT_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $gift = Gift::find($id);
             if(!$gift){
                 $notification = [
@@ -187,6 +200,9 @@ class GiftController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_GIFT_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $gift = Gift::find($id);
             if(!$gift){
                 $notification = [

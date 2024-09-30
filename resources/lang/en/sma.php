@@ -333,6 +333,9 @@
     'income' => 'Income',
     'USD' => 'USD',
     'KHR' => 'KHR',
+    'my_profile' => 'My Profile',
+    'incorect_email_or_password' => 'Incorect email or password!',
+    'permission' => 'Permission',
 
     ]
  ?>

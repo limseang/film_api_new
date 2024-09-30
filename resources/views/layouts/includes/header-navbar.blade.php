@@ -44,11 +44,14 @@
 
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="#" class="dropdown-item">
-                        <i class="ph-user-circle me-2"></i>
-                        My profile
+                        <span class="{{config('setup.button-opacity-success')}}"> <i class="ph-user-circle" style="font-size:14px"></i></span> &nbsp;
+                        {{trans('sma.my_profile')}}
                     </a>
                     <a href="{{route('logout')}}" class="dropdown-item">
-                        <i class="ph-sign-out me-2"></i>
+                        <span class="{{config('setup.button-opacity-danger')}}">
+                        <i class="ph-sign-out" style="font-size:14px"></i>
+                        </span>
+                        &nbsp;
                         Logout
                     </a>
                 </div>

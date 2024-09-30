@@ -14,6 +14,7 @@ class Permission extends Model
         'guard_name',
         'description',
         'parent_id',
+        'icon'
     ];
 
     /**

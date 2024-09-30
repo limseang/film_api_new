@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use App\Constant\RolePermissionConstant;
 
 class AvailableInFilmDataTable extends DataTable
 {
@@ -92,13 +93,16 @@ class AvailableInFilmDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $columns = [
             Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
             Column::make('poster_image')->title(trans('sma.poster'))->width(10)->addClass('text-center')->orderable(false),
             Column::make('title_film', 'title_film')->title(trans('sma.title'))->addClass('text-center'),
             Column::make('films_release_date')->title(trans('sma.release_date'))->width(10)->addClass('text-center'),
-            Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center'),
         ];
+        if(authorize(RolePermissionConstant::PERMISSION_DELETE_ASSIGN_AVAILABLE_IN)){
+            $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
+        }
+        return $columns;
     }
 
     /**

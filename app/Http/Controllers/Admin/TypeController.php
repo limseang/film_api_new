@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\DataTables\TypeDataTable;
 use App\Models\Type;
 use Illuminate\Support\Facades\DB;
+use App\Constant\RolePermissionConstant;
 use Exception;
 class TypeController extends Controller
 {
@@ -18,12 +19,18 @@ class TypeController extends Controller
 
     public function index(TypeDataTable $dataTable)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TYPE_VIEW)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.type')]];
         return $dataTable->render('type.index', $data);
     }
 
     public function create()
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TYPE_CREATE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('type.index'), 'page' => __('sma.type')], ['link' => '#', 'page' => __('sma.add')]];
         return view('type.create', $data);
     }
@@ -66,6 +73,9 @@ class TypeController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_TYPE_EDIT)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['type'] = type::find($id);
         if(!$data['type']){
             $notification = [
@@ -128,6 +138,9 @@ class TypeController extends Controller
 
         public function status($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_TYPE_CHANGE_STATUS)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $type = type::find($id);
             if(!$type){
                 $notification = [
@@ -151,6 +164,9 @@ class TypeController extends Controller
 
         public function destroy($id)
         {
+            if(!authorize(RolePermissionConstant::PERMISSION_TYPE_DELETE)){
+                return redirect()->back()->with('error', authorizeMessage());
+            }
             $type = type::find($id);
             if(!$type){
                 $notification = [

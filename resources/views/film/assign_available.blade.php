@@ -25,8 +25,10 @@
                         <i class="ph-magnifying-glass me-2"></i>
                         {{ __('global.search') }}
                     </button>
-                    &nbsp;
-                    <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_cinema')}}</a>
+                    @if(authorize('can add available in film'))
+                        &nbsp;
+                        <a href="#" class="{{config('setup.button_opacity_info')}} add_available_film"><i class="ph-plus me-2"></i>{{__('sma.add_cinema')}}</a>
+                    @endif
                 </div>
             </form>
         </div>

@@ -11,6 +11,7 @@ use App\Models\Storages;
 use App\Models\Country;
 use Illuminate\Support\Facades\DB;
 use App\Models\EpisodeSubtitle;
+use App\Constant\RolePermissionConstant;
 use Exception;
 
 class EpisodeController extends Controller
@@ -23,6 +24,9 @@ class EpisodeController extends Controller
 
     public function create($filmId)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_ADD_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['film'] = Film::find($filmId);
         $data['episodes'] = $data['film']->episode->sortBy('episode', SORT_REGULAR, false) ?? [];
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$filmId), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.add')]];
@@ -50,6 +54,9 @@ class EpisodeController extends Controller
 
     public function store(Request $request)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_ADD_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'title' => 'required',
             'film_id' => 'required|exists:films,id',
@@ -106,6 +113,9 @@ class EpisodeController extends Controller
 
     public function edit($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_EDIT_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $data['episode'] = Episode::find($id);
         $data['film'] = Film::find($data['episode']->film_id);
         $data['episodes'] = $data['film']->episode->sortBy('episode', SORT_REGULAR, false) ?? [];
@@ -117,6 +127,9 @@ class EpisodeController extends Controller
     
     public function update(Request $request, $id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_EDIT_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $this->validate($request, [
             'title' => 'required',
             'film_id' => 'required|exists:films,id',
@@ -173,6 +186,9 @@ class EpisodeController extends Controller
 
     public function status($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_CHANGE_STATUS_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $episode = Episode::find($id);
         if(!$episode){
             $notification = [
@@ -196,6 +212,9 @@ class EpisodeController extends Controller
 
     public function destroy($id)
     {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_DELETE_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $episode = Episode::find($id);
         if(!$episode){
             $notification = [
@@ -226,7 +245,11 @@ class EpisodeController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
+        if(!authorize(RolePermissionConstant::PERMISSION_FILM_RESTORE_EPISODE)){
+            return redirect()->back()->with('error', authorizeMessage());
+        }
         $episode = Episode::withTrashed()->find($id);
         if($episode){
             $episode->restore();
