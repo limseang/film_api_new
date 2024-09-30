@@ -43,39 +43,7 @@ class UploadController extends Controller
         }
     }
 
-   public function uploadSubtitle($file)
-   {
-       try{
-           $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
-           $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
-           $endpoint = env("ALIBABA_OSS_ENDPOINT");
-           $bucket = env("ALIBABA_OSS_BUCKET");
-
-              $object = 'subtitles/' . '/';
-                $object .= md5($file->getClientOriginalName() . time()) . '.' . $file->getClientOriginalExtension();
-                $filePath = $file->getRealPath();
-                $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-                $result = $ossClient->uploadFile($bucket, $object, $filePath);
-
-                if (!empty($result)) {
-                    $params = [
-                        'path' => $object,
-                        'extension' => $file->getClientOriginalExtension(),
-                        'size' => $file->getSize()
-                    ];
-                    $storage = Storages::query()->create($params);
-                    return $storage->id;
-                }
-                else{
-                    return 0;
-                }
-       }
-         catch (OssException $e) {
-              Log::error($e->getErrorMessage());
-              return $e->getMessage();
-         }
-
-   }
+  
 
    public function getSubtileUrl($id)
    {

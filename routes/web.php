@@ -39,6 +39,12 @@ use App\Http\Controllers\Admin\ReportIncomeExpenseController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/ads.txt', function () {
+    return response("google.com, pub-7758759399095169, DIRECT, f08c47fec0942fa0", 200)
+        ->header('Content-Type', 'text/plain');
+});
+
 Route::post('/admin/login',[AuthController::class, 'postLogin']) -> name('admin.login');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
