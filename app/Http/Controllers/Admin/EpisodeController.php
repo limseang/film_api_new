@@ -106,6 +106,7 @@ class EpisodeController extends Controller
             $episode->video_720 = $request->video_id_720;
             $episode->save();
             Storages::where('id', $request->video_id)->update(['is_used' => 'Y']);
+            Storages::where('id', $request->video_id_720)->update(['is_used' => 'Y']);
             DB::commit();
 
             $notification = [
