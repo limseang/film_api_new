@@ -40,11 +40,12 @@ class ShareLinkController extends Controller
          $film = Film::find($id);
          $title = $film->title;
          $content = $film->overview;
+         $id = $film->id;
          $image = $cloudController->getSignedUrl($film->poster);
 
          $facebook = 'https://apps.apple.com/kh/app/film-library/id1582162598';
 
-         return view('screenshot', compact('title', 'content','image', 'facebook'));
+         return view('screenshot', compact('title', 'content','image', 'facebook', 'id'));
    }
 
     public function viewShare($id){
