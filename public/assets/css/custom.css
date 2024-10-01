@@ -341,8 +341,10 @@ html {
        padding: 0.7rem;
    }
    .active-side {
-       background-color: #059669 !important;
-       color: #fff;
+    background-color: rgba(0, 231, 162, 0.259) !important; /* Semi-transparent background */
+    /* color: rgb(7, 182, 127) !important; */
+    color: #fff !important;
+       /*  text opactity 1 */
    }
    .my-custom-swal {
        max-width: 80%; /* Adjust the max width */

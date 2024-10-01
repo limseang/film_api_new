@@ -51,6 +51,24 @@ class EpisodeController extends Controller
         return response()->json(['success' => false,'file_id' => 0,'message' => 'error']);
         
     }
+    public function uploadVideo720(Request $request)
+    {
+        $video = $request->file('video_720');
+        if(empty($video)){
+            return response()->json([
+                'uploaded' => 0,
+                'error' => [
+                    'message' => 'error'
+                ]
+            ]);
+        }
+        $result = $this->UploadFileUsed($video, 'Episode720');
+        if ($result) {
+            return response()->json(['success' => true, 'file_id' => $result, 'message' => 'success']);
+        }
+        return response()->json(['success' => false,'file_id' => 0,'message' => 'error']);
+        
+    }
 
     public function store(Request $request)
     {
@@ -66,7 +84,8 @@ class EpisodeController extends Controller
             'release_date' => 'nullable|date',
             'poster' => 'nullable|image',
             'status' => 'required|in:1,2',
-            'video_id' => 'required|exists:storages,id',
+           'video_id' => 'nullable|exists:storages,id|required_without:video_id_720',
+           'video_id_720' => 'nullable|exists:storages,id|required_without:video_id',
         ]);
         try{
             DB::beginTransaction();
@@ -84,8 +103,10 @@ class EpisodeController extends Controller
             $episode->poster = $poster ?? null;
             $episode->status = $request->status;
             $episode->file = $request->video_id;
+            $episode->video_720 = $request->video_id_720;
             $episode->save();
             Storages::where('id', $request->video_id)->update(['is_used' => 'Y']);
+            Storages::where('id', $request->video_id_720)->update(['is_used' => 'Y']);
             DB::commit();
 
             $notification = [
@@ -120,6 +141,7 @@ class EpisodeController extends Controller
         $data['film'] = Film::find($data['episode']->film_id);
         $data['episodes'] = $data['film']->episode->sortBy('episode', SORT_REGULAR, false) ?? [];
         $data['video'] = $this->getSignUrlNameSize($data['episode']->file);
+        $data['video_720'] = $this->getSignUrlNameSize($data['episode']->video_720);
         $data['poster'] = $this->getSignUrlNameSize($data['episode']->poster);
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.show-episode',$data['episode']->film_id), 'page' => __('sma.show_episode')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('episode.edit', $data);
@@ -139,7 +161,8 @@ class EpisodeController extends Controller
             'release_date' => 'nullable|date',
             'poster' => 'nullable|image',
             'status' => 'required|in:1,2',
-            'video_id' => 'required',
+            'video_id' => 'nullable|required_without:video_id_720',
+           'video_id_720' => 'nullable|required_without:video_id',
         ]);
         try{
             DB::beginTransaction();
@@ -155,6 +178,11 @@ class EpisodeController extends Controller
                 $this->deleteFile($episode->file);
                 Storages::where('id', $request->video_id)->update(['is_used' => 'Y']);
                 $episode->file = $request->video_id;
+            }
+            if($request->video_id_720 != $episode->video_720){
+                $this->deleteFile($episode->video_720);
+                Storages::where('id', $request->video_id_720)->update(['is_used' => 'Y']);
+                $episode->video_720 = $request->video_id_720;
             }
             $birthDateFormat = date('d/m/Y', strtotime($request->release_date));
             $episode->title = $request->title;
