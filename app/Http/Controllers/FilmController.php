@@ -144,6 +144,7 @@ class FilmController extends Controller
                 'episode' => $item->episode,
                 //if uploadController->getSignedUrl return 'null' then return  $item->file
                 'file' => $item->file ? $uploadController->getSignedUrl($item->file) : $item->file,
+                'video_720' => $item->video_720 ? $uploadController->getSignedUrl($item->video_720) : null,
 
             ];
         }
@@ -781,7 +782,7 @@ public function updateFilm(Request $request,$id)
 
             $watch = $films->values()->filter(function ($film) {
                 $total_episode = count($film->episode);
-                return ($film->type == 5 || $film->type == 6 || $film->type == 7 || $film->type == 8) && $total_episode > 0;
+                return ($film->type == 5) && $total_episode > 0;
 
                 //if total episode > 1 then return
 
@@ -791,6 +792,7 @@ public function updateFilm(Request $request,$id)
                     'id' => $film->id,
                     'name' => $film->title,
                     'rating' => (string) $this->countRate($film->id),
+                    'people_rate' => $this->countRatePeople($film->id),
                     'release_date' => $film->release_date,
                     'total_episode' => count($film->episode),
                     'subtitle' => $film->subtitles->count() > 0 ? true : false,

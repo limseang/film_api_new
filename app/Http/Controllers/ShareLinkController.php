@@ -30,7 +30,7 @@ class ShareLinkController extends Controller
 
        $facebook = 'https://apps.apple.com/kh/app/film-library/id1582162598';
 
-       return view('screenshot', compact('title', 'content', 'image', 'facebook'));
+       return view('article_share', compact('title', 'content', 'image', 'facebook'));
 
 
    }

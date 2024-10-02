@@ -22,6 +22,7 @@ class Episode extends Model
         'episode',
         'season',
         'file',
+
     ];
 
     protected $appends = [
