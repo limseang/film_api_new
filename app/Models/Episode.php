@@ -22,7 +22,7 @@ class Episode extends Model
         'episode',
         'season',
         'file',
-
+        'video_720'
     ];
 
     protected $appends = [

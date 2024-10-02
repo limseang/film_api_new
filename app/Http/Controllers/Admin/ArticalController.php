@@ -15,6 +15,8 @@ use App\Models\Film;
 use App\Models\Tag;
 use App\Models\Type;
 use App\Constant\RolePermissionConstant;
+use App\Models\UserLogin;
+use App\Services\PushNotificationService;
 
 class ArticalController extends Controller
 {
@@ -111,6 +113,21 @@ class ArticalController extends Controller
             $artical->tag()->sync($request->tag_id);
             DB::commit();
 
+            $type = $artical->type->name;
+            $user = UserLogin::all();
+            foreach ($user as $item){
+                $data = [
+                    'token' => $item->fcm_token,
+                    'title' => 'New '.$type.' Artical',
+                    'body' => $artical->title,
+                    'data' => [
+                        'id' => $artical->id,
+                        'type' => '1',
+                    ]
+
+                ];
+                PushNotificationService::pushNotification($data);
+            }
             $pageDirection = $request->submit == 'Save_New' ? 'create' : 'index';
             $notification = [
                 'type' => 'success',
