@@ -69,6 +69,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     });
 });
 
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -649,6 +651,13 @@ Route::group(['middleware' => ['apple.jwt']], function () {
 
 });
 Route::get('/subscription/verify/{transactionId}', [SubcriptController::class, 'getApps']);
+
+Route::get('/test-file', function () {
+    return view('test-file');
+});
+
+// routes/web.php
+
 
 //->middleware('apple.jwt');
 

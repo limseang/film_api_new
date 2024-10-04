@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Speed Test</title>
+</head>
+<body>
+<h1>Internet Speed Test</h1>
+<button id="startTest">Start Speed Test</button>
+<p id="status">Click "Start Speed Test" to begin.</p>
+<p id="result"></p>
+
+<script>
+    // Function to measure download speed
+    // Function to measure download speed
+    function measureDownloadSpeed(fileUrl, callback) {
+        const xhr = new XMLHttpRequest();
+        const startTime = new Date().getTime();
+
+        xhr.open('GET', fileUrl, true);
+        xhr.responseType = 'blob'; // Use 'blob' for binary files
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                const endTime = new Date().getTime();
+                const duration = (endTime - startTime) / 1000; // Duration in seconds
+                const fileSize = xhr.response.size * 8; // Size in Kilobits (1 Byte = 8 bits)
+                const speedKbps = (fileSize / duration).toFixed(2); // Speed in Kbps
+
+                console.log('Download completed successfully');
+                console.log(`File size: ${fileSize} bits`);
+                console.log(`Duration: ${duration} seconds`);
+                console.log(`Download speed: ${speedKbps} Kbps`);
+
+                callback(speedKbps);
+            } else {
+                console.error(`Error: Failed to download file. Status: ${xhr.status}`);
+                document.getElementById('status').innerText = 'Error: Could not download file for speed test.';
+            }
+        };
+
+        xhr.onerror = function () {
+            console.error('Error: Could not download the file for speed test.');
+            document.getElementById('status').innerText = 'Error: Could not download file for speed test.';
+        };
+
+        console.log('Starting download test for file: ' + fileUrl);
+        xhr.send();
+    }
+
+    document.getElementById('startTest').addEventListener('click', function () {
+        const fileUrl = 'https://library.cinemagickh.com/test-file.bin';
+        document.getElementById('status').innerText = 'Measuring download speed...';
+
+        measureDownloadSpeed(fileUrl, function (speedKbps) {
+            const speedMbps = (speedKbps / 1000).toFixed(2); // Convert Kbps to Mbps
+            document.getElementById('status').innerText = 'Download speed measured successfully!';
+            document.getElementById('result').innerHTML = `Download Speed: ${speedMbps} Mbps (${speedKbps} Kbps)`;
+        });
+    });
+</script>
+</body>
+</html>

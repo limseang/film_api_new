@@ -210,7 +210,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/restore/{id}', [EpisodeController::class, 'restore'])->name('restore');
             Route::get('/delete-trash/{id}', [EpisodeController::class, 'deleteTrash'])->name('delete-trash');
             Route::post('/upload-video', [EpisodeController::class, 'uploadVideo'])->name('upload_video');
-            Route::post('/upload-video-720', [EpisodeController::class, 'uploadVideo720'])->name('upload_video_720');	
+            Route::post('/upload-video-720', [EpisodeController::class, 'uploadVideo720'])->name('upload_video_720');
             Route::post('/store-subtitle', [EpisodeController::class, 'storeSubtitle'])->name('store_subtitle');
             Route::get('/delete-subtitle/{id}', [EpisodeController::class, 'deleteSubtitle'])->name('delete_subtitle');
             Route::get('/edit-subtitle/{id}', [EpisodeController::class, 'editSubtitle'])->name('edit_subtitle');
@@ -288,6 +288,14 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/privacy', function () {
     return view('privacy_policy');
 });
+
+Route::get('/serve-binary-file', [App\Http\Controllers\SpeedTestController::class, 'serveFile']);
+
+
+
+
+
+
 
 Route::get('/login', [AuthController::class, 'getLogin'])->name('login');
 //Route::get('api/apple/login',[UserController::class, 'appleLogin']);
