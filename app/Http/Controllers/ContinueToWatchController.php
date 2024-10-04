@@ -275,6 +275,7 @@ class ContinueToWatchController extends Controller
                     'season' => $item->season,
                     'status' => $status,
                     'file' => $item->file !=  null ? $uploadController->getSignedUrl($item->file) : null,
+                    'video_720' => $item->video_720 !=  null ? $uploadController->getSignedUrl($item->video_720) : null,
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
                     'percentage' => round($percentage,2) . '%',
