@@ -844,9 +844,7 @@ public function updateFilm(Request $request,$id)
                         'total_episode' => count($film->episode),
                     ];
                 }
-                else {
-                    return null;
-                }
+
             });
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
