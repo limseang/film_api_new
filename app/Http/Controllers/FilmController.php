@@ -827,37 +827,44 @@ public function updateFilm(Request $request,$id)
     public function watchmovie(Request $request)
     {
         $page = $request->get('page', 1);
-        try{
-            $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->whereIn('type', [5,6,7,8])->orderBy('created_at', 'DESC')->paginate(21, ['*'], 'page', $page);
-            //find film with type 5,6,7,8 and episdoe > 0
-            $data = $films->map(function ($film) use ($uploadController) {
-                if(count($film->episode) > 0){
-                    return [
-                        'id' => $film->id,
-                        'title' => $film->title,
-                        'release_date' => $film->release_date,
-                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                        'rating' => (string) $this->countRate($film->id),
-                        'rate_people' => $this->countRatePeople($film->id),
-                        'type' => $film->types ? $film->types->name : null,
-                        'total_episode' => count($film->episode),
-                    ];
-                }
 
+        try {
+            $uploadController = new UploadController();
+
+            // Retrieve films with the specified types and exclude those with no episodes.
+            $films = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
+                ->whereIn('type', [5, 6, 7, 8])
+                ->whereHas('episode', function ($query) {
+                    $query->where('id', '>', 0);
+                }) // Ensuring there are episodes associated
+                ->orderBy('created_at', 'DESC')
+                ->paginate(21, ['*'], 'page', $page);
+
+            // Map the filtered films to your desired structure
+            $data = $films->map(function ($film) use ($uploadController) {
+                return [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'release_date' => $film->release_date,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'rating' => (string) $this->countRate($film->id),
+                    'rate_people' => $this->countRatePeople($film->id),
+                    'type' => $film->types ? $film->types->name : null,
+                    'total_episode' => $film->episode->count(),
+                ];
             });
+
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                'films' => $data->sortByDesc('created_at')->values()->all(),
+                'films' => $data->values()->all(),
             ]);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
-
     }
+
 
 
     //Todo : AdminEnd
