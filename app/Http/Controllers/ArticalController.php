@@ -289,7 +289,7 @@ class ArticalController extends Controller
                 'id' => $artical->id,
                 'title' => $artical->title,
                 'description' => $artical->description,
-                'origin' => $artical->origin ? $artical->origin->description : '',
+                'origin' => $artical->origin ? $artical->origin->name : '',
                 'originPageId' => $artical->origin ? $artical->origin->page_id : '',
                 'originLogo' => $artical->origin ? $uploadController->getSignedUrl($artical->origin->logo) : null,
                 'originLink' => $artical->origin ? $artical->origin->url : '',
