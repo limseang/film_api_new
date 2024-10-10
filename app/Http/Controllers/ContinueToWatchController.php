@@ -144,6 +144,7 @@ class ContinueToWatchController extends Controller
                'id' => $continueToWatch->id,
                'user_id' => $continueToWatch->user_id,
                'films' => $continueToWatch->films->title ?? '',
+               'film_id' => $continueToWatch->films->id ?? '',
                'episodes' => $continueToWatch->episodes->episode,
                'url' => $uploadController->getSignedUrl($episode->file),
                'video_720' => $episode->video_720 !=  null ? $uploadController->getSignedUrl($episode->video_720) : null,
