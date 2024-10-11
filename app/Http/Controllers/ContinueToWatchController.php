@@ -235,11 +235,15 @@ class ContinueToWatchController extends Controller
 
     public function detailByFilm($id)
     {
-        try{
-
-            $film = Film::with(['episode','continueToWatch','subtitles'])
+        try {
+            // Fetch the film record, if not found throw an exception
+            $film = Film::with(['episode', 'continueToWatch', 'subtitles'])
                 ->where('id', $id)
                 ->first();
+
+            if (!$film) {
+                throw new Exception('Film not found');
+            }
 
             $continueToWatch = ContinueToWatch::query()->where('user_id', auth()->user()->id)
                 ->where('film_id', $id)
@@ -253,9 +257,9 @@ class ContinueToWatchController extends Controller
 
                 foreach ($continueToWatch as $watch) {
                     if ($item->id == $watch->episode_id) {
-                        if($watch->progressing >= $watch->duration){
+                        if ($watch->progressing >= $watch->duration) {
                             $status = 'watched';
-                        }elseif(!empty($watch->progressing)){
+                        } elseif (!empty($watch->progressing)) {
                             $status = 'progressing';
                         }
                         $progressing = $watch->progressing;
@@ -273,14 +277,14 @@ class ContinueToWatchController extends Controller
                 return [
                     'id' => $item->id,
                     'continue_id' => $continueToWatchId,
-                    'episode' => $item->episode,
+                    'episode' => $item->episode ?? '',
                     'season' => $item->season,
                     'status' => $status,
-                    'file' => $item->file !=  null ? $uploadController->getSignedUrl($item->file) : null,
-                    'video_720' => $item->video_720 !=  null ? $uploadController->getSignedUrl($item->video_720) : null,
+                    'file' => $item->file != null ? $uploadController->getSignedUrl($item->file) : null,
+                    'video_720' => $item->video_720 != null ? $uploadController->getSignedUrl($item->video_720) : null,
                     'duration' => (string) $duration,
                     'progressing' => (string) $progressing,
-                    'percentage' => round($percentage,2) . '%',
+                    'percentage' => round($percentage, 2) . '%',
                 ];
             })->sortBy('episode')->values();
 
@@ -290,12 +294,12 @@ class ContinueToWatchController extends Controller
                 'description' => $film->description,
                 'poster' => $film->poster,
                 'episodes' => $film->episode,
-                'subtitles' => $film->subtitles ?? 'null',
+                'subtitles' => $film->subtitles ?? null,
             ];
 
             return $this->sendResponse($data);
-        }catch(Exception $e){
-            return $this->sendError($e->getMessage());
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage() . ' ' . $e->getLine());
         }
     }
 
