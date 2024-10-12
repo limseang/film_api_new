@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdMobCallbackController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AvailableInController;
@@ -74,6 +75,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/admob/callback', [AdMobCallbackController::class, 'handleCallback']);
 
 /* Admin Permission */
 Route::group(['middleware' => ['auth:sanctum']], function (){
