@@ -601,25 +601,18 @@ class UserController extends Controller
         Log::info("Payment pending for transaction ID: $transaction_id, Amount: $amount");
     }
 
-    private function verifyTelegramData($data)
-    {
-        $botToken = env('TELEGRAM_BOT_TOKEN');
-        $checkString = collect($data)->except('hash')->map(function ($value, $key) {
-            return "$key=$value";
-        })->sortKeys()->implode("\n");
-
-        $secretKey = hash('sha256', $botToken, true);
-        $hash = hash_hmac('sha256', $checkString, $secretKey);
-
-        return hash_equals($hash, $data['hash']);
-    }
-
-
     public function handleTelegramLogin(Request $request)
     {
         $data = $request->all();
 
+        // Log incoming data for debugging
+        Log::info('Telegram Login Data:', $data);
+
         // Validate the hash received from Telegram
+        if (!isset($data['hash'])) {
+            return response()->json(['error' => 'Invalid request: hash not found'], 400);
+        }
+
         $isValid = $this->verifyTelegramData($data);
 
         if ($isValid) {
@@ -627,7 +620,7 @@ class UserController extends Controller
             $user = User::updateOrCreate(
                 ['telegram_id' => $data['id']],
                 [
-                    'first_name' => $data['first_name'],
+                    'first_name' => $data['first_name'] ?? '',
                     'last_name' => $data['last_name'] ?? '',
                     'username' => $data['username'] ?? '',
                     'photo_url' => $data['photo_url'] ?? '',
@@ -645,6 +638,25 @@ class UserController extends Controller
         } else {
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
+    }
+
+    private function verifyTelegramData($data)
+    {
+        $botToken = env('TELEGRAM_BOT_TOKEN');
+
+        // Check if hash key exists
+        if (!isset($data['hash'])) {
+            return false;
+        }
+
+        $checkString = collect($data)->except('hash')->map(function ($value, $key) {
+            return "$key=$value";
+        })->sortKeys()->implode("\n");
+
+        $secretKey = hash('sha256', $botToken, true);
+        $hash = hash_hmac('sha256', $checkString, $secretKey);
+
+        return hash_equals($hash, $data['hash']);
     }
 
 
