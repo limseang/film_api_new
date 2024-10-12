@@ -601,6 +601,52 @@ class UserController extends Controller
         Log::info("Payment pending for transaction ID: $transaction_id, Amount: $amount");
     }
 
+    private function verifyTelegramData($data)
+    {
+        $botToken = env('TELEGRAM_BOT_TOKEN');
+        $checkString = collect($data)->except('hash')->map(function ($value, $key) {
+            return "$key=$value";
+        })->sortKeys()->implode("\n");
+
+        $secretKey = hash('sha256', $botToken, true);
+        $hash = hash_hmac('sha256', $checkString, $secretKey);
+
+        return hash_equals($hash, $data['hash']);
+    }
+
+
+    public function handleTelegramLogin(Request $request)
+    {
+        $data = $request->all();
+
+        // Validate the hash received from Telegram
+        $isValid = $this->verifyTelegramData($data);
+
+        if ($isValid) {
+            // Store user information or create a new user
+            $user = User::updateOrCreate(
+                ['telegram_id' => $data['id']],
+                [
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'] ?? '',
+                    'username' => $data['username'] ?? '',
+                    'photo_url' => $data['photo_url'] ?? '',
+                ]
+            );
+
+            // Generate a personal access token for the user
+            $token = $user->createToken('telegram-login')->plainTextToken;
+
+            // Return the token and user information
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+            ]);
+        } else {
+            return response()->json(['error' => 'Invalid Telegram login data'], 401);
+        }
+    }
+
 
 
 

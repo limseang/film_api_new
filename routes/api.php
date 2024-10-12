@@ -104,6 +104,7 @@ Route::post('/register', [UserConTroller::class, 'register']);
 Route::post('/login', [UserConTroller::class, 'login']);
 /* login with Social Medai */
 Route::post('/login/social', [UserConTroller::class, 'socialLogin']);
+Route::get('/telegram/login', [UserConTroller::class, 'handleTelegramLogin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/logout', [UserConTroller::class, 'logout']);
     Route::post('/user/add/avatar', [UserConTroller::class, 'addAvatar']);
