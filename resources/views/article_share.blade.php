@@ -33,7 +33,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             // Redirect URL (update with your base URL and dynamic ID/title)
-            {{--const redirectUrl = `https://cinemagickh.com/article/detail/{{ $id }}/{{ Str::slug($title, '-') }}`;--}}
+            const redirectUrl = `https://cinemagickh.com/article/detail/{{ $id }}/{{ Str::slug($title, '-') }}`;
 
             // Redirect to the desired URL
             window.location.href = redirectUrl;
