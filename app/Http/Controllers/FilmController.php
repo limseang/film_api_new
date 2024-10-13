@@ -827,18 +827,26 @@ public function updateFilm(Request $request,$id)
     public function watchmovie(Request $request)
     {
         $page = $request->get('page', 1);
+        $shortFilm = $request->get('short_film', false);
 
         try {
             $uploadController = new UploadController();
 
             // Retrieve films with the specified types and exclude those with no episodes.
-            $films = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
+            $filmsQuery = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
                 ->whereIn('type', [5, 6, 7, 8])
                 ->whereHas('episode', function ($query) {
                     $query->where('id', '>', 0);
                 }) // Ensuring there are episodes associated
-                ->orderBy('created_at', 'DESC')
-                ->paginate(21, ['*'], 'page', $page);
+                ->orderBy('created_at', 'DESC');
+
+            // Filter for short films if the parameter is set to true
+            if ($shortFilm) {
+                $filmsQuery->where('type', 5);
+            }
+
+            // Paginate the results
+            $films = $filmsQuery->paginate(21, ['*'], 'page', $page);
 
             // Map the filtered films to your desired structure
             $data = $films->map(function ($film) use ($uploadController) {
