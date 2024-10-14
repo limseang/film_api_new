@@ -621,15 +621,7 @@ class UserController extends Controller
                 $defaultName = $data['username'] ?? 'No Name';
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
 
-                // Log the data that will be used for creating/updating the user
-                Log::info('Data used for user creation/update:', [
-                    'telegram_id' => $data['id'],
-                    'userUUID' => $data['id'],
-                    'name' => $defaultName,
-                    'avatar' => $data['photo_url'] ?? '',
-                    'comeFrom' => 'telegram',
-                    'language' => $defaultLanguage,
-                ]);
+
 
              //check userUUID if exist
                 $user = User::where('userUUID', $data['id'])->first();
