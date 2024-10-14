@@ -45,6 +45,20 @@ Route::get('/ads.txt', function () {
         ->header('Content-Type', 'text/plain');
 });
 
+Route::get('/apple-app-site-association', function () {
+    return response()->json([
+        "applinks" => [
+            "apps" => [],
+            "details" => [
+                [
+                    "appID" => "VZU47BRDUA.cinemagickh.news",
+                    "paths" => [ "/movie/detail/*" ]
+                ]
+            ]
+        ]
+    ]);
+});
+
 Route::post('/admin/login',[AuthController::class, 'postLogin']) -> name('admin.login');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
