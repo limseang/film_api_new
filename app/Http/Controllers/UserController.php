@@ -642,14 +642,6 @@ class UserController extends Controller
                     $user->comeFrom = 'telegram';
                     $user->language = $defaultLanguage;
                     $user->save();
-
-                }
-                else{
-                    $user->name = $defaultName;
-                    $user->avatar = $data['photo_url'] ?? '';
-                    $user->comeFrom = 'telegram';
-                    $user->language = $defaultLanguage;
-                    $user->save();
                 }
 
 
