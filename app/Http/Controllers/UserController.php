@@ -630,7 +630,10 @@ class UserController extends Controller
             $token = $user->createToken('telegram-login')->plainTextToken;
 
             // Redirect user after successful login
-            return redirect()->route('dashboard')->with('token', $token);
+           return response()->json([
+                'token' => $token,
+                'user' => $user,
+            ]);
         } else {
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
