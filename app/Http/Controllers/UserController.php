@@ -621,8 +621,7 @@ class UserController extends Controller
                 $user = User::updateOrCreate(
 
                     [
-                        'name' => $data['first_name'] ?? 'No Name',
-                        'username' => $data['username'] ?? '',
+                        'name' => $data['username'] ?? 'No Name',
                         'photo_url' => $data['photo_url'] ?? '',
                         'comeFrom' => 'telegram',
                     ]
