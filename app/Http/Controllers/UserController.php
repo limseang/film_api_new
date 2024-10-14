@@ -634,6 +634,7 @@ class UserController extends Controller
              //check userUUID if exist
                 $user = User::where('userUUID', $data['id'])->first();
                 if(!$user){
+
                     $user = new User();
                     $user->userUUID = $data['id'];
                     $user->name = $defaultName;
