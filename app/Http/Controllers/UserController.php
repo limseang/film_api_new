@@ -619,16 +619,14 @@ class UserController extends Controller
             try {
                 // Store user information or create a new user
                 $user = User::updateOrCreate(
-
+                    ['telegram_id' => $data['id']], // Search criteria
                     [
                         'userUUID' => $data['id'],
-                        'telegram_id' => $data['id'],
                         'name' => $data['username'] ?? 'No Name',
                         'avatar' => $data['photo_url'] ?? '',
                         'comeFrom' => 'telegram',
-                    ]
+                    ] // Values to update or insert
                 );
-
                 // Generate a personal access token for the user
                 $token = $user->createToken('telegram-login')->plainTextToken;
 
