@@ -622,7 +622,7 @@ class UserController extends Controller
 
                     [
                         'name' => $data['username'] ?? 'No Name',
-                        'photo_url' => $data['photo_url'] ?? '',
+                        'avatar' => $data['photo_url'] ?? '',
                         'comeFrom' => 'telegram',
                     ]
                 );
