@@ -619,7 +619,7 @@ class UserController extends Controller
             try {
                 // Store user information or create a new user
                 $user = User::updateOrCreate(
-                    ['telegram_id' => $data['id']],
+
                     [
                         'name' => $data['first_name'] ?? 'No Name',
                         'username' => $data['username'] ?? '',
