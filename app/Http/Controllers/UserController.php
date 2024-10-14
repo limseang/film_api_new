@@ -644,6 +644,13 @@ class UserController extends Controller
                     $user->save();
 
                 }
+                else{
+                    $user->name = $defaultName;
+                    $user->avatar = $data['photo_url'] ?? '';
+                    $user->comeFrom = 'telegram';
+                    $user->language = $defaultLanguage;
+                    $user->save();
+                }
 
 
                 // Verify if user object is not null
