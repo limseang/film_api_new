@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -601,6 +602,8 @@ class UserController extends Controller
         Log::info("Payment pending for transaction ID: $transaction_id, Amount: $amount");
     }
 
+    use Spatie\Activitylog\Models\Activity;
+
     public function handleTelegramLogin(Request $request)
     {
         $data = $request->all();
@@ -617,6 +620,9 @@ class UserController extends Controller
         // Verify the Telegram data
         if ($this->verifyTelegramData($data)) {
             try {
+                // Temporarily disable activity logging to prevent issues
+                Activity::disableLogging();
+
                 // Define default values for not-nullable fields
                 $defaultName = $data['username'] ?? 'No Name';
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
@@ -645,6 +651,9 @@ class UserController extends Controller
                         'language' => $defaultLanguage,
                     ]
                 );
+
+                // Enable activity logging again
+                Activity::enableLogging();
 
                 // Verify if user object is not null
                 if (!$user) {
@@ -675,6 +684,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
+
 
 
     public function verifyTelegramData($data)
