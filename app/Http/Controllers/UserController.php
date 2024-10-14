@@ -621,6 +621,8 @@ class UserController extends Controller
                 $user = User::updateOrCreate(
 
                     [
+                        'userUUID' => $data['id'],
+                        'telegram_id' => $data['id'],
                         'name' => $data['username'] ?? 'No Name',
                         'avatar' => $data['photo_url'] ?? '',
                         'comeFrom' => 'telegram',
