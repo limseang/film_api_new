@@ -632,29 +632,18 @@ class UserController extends Controller
                 ]);
 
              //check userUUID if exist
-             try{
-                    $user = User::where('userUUID', $data['id'])->first();
-                    if(!$user){
-                        $user = new User();
-                        $user->userUUID = $data['id'];
-                        $user->name = $defaultName;
-                        $user->avatar = $data['photo_url'] ?? '';
-                        $user->comeFrom = 'telegram';
-                        $user->language = $defaultLanguage;
-                        $user->save();
-                        $data = [
-                            'user_id' => $user->id,
-                            'fcm_token' => $request->fcm_token,
-                        ];
-                        return response()->json([
-                            'message' => 'success',
-                            'user' => $data,
-                        ], 200);
-                    }
+                $user = User::where('userUUID', $data['id'])->first();
+                if(!$user){
+                    $user = new User();
+                    $user->user_id = $data['id'];
+                    $user->userUUID = $data['id'];
+                    $user->name = $defaultName;
+                    $user->avatar = $data['photo_url'] ?? '';
+                    $user->comeFrom = 'telegram';
+                    $user->language = $defaultLanguage;
+                    $user->save();
+
                 }
-                catch (Exception $e){
-                    return response()->json(['error' => 'Failed to create or update user.'], 500);
-             }
 
 
                 // Verify if user object is not null
