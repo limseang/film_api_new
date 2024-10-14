@@ -642,6 +642,14 @@ class UserController extends Controller
                         $user->comeFrom = 'telegram';
                         $user->language = $defaultLanguage;
                         $user->save();
+                        $data = [
+                            'user_id' => $user->id,
+                            'fcm_token' => $request->fcm_token,
+                        ];
+                        return response()->json([
+                            'message' => 'success',
+                            'user' => $data,
+                        ], 200);
                     }
                 }
                 catch (Exception $e){
