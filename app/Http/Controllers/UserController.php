@@ -608,9 +608,9 @@ class UserController extends Controller
         // Log incoming data for debugging
         Log::info('Telegram Login Data:', $data);
 
-        // Check if hash is present
-        if (!isset($data['hash'])) {
-            return response()->json(['error' => 'Invalid request: hash not found'], 400);
+        // Ensure all required parameters are present
+        if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
+            return response()->json(['error' => 'Missing required parameters'], 400);
         }
 
         // Verify the Telegram data
@@ -629,12 +629,17 @@ class UserController extends Controller
             // Generate a personal access token for the user
             $token = $user->createToken('telegram-login')->plainTextToken;
 
-          Log::info('User logged in:', $user->toArray());
-           return response()->json([
+            // Log the successful user login
+            Log::info('User logged in:', $user->toArray());
+
+            // Return token and user details
+            return response()->json([
                 'token' => $token,
                 'user' => $user,
-            ]);
+            ], 200);
         } else {
+            // Log invalid Telegram data
+            Log::error('Invalid Telegram login data', $data);
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
@@ -645,6 +650,7 @@ class UserController extends Controller
 
         // Check if hash exists
         if (!isset($data['hash'])) {
+            Log::error('Telegram login: hash not found', $data);
             return false;
         }
 
@@ -657,15 +663,22 @@ class UserController extends Controller
             ->sortKeys()
             ->implode("\n");
 
+        // Log the check string for debugging
+        Log::info('Check string for Telegram verification:', ['check_string' => $checkString]);
+
         // Create the secret key using your bot's token
         $secretKey = hash('sha256', $botToken, true);
 
         // Generate the hash for comparison
         $generatedHash = hash_hmac('sha256', $checkString, $secretKey);
 
+        // Log the generated hash for comparison
+        Log::info('Generated hash for Telegram verification:', ['generated_hash' => $generatedHash]);
+
         // Compare the generated hash with the received hash
         return hash_equals($generatedHash, $data['hash']);
     }
+
 
 
 
