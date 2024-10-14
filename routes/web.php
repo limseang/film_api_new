@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
@@ -36,10 +38,12 @@ use App\Http\Controllers\Admin\ReportIncomeExpenseController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function (Request $request) {
+    // Redirect to the /api/telegram/login route
+    return redirect()->route('telegramLogin', $request->all());
 });
 
+Route::get('/api/telegram/login', [UserController::class, 'handleTelegramLogin'])->name('telegramLogin');
 Route::get('/ads.txt', function () {
     return response("google.com, pub-7758759399095169, DIRECT, f08c47fec0942fa0", 200)
         ->header('Content-Type', 'text/plain');
