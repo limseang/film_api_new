@@ -632,17 +632,21 @@ class UserController extends Controller
                 ]);
 
              //check userUUID if exist
-                $user = User::where('userUUID', $data['id'])->first();
-                if(!$user){
-
-                    $user = new User();
-                    $user->userUUID = $data['id'];
-                    $user->name = $defaultName;
-                    $user->avatar = $data['photo_url'] ?? '';
-                    $user->comeFrom = 'telegram';
-                    $user->language = $defaultLanguage;
-                    $user->save();
+             try{
+                    $user = User::where('userUUID', $data['id'])->first();
+                    if(!$user){
+                        $user = new User();
+                        $user->userUUID = $data['id'];
+                        $user->name = $defaultName;
+                        $user->avatar = $data['photo_url'] ?? '';
+                        $user->comeFrom = 'telegram';
+                        $user->language = $defaultLanguage;
+                        $user->save();
+                    }
                 }
+                catch (Exception $e){
+                    return response()->json(['error' => 'Failed to create or update user.'], 500);
+             }
 
 
                 // Verify if user object is not null
