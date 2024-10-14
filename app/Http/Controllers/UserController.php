@@ -635,7 +635,6 @@ class UserController extends Controller
                 $user = User::where('userUUID', $data['id'])->first();
                 if(!$user){
                     $user = new User();
-                    $user->user_id = $data['id'];
                     $user->userUUID = $data['id'];
                     $user->name = $defaultName;
                     $user->avatar = $data['photo_url'] ?? '';
