@@ -636,9 +636,9 @@ class UserController extends Controller
         }
     }
 
-    private function verifyTelegramData($data)
+    public function verifyTelegramData($data)
     {
-        $botToken = env('TELEGRAM_BOT_TOKEN'); // Your Telegram Bot Token
+        $botToken = env('TELEGRAM_BOT_TOKEN'); // Your bot's token from BotFather
 
         // Check if hash exists
         if (!isset($data['hash'])) {
@@ -663,6 +663,7 @@ class UserController extends Controller
         // Compare the generated hash with the received hash
         return hash_equals($generatedHash, $data['hash']);
     }
+
 
 
 
