@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -602,8 +601,6 @@ class UserController extends Controller
         Log::info("Payment pending for transaction ID: $transaction_id, Amount: $amount");
     }
 
-    use Spatie\Activitylog\Models\Activity;
-
     public function handleTelegramLogin(Request $request)
     {
         $data = $request->all();
@@ -620,9 +617,6 @@ class UserController extends Controller
         // Verify the Telegram data
         if ($this->verifyTelegramData($data)) {
             try {
-                // Temporarily disable activity logging to prevent issues
-                Activity::disableLogging();
-
                 // Define default values for not-nullable fields
                 $defaultName = $data['username'] ?? 'No Name';
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
@@ -637,23 +631,18 @@ class UserController extends Controller
                     'language' => $defaultLanguage,
                 ]);
 
-                // Store user information or create a new user
-                $user = User::updateOrCreate(
-                // Search for an existing user by telegram_id
-                    ['telegram_id' => $data['id']],
+             //check userUUID if exist
+                $user = User::where('userUUID', $data['id'])->first();
+                if(!$user){
+                    $user = new User();
+                    $user->userUUID = $data['id'];
+                    $user->name = $defaultName;
+                    $user->avatar = $data['photo_url'] ?? '';
+                    $user->comeFrom = 'telegram';
+                    $user->language = $defaultLanguage;
+                    $user->save();
+                }
 
-                    // Values to insert/update
-                    [
-                        'userUUID' => $data['id'],
-                        'name' => $defaultName,
-                        'avatar' => $data['photo_url'] ?? '',
-                        'comeFrom' => 'telegram',
-                        'language' => $defaultLanguage,
-                    ]
-                );
-
-                // Enable activity logging again
-                Activity::enableLogging();
 
                 // Verify if user object is not null
                 if (!$user) {
@@ -684,7 +673,6 @@ class UserController extends Controller
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
-
 
 
     public function verifyTelegramData($data)
