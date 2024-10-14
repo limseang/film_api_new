@@ -608,36 +608,42 @@ class UserController extends Controller
         // Log incoming data for debugging
         Log::info('Telegram Login Data:', $data);
 
-        // Check if the required fields are present
-        if (!isset($data['hash'])) {
-            return response()->json(['error' => 'Invalid request: hash not found'], 400);
+        // Ensure all required parameters are present
+        if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
+            Log::error('Missing required parameters.', $data);
+            return response()->json(['error' => 'Missing required parameters'], 400);
         }
 
-        // Verify the Telegram data (similar to your existing logic)
+        // Verify the Telegram data
         if ($this->verifyTelegramData($data)) {
-            // Store user information or create a new user
-            $user = User::updateOrCreate(
-                ['telegram_id' => $data['id']],
-                [
-                    'name' => $data['first_name'] ?? 'No Name',
-                    'username' => $data['username'] ?? '',
-                    'photo_url' => $data['photo_url'] ?? '',
-                    'comeFrom' => 'telegram',
-                ]
-            );
+            try {
+                // Store user information or create a new user
+                $user = User::updateOrCreate(
+                    ['telegram_id' => $data['id']],
+                    [
+                        'name' => $data['first_name'] ?? 'No Name',
+                        'username' => $data['username'] ?? '',
+                        'photo_url' => $data['photo_url'] ?? '',
+                        'comeFrom' => 'telegram',
+                    ]
+                );
 
-            // Generate a personal access token for the user
-            $token = $user->createToken('telegram-login')->plainTextToken;
+                // Generate a personal access token for the user
+                $token = $user->createToken('telegram-login')->plainTextToken;
 
-            // Log successful login
-            Log::info('User logged in:', $user->toArray());
+                // Log successful login
+                Log::info('User logged in:', $user->toArray());
 
-            // Return token and user details
-            return response()->json([
-                'token' => $token,
-                'user' => $user,
-            ], 200);
+                return response()->json([
+                    'token' => $token,
+                    'user' => $user,
+                ], 200);
+            } catch (\Exception $e) {
+                Log::error('Error creating/updating user:', ['message' => $e->getMessage()]);
+                return response()->json(['error' => 'Server error. Please try again later.'], 500);
+            }
         } else {
+            Log::error('Invalid Telegram data verification failed.', $data);
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
@@ -646,7 +652,11 @@ class UserController extends Controller
     {
         $botToken = env('TELEGRAM_BOT_TOKEN');
 
-        // Prepare the check string
+        if (!isset($data['hash'])) {
+            Log::error('Telegram login: hash not found', $data);
+            return false;
+        }
+
         $checkString = collect($data)
             ->except('hash')
             ->map(function ($value, $key) {
@@ -655,15 +665,18 @@ class UserController extends Controller
             ->sortKeys()
             ->implode("\n");
 
-        // Create the secret key using the bot token
+        Log::info('Check string for Telegram verification:', ['check_string' => $checkString]);
+
         $secretKey = hash('sha256', $botToken, true);
 
-        // Generate the hash for comparison
         $generatedHash = hash_hmac('sha256', $checkString, $secretKey);
 
-        // Return the hash comparison result
+        Log::info('Generated hash:', ['generated_hash' => $generatedHash]);
+        Log::info('Received hash:', ['received_hash' => $data['hash']]);
+
         return hash_equals($generatedHash, $data['hash']);
     }
+
 
 
 
