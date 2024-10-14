@@ -608,7 +608,7 @@ class UserController extends Controller
         // Log incoming data for debugging
         Log::info('Telegram Login Data:', $data);
 
-        // Check if hash is present in the data
+        // Check if hash is present
         if (!isset($data['hash'])) {
             return response()->json(['error' => 'Invalid request: hash not found'], 400);
         }
@@ -629,15 +629,8 @@ class UserController extends Controller
             // Generate a personal access token for the user
             $token = $user->createToken('telegram-login')->plainTextToken;
 
-            // Return the token and user information
-            return response()->json([
-                'token' => $token,
-                'user' => [
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'avatar' => $user->photo_url,
-                ],
-            ], 200);
+            // Redirect user after successful login
+            return redirect()->route('dashboard')->with('token', $token);
         } else {
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
@@ -647,12 +640,12 @@ class UserController extends Controller
     {
         $botToken = env('TELEGRAM_BOT_TOKEN'); // Your Telegram Bot Token
 
-        // Check if the hash key exists
+        // Check if hash exists
         if (!isset($data['hash'])) {
             return false;
         }
 
-        // Prepare the check string excluding the 'hash' field
+        // Prepare the check string, excluding 'hash'
         $checkString = collect($data)
             ->except('hash')
             ->map(function ($value, $key) {
@@ -661,15 +654,16 @@ class UserController extends Controller
             ->sortKeys()
             ->implode("\n");
 
-        // Create a hash of the Telegram Bot Token
+        // Create the secret key using your bot's token
         $secretKey = hash('sha256', $botToken, true);
 
-        // Generate the expected hash
-        $expectedHash = hash_hmac('sha256', $checkString, $secretKey);
+        // Generate the hash for comparison
+        $generatedHash = hash_hmac('sha256', $checkString, $secretKey);
 
-        // Compare the received hash with the expected hash
-        return hash_equals($expectedHash, $data['hash']);
+        // Compare the generated hash with the received hash
+        return hash_equals($generatedHash, $data['hash']);
     }
+
 
 
 
