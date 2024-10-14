@@ -617,16 +617,41 @@ class UserController extends Controller
         // Verify the Telegram data
         if ($this->verifyTelegramData($data)) {
             try {
+                // Define default values for not-nullable fields
+                $defaultName = $data['username'] ?? 'No Name';
+                $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
+
+                // Log the data that will be used for creating/updating the user
+                Log::info('Data used for user creation/update:', [
+                    'telegram_id' => $data['id'],
+                    'userUUID' => $data['id'],
+                    'name' => $defaultName,
+                    'avatar' => $data['photo_url'] ?? '',
+                    'comeFrom' => 'telegram',
+                    'language' => $defaultLanguage,
+                ]);
+
                 // Store user information or create a new user
                 $user = User::updateOrCreate(
-                    ['telegram_id' => $data['id']], // Search criteria
+                // Search for an existing user by telegram_id
+                    ['telegram_id' => $data['id']],
+
+                    // Values to insert/update
                     [
                         'userUUID' => $data['id'],
-                        'name' => $data['username'] ?? 'No Name',
+                        'name' => $defaultName,
                         'avatar' => $data['photo_url'] ?? '',
                         'comeFrom' => 'telegram',
-                    ] // Values to update or insert
+                        'language' => $defaultLanguage,
+                    ]
                 );
+
+                // Verify if user object is not null
+                if (!$user) {
+                    Log::error('User creation/update returned null.', $data);
+                    return response()->json(['error' => 'Failed to create or update user.'], 500);
+                }
+
                 // Generate a personal access token for the user
                 $token = $user->createToken('telegram-login')->plainTextToken;
 
@@ -638,7 +663,11 @@ class UserController extends Controller
                     'user' => $user,
                 ], 200);
             } catch (\Exception $e) {
-                Log::error('Error creating/updating user:', ['message' => $e->getMessage()]);
+                // Log the error details
+                Log::error('Error creating/updating user:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 return response()->json(['error' => 'Server error. Please try again later.'], 500);
             }
         } else {
@@ -646,6 +675,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
+
 
     public function verifyTelegramData($data)
     {
