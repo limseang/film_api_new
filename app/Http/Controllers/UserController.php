@@ -629,7 +629,7 @@ class UserController extends Controller
             // Generate a personal access token for the user
             $token = $user->createToken('telegram-login')->plainTextToken;
 
-            // Redirect user after successful login
+          Log::info('User logged in:', $user->toArray());
            return response()->json([
                 'token' => $token,
                 'user' => $user,
