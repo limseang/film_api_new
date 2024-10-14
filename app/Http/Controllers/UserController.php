@@ -608,28 +608,28 @@ class UserController extends Controller
         // Log incoming data for debugging
         Log::info('Telegram Login Data:', $data);
 
-        // Ensure all required parameters are present
-        if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
-            return response()->json(['error' => 'Missing required parameters'], 400);
+        // Check if the required fields are present
+        if (!isset($data['hash'])) {
+            return response()->json(['error' => 'Invalid request: hash not found'], 400);
         }
 
-        // Verify the Telegram data
+        // Verify the Telegram data (similar to your existing logic)
         if ($this->verifyTelegramData($data)) {
             // Store user information or create a new user
             $user = User::updateOrCreate(
-                ['telegram_id' => $data['id']], // Use Telegram ID as the unique identifier
+                ['telegram_id' => $data['id']],
                 [
                     'name' => $data['first_name'] ?? 'No Name',
                     'username' => $data['username'] ?? '',
                     'photo_url' => $data['photo_url'] ?? '',
-                    'comeFrom' => 'telegram',  // Mark the user as coming from Telegram
+                    'comeFrom' => 'telegram',
                 ]
             );
 
             // Generate a personal access token for the user
             $token = $user->createToken('telegram-login')->plainTextToken;
 
-            // Log the successful user login
+            // Log successful login
             Log::info('User logged in:', $user->toArray());
 
             // Return token and user details
@@ -638,23 +638,15 @@ class UserController extends Controller
                 'user' => $user,
             ], 200);
         } else {
-            // Log invalid Telegram data
-            Log::error('Invalid Telegram login data', $data);
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
     }
 
     public function verifyTelegramData($data)
     {
-        $botToken = env('TELEGRAM_BOT_TOKEN'); // Your bot's token from BotFather
+        $botToken = env('TELEGRAM_BOT_TOKEN');
 
-        // Check if hash exists
-        if (!isset($data['hash'])) {
-            Log::error('Telegram login: hash not found', $data);
-            return false;
-        }
-
-        // Prepare the check string, excluding 'hash'
+        // Prepare the check string
         $checkString = collect($data)
             ->except('hash')
             ->map(function ($value, $key) {
@@ -663,19 +655,13 @@ class UserController extends Controller
             ->sortKeys()
             ->implode("\n");
 
-        // Log the check string for debugging
-        Log::info('Check string for Telegram verification:', ['check_string' => $checkString]);
-
-        // Create the secret key using your bot's token
+        // Create the secret key using the bot token
         $secretKey = hash('sha256', $botToken, true);
 
         // Generate the hash for comparison
         $generatedHash = hash_hmac('sha256', $checkString, $secretKey);
 
-        // Log the generated hash for comparison
-        Log::info('Generated hash for Telegram verification:', ['generated_hash' => $generatedHash]);
-
-        // Compare the generated hash with the received hash
+        // Return the hash comparison result
         return hash_equals($generatedHash, $data['hash']);
     }
 
