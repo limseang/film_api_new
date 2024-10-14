@@ -613,6 +613,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Invalid request: hash not found'], 400);
         }
 
+        // Verify the Telegram data
         $isValid = $this->verifyTelegramData($data);
 
         if ($isValid) {
@@ -620,21 +621,26 @@ class UserController extends Controller
             $user = User::updateOrCreate(
                 ['telegram_id' => $data['id']],
                 [
-                    'first_name' => $data['first_name'] ?? '',
-                    'last_name' => $data['last_name'] ?? '',
+                    'name' => $data['first_name'] ?? 'No Name',
                     'username' => $data['username'] ?? '',
                     'photo_url' => $data['photo_url'] ?? '',
+                    'comeFrom' => 'telegram',  // Set comeFrom to 'telegram'
                 ]
             );
 
             // Generate a personal access token for the user
             $token = $user->createToken('telegram-login')->plainTextToken;
 
-            // Return the token and user information
+            // Return the token and user information in the same format as social login
             return response()->json([
                 'token' => $token,
-                'user' => $user,
-            ]);
+                'user' => [
+                    'name' => $user->name,
+                    'email' => $user->email, // You can add more fields here if available
+                    'username' => $user->username,
+                    'avatar' => $user->photo_url,
+                ],
+            ], 200);
         } else {
             return response()->json(['error' => 'Invalid Telegram login data'], 401);
         }
@@ -658,6 +664,7 @@ class UserController extends Controller
 
         return hash_equals($hash, $data['hash']);
     }
+
 
 
 
