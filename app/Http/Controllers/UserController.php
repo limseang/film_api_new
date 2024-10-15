@@ -634,6 +634,7 @@ class UserController extends Controller
                     $user->language = $defaultLanguage;
                     $user->save();
                 }
+                Log::info('User created/updated:', $user->toArray());
 
 
                 // Verify if user object is not null
