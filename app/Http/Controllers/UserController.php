@@ -657,7 +657,7 @@ class UserController extends Controller
             } catch (\Exception $e) {
                 // Log the error details
                 Log::error('Error creating/updating user:', [
-                    'message' => $e->getMessage(),
+                    'message' => $e->getMessage() || $e->getLine() || $e->getFile(),
                     'trace' => $e->getTraceAsString(),
                 ]);
                 return response()->json(['error' => 'Server error. Please try again later.'], 500);
