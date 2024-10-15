@@ -624,6 +624,9 @@ class UserController extends Controller
 
 
              //check userUUID if exist
+                if(!$data['id']){
+                    return response()->json(['error' => 'Invalid Telegram login data'], 401);
+                }
                 $user = User::where('userUUID', $data['id'])->first();
                 if(!$user){
                     $user = new User();
