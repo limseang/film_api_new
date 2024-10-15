@@ -609,7 +609,7 @@ class UserController extends Controller
         Log::info('Telegram Login Data:', $data);
 
         // Ensure all required parameters are present
-        if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
+        if (!isset($data->hash, $data->id, $data->auth_date)) {
             Log::error('Missing required parameters.', $data);
             return response()->json(['error' => 'Missing required parameters'], 400);
         }
@@ -618,22 +618,22 @@ class UserController extends Controller
         if ($this->verifyTelegramData($data)) {
             try {
                 // Define default values for not-nullable fields
-                $defaultName = $data['username'] ?? 'No Name';
+                $defaultName = $data->username ?? 'No Name';
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
 
 
              //check userUUID if exist
-                if(!$data['id']){
+                if(!$data->id){
                     Log::error('Invalid Telegram data verification failed.', $data);
                     return response()->json(['error' => 'Invalid Telegram login data'], 401);
 
                 }
-                $user = User::where('userUUID', $data['id'])->first();
+                $user = User::where('userUUID', $data->id)->first();
                 if(!$user){
                     $user = new User();
-                    $user->userUUID = $data['id'];
+                    $user->userUUID = $data->id;
                     $user->name = $defaultName;
-                    $user->avatar = $data['photo_url'] ?? '';
+                    $user->avatar = $data->photo_url ?? '';
                     $user->comeFrom = 'telegram';
                     $user->language = $defaultLanguage;
                     $user->save();
