@@ -40,8 +40,8 @@ use App\Http\Controllers\Admin\ReportIncomeExpenseController;
 
 Route::get('/', function (Request $request) {
     // Redirect to the /api/telegram/login route
-    return view('welcome');
-//    return redirect()->route('telegramLogin', $request->all());
+//    return view('welcome');
+    return redirect()->route('telegramLogin', $request->all());
 });
 
 Route::post('/api/telegram/login', [UserController::class, 'handleTelegramLogin'])->name('telegramLogin');
