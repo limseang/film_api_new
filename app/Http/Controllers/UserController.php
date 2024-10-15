@@ -605,9 +605,7 @@ class UserController extends Controller
     {
         $data = $request->all();
         // Log incoming data for debugging
-        Log::info('id:', $data['id']);
-        Log::info('auth_date:', $data['auth_date']);
-        Log::info('hash:', $data['hash']);
+        log::info('Telegram login data:', $data);
         if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
             Log::error('Missing required parameters.', $data);
             return response()->json(['error' => 'Missing required parameters'], 400);
