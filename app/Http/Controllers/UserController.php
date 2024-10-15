@@ -604,15 +604,10 @@ class UserController extends Controller
     public function handleTelegramLogin(Request $request)
     {
         $data = $request->all();
-
         // Log incoming data for debugging
-//        Log::info('Telegram Login Data:', $data);
-
-        // Ensure all required parameters are present
-         $data = json_encode($data);
-        $data = json_decode($data);
-        log::info('data', $data);
-//        log::error('id array', $data->id);
+        Log::info('id:', $data['id']);
+        Log::info('auth_date:', $data['auth_date']);
+        Log::info('hash:', $data['hash']);
         if (!isset($data['hash'], $data['id'], $data['auth_date'])) {
             Log::error('Missing required parameters.', $data);
             return response()->json(['error' => 'Missing required parameters'], 400);
