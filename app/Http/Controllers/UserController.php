@@ -622,10 +622,11 @@ class UserController extends Controller
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
 
 
-
              //check userUUID if exist
                 if(!$data['id']){
+                    Log::error('Invalid Telegram data verification failed.', $data);
                     return response()->json(['error' => 'Invalid Telegram login data'], 401);
+
                 }
                 $user = User::where('userUUID', $data['id'])->first();
                 if(!$user){
