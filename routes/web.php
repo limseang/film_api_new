@@ -50,6 +50,12 @@ Route::get('/ads.txt', function () {
         ->header('Content-Type', 'text/plain');
 });
 
+//route for app-ads.txt file  in root
+Route::get('/app-ads.txt', function () {
+    return response()->file(resource_path('app-ads.txt'));
+});
+
+
 Route::get('/apple-app-site-association', function () {
     return response()->json([
         "applinks" => [
