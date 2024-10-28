@@ -15,50 +15,58 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class SendNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $fcmToken;
+    protected $businessParams;
+
     /**
      * Create a new job instance.
      */
-    protected $subject, $message;
-    public function __construct($subject, $message)
+    public function __construct(array $fcmToken, array $businessParams)
     {
-        $this->subject = $subject;
-        $this->message = $message;
+        $this->fcmToken = $fcmToken;
+        $this->businessParams = $businessParams;
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
         try {
-            $subject = $this->subject;
-            $message = $this->message;
+            $firebase = (new Factory)
+                ->withServiceAccount(__DIR__ . '/firebase_credentials.json');
+            $messaging = $firebase->createMessaging();
 
-            $fcmToken = [];
+            $notification = Notification::create(
+                $this->businessParams['title'],
+                $this->businessParams['body'],
+                $this->businessParams['image'] ?? null
+            );
 
-            UserLogin::chunk(200, function ($users) use (&$fcmToken) {
-                foreach ($users as $user) {
-                    $fcmToken[] = $user->fcm_token;
+            $tokenChunks = array_chunk($this->fcmToken, 500);
+            foreach ($tokenChunks as $tokens) {
+                $message = CloudMessage::new()
+                    ->withNotification($notification)
+                    ->withData($this->businessParams['data'] ?? []);
+
+                $report = $messaging->sendMulticast($message, $tokens);
+
+                if ($report->hasFailures()) {
+                    foreach ($report->failures()->getItems() as $failure) {
+                        Log::error('Failed to send notification to ' . $failure->target()->value() . ': ' . $failure->error()->getMessage());
+                    }
                 }
-            });
-
-            PushNotificationService::pushMultipleNotification([
-                'token' => $fcmToken,
-                'title' => $subject['title'],
-                'body' => $message,
-                'data' => [
-                    'id' => '1',
-                    'type' => '2',
-                ]
-            ]);
-
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+            }
+        } catch (\Exception $e) {
+            Log::error('Push notification error: ' . $e->getMessage());
         }
     }
 }

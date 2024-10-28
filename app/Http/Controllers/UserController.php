@@ -277,37 +277,38 @@ class UserController extends Controller
 
     public function sendNotificationGlobeAll(Request $request)
     {
-        try{
+        try {
             $fcmToken = [];
-            UserLogin::chunk(10, function ($users) use (&$fcmToken){
+            UserLogin::chunk(5, function ($users) use (&$fcmToken) {
                 foreach ($users as $user) {
-                    $fcmToken[] = $user->fcm_token;
-//                    dd($fcmToken);
+                    if (!empty($user->fcm_token)) {
+                        $fcmToken[] = $user->fcm_token;
+                    }
                 }
             });
-//            dd($fcmToken);
-            PushNotificationService::pushMultipleNotification([
-                'token' => $fcmToken,
+
+            // Dispatch a job to send the notifications
+            dispatch(new SendNotificationJob($fcmToken, [
                 'title' => 'test',
                 'body' => 'test322',
                 'data' => [
                     'id' => '1',
                     'type' => '2',
                 ]
-            ]);
+            ]));
+
             return response()->json([
-                'message' => 'success',
+                'message' => 'Notification job dispatched',
                 'notification' => $fcmToken
             ], 200);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'error',
                 'error' => $e->getMessage()
             ], 500);
         }
-
     }
+
 
     public function editName(Request $request)
     {

@@ -6,6 +6,7 @@ namespace App\Services;
     use Kreait\Firebase\Factory;
     use Exception;
     use Illuminate\Support\Facades\Log;
+    use Kreait\Firebase\Messaging\Notification;
 
     class PushNotificationService
     {
@@ -19,26 +20,34 @@ namespace App\Services;
         ]): void
         {
             try {
+                // Initialize Firebase Messaging
                 $firebase = (new Factory)->withServiceAccount(__DIR__ . '/firebase_credentials.json');
                 $messaging = $firebase->createMessaging();
 
-                $notification = CloudMessage::withTarget('token', $businessParams['token'])
-                    ->withNotification([
-                        'title' => $businessParams['title'] ?? "",
-                        'body' => $businessParams['body'] ?? "",
-                        'image' => $businessParams['image'] ?? "",
-                        'type' => $businessParams['type'] ?? '',
-                        'data' => $businessParams['data'] ?? [],
-                        'id' => $businessParams['id'] ?? '',
-                        'sound' => $businessParams['sound'] ?? 'default',
-                    ])->withData($businessParams['data'] ?? []);
+                // Validate required fields
+                if (empty($businessParams['token'])) {
+                    throw new Exception('The token is required for push notifications.');
+                }
+                if (empty($businessParams['title']) || empty($businessParams['body'])) {
+                    throw new Exception('Notification title and body are required.');
+                }
 
-                $messaging->send($notification);
+                // Create Notification Object
+                $notification = Notification::create($businessParams['title'], $businessParams['body'], $businessParams['image'] ?? null);
+
+                // Create CloudMessage
+                $message = CloudMessage::withTarget('token', $businessParams['token'])
+                    ->withNotification($notification)
+                    ->withData($businessParams['data'] ?? [])
+                    ->withSound($businessParams['sound'] ?? 'default');
+
+                // Send the Notification
+                $messaging->send($message);
 
             } catch (Exception $e) {
-                log::error($e->getMessage());
+                // Log error
+                \Log::error('Push notification error: ' . $e->getMessage());
             }
-
         }
 
         /**
@@ -50,7 +59,8 @@ namespace App\Services;
             'title' => "",
             'body' => "",
             'data' => [],
-        ]): void
+        ])
+        : void
 
         {
             try {
