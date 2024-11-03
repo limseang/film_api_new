@@ -164,7 +164,7 @@ class FilmController extends Controller
             'title' => 'required',
             'director_id' => 'nullable|exists:directors,id',
             'cast' => 'nullable',
-            'release_date' => 'nullable|date',
+            'release_date' => 'required',
             'category' => 'required|array|exists:categories,id',
             'running_time' => 'required|numeric',
             'overview' => 'required',
@@ -250,7 +250,7 @@ class FilmController extends Controller
             $data['film_id'] = $id;
             $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.episode')]];
             return $episodeDataTable->with('film_id', $id)->render('film.show_episode', $data);
-                     
+
         }
 
         public function destroy($id)
@@ -278,7 +278,7 @@ class FilmController extends Controller
                 ];
                 return redirect()->back()->with($notification);
             }
-            $film->delete(); 
+            $film->delete();
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
@@ -311,7 +311,7 @@ class FilmController extends Controller
         $availables = AvailableIn::whereNotIn('id', $availableIDArray)->get();
         return view('film.modal_add_available', compact('film', 'availables'));
     }
-    
+
     public function deleteAssignedAvailable($id)
     {
         if(!authorize(RolePermissionConstant::PERMISSION_FILM_DELETE_AVAILABLE_IN)){
@@ -327,7 +327,7 @@ class FilmController extends Controller
             ];
             return redirect()->back()->with($notification);
         }
-        $filmAvailableIn->delete();   
+        $filmAvailableIn->delete();
         $notification = [
             'type' => 'success',
             'icon' => trans('global.icon_success'),

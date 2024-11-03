@@ -210,13 +210,14 @@ var DateTimePickers = function() {
         }
 
         const dpAutoHideElement2 = document.querySelector('.datepicker-autohide2');
-        if(dpAutoHideElement) {
+        if(dpAutoHideElement2) {
             const dpAutoHide = new Datepicker(dpAutoHideElement2, {
                 container: '.content-inner',
                 buttonClass: 'btn',
                 prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
                 nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
                 autohide: true,
+                format: 'dd/mm/yyyy'
 
             });
         }
