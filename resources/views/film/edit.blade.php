@@ -43,9 +43,9 @@
                       <span class="input-group-text">
                         <i class="ph-calendar"></i>
                       </span>
-                      <input type="text" class="form-control datepicker-autohide" value="{{$film->release_date}}" name="release_date" placeholder="Please select date">
+                      <input type="text" class="form-control datepicker-autohide2" value="{{$film->release_date}}" name="release_date" placeholder="Please select date">
                     </div>
-  
+
                   </div>
                 <div class="mb-3">
                   <label class="form-label" for="category">{{ trans('sma.category_film') }}</label>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="mb-3">
                           <label class="form-label" for="trailer">{{__('sma.trailer')}}</label>
-                          <input type="url" class="form-control" name="trailer" value="{{$film->trailer}}" id="trailer" placeholder="https://youtube.com">
+                          <input type="text" class="form-control" name="trailer" value="{{$film->trailer}}" id="trailer" placeholder="https://youtube.com">
                           <span class="invalid-feedback">
                             The field is required.
                           </span>
@@ -137,7 +137,7 @@
                       <p class="fw-semibold">{{trans('sma.cover')}}</p>
                     <input type="file" class="file-input-caption-cover" name="cover">
                     </div>
-                  
+
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="{{config('setup.button_opacity_primary')}} mb-3" name="submit"><i class="{{ config('setup.edit_icon') }} me-2"></i> {{__('sma.update')}}</button>
