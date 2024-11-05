@@ -45,6 +45,8 @@ class Kernel extends HttpKernel
         ],
     ];
 
+
+
     /**
      * The application's middleware aliases.
      *
@@ -69,5 +71,7 @@ class Kernel extends HttpKernel
         'postpermission' => \App\Http\Middleware\PostPermission::class,
         'lang' => \App\Http\Middleware\Localization::class,
         'apple.jwt' => \App\Http\Middleware\AppleJWT::class,
+
     ];
+
 }

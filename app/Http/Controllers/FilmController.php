@@ -370,7 +370,7 @@ public function updateFilm(Request $request,$id)
         try {
             $uploadController = new UploadController();
             // Find user login or not
-            $user = auth()->user();
+            $user = auth('sanctum')->user();
             $ownRate = 'null'; // Default if user not logged in or no rate found
 
             if ($user) {
@@ -380,7 +380,6 @@ public function updateFilm(Request $request,$id)
             } else {
                 $ownRate = 'null login';
             }
-
             $film = Film::with(['languages', 'filmCategories', 'directors', 'tags', 'types', 'filmAvailable', 'filmComment', 'genre', 'distributors'])->find($id);
             $data = [
                 'id' => $film->id,
