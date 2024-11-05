@@ -326,6 +326,7 @@ Route::post('/film/search', [FilmController::class, 'searchMovie']);
 Route::post('/film/increase/view/{id}', [FilmController::class, 'IncrementViewCount']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
+        Route::get('/film/detail/{id}', [FilmController::class, 'showByID']);
         Route::post('/film/new', [FilmController::class, 'create']);
         Route::post('/film/type/update/{id}', [FilmController::class, 'typeForMovie']);
         Route::post('/film/update/{id}', [FilmController::class, 'updateFilm']);
