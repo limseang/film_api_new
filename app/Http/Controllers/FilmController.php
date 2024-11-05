@@ -376,9 +376,10 @@ public function updateFilm(Request $request,$id)
             if ($user) {
                 // Find user has rate or not
                 $userRate = Rate::where('film_id', $id)->where('user_id', $user->id)->first();
-                $ownRate = $userRate ? $userRate->rate : 'null';
+
+                $ownRate = (string) $userRate ? $userRate->rate : 'null';
             } else {
-                $ownRate = 'null login';
+                $ownRate = 'null';
             }
             $film = Film::with(['languages', 'filmCategories', 'directors', 'tags', 'types', 'filmAvailable', 'filmComment', 'genre', 'distributors'])->find($id);
             $data = [
