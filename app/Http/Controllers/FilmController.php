@@ -369,6 +369,23 @@ public function updateFilm(Request $request,$id)
     public function showByID($id){
         try{
             $uploadController = new UploadController();
+            //find user login or not
+
+            $user = auth()->user();
+            if(!$user){
+                $ownRate = 'null';
+            }
+            else if ($user){
+                //find user has rate or not
+                $ownRate = Rate::where('film_id',$id)->where('user_id',$user->id)->first();
+                if($ownRate){
+                    $ownRate = $ownRate->rate;
+                }
+                else{
+                    $ownRate = 'null';
+                }
+            }
+
             $film = Film::with([ 'languages','filmCategories','directors','tags','types','filmAvailable','filmComment','genre','distributors'])->find($id);
             $data = [
                 'id' => $film->id,
@@ -390,6 +407,7 @@ public function updateFilm(Request $request,$id)
                 'language' => $film->languages->language ?? null,
                 'language_id' => $film->language ?? null,
                 'rating' => (string) $this->countRate($film->id),
+                'own_rate' => $ownRate,
                 'rate_people' => $this->countRatePeople($film->id),
                 'available' => $this->filmAvailables($film->id) ,
                 'cast' => $this->filmCast($film->id),
