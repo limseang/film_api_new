@@ -86,7 +86,7 @@ class FilmController extends Controller
             if($request->hasFile('cover')){
                 $cover = $this->UploadFile($request->file('cover'), 'Film');
             }
-            $birthDateFormat = date('d/m/Y', strtotime($request->release_date));
+            $birthDateFormat = $request->release_date;
             $film->title = $request->title;
             $film->director = $request->director_id;
             $film->cast = $request->cast;
@@ -195,7 +195,7 @@ class FilmController extends Controller
                 $cover = $this->UploadFile($request->file('cover'), 'Film');
                 $film->cover = $cover;
             }
-            $birthDateFormat = date('d/m/Y', strtotime($request->release_date));
+            $birthDateFormat = $request->release_date;
             $film->title = $request->title;
             $film->director = $request->director_id;
             $film->cast = $request->cast;
