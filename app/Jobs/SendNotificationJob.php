@@ -14,6 +14,8 @@ use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 
 class SendNotificationJob implements ShouldQueue
 {
@@ -57,16 +59,24 @@ class SendNotificationJob implements ShouldQueue
                     ->withNotification($notification)
                     ->withData($this->businessParams['data'] ?? []);
 
-                $report = $messaging->sendMulticast($message, $tokens);
+                try {
+                    // Attempt to send the message
+                    $report = $messaging->sendMulticast($message, $tokens);
 
-                if ($report->hasFailures()) {
-                    foreach ($report->failures()->getItems() as $failure) {
-                        Log::error('Failed to send notification to ' . $failure->target()->value() . ': ' . $failure->error()->getMessage());
+                    // Handle failures in sending messages
+                    if ($report->hasFailures()) {
+                        foreach ($report->failures()->getItems() as $failure) {
+                            Log::error('Failed to send notification to ' . $failure->target()->value() . ': ' . $failure->error()->getMessage());
+                        }
                     }
+                } catch (ConnectException $e) {
+                    Log::error('Network error while sending notifications: ' . $e->getMessage());
+                } catch (RequestException $e) {
+                    Log::error('Request error while sending notifications: ' . $e->getMessage());
+                } catch (MessagingException $e) {
+                    Log::error('Firebase Messaging error: ' . $e->getMessage());
                 }
             }
-        } catch (MessagingException $e) {
-            Log::error('Firebase Messaging error: ' . $e->getMessage());
         } catch (FirebaseException $e) {
             Log::error('Firebase error: ' . $e->getMessage());
         } catch (Exception $e) {
