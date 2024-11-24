@@ -279,36 +279,53 @@ class UserController extends Controller
     public function sendNotificationGlobeAll(Request $request)
     {
         try {
-            $fcmToken = [];
-            UserLogin::chunk(5, function ($users) use (&$fcmToken) {
+            // Validate the incoming request to ensure title and body are provided
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'body' => 'required|string',
+                'data' => 'nullable|array'
+            ]);
+
+            // Get title, body, and data from the request
+            $title = $request->input('title');
+            $body = $request->input('body');
+            $data = $request->input('data', []);
+
+            // Break users into manageable chunks
+            UserLogin::chunk(500, function ($users) use ($title, $body, $data) {
+                $fcmTokens = [];
+
+                // Collect FCM tokens for this chunk
                 foreach ($users as $user) {
                     if (!empty($user->fcm_token)) {
-                        $fcmToken[] = $user->fcm_token;
+                        $fcmTokens[] = $user->fcm_token;
                     }
+                }
+
+                // Dispatch a job for each chunk of tokens
+                if (!empty($fcmTokens)) {
+                    SendNotificationJob::dispatch($fcmTokens, [
+                        'title' => $title,
+                        'body' => $body,
+                        'data' => $data,
+                    ])->onQueue('notifications');
                 }
             });
 
-            // Dispatch a job to send the notifications
-            dispatch(new SendNotificationJob($fcmToken, [
-                'title' => 'test',
-                'body' => 'test322',
-                'data' => [
-                    'id' => '1',
-                    'type' => '2',
-                ]
-            ]));
-
+            // Return success response
             return response()->json([
-                'message' => 'Notification job dispatched',
-                'notification' => $fcmToken
+                'message' => 'Notification jobs dispatched successfully'
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            // Return error response if any exception occurs
             return response()->json([
-                'message' => 'error',
+                'message' => 'Error occurred while dispatching notifications',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
+
+
 
 
     public function editName(Request $request)

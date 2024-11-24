@@ -2,11 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Episode;
-use App\Models\UserLogin;
-use App\Services\PushNotificationService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,6 +22,9 @@ class SendNotificationJob implements ShouldQueue
     protected $fcmToken;
     protected $businessParams;
 
+    public $tries = 5; // Retry the job up to 5 times
+    public $backoff = 60; // Wait for 60 seconds before retrying
+
     /**
      * Create a new job instance.
      */
@@ -43,6 +42,7 @@ class SendNotificationJob implements ShouldQueue
         try {
             $firebase = (new Factory)
                 ->withServiceAccount(__DIR__ . '/firebase_credentials.json');
+
             $messaging = $firebase->createMessaging();
 
             $notification = Notification::create(
@@ -65,7 +65,11 @@ class SendNotificationJob implements ShouldQueue
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (MessagingException $e) {
+            Log::error('Firebase Messaging error: ' . $e->getMessage());
+        } catch (FirebaseException $e) {
+            Log::error('Firebase error: ' . $e->getMessage());
+        } catch (Exception $e) {
             Log::error('Push notification error: ' . $e->getMessage());
         }
     }
