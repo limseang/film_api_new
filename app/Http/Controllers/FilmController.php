@@ -772,7 +772,7 @@ public function updateFilm(Request $request,$id)
 
             $comingSoon = $comingSoon->sortBy(function ($film) {
                 // Check if the film has the "Short Film" tag
-                return $film->tags->name === 'Short Film' ? 0 : 1;
+                return $film->tags->name == 'Short Film' ? 0 : 1;
             })->sortBy('release_date') // Then sort by release date
             ->take(6)
                 ->map(function ($film) use ($uploadController) {
@@ -783,6 +783,7 @@ public function updateFilm(Request $request,$id)
                         'release_date' => $film->release_date,
                         'type' => $film->types ? $film->types->name : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'tag' => $film->tags->name,
                     ];
                 })->values()->all();
 
