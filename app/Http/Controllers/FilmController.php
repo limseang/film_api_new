@@ -774,7 +774,7 @@ public function updateFilm(Request $request,$id)
                 // Check if the film has the "Short Film" tag
                 return $film->tags->name == 'Short Film' ? 0 : 1;
             })->sortBy('release_date') // Then sort by release date
-            ->take(6)
+            ->take(20)
                 ->map(function ($film) use ($uploadController) {
                     return [
                         'id' => $film->id,
