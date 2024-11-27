@@ -769,16 +769,22 @@ public function updateFilm(Request $request,$id)
             $comingSoon = $films->values()->filter(function ($film) {
                 return $film->type == 10;
             });
-            $comingSoon = $comingSoon->sortBy('release_date')->take(6)->map(function ($film) use ($uploadController) {
-                return [
-                    'id' => $film->id,
-                    'name' => $film->title,
-                    'rating' => (string) $this->countRate($film->id),
-                    'release_date' => $film->release_date,
-                    'type' => $film->types ? $film->types->name : null,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                ];
-            })->values()->all();
+
+            $comingSoon = $comingSoon->sortBy(function ($film) {
+                // Prioritize "Short Film" type first
+                return $film->types && $film->types->name === 'Short Film' ? 0 : 1;
+            })->sortBy('release_date') // Then sort by release date
+            ->take(6)
+                ->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'name' => $film->title,
+                        'rating' => (string) $this->countRate($film->id),
+                        'release_date' => $film->release_date,
+                        'type' => $film->types ? $film->types->name : null,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    ];
+                })->values()->all();
 
             $watch = $films->values()->filter(function ($film) {
                 $total_episode = count($film->episode);
