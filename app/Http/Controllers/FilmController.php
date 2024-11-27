@@ -493,7 +493,7 @@ public function updateFilm(Request $request,$id)
             });
 
             foreach ($groupByMonth as $key => $filmsGroup) {
-                // Order by release date within each month group
+                // Order by release date and prioritize "Short Film" type
                 $data[$key] = $filmsGroup->map(function ($film) use ($uploadController) {
                     return [
                         'id' => $film->id,
@@ -507,7 +507,13 @@ public function updateFilm(Request $request,$id)
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'cast' => $film->cast ? $this->getCastResource($film->cast) : null, // Fixed cast case sensitivity
                     ];
-                })->sortBy('release_date')->values()->all();
+                })->sortBy([
+                    function ($film) {
+                        // Prioritize "Short Film"
+                        return $film['type'] === 'Short Film' ? 0 : 1;
+                    },
+                    'release_date' // Then sort by release date
+                ])->values()->all();
             }
 
             return $this->sendResponse($data);
@@ -515,6 +521,7 @@ public function updateFilm(Request $request,$id)
             return $this->sendError($e->getMessage());
         }
     }
+
 
 
 
