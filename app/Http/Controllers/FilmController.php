@@ -771,8 +771,8 @@ public function updateFilm(Request $request,$id)
             });
 
             $comingSoon = $comingSoon->sortBy(function ($film) {
-                // Prioritize "Short Film" type first
-                return $film->types && $film->types->name === 'Short Film' ? 0 : 1;
+                // Check if the film has the "Short Film" tag
+                return $film->tags && $film->tags->contains('name', 'Short Film') ? 0 : 1;
             })->sortBy('release_date') // Then sort by release date
             ->take(6)
                 ->map(function ($film) use ($uploadController) {
