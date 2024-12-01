@@ -26,6 +26,7 @@ use App\Http\Controllers\FilmCategoryController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\GiftController;
+use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PackageItemController;
@@ -396,6 +397,16 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/random/point/confirm/{id}', [RendomPointController::class, 'confirmRandom']);
 });
 
+/* Home Banner */
+Route::get('/home/banner', [HomeBannerController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/home/banner/new', [HomeBannerController::class, 'create']);
+        Route::delete('/home/banner/delete/{id}', [HomeBannerController::class, 'destroy']);
+        Route::post('/home/banner/update/{id}', [HomeBannerController::class, 'update']);
+    });
+});
+
 
 
 
@@ -571,6 +582,8 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/package/item/delete/{id}', [PackageItemController::class, 'destroy']);
     });
 });
+
+
 
 /* Continue to watch */
 //Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'byfilmForuserNotLogin']);

@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdsPlace extends Model
+class HomeBanner extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
         'description',
-        'value',
+        'item_type',
+        'item_id',
+        'image',
+        'link',
         'status',
     ];
 
@@ -23,6 +26,19 @@ class AdsPlace extends Model
 
     public function ads()
     {
-        return $this->hasMany(Advertis::class);
+        return $this->belongsTo(Advertis::class, 'id', 'item_id');
+
+    }
+
+    public function artical()
+    {
+        return $this->belongsTo(Artical::class, 'item_id', 'id');
+
+    }
+
+    public function films()
+    {
+        return $this->belongsTo(Film::class, 'item_id', 'id');
+
     }
 }
