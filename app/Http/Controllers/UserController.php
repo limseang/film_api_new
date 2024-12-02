@@ -185,7 +185,7 @@ class UserController extends Controller
         try{
             $cloudController = new UploadController();
             $user = auth()->user();
-            $user->fcm_token = $request->fcm_token;
+            $user->fcm_token = 'fcm_token';
             $user->save();
             if(!empty($user['avatar'])){
 
