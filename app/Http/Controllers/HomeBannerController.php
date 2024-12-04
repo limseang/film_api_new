@@ -61,6 +61,16 @@ class HomeBannerController extends Controller
                             'item_type' => 'films',
                         ];
                     }
+                case 4: // Item type 4: Casting
+                    if ($banner->ads) {
+                        $item = [
+                            'id' => $banner->ads->id,
+                            'title' => $banner->ads->name,
+                            'link' => $banner->ads->link,
+                            'poster' => $banner->ads->image ? $uploadController->getSignedUrl($banner->ads->image) : null,
+                            'item_type' => 'casting',
+                        ];
+                    }
                     break;
 
                 default:
