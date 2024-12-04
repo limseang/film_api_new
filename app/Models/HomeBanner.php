@@ -26,7 +26,7 @@ class HomeBanner extends Model
 
     public function ads()
     {
-        return $this->belongsTo(Advertis::class, 'id', 'item_id');
+        return $this->belongsTo(Advertis::class, 'item_id', 'id');
 
     }
 

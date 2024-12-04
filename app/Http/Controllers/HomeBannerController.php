@@ -17,7 +17,7 @@ class HomeBannerController extends Controller
     try {
         // Load banners and their related models
         $uploadController = new UploadController();
-        $homeBanners = HomeBanner::with(['artical', 'films'])->orderBy('id', 'desc')->get();
+        $homeBanners = HomeBanner::with(['ads','artical', 'films'])->orderBy('id', 'desc')->get();
 
         // Process each banner
         $response = $homeBanners->map(function ($banner, $key) use ($uploadController) {
@@ -29,7 +29,9 @@ class HomeBannerController extends Controller
                     if ($banner->ads) {
                         $item = [
                             'id' => $banner->ads->id,
-                            'title' => $banner->ads->title,
+                            'title' => $banner->ads->name,
+                            'link' => $banner->ads->link,
+                            'poster' => $banner->ads->image ? $uploadController->getSignedUrl($banner->ads->image) : null,
                             'item_type' => 'ads',
                         ];
                     }

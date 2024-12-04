@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdMobCallbackController;
+use App\Http\Controllers\AdvertisController;
 use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AvailableInController;
@@ -405,6 +406,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/home/banner/delete/{id}', [HomeBannerController::class, 'destroy']);
         Route::post('/home/banner/update/{id}', [HomeBannerController::class, 'update']);
     });
+});
+
+/* Advertisement */
+Route::get('/advertisement', [AdvertisController::class, 'index']);
+Route::get('/advertisement/{id}', [AdvertisController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+   Route::group(['middleware' => ['postpermission']], function () {
+       Route::post('/advertisement/new', [AdvertisController::class, 'create']);
+       Route::delete('/advertisement/delete/{id}', [AdvertisController::class, 'destroy']);
+       Route::post('/advertisement/update/{id}', [AdvertisController::class, 'update']);
+   });
 });
 
 
