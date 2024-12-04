@@ -22,7 +22,7 @@ class CastingModel extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function castingRoleModels()
+    public function castingRole()
     {
         return $this->hasMany(CastingRoleModel::class, 'casting_id', 'id');
     }

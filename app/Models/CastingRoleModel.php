@@ -14,7 +14,6 @@ class CastingRoleModel extends Model
         'description',
         'gender',
         'casting_id',
-
         'status',
     ];
 
@@ -25,6 +24,6 @@ class CastingRoleModel extends Model
 
     public function castingModel()
     {
-        return $this->belongsTo(CastingModel::class, 'casting_id', 'id');
+        return $this->belongsTo(CastingModel::class, );
     }
 }

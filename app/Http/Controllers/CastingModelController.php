@@ -14,7 +14,17 @@ class CastingModelController extends Controller
     {
         try{
             //get all casting has status active
+            $uploadController = new UploadController();
             $casting = CastingModel::where('status', 'active')->orderBy('id', 'desc')->get();
+            $casting = $casting->map(function ($item, $key) use ($uploadController) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'description' => $item->description,
+                    'logo' => $uploadController->getSignedUrl($item->logo),
+                    'poster' => $uploadController->getSignedUrl($item->poster),
+                ];
+            });
             return $this->sendResponse($casting);
 
         }
@@ -29,56 +39,65 @@ class CastingModelController extends Controller
     public function create(Request $request)
     {
         try{
-            $cloudController = new UploadController();
+            $uploadController = new UploadController();
             $casting = new CastingModel();
             $casting->name = $request->name;
             $casting->description = $request->description;
-            $casting->logo = $cloudController->UploadFile($request->string('logo'));
-            $casting->poster = $cloudController->UploadFile($request->string('poster'));
+            $casting->logo = $uploadController->UploadFile($request->logo);
+            $casting->poster = $uploadController->UploadFile($request->poster);
             $casting->status = 'active';
+            $casting->save();
+            return $this->sendResponse($casting);
         }
         catch (\Exception $e){
             return $this->sendError([], 400, $e->getMessage());
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function detail($id)
     {
-        //
+        try{
+            $uploadController = new UploadController();
+            $casting = CastingModel::with('castingRole')->where('id', $id)->first();
+            if(!$casting){
+                return $this->sendError([], 400, 'Casting not found');
+            }
+            $casting = [
+                'id' => $casting->id,
+                'name' => $casting->name,
+                'description' => $casting->description,
+                'logo' => $uploadController->getSignedUrl($casting->logo),
+                'poster' => $uploadController->getSignedUrl($casting->poster),
+                'castingRole' => $casting->castingRole->map(function ($item, $key) use ($uploadController) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'description' => $item->description,
+                        ];
+                }),
+            ];
+            return $this->sendResponse($casting);
+        }
+        catch (\Exception $e){
+            return $this->sendError([], 400, $e->getMessage());
+        }
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CastingModel $castingModel)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CastingModel $castingModel)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CastingModel $castingModel)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CastingModel $castingModel)
-    {
-        //
+      try{
+            $casting = CastingModel::where('id', $id)->first();
+            if(!$casting){
+                return $this->sendError([], 400, 'Casting not found');
+            }
+            $casting->status = 'inactive';
+            $casting->save();
+            return $this->sendResponse($casting);
+        }
+        catch (\Exception $e){
+            return $this->sendError([], 400, $e->getMessage());
+      }
     }
 }

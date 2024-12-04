@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Advertis;
 use App\Models\Artical;
+use App\Models\CastingModel;
 use App\Models\Film;
 use App\Models\HomeBanner;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class HomeBannerController extends Controller
     try {
         // Load banners and their related models
         $uploadController = new UploadController();
-        $homeBanners = HomeBanner::with(['ads','artical', 'films'])->orderBy('id', 'desc')->get();
+        $homeBanners = HomeBanner::with(['ads','artical', 'films','casting'])->orderBy('id', 'desc')->get();
 
         // Process each banner
         $response = $homeBanners->map(function ($banner, $key) use ($uploadController) {
@@ -62,12 +63,15 @@ class HomeBannerController extends Controller
                         ];
                     }
                 case 4: // Item type 4: Casting
-                    if ($banner->ads) {
+                    if ($banner->casting) {
+
                         $item = [
-                            'id' => $banner->ads->id,
-                            'title' => $banner->ads->name,
-                            'link' => $banner->ads->link,
-                            'poster' => $banner->ads->image ? $uploadController->getSignedUrl($banner->ads->image) : null,
+                            'id' => $banner->casting->id,
+                            'title' => $banner->casting->name,
+                            'description' => $banner->casting->description,
+                            'logo' => $banner->casting->logo ? $uploadController->getSignedUrl($banner->casting->logo) : null,
+                            'poster' => $banner->casting->poster ? $uploadController->getSignedUrl($banner->casting->poster) : null,
+                            'status' => $banner->casting->status,
                             'item_type' => 'casting',
                         ];
                     }
@@ -116,7 +120,8 @@ class HomeBannerController extends Controller
                     $item = Film::find($itemId);
                     break;
                 case 4:
-
+                    $item = CastingModel::find($itemId);
+                    break;
 
                 default:
                     return $this->sendError('Invalid item type');

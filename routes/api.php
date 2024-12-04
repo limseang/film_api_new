@@ -9,6 +9,7 @@ use App\Http\Controllers\AvailableInController;
 use App\Http\Controllers\BookMarkController;
 use App\Http\Controllers\CastController;
 use App\Http\Controllers\CastingModelController;
+use App\Http\Controllers\CastingRoleModelController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CinemBranchController;
@@ -422,13 +423,24 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 
 /* Casting */
 Route::get('/casting', [CastingModelController::class, 'index']);
-Route::get('/casting/{id}', [CastingModelController::class, 'showByID']);
+Route::get('/casting/{id}', [CastingModelController::class, 'detail']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/casting/new', [CastingModelController::class, 'create']);
         Route::delete('/casting/delete/{id}', [CastingModelController::class, 'destroy']);
         Route::post('/casting/update/{id}', [CastingModelController::class, 'update']);
     });
+});
+
+/* Casting Role */
+Route::get('/casting/role', [CastingRoleModelController::class, 'index']);
+
+Route::group(['middleware' => ['auth:sanctum']], function (){
+   Route::group(['middleware' => ['postpermission']], function () {
+       Route::post('/casting/role/new', [CastingRoleModelController::class, 'create']);
+       Route::delete('/casting/role/delete/{id}', [CastingRoleModelController::class, 'destroy']);
+       Route::post('/casting/role/update/{id}', [CastingRoleModelController::class, 'update']);
+   });
 });
 
 

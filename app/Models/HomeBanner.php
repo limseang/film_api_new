@@ -41,4 +41,10 @@ class HomeBanner extends Model
         return $this->belongsTo(Film::class, 'item_id', 'id');
 
     }
+
+    public function casting()
+    {
+        return $this->belongsTo(CastingModel::class, 'item_id', 'id');
+
+    }
 }
