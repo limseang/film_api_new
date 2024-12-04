@@ -8,6 +8,7 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AvailableInController;
 use App\Http\Controllers\BookMarkController;
 use App\Http\Controllers\CastController;
+use App\Http\Controllers\CastingModelController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CinemBranchController;
@@ -417,6 +418,17 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
        Route::delete('/advertisement/delete/{id}', [AdvertisController::class, 'destroy']);
        Route::post('/advertisement/update/{id}', [AdvertisController::class, 'update']);
    });
+});
+
+/* Casting */
+Route::get('/casting', [CastingModelController::class, 'index']);
+Route::get('/casting/{id}', [CastingModelController::class, 'showByID']);
+Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/casting/new', [CastingModelController::class, 'create']);
+        Route::delete('/casting/delete/{id}', [CastingModelController::class, 'destroy']);
+        Route::post('/casting/update/{id}', [CastingModelController::class, 'update']);
+    });
 });
 
 

@@ -115,6 +115,9 @@ class HomeBannerController extends Controller
                 case 3:
                     $item = Film::find($itemId);
                     break;
+                case 4:
+
+
                 default:
                     return $this->sendError('Invalid item type');
             }
