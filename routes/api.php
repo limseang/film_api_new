@@ -12,6 +12,7 @@ use App\Http\Controllers\CastingModelController;
 use App\Http\Controllers\CastingRoleModelController;
 use App\Http\Controllers\CategoryArticalController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChristmasFormController;
 use App\Http\Controllers\CinemBranchController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContinueToWatchController;
@@ -708,6 +709,8 @@ Route::get('/subscription/verify/{transactionId}', [SubcriptController::class, '
 Route::get('/test-file', function () {
     return view('test-file');
 });
+
+Route::post('/christmas-form', [ChristmasFormController::class, 'create']);
 
 // routes/web.php
 
