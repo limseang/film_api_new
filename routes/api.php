@@ -712,6 +712,7 @@ Route::get('/test-file', function () {
 
 Route::post('/christmas-form', [ChristmasFormController::class, 'create']);
 Route::get('/christmas-form/all', [ChristmasFormController::class, 'index']);
+Route::get('/christmas-form/{id}', [ChristmasFormController::class, 'detail']);
 
 // routes/web.php
 
