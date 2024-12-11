@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::delete('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
         Route::post('/user/add/role/{id}', [AdminController::class, 'changeRole']);
         Route::post('/admin/user/changeStatus/{id}', [AdminController::class, 'changeStatus']);
+        Route::post('/admin/user/password', [UserController::class, 'adminChangePassword']);
 
     });
 });

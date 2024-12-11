@@ -234,7 +234,7 @@ class UserController extends Controller
                 $user->comeFrom = $request->comeFrom;
                 $user->save();
             }
-            $user = User::where('userUUID',$request->userUUID,)->first();
+            $user = User::where('userUUID',$request->userUUID)->first();
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -386,10 +386,32 @@ class UserController extends Controller
 
     }
 
+    public function adminChangePassword(Request $request)
+    {
+        try {
+            // Validate the input
+            $validatedData = $request->validate([
+                'user_id'  => 'required|exists:users,id',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
+            // Find the user
+            $user = User::find($request->user_id);
+
+            // Update the password
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return $this->sendResponse('Password changed successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
 
 
 
-   public function deleteAccount()
+
+    public function deleteAccount()
    {
        try{
            $user = auth()->user();
