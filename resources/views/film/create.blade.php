@@ -11,7 +11,7 @@
             <i class="fas fa-plus"></i>
               &nbsp;  &nbsp;<span>{{__('sma.add_film')}}</span>
           </h6>
-        
+
         </div>
         <div class="card-body">
           <form action="{{route('film.store')}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -43,9 +43,9 @@
                       <span class="input-group-text">
                         <i class="ph-calendar"></i>
                       </span>
-                      <input type="text" class="form-control datepicker-autohide" value="{{old('release_date')}}" name="release_date" placeholder="Please select date">
+                      <input type="text" class="form-control datepicker-autohide3" value="{{old('release_date')}}" readonly name="release_date" placeholder="Please select date">
                     </div>
-  
+
                   </div>
                 <div class="mb-3">
                   <label class="form-label" for="category">{{ trans('sma.category_film') }}</label>
@@ -136,7 +136,7 @@
                       <p class="fw-semibold">{{trans('sma.cover')}}</p>
                     <input type="file" class="file-input-caption2" name="cover">
                     </div>
-                  
+
                 </div>
                 <div class="d-flex align-items-center">
                   <button type="submit" class="{{config('setup.button_opacity_primary')}} mb-3" name="submit" value="Save">{{trans('sma.save')}} <i class="{{config('setup.save_icon')}} ms-2"></i></button>
@@ -155,7 +155,20 @@
       $('.running_time').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
+
+        const dpAutoHideElement = document.querySelector('.datepicker-autohide3');
+        if(dpAutoHideElement) {
+            const dpAutoHide = new Datepicker(dpAutoHideElement, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                autohide: true,
+                format: 'dd/mm/yyyy'
+
+            });
+        }
     });
 </script>
-  @endsection 
+  @endsection
   @endsection

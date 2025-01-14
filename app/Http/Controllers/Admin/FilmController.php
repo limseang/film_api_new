@@ -67,7 +67,7 @@ class FilmController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'director_id' => 'nullable|exists:directors,id',
-            'release_date' => 'nullable|date',
+            'release_date' => 'nullable',
             'category' => 'required|array|exists:categories,id',
             'running_time' => 'required|numeric',
             'overview' => 'required',
