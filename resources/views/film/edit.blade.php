@@ -11,7 +11,7 @@
             <i class="fas fa-edit"></i>
               &nbsp;  &nbsp;<span>{{__('sma.edit_film')}}</span>
           </h6>
-        
+
         </div>
         <div class="card-body">
           <form action="{{route('film.update',$film->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -43,7 +43,7 @@
                       <span class="input-group-text">
                         <i class="ph-calendar"></i>
                       </span>
-                      <input type="text" class="form-control datepicker-autohide2" value="{{$film->release_date}}" name="release_date" placeholder="Please select date">
+                      <input type="text" class="form-control datepicker-autohide2" value="{{$film->release_date}}" name="release_date" placeholder="Please select date" readonly>
                     </div>
 
                   </div>
@@ -155,6 +155,18 @@
       $('.running_time').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
+        const dpAutoHideElement = document.querySelector('.datepicker-autohide2');
+        if(dpAutoHideElement) {
+            const dpAutoHide = new Datepicker(dpAutoHideElement, {
+                container: '.content-inner',
+                buttonClass: 'btn',
+                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
+                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
+                autohide: true,
+                format: 'dd/mm/yyyy'
+
+            });
+        }
       var initialPreviewImage = [
         "<img src='{{ $image['url'] ?? '' }}' class='file-preview-image kv-preview-data' alt='{{ $image['name']  ?? ''}}' title='{{ $image['name'] ?? '' }}'>"
       ];
