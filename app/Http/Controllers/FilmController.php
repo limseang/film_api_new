@@ -398,6 +398,7 @@ public function updateFilm(Request $request,$id)
                 'type' => $film->types->name ?? null,
                 'type_id' => $film->type ?? null,
                 'running_time' => $film->running_time,
+                'country' => $film->languages->name ?? null,
                 'language' => $film->languages->language ?? null,
                 'language_id' => $film->language ?? null,
                 'rating' => (string)$this->countRate($film->id),
