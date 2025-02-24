@@ -542,6 +542,7 @@ public function updateFilm(Request $request,$id)
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
                 'per_page' => $films->perPage(),
+                'total' => $films->count(),
                 'films' => $data->sortByDesc('rating')->values()->all(),
             ]);
         }
