@@ -871,7 +871,10 @@ public function updateFilm(Request $request,$id)
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
+                'total' => $films->total(),
+                'per_page' => $films->perPage(),
                 'films' => $data->values()->all(),
+
             ]);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());
