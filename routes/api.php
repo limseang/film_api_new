@@ -312,13 +312,13 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* film */
-
+Route::get('/film/episode/details/{id}', [EpisodeController::class, 'episodeDetail']);
 Route::get('/film', [FilmController::class, 'index']);
 Route::get('/film/for/home', [FilmController::class, 'homeScreen']);
 Route::get('/film/coming/soon', [FilmController::class, 'FilmComingSoon']);
 Route::get('/film/episode', [EpisodeController::class, 'index']);
 Route::get('/film/episodes/{id}', [EpisodeController::class, 'getFilm']);
-Route::get('/film/episode/details/{id}', [EpisodeController::class, 'episodeDetail']);
+
 Route::get('/film/watch/movie', [FilmController::class, 'watchmovie']);
 Route::get('/film/episode/update/{id}', [EpisodeController::class, 'update']);
 Route::get('/film/detail/{id}', [FilmController::class, 'showByID']);
