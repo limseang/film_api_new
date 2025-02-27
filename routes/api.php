@@ -327,7 +327,7 @@ Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
 Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
 Route::get('/film/country/{id}', [FilmController::class, 'showByCountry']);
 Route::get('/film/origin/{id}', [FilmController::class, 'showByOrigin']);
-Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
+//Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
 Route::get('/film/show/rate', [FilmController::class, 'showByRate']);
 Route::post('/film/search', [FilmController::class, 'searchMovie']);
 Route::post('/film/increase/view/{id}', [FilmController::class, 'IncrementViewCount']);
