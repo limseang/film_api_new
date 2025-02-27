@@ -46,6 +46,27 @@ class EpisodeController extends Controller
     }
 
 
+    public function episodeDetail($id)
+    {
+        try{
+            $episode = Episode::find($id);
+            $uploadController = new UploadController();
+            $episode['poster'] = $uploadController->getSignedUrl($episode['poster']);
+            return response()->json([
+                'message' => 'successfully',
+                'data' => $episode
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
+
 
 
     public function create(Request $request)
