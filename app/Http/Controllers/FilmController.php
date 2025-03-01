@@ -205,66 +205,7 @@ class FilmController extends Controller
             return $this->sendError($e->getMessage());
         }
     }
-//    public function updateFilm(Request $request, $id)
-//    {
-//        try{
-//            DB::beginTransaction();
-//            $validator = Validator::make($request->all(), [
-//                'title' => 'required',
-//                'overview' => 'required',
-//                'category_ids' => 'required|array',
-//                'release_date' => 'required',
-//                'rating' => 'nullable',
-//                'category' => 'required',
-//                'tag' => 'required|int',
-//                'cover' => 'required|file',
-//                'poster' => 'required|file',
-//                'trailer' => 'required',
-//                'type' => 'required',
-//                'director' => 'nullable',
-//                'running_time' => 'required',
-//                'language' => 'required',
-//                'genre_id' => 'nullable|int',
-//                'distributor_id' => 'nullable|int',
-//            ]);
-//            if($validator->fails()){
-//                return $this->sendError($validator->errors(), 404, 'Validation failed');
-//            }
-//
-//            $film = Film::find($id);
-//            $uploadController = new UploadController();
-//            $film->title = $request->title ?? $film->title;
-//            $film->overview = $request->overview ?? $film->overview;
-//            $film->release_date = $request->release_date ?? $film->release_date;
-//            $film->rating = $request->rating ?? $film->rating;
-//            $film->category = $request->category ?? $film->category;
-//            $film->tag = $request->tag ?? $film->tag;
-//            $film->cover = $request->cover ? $uploadController->uploadFile($request->cover, 'film') : $film->cover;
-//            $film->poster = $request->poster ? $uploadController->uploadFile($request->poster, 'film') : $film->poster;
-//            $film->trailer = $request->trailer ?? $film->trailer;
-//            $film->type = $request->type ?? $film->type;
-//            $film->director = $request->director ?? $film->director;
-//            $film->running_time = $request->running_time ?? $film->running_time;
-//            $film->language = $request->language ?? $film->language;
-//            $film->genre_id = $request->genre_id ?? $film->genre_id;
-//            $film->distributor_id = $request->distributor_id ?? $film->distributor_id;
-//
-//           if($request->category_ids) {
-//               $film->filmCategories()->sync($request->category_ids);
-//           }
-//            $model = $film->save();
-//            DB::commit();
-//            if($model){
-//                return $this->sendResponse($film);
-//            }
-//            return $this->sendError('Update failed');
-//        }
-//        catch (Exception $e){
-//            DB::rollBack();
-//            return $this->sendError($e->getMessage());
-//        }
-//
-//    }
+
 public function updateFilm(Request $request,$id)
 {
     try{
@@ -410,6 +351,7 @@ public function updateFilm(Request $request,$id)
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
                 'genre' => $film->genre->description ?? null,
                 'genre_id' => $film->genre->id ?? null,
+                'director' => $film->directors ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
                         if ($comment->confess == 1) {
                             return [
