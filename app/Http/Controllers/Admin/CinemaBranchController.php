@@ -20,7 +20,7 @@ class CinemaBranchController extends Controller
         $this->middleware('lang');
     }
 
-   
+
     public function index(CinemaBranchDataTable $dataTable)
     {
         if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_VIEW)){
@@ -131,6 +131,9 @@ class CinemaBranchController extends Controller
 
     public function update(Request $request, $id)
     {
+        if($request->hasFile('image')){
+            $image = $this->UploadFile($request->file('image'), 'CinemaBranch');
+        }
         if(!authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_EDIT)){
             return redirect()->back()->with('error', authorizeMessage());
         }
@@ -184,6 +187,7 @@ class CinemaBranchController extends Controller
             $cinemaBranch->youtube = $request->youtube;
             $cinemaBranch->ticket_price = $request->ticket_price;
             $cinemaBranch->status = $request->status;
+            $cinemaBranch->image = $image ?? $cinemaBranch->image;
             $cinemaBranch->save();
             DB::commit();
             $notification = [
@@ -220,7 +224,7 @@ class CinemaBranchController extends Controller
                 ];
                 return redirect()->route('cast.index')->with($notification);
             }
-            $cinemaBranch->delete(); 
+            $cinemaBranch->delete();
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),
