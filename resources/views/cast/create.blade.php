@@ -29,8 +29,8 @@
                                     <label class="form-label" for="position">{{__('sma.position')}}</label>
                                     <select id="position" class="form-select" name="position" required>
                                         <option value="">{{ __('global.please_select') }}</option>
-                                        <option value="Main Role">{{ __('sma.main_role', [], 'en') }}</option>
-                                        <option value="Supporting Role">{{ __('sma.supporting_role', [], 'en') }}</option>
+                                        <option value="Main Role">{{ __('Main Role', [], 'en') }}</option>
+                                        <option value="Supporting Role">{{ __('Supporting Role', [], 'en') }}</option>
                                     </select>
                                     <span class="invalid-feedback">
                     The field is required.
