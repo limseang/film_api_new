@@ -634,7 +634,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::delete('/continue-to-watch/delete/{id}', [ContinueToWatchController::class, 'destroy']);
     Route::get('/continue-to-watch/detail/{id}', [ContinueToWatchController::class, 'detail']);
     Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'detailByFilm']);
-    Route::gete('/continue-to-watch/episode/{id}', [ContinueToWatchController::class, 'detailByEpisode']);
+    Route::get('/continue-to-watch/episode/{id}', [ContinueToWatchController::class, 'detailByEpisodeID']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/continue-to-watch/all', [ContinueToWatchController::class, 'index']);
     });
