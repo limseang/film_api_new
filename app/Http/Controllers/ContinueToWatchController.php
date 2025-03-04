@@ -207,7 +207,7 @@ class ContinueToWatchController extends Controller
         try{
             $uploadController = new UploadController();
             $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
-                ->where('film_id', $id, )
+                ->where('film_id', $id)
                 ->where('user_id', auth()->user()->id)
                //orderby episode number
                 ->orderBy('episode_number', 'ASC')
@@ -299,6 +299,61 @@ class ContinueToWatchController extends Controller
 
             return $this->sendResponse($data);
         } catch (Exception $e) {
+            return $this->sendError($e->getMessage() . ' ' . $e->getLine());
+        }
+    }
+
+    public function detailByEpisodeID ($id)
+    {
+        try {
+            $uploadController = new UploadController();
+            $continueToWatch = ContinueToWatch::with(['films', 'episodes'])
+                ->where('episode_id', $id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+            if (!$continueToWatch) {
+                return $this->sendError('ID is not found');
+            }
+            if (!$continueToWatch->film_id) {
+                return $this->sendError('Film ID is not found');
+            }
+            //find episode file by film_id and episode number
+            $episode = Episode::where('film_id', $continueToWatch->film_id)
+                ->where('id', $continueToWatch->episode_id)
+                ->first();
+            if (!$episode) {
+                return $this->sendError('Episode ID is not found');
+            }
+            $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $continueToWatch->film_id)
+                ->where('episode_id', $continueToWatch->episode_id)
+                ->get();
+            if ($episodeSubtitle) {
+
+                $data['subtitles'] = $episodeSubtitle->map(function ($item) {
+                    $uploadController = new UploadController();
+                    return [
+                        'id' => $item->id,
+                        'language' => $item->language->name,
+                        'url' => $uploadController->getSubtileUrl($item->url),
+                    ];
+                });
+            }
+            $data = [
+                'id' => $continueToWatch->id,
+                'films' => $continueToWatch->films->title ?? '',
+                'episodes' => $continueToWatch->episodes->episode,
+                'url' => $uploadController->getSignedUrl($episode->file),
+                'video_720' => $episode->video_720 != null ? $uploadController->getSignedUrl($episode->video_720) : null,
+                'episode_id' => $continueToWatch->episode_id,
+                'progressing' => $continueToWatch->progressing,
+                'duration' => $continueToWatch->duration,
+
+            ];
+            return $this->sendResponse($data);
+
+
+        }
+        catch(Exception $e){
             return $this->sendError($e->getMessage() . ' ' . $e->getLine());
         }
     }
