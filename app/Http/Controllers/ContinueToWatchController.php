@@ -303,7 +303,7 @@ class ContinueToWatchController extends Controller
         }
     }
 
-    public function detailByEpisodeID ($id)
+    public function detailByEpisodeID($id)
     {
         try {
             $uploadController = new UploadController();
@@ -311,26 +311,51 @@ class ContinueToWatchController extends Controller
                 ->where('episode_id', $id)
                 ->where('user_id', auth()->user()->id)
                 ->first();
+
             if (!$continueToWatch) {
-                return $this->sendError('ID is not found');
+                // Fetch the episode details directly if not found in ContinueToWatch
+                $episode = Episode::with(['film', 'subtitles'])
+                    ->where('id', $id)
+                    ->first();
+
+                if (!$episode) {
+                    return $this->sendError('Episode ID is not found');
+                }
+
+                $data = [
+                    'id' => $episode->id,
+                    'films' => $episode->film->title ?? '',
+                    'episodes' => $episode->episode,
+                    'url' => $uploadController->getSignedUrl($episode->file),
+                    'video_720' => $episode->video_720 != null ? $uploadController->getSignedUrl($episode->video_720) : null,
+                    'episode_id' => $episode->id,
+                    'progressing' => 0,
+                    'duration' => $episode->duration,
+
+                ];
+
+                return $this->sendResponse($data);
             }
+
             if (!$continueToWatch->film_id) {
                 return $this->sendError('Film ID is not found');
             }
-            //find episode file by film_id and episode number
+
+            // Find episode file by film_id and episode number
             $episode = Episode::where('film_id', $continueToWatch->film_id)
                 ->where('id', $continueToWatch->episode_id)
                 ->first();
+
             if (!$episode) {
                 return $this->sendError('Episode ID is not found');
             }
+
             $episodeSubtitle = EpisodeSubtitle::query()->where('film_id', $continueToWatch->film_id)
                 ->where('episode_id', $continueToWatch->episode_id)
                 ->get();
-            if ($episodeSubtitle) {
 
-                $data['subtitles'] = $episodeSubtitle->map(function ($item) {
-                    $uploadController = new UploadController();
+            if ($episodeSubtitle) {
+                $data['subtitles'] = $episodeSubtitle->map(function ($item) use ($uploadController) {
                     return [
                         'id' => $item->id,
                         'language' => $item->language->name,
@@ -338,6 +363,7 @@ class ContinueToWatchController extends Controller
                     ];
                 });
             }
+
             $data = [
                 'id' => $continueToWatch->id,
                 'films' => $continueToWatch->films->title ?? '',
@@ -347,13 +373,10 @@ class ContinueToWatchController extends Controller
                 'episode_id' => $continueToWatch->episode_id,
                 'progressing' => $continueToWatch->progressing,
                 'duration' => $continueToWatch->duration,
-
             ];
+
             return $this->sendResponse($data);
-
-
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage() . ' ' . $e->getLine());
         }
     }
