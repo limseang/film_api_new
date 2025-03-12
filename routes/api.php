@@ -313,12 +313,13 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 });
 
 /* film */
-
+Route::get('/ep/detail/{id}', [EpisodeController::class, 'episodeDetail']);
 Route::get('/film', [FilmController::class, 'index']);
 Route::get('/film/for/home', [FilmController::class, 'homeScreen']);
 Route::get('/film/coming/soon', [FilmController::class, 'FilmComingSoon']);
 Route::get('/film/episode', [EpisodeController::class, 'index']);
 Route::get('/film/episodes/{id}', [EpisodeController::class, 'getFilm']);
+
 Route::get('/film/watch/movie', [FilmController::class, 'watchmovie']);
 Route::get('/film/episode/update/{id}', [EpisodeController::class, 'update']);
 Route::get('/film/detail/{id}', [FilmController::class, 'showByID']);
@@ -327,7 +328,7 @@ Route::get('/film/director/{id}', [FilmController::class, 'showByDirector']);
 Route::get('/film/type/{id}', [FilmController::class, 'showByType']);
 Route::get('/film/country/{id}', [FilmController::class, 'showByCountry']);
 Route::get('/film/origin/{id}', [FilmController::class, 'showByOrigin']);
-Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
+//Route::get('/film/episode/{id}', [FilmController::class, 'showByEpisode']);
 Route::get('/film/show/rate', [FilmController::class, 'showByRate']);
 Route::post('/film/search', [FilmController::class, 'searchMovie']);
 Route::post('/film/increase/view/{id}', [FilmController::class, 'IncrementViewCount']);
@@ -634,6 +635,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::delete('/continue-to-watch/delete/{id}', [ContinueToWatchController::class, 'destroy']);
     Route::get('/continue-to-watch/detail/{id}', [ContinueToWatchController::class, 'detail']);
     Route::get('/continue-to-watch/film/{id}', [ContinueToWatchController::class, 'detailByFilm']);
+    Route::get('/continue-to-watch/episode/{id}', [ContinueToWatchController::class, 'detailByEpisodeID']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::get('/continue-to-watch/all', [ContinueToWatchController::class, 'index']);
     });

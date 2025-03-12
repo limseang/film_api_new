@@ -23,6 +23,7 @@ class CinemBranchController extends Controller
                     'show_type' => $cinemBranch->show_type,
                     'phone' => $cinemBranch->phone,
                     'image' => $uploadController->getSignedUrl($cinemBranch->image),
+                    'cinemaLogo' => $uploadController->getSignedUrl($cinemBranch->cinemas->logo),
                     'status' => $cinemBranch->status,
                     'map_link' => $cinemBranch->map_link,
                     'cinema_name' => $cinemBranch->cinemas->name ?? 'null',
