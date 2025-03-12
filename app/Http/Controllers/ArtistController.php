@@ -18,6 +18,9 @@ class ArtistController extends Controller
             $uploadController = new UploadController();
             $artists = Artist::with('country')->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
             $groupByNationality = collect($artists->groupBy('nationality_name'));
+            if($request->nationality){
+                $artists = Artist::with('country')->where ('national = ?', $request ->national )->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
+            }
             $data =[];
             foreach ($groupByNationality as $key => $value){
                 foreach ($value as $item => $result)
@@ -106,15 +109,6 @@ class ArtistController extends Controller
                 'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
                 'biography' => $artist->biography,
                 'know_for' => $artist->known_for,
-
-//                'film' => $artist->films->map(function ($film) use ($uploadController) {
-//
-//                    return [
-//                        'id' => $film->id,
-//                        'title' => $film->title,
-//                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-//                    ];
-//                }),
             'film' => $artist->casts ? $this->getFilmResource($artist->casts) : '',
                 'status' => $artist->status,
 
@@ -213,6 +207,52 @@ class ArtistController extends Controller
             ], 404);
         }
     }
+
+    public function showArtistByCountryID(Request $request)
+    {
+        try {
+            $uploadController = new UploadController();
+            $countryId = $request->country_id;
+
+            if (!$countryId) {
+                return response()->json([
+                    'message' => 'Country ID is required',
+                ], 400);
+            }
+
+            // Correct filtering for country
+            $artists = Artist::with('country')
+                ->where('nationality', $countryId)
+                ->orderByDesc('name')
+                ->get();
+
+            if ($artists->isEmpty()) {
+                return response()->json([
+                    'message' => 'No artists found for this country',
+                ], 404);
+            }
+
+            $data = $artists->map(function ($artist) use ($uploadController) {
+                return [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'nationality' => $artist->country ? $artist->country->nationality : '',
+                    'nationality_logo' => $artist->country ? $artist->country->flag : '',
+                    'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                    'status' => $artist->status,
+                ];
+            });
+
+            return $this->sendResponse($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Artists retrieval failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
 
 }

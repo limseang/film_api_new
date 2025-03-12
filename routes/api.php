@@ -291,6 +291,7 @@ Route::post('/check/qrcode', [AdminController::class, 'checkQrCode']);
 
 Route::get('/artist', [ArtistController::class, 'index']);
 Route::get('/artist/{id}', [ArtistController::class, 'showByID']);
+Route::post('/artist/by/country', [ArtistController::class, 'showArtistByCountryID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/artist/new', [ArtistController::class, 'create']);
