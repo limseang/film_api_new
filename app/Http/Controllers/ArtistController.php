@@ -252,6 +252,39 @@ class ArtistController extends Controller
         }
     }
 
+    public function searchArtist(Request $request)
+    {
+        try{
+            $uploadController = new UploadController();
+            $search = $request->search;
+            $artists = Artist::with('country')->where('name', 'like', '%' . $search . '%')->orderByDesc('name')->get();
+            if($artists->isEmpty()){
+                return response()->json([
+                    'message' => 'No artist found',
+                ], 404);
+            }
+            $data = $artists->map(function ($artist) use ($uploadController) {
+                return [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'nationality' => $artist->country ? $artist->country->nationality : '',
+                    'nationality_logo' => $artist->country ? $artist->country->flag : '',
+                    'profile' => $artist->profile ? $uploadController->getSignedUrl($artist->profile) : null,
+                    'status' => $artist->status,
+                ];
+            });
+            return $this->sendResponse($data);
+
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'message' => 'Artist search failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+    }
+
 
 
 
