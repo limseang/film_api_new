@@ -14,18 +14,27 @@ class ArtistController extends Controller
     public function index(Request $request)
     {
         $page = $request->page ? $request->page : 1;
-        try{
+        try {
             $uploadController = new UploadController();
-            $artists = Artist::with('country')->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
-            $groupByNationality = collect($artists->groupBy('nationality_name'));
-            if($request->nationality){
-                $artists = Artist::with('country')->where ('national = ?', $request ->national )->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
+            $query = Artist::with('country');
+
+            // Add search by name functionality
+            if ($request->has('name') && !empty($request->name)) {
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
-            $data =[];
-            foreach ($groupByNationality as $key => $value){
-                foreach ($value as $item => $result)
-                {
-                    $data[$key][$item] =[
+
+            // Filter by nationality if provided
+            if ($request->has('nationality') && !empty($request->nationality)) {
+                $query->where('nationality_name', $request->nationality);
+            }
+
+            $artists = $query->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
+            $groupByNationality = collect($artists->groupBy('nationality_name'));
+
+            $data = [];
+            foreach ($groupByNationality as $key => $value) {
+                foreach ($value as $item => $result) {
+                    $data[$key][$item] = [
                         'id' => $result->id,
                         'name' => $result->name,
                         'nationality' => $result->country ? $result->country->nationality : '',
@@ -35,6 +44,7 @@ class ArtistController extends Controller
                     ];
                 }
             }
+
             return $this->sendResponse([
                 'current_page' => $artists->currentPage(),
                 'last_page' => $artists->lastPage(),
@@ -42,8 +52,7 @@ class ArtistController extends Controller
                 'total' => $artists->total(),
                 'data' => $data,
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Artists retrieved failed',
                 'error' => $e->getMessage()
@@ -256,13 +265,18 @@ class ArtistController extends Controller
     {
         try{
             $uploadController = new UploadController();
-            $search = $request->search;
-            $artists = Artist::with('country')->where('name', 'like', '%' . $search . '%')->orderByDesc('name')->get();
+            $search = $request->name;
+            $artists = Artist::with('country')
+                ->where('name', 'like', "%$search%")
+                ->orderByDesc('name')
+                ->get();
+
             if($artists->isEmpty()){
                 return response()->json([
-                    'message' => 'No artist found',
+                    'message' => 'No artists found',
                 ], 404);
             }
+
             $data = $artists->map(function ($artist) use ($uploadController) {
                 return [
                     'id' => $artist->id,
@@ -273,6 +287,7 @@ class ArtistController extends Controller
                     'status' => $artist->status,
                 ];
             });
+
             return $this->sendResponse($data);
 
         }
