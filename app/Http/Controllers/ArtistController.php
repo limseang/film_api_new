@@ -266,8 +266,10 @@ class ArtistController extends Controller
         try{
             $uploadController = new UploadController();
             $search = $request->name;
+           //search by name or known_for
             $artists = Artist::with('country')
-                ->where('name', 'like', "%$search%")
+                ->where('name', 'like', '%' . $search . '%')
+                ->orWhere('known_for', 'like', '%' . $search . '%')
                 ->orderByDesc('name')
                 ->get();
 
