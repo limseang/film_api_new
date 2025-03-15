@@ -263,17 +263,26 @@ class ArtistController extends Controller
 
     public function searchArtist(Request $request)
     {
-        try{
+        try {
             $uploadController = new UploadController();
             $search = $request->name;
-           //search by name or known_for
+
+            if (!$search) {
+                return response()->json([
+                    'message' => 'Search term is required',
+                ], 400);
+            }
+
+            // Search by name or known_for
             $artists = Artist::with('country')
-                ->where('name', 'like', '%' . $search . '%')
-                ->orWhere('known_for', 'like', '%' . $search . '%')
+                ->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('known_for', 'like', '%' . $search . '%');
+                })
                 ->orderByDesc('name')
                 ->get();
 
-            if($artists->isEmpty()){
+            if ($artists->isEmpty()) {
                 return response()->json([
                     'message' => 'No artists found',
                 ], 404);
@@ -292,15 +301,14 @@ class ArtistController extends Controller
 
             return $this->sendResponse($data);
 
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Artist search failed',
                 'error' => $e->getMessage()
-            ], 400);
+            ], 500);
         }
-
     }
+
 
 
 
