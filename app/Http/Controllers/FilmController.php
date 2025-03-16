@@ -42,11 +42,14 @@ class FilmController extends Controller
 
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
+                $defaultPoster = 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png';
                 return [
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' =>(!empty($film->poster) && $film->poster !== "null") ? $uploadController->getSignedUrl($film->poster) : 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png',
+                    'poster' => (!is_null($film->poster) && $film->poster !== '' && strtolower($film->poster) !== 'null')
+                        ? $uploadController->getSignedUrl($film->poster)
+                        : $defaultPoster,
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
