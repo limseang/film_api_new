@@ -52,9 +52,7 @@ class FilmController extends Controller
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' => $isPosterValid
-                        ? $uploadController->getSignedUrl($posterValue)
-                        : $defaultPoster,
+                    'poster' => $film->poster,
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
