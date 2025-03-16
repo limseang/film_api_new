@@ -46,7 +46,7 @@ class FilmController extends Controller
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png',
+                    'poster' => $film->poster != "null" ? $uploadController->getSignedUrl($film->poster) : 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png',
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
