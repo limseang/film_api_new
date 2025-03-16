@@ -36,23 +36,29 @@ class FilmController extends Controller
         ]);
 
         $page = $request->get('page', 1);
-        try {
+        try{
             $uploadController = new UploadController();
-            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast']);
+            $model = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
 
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 $defaultPoster = 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png';
 
                 // Fix the poster logic to correctly handle when poster is "null" (as a string)
+                // or when it equals "default-poster.jpg"
                 $posterValue = $film->poster;
-                $isPosterValid = !is_null($posterValue) && $posterValue !== '' && strtolower($posterValue) !== 'null';
+                $isPosterValid = !is_null($posterValue) &&
+                    $posterValue !== '' &&
+                    strtolower($posterValue) !== 'null' &&
+                    $posterValue !== 'default-poster.jpg';
 
                 return [
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' => $film->poster,
+                    'poster' => $isPosterValid
+                        ? $uploadController->getSignedUrl($posterValue)
+                        : $defaultPoster,
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
@@ -64,7 +70,8 @@ class FilmController extends Controller
                 'total_count' => $films->total(),
                 'films' => $data->sortByDesc('created_at')->values()->all(),
             ]);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e){
             return $this->sendError($e->getMessage());
         }
     }
