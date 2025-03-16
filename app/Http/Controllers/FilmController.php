@@ -43,12 +43,17 @@ class FilmController extends Controller
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 $defaultPoster = 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png';
+
+                // Fix the poster logic to correctly handle when poster is "null" (as a string)
+                $posterValue = $film->poster;
+                $isPosterValid = !is_null($posterValue) && $posterValue !== '' && strtolower($posterValue) !== 'null';
+
                 return [
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' => (!is_null($film->poster) && $film->poster !== '' && strtolower($film->poster) !== 'null')
-                        ? $uploadController->getSignedUrl($film->poster)
+                    'poster' => $isPosterValid
+                        ? $uploadController->getSignedUrl($posterValue)
                         : $defaultPoster,
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
