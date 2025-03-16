@@ -39,16 +39,14 @@ class FilmController extends Controller
         try{
             $uploadController = new UploadController();
             $model = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
-            if($request->title){
-                $model->where('title', 'like', '%' . $request->title . '%');
-            }
+
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png',
                     'rating' => (string) $this->countRate($film->id),
                     'type' => $film->types ? $film->types->name : null,
                     'created_at' => $film->created_at,
