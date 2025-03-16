@@ -36,9 +36,9 @@ class FilmController extends Controller
         ]);
 
         $page = $request->get('page', 1);
-        try{
+        try {
             $uploadController = new UploadController();
-            $model = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
+            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast']);
 
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
             $data = $films->map(function ($film) use ($uploadController) {
@@ -66,8 +66,7 @@ class FilmController extends Controller
                 'total_count' => $films->total(),
                 'films' => $data->sortByDesc('created_at')->values()->all(),
             ]);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
     }
