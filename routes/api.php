@@ -320,6 +320,7 @@ Route::get('/film/for/home', [FilmController::class, 'homeScreen']);
 Route::get('/film/coming/soon', [FilmController::class, 'FilmComingSoon']);
 Route::get('/film/episode', [EpisodeController::class, 'index']);
 Route::get('/film/episodes/{id}', [EpisodeController::class, 'getFilm']);
+Route::get('/check/duplicate', [FilmController::class, 'checkDuplicateFilm']);
 
 Route::get('/film/watch/movie', [FilmController::class, 'watchmovie']);
 Route::get('/film/episode/update/{id}', [EpisodeController::class, 'update']);

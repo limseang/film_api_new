@@ -187,6 +187,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/assign-avaliable/store', [FilmController::class, 'storeAvailable'])->name('store_available');
             Route::get('/add-film-available-in', [FilmController::class, 'addFilmAvailableIn'])->name('add_film_available_in');
             Route::get('/delete-assigned-available/{id}', [FilmController::class, 'deleteAssignedAvailable'])->name('delete_assigned_available');
+
         });
         // Cast
         Route::prefix('cast')->name('cast.')->group(function(){

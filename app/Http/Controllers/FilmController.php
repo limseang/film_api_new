@@ -76,6 +76,36 @@ class FilmController extends Controller
         }
     }
 
+    public function checkDuplicateFilm()
+    {
+        try {
+            // Find duplicate film titles
+            $duplicateTitles = Film::select('title')
+                ->groupBy('title')
+                ->havingRaw('COUNT(*) > 1')
+                ->pluck('title');
+
+            // Retrieve details of duplicate films
+            $duplicateFilms = Film::whereIn('title', $duplicateTitles)
+                ->get(['id', 'title', 'release_date', 'created_at'])
+                ->map(function ($film) {
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'release_date' => $film->release_date,
+                        'rating' => (string) $this->countRate($film->id),
+                        'type' => $film->types ? $film->types->name : null,
+                        'created_at' => $film->created_at,
+                    ];
+                });
+
+            return $this->sendResponse($duplicateFilms);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+
     public function getCategoryResource($data){
         $categories = [];
 
