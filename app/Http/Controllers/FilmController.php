@@ -597,10 +597,16 @@ public function updateFilm(Request $request,$id)
             }
 
             // Apply watch filter if true
+
             // Apply watch filter if true
             if ($watch) {
                 $user = auth('sanctum')->user();
-                if (!$user || $user->user_type == 1) {
+
+
+                // Debug: You can add logging here to check what's happening
+                // Log::info('Auth user check:', ['user' => $user]);
+
+                if ($user === null || $user->user_type == 1) {
                     // User not logged in OR user_type == 1: show only films with type == 5
                     $model->where('type', 5);
                 } else {
