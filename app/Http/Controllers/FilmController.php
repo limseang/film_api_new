@@ -596,6 +596,21 @@ public function updateFilm(Request $request,$id)
                 });
             }
 
+            // Apply watch filter if true
+            // Apply watch filter if true
+            if ($watch) {
+                $user = auth('sanctum')->user();
+                if (!$user || $user->user_type == 1) {
+                    // User not logged in OR user_type == 1: show only films with type == 5
+                    $model->where('type', 5);
+                } else {
+                    // User is logged in AND user_type != 1: show films with at least one episode
+                    $model->whereHas('episode', function ($query) {
+                        $query->where('id', '>', 0);
+                    });
+                }
+            }
+
             $films = $model->paginate(24, ['*'], 'page', $page);
 
             $data = $films->map(function ($film) use ($uploadController) {
