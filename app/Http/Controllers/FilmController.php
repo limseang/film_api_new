@@ -606,11 +606,9 @@ public function updateFilm(Request $request,$id)
                 // Debug: You can add logging here to check what's happening
                 // Log::info('Auth user check:', ['user' => $user]);
 
-                if ($user === null || $user->user_type == 1) {
-                    // User not logged in OR user_type == 1: show only films with type == 5
+                if ($user === null || $user->user_type == "1" ) {
                     $model->where('type', 5);
                 } else {
-                    // User is logged in AND user_type != 1: show films with at least one episode
                     $model->whereHas('episode', function ($query) {
                         $query->where('id', '>', 0);
                     });
