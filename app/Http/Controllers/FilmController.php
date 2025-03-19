@@ -30,22 +30,58 @@ class FilmController extends Controller
 
     public function index(Request $request)
     {
-        // validate request
+        // Validate request
         $request->validate([
-            'title' => 'nullable|string'
+            'title' => 'nullable|string',
+            'year' => 'nullable|integer',
+            'genre_id' => 'nullable|integer',
+            'category_id' => 'nullable', // Can be single or multiple
         ]);
 
         $page = $request->get('page', 1);
-        try{
+
+        try {
             $uploadController = new UploadController();
-            $model = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast']);
+            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
+
+            // Apply title filter if provided
+            if ($request->has('title') && !empty($request->title)) {
+                $model->where('title', 'like', '%' . $request->title . '%');
+            }
+
+            // Apply year filter if provided
+            if ($request->has('year') && !empty($request->year)) {
+                // Filter by year from d/m/Y formatted date strings
+                $model->where(function($query) use ($request) {
+                    $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                });
+            }
+
+            // Apply genre filter if provided
+            if ($request->has('genre_id') && !empty($request->genre_id)) {
+                $model->where('genre_id', $request->genre_id);
+            }
+
+            // Apply category filter only if provided and not empty
+            if ($request->has('category_id') && !empty($request->category_id)) {
+                $categoryFilter = $request->category_id;
+
+                // Check if it's a string (single value), convert to array
+                if (!is_array($categoryFilter)) {
+                    $categoryFilter = explode(',', $categoryFilter);
+                }
+
+                // Filter films that belong to any of the provided categories
+                $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
+                    $query->whereIn('category_id', $categoryFilter);
+                });
+            }
 
             $films = $model->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
+
             $data = $films->map(function ($film) use ($uploadController) {
                 $defaultPoster = 'http://cinemagic.oss-ap-southeast-1.aliyuncs.com/test/Artboard%202.png';
 
-                // Fix the poster logic to correctly handle when poster is "null" (as a string)
-                // or when it equals "default-poster.jpg"
                 $posterValue = $film->poster;
                 $isPosterValid = !is_null($posterValue) &&
                     $posterValue !== '' &&
@@ -64,17 +100,20 @@ class FilmController extends Controller
                     'created_at' => $film->created_at,
                 ];
             });
+
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                'films' => $data->sortByDesc('created_at')->values()->all(),
+                'films' => $data->values()->all(),
             ]);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
     }
+
+
+
 
     public function checkDuplicateFilm()
     {
@@ -503,11 +542,62 @@ public function updateFilm(Request $request,$id)
 
     public function showByRate(Request $request)
     {
+        // Validate request
+        $request->validate([
+            'title' => 'nullable|string',
+            'year' => 'nullable|integer',
+            'genre_id' => 'nullable|integer',
+            'category_id' => 'nullable', // Can be single or multiple
+            'page' => 'nullable|integer',
+            'watch' => 'nullable|string', // Accept string for mobile compatibility
+        ]);
+
         $page = $request->get('page', 1);
-        $watch = $request->get('watch', false);
-        try{
+
+        // Handle watch parameter (convert string to boolean)
+        $watch = $request->has('watch')
+            ? filter_var($request->get('watch'), FILTER_VALIDATE_BOOLEAN)
+            : false;
+
+        try {
             $uploadController = new UploadController();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast'])->paginate(24, ['*'], 'page', $page);
+            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
+
+            // Apply title filter if provided
+            if ($request->has('title') && !empty($request->title)) {
+                $model->where('title', 'like', '%' . $request->title . '%');
+            }
+
+            // Apply year filter if provided
+            if ($request->has('year') && !empty($request->year)) {
+                // Filter by year from d/m/Y formatted date strings
+                $model->where(function($query) use ($request) {
+                    $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                });
+            }
+
+            // Apply genre filter if provided
+            if ($request->has('genre_id') && !empty($request->genre_id)) {
+                $model->where('genre_id', $request->genre_id);
+            }
+
+            // Apply category filter only if provided and not empty
+            if ($request->has('category_id') && !empty($request->category_id)) {
+                $categoryFilter = $request->category_id;
+
+                // Check if it's a string (single value), convert to array
+                if (!is_array($categoryFilter)) {
+                    $categoryFilter = explode(',', $categoryFilter);
+                }
+
+                // Filter films that belong to any of the provided categories
+                $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
+                    $query->whereIn('category_id', $categoryFilter);
+                });
+            }
+
+            $films = $model->paginate(24, ['*'], 'page', $page);
+
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -519,6 +609,7 @@ public function updateFilm(Request $request,$id)
                     'type' => $film->types ? $film->types->name : null,
                 ];
             });
+
             return $this->sendResponse([
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
@@ -528,10 +619,9 @@ public function updateFilm(Request $request,$id)
                 'films' => $data->sortByDesc('rating')->values()->all(),
             ]);
         }
-        catch (Exception $e){
+        catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
-
     }
 
     public function ChangeType(Request $request, $id)
