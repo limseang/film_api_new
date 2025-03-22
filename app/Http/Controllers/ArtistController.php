@@ -23,9 +23,18 @@ class ArtistController extends Controller
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
 
-            // Filter by nationality if provided
             if ($request->has('nationality') && !empty($request->nationality)) {
-                $query->where('nationality_name', $request->nationality);
+                $query->where('nationality', $request->nationality);
+            }
+
+
+            // Filter by birth year range if provided
+            if ($request->has('birth_year_from') && !empty($request->birth_year_from)) {
+                $query->whereRaw('YEAR(STR_TO_DATE(birth_date, "%d/%m/%Y")) >= ?', [$request->birth_year_from]);
+            }
+
+            if ($request->has('birth_year_to') && !empty($request->birth_year_to)) {
+                $query->whereRaw('YEAR(STR_TO_DATE(birth_date, "%d/%m/%Y")) <= ?', [$request->birth_year_to]);
             }
 
             $artists = $query->orderByDesc('name')->paginate(21, ['*'], 'page', $page);
@@ -41,6 +50,7 @@ class ArtistController extends Controller
                         'nationality_logo' => $result->country ? $result->country->flag : '',
                         'profile' => $result->profile ? $uploadController->getSignedUrl($result->profile) : null,
                         'status' => $result->status,
+                        'birth_date' => $result->birth_date, // Include birth date in response
                     ];
                 }
             }
