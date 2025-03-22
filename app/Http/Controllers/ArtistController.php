@@ -27,6 +27,10 @@ class ArtistController extends Controller
                 $query->where('nationality', $request->nationality);
             }
 
+            if($request->has('gender') && ! empty($request->gender)){
+                $query->where('gender', $request->gender);
+            }
+
 
             // Filter by birth year range if provided
             if ($request->has('birth_year_from') && !empty($request->birth_year_from)) {
