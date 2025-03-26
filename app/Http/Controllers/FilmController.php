@@ -835,36 +835,42 @@ public function updateFilm(Request $request,$id)
 
     public function homeScreen()
     {
-        try{
+        try {
             $uploadController = new UploadController();
-            $articles = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->limit(6)->get();
-            $films = Film::with([ 'languages','categories','directors','tags','types','filmCategories', 'rate','cast','subtitles'])->orderBy('created_at', 'DESC')->get();
-            $nowShowing = $films->values()->filter(function ($film) {
-                return $film->type == 9;
-            });
-            $nowShowing = $nowShowing->sortByDesc('updated_at')->map(function ($film) use ($uploadController) {
-                return [
-                    'id' => $film->id,
-                    'name' => $film->title,
-                    'rating' => (string) $this->countRate($film->id),
-                    'release_date' => $film->release_date,
-                    'type' => $film->types ? $film->types->name : null,
-                    'trailer' => $film->trailer,
-                    'people_rate' => $this->countRatePeople($film->id),
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                ];
-            })->values()->all();
-            $comingSoon = $films->values()->filter(function ($film) {
-                return $film->type == 10;
-            });
 
-            $comingSoon = $comingSoon->sortBy(function ($film) {
-                // Check if the film has the "Short Film" tag
-                return $film->tags->name === 'Short Film' ? 0 : 1;
-            })->sortBy(function ($film) {
-                // Sort by release date
-                return $film->release_date;
-            })->take(20)
+            // 1. Load only necessary data with eager loading constraints
+            // 2. Apply pagination and limit queries directly in the database
+            // 3. Use specific queries for each section instead of fetching all films/articles
+
+            // Now Showing Films - Limit to 20 records
+            $nowShowing = Film::with(['types', 'rate'])
+                ->where('type', 9)
+                ->orderBy('updated_at', 'DESC')
+                ->limit(20)
+                ->get()
+                ->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'name' => $film->title,
+                        'rating' => (string) $this->countRate($film->id),
+                        'release_date' => $film->release_date,
+                        'type' => $film->types ? $film->types->name : null,
+                        'trailer' => $film->trailer,
+                        'people_rate' => $this->countRatePeople($film->id),
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    ];
+                })->values()->all();
+
+            // Coming Soon Films - Directly query and sort in database
+            $comingSoonQuery = Film::with(['types', 'tags'])
+                ->where('type', 10)
+                ->orderBy('release_date', 'ASC')
+                ->limit(20);
+
+            // If needed, you can add priority for Short Films with a case statement
+            // ->orderByRaw("CASE WHEN tags.name = 'Short Film' THEN 0 ELSE 1 END")
+
+            $comingSoon = $comingSoonQuery->get()
                 ->map(function ($film) use ($uploadController) {
                     return [
                         'id' => $film->id,
@@ -873,41 +879,57 @@ public function updateFilm(Request $request,$id)
                         'release_date' => $film->release_date,
                         'type' => $film->types ? $film->types->name : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                        'tag' => $film->tags->name,
+                        'tag' => $film->tags ? $film->tags->name : null,
                     ];
                 })->values()->all();
 
-            $watch = $films->values()->filter(function ($film) {
-                $total_episode = count($film->episode);
-                return ($film->type == 5) && $total_episode > 0;
+            // Most Watched Films - Query directly
+            $watch = Film::with(['types', 'episode', 'subtitles'])
+                ->where('type', 5)
+                ->whereHas('episode') // Only films with episodes
+                ->orderBy('updated_at', 'DESC')
+                ->limit(6)
+                ->get()
+                ->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'name' => $film->title,
+                        'rating' => (string) $this->countRate($film->id),
+                        'people_rate' => $this->countRatePeople($film->id),
+                        'release_date' => $film->release_date,
+                        'total_episode' => $film->episode->count(),
+                        'subtitle' => $film->subtitles->count() > 0,
+                        'type' => $film->types ? $film->types->name : null,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                    ];
+                })->values()->all();
 
-                //if total episode > 1 then return
+            // Latest Articles - Query directly
+            $articles = Artical::with(['type'])
+                ->orderBy('created_at', 'DESC')
+                ->limit(6)
+                ->get()
+                ->map(function ($article) use ($uploadController) {
+                    $description = strip_tags(str_replace('&nbsp;', ' ', $article->description));
+                    return [
+                        'id' => $article->id,
+                        'title' => $article->title,
+                        'image' => $uploadController->getSignedUrl($article->image),
+                        'description' => Str::limit($description, 60, '.....'),
+                        'type' => $article->type ? $article->type->name : '',
+                    ];
+                })->values()->all();
 
-            });
-            $watch = $watch->sortByDesc('updated_at')->take(6)->map(function ($film) use ($uploadController) {
-                return [
-                    'id' => $film->id,
-                    'name' => $film->title,
-                    'rating' => (string) $this->countRate($film->id),
-                    'people_rate' => $this->countRatePeople($film->id),
-                    'release_date' => $film->release_date,
-                    'total_episode' => count($film->episode),
-                    'subtitle' => $film->subtitles->count() > 0 ? true : false,
-                    'type' => $film->types ? $film->types->name : null,
-                    'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                ];
-            })->values()->all();
+            // Prepare caching mechanism for frequently accessed data
+            // $cacheKey = 'home_screen_data';
+            // $cacheDuration = 60 * 15; // 15 minutes
 
-            $articles = $articles->sortByDesc('created_at')->take(6)->map(function ($article) use ($uploadController) {
-                $description = strip_tags(str_replace('&nbsp;', ' ', $article->description));
-                return [
-                    'id' => $article->id,
-                    'title' => $article->title,
-                    'image' =>   $uploadController->getSignedUrl($article->image),
-                    'description' => Str::limit($description, 60, '.....'),
-                    'type' => $article->type ? $article->type->name : '',
-                ];
-            })->values()->all();
+            // Cache::put($cacheKey, [
+            //     'now_showing' => $nowShowing,
+            //     'coming_soon' => $comingSoon,
+            //     'most_watch' => $watch,
+            //     'articles' => $articles,
+            // ], $cacheDuration);
 
             return $this->sendResponse([
                 'now_showing' => $nowShowing,
@@ -915,8 +937,7 @@ public function updateFilm(Request $request,$id)
                 'most_watch' => $watch,
                 'articles' => $articles,
             ]);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
     }
