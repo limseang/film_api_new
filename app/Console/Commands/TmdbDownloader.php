@@ -13,22 +13,19 @@ class TmdbDownloader extends Command
      * @var string
      */
     protected $signature = 'tmdb:download {year=2024}
-                           {--pages=1}
                            {--output=storage/app/tmdb-data}
                            {--download-images}
                            {--poster-size=w500}
                            {--backdrop-size=w780}
                            {--memory-limit=512M}
-                           {--stream-images}
-                           {--start=0}
-                           {--batch-size=10000}';
+                           {--stream-images}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Download movies data from TMDB for a specific year with memory optimizations';
+    protected $description = 'Download all movies data from TMDB for a specific year';
 
     /**
      * TMDB API configuration
@@ -55,15 +52,12 @@ class TmdbDownloader extends Command
     public function handle()
     {
         $year = $this->argument('year');
-        $maxPages = $this->option('pages');
         $outputPath = $this->option('output');
         $downloadImages = $this->option('download-images');
         $posterSize = $this->option('poster-size');
         $backdropSize = $this->option('backdrop-size');
         $memoryLimit = $this->option('memory-limit');
         $streamImages = $this->option('stream-images');
-        $start = (int)$this->option('start');
-        $batchSize = (int)$this->option('batch-size');
 
         // Set memory limit if specified
         if ($memoryLimit) {
@@ -75,7 +69,7 @@ class TmdbDownloader extends Command
             mkdir($outputPath, 0755, true);
         }
 
-        $this->info("Starting download of TMDB movies for $year (max $maxPages pages)");
+        $this->info("Starting download of ALL TMDB movies for $year");
 
         // Create directories
         $detailsDir = "$outputPath/movie_details";
@@ -99,22 +93,20 @@ class TmdbDownloader extends Command
             $this->info("Found existing basic data file. Loading movie data...");
             $allMovies = json_decode(file_get_contents($basicDataFile), true);
         } else {
-            // Step 1: Fetch basic movie data
+            // Step 1: Fetch basic movie data from all pages
             $page = 1;
+            $totalPages = null;
 
-            $this->info("Fetching movies released in $year...");
-            $bar = $this->output->createProgressBar($maxPages);
-            $bar->start();
+            $this->info("Fetching ALL movies released in $year...");
 
-            while ($page <= $maxPages) {
+            while (true) {
                 try {
                     $response = Http::get("$this->baseUrl/discover/movie", [
                         'api_key' => $this->apiKey,
-                        'first_air_date.gte' => "$year-01-01", // Start from Jan 1
-                        'first_air_date.lte' => "$year-12-31", // End on Dec 31
+                        'primary_release_year' => $year,
                         'page' => $page,
                         'include_adult' => true,
-                        'sort_by' => 'first_air_date.asc', // Sort by earliest air date
+                        'sort_by' => 'primary_release_date.asc',
                     ]);
 
                     if ($response->failed()) {
@@ -122,10 +114,25 @@ class TmdbDownloader extends Command
                     }
 
                     $data = $response->json();
-                    $results = $data['results'] ?? [];
 
+                    // Get total pages on first request
+                    if ($totalPages === null) {
+                        $totalPages = $data['total_pages'] ?? 1;
+                        $this->info("Found {$data['total_results']} movies across $totalPages pages");
+                        $bar = $this->output->createProgressBar($totalPages);
+                        $bar->start();
+                    }
+
+                    $results = $data['results'] ?? [];
                     $allMovies = array_merge($allMovies, $results);
+
                     $bar->advance();
+
+                    // Break if we've processed all pages
+                    if ($page >= $totalPages) {
+                        break;
+                    }
+
                     $page++;
 
                     // Sleep to avoid rate limits
@@ -147,17 +154,9 @@ class TmdbDownloader extends Command
         $totalMovies = count($allMovies);
         $this->info("Found $totalMovies movies for $year");
 
-        // Process movies in batches to save memory
-        if ($start >= $totalMovies) {
-            $this->error("Start index ($start) exceeds total movies ($totalMovies)");
-            return 1;
-        }
-
-        $endIndex = min($start + $batchSize, $totalMovies);
-        $batchMovies = array_slice($allMovies, $start, $batchSize);
-
-        $this->info("Processing batch of " . count($batchMovies) . " movies (from index $start to " . ($endIndex - 1) . ")");
-        $bar = $this->output->createProgressBar(count($batchMovies));
+        // Process all movies
+        $this->info("Processing all $totalMovies movies");
+        $bar = $this->output->createProgressBar($totalMovies);
         $bar->start();
 
         $successCount = 0;
@@ -165,7 +164,7 @@ class TmdbDownloader extends Command
         $runtimeList = [];
         $imageDownloadCount = 0;
 
-        foreach ($batchMovies as $basicMovie) {
+        foreach ($allMovies as $basicMovie) {
             try {
                 // Fetch movie details
                 $movieId = $basicMovie['id'];
@@ -176,7 +175,6 @@ class TmdbDownloader extends Command
 
                 if (file_exists($detailFile)) {
                     $movieDetails = json_decode(file_get_contents($detailFile), true);
-                    $this->info("\nUsing cached details for movie ID $movieId");
                 } else {
                     $response = Http::get("$this->baseUrl/movie/$movieId", [
                         'api_key' => $this->apiKey,
@@ -228,8 +226,6 @@ class TmdbDownloader extends Command
                                     $imageDownloadCount++;
                                 }
                             }
-                        } else {
-                            $this->info("\nPoster for movie ID $movieId already exists");
                         }
                     }
 
@@ -251,8 +247,6 @@ class TmdbDownloader extends Command
                                     $imageDownloadCount++;
                                 }
                             }
-                        } else {
-                            $this->info("\nBackdrop for movie ID $movieId already exists");
                         }
                     }
                 }
@@ -276,62 +270,24 @@ class TmdbDownloader extends Command
         $bar->finish();
         $this->newLine();
 
-        // Update or create ID list file
+        // Save ID list file
         $idListFile = "$outputPath/tmdb_movies_{$year}_id_list.json";
-        $existingIds = [];
+        file_put_contents($idListFile, json_encode($movieIdList, JSON_PRETTY_PRINT));
 
-        if (file_exists($idListFile)) {
-            $existingIds = json_decode(file_get_contents($idListFile), true);
-        }
-
-        $updatedIds = array_unique(array_merge($existingIds, $movieIdList));
-        file_put_contents($idListFile, json_encode($updatedIds, JSON_PRETTY_PRINT));
-
-        // Update or create runtime list file
+        // Save runtime list file
         $runtimeFile = "$outputPath/tmdb_movies_{$year}_runtime_list.json";
-        $existingRuntimes = [];
+        file_put_contents($runtimeFile, json_encode($runtimeList, JSON_PRETTY_PRINT));
 
-        if (file_exists($runtimeFile)) {
-            $existingRuntimes = json_decode(file_get_contents($runtimeFile), true);
-        }
-
-        // Create map of existing runtimes for easy lookup
-        $runtimeMap = [];
-        foreach ($existingRuntimes as $item) {
-            if (isset($item['id'])) {
-                $runtimeMap[$item['id']] = $item;
-            }
-        }
-
-        // Add new runtimes to the map
-        foreach ($runtimeList as $item) {
-            $runtimeMap[$item['id']] = $item;
-        }
-
-        // Convert map back to list
-        $updatedRuntimes = array_values($runtimeMap);
-        file_put_contents($runtimeFile, json_encode($updatedRuntimes, JSON_PRETTY_PRINT));
-
-        $this->info("Batch processing completed:");
-        $this->info("- Successfully processed $successCount out of " . count($batchMovies) . " movies in this batch");
+        $this->info("Download completed:");
+        $this->info("- Successfully processed $successCount out of $totalMovies movies");
         $this->info("- Movie details saved in $detailsDir");
-        $this->info("- ID list updated in $idListFile");
-        $this->info("- Runtime list updated in $runtimeFile");
+        $this->info("- ID list saved in $idListFile");
+        $this->info("- Runtime list saved in $runtimeFile");
 
         if ($downloadImages) {
-            $this->info("- Downloaded $imageDownloadCount new images in this batch");
+            $this->info("- Downloaded $imageDownloadCount new images");
             $this->info("- Poster size: $posterSize");
             $this->info("- Backdrop size: $backdropSize");
-        }
-
-        if ($endIndex < $totalMovies) {
-            $this->info("\nTo process the next batch, run:");
-            $this->info("php artisan tmdb:download $year --start=$endIndex --batch-size=$batchSize" .
-                ($downloadImages ? " --download-images" : "") .
-                ($streamImages ? " --stream-images" : "") .
-                " --memory-limit=$memoryLimit");
-        } else {
-            $this->info("\nAll movies have been processed!");
         }
 
         return 0;

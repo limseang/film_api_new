@@ -19,11 +19,13 @@ class ImportTmdbToFilm extends Command
      * @var string
      */
     protected $signature = 'import:tmdb-to-film {source_dir=storage/app/tmdb-data}
-                           {--year=2024}
+                           {--year=2002}
                            {--limit=}
                            {--type=1}
                            {--default-runtime=90}
-                           {--skip-upload}';
+                           {--skip-upload}
+                           {--memory=512M}
+                           {--batch-size=10}';
 
     /**
      * The console command description.
@@ -74,12 +76,29 @@ class ImportTmdbToFilm extends Command
      */
     public function handle()
     {
+        // Set memory limit from command parameter
+        $memoryLimit = $this->option('memory');
+        ini_set('memory_limit', $memoryLimit);
+        $this->info("Memory limit set to $memoryLimit");
+
+        // Batch size for processing
+        $batchSize = (int) $this->option('batch-size');
+
         $sourceDir = $this->argument('source_dir');
         $year = $this->option('year');
         $limit = $this->option('limit');
         $filmType = $this->option('type');
         $defaultRuntime = $this->option('default-runtime');
         $skipUpload = $this->option('skip-upload');
+
+        // Test database connection first
+        try {
+            DB::connection()->getPdo();
+            $this->info("Connected to database: " . DB::connection()->getDatabaseName());
+        } catch (\Exception $e) {
+            $this->error("Database connection failed: " . $e->getMessage());
+            return 1;
+        }
 
         // Load categories from database
         $this->loadCategories();
@@ -108,48 +127,7 @@ class ImportTmdbToFilm extends Command
         $idListFile = "$sourceDir/tmdb_movies_{$year}_id_list.json";
         $detailsDir = "$sourceDir/movie_details";
 
-        // Try to load movie data from available files
-        if (file_exists($detailedDataFile)) {
-            $this->info("Using complete details file");
-            $movies = json_decode(file_get_contents($detailedDataFile), true);
-        }
-        elseif (file_exists($idListFile) && is_dir($detailsDir)) {
-            $this->info("Using individual movie files");
-            $movieIds = json_decode(file_get_contents($idListFile), true);
-            $movies = [];
-
-            foreach ($movieIds as $id) {
-                $movieFile = "$detailsDir/$id.json";
-                if (file_exists($movieFile)) {
-                    $movies[] = json_decode(file_get_contents($movieFile), true);
-                }
-            }
-        }
-        elseif (file_exists($basicDataFile)) {
-            $this->info("Using basic movie data");
-            $movies = json_decode(file_get_contents($basicDataFile), true);
-        }
-        else {
-            $this->error("No TMDB movie data found. Run the download command first.");
-            return 1;
-        }
-
-        $totalMovies = count($movies);
-        $this->info("Found $totalMovies movies to process");
-
-        if ($limit && is_numeric($limit) && $limit < $totalMovies) {
-            $movies = array_slice($movies, 0, $limit);
-            $this->info("Limiting import to the first $limit movies");
-        }
-
-        $this->info("Starting import of " . count($movies) . " movies to Film model");
-        if ($skipUpload) {
-            $this->info("Image uploads will be skipped");
-        }
-
-        $bar = $this->output->createProgressBar(count($movies));
-        $bar->start();
-
+        // Initialize counters
         $importCount = 0;
         $errorCount = 0;
         $skippedCount = 0;
@@ -158,182 +136,68 @@ class ImportTmdbToFilm extends Command
         // Create upload controller only if not skipping uploads
         $uploadController = $skipUpload ? null : new UploadController();
 
-        foreach ($movies as $movieData) {
-            try {
-                // Check if the film already exists to avoid duplicates
-                $existingFilm = Film::where('title', $movieData['title'])
-                    ->where('release_date', $movieData['release_date'] ?? null)
-                    ->first();
-
-                if ($existingFilm) {
-                    $skippedCount++;
-                    $bar->advance();
-                    continue;
-                }
-
-                // Begin transaction for film and categories
-                DB::beginTransaction();
-
-                // Create new film object
-                $film = new Film();
-                $film->title = $movieData['title'];
-                $film->overview = $movieData['overview'] ?? '';
-                $film->release_date = $movieData['release_date'] ?? date('d/m/Y');
-                $film->view = 0;
-                $film->rating = '0';
-
-                // Set film type and running time
-                $film->type = $filmType;
-                $film->running_time = $movieData['runtime'] ?? $defaultRuntime;
-
-                // Get original language from TMDB data
-
-                $film->language = $this->findCountryIdForMovie($movieData);
-
-                // Set empty category field instead of comma-separated values
-                // We'll use the FilmCategory table to store relations instead
-                $film->category = '';
-
-                // Map country data from TMDB to our country ID
-                $film->country_id = $this->findCountryIdForMovie($movieData);
-
-                // Map keywords to tags
-                if (!empty($movieData['keywords']['keywords'])) {
-                    $keywords = array_column($movieData['keywords']['keywords'], 'name');
-                    $film->tag = implode(', ', array_slice($keywords, 0, 5));
-                }
-
-                // Map trailer
-                if (!empty($movieData['videos']['results'])) {
-                    $trailers = array_filter($movieData['videos']['results'], function($video) {
-                        return $video['type'] === 'Trailer' && $video['site'] === 'YouTube';
-                    });
-
-                    if (!empty($trailers)) {
-                        $film->trailer = 'https://www.youtube.com/watch?v=' . reset($trailers)['key'];
-                    }
-                }
-
-                // Map directors
-                if (!empty($movieData['credits']['crew'])) {
-                    $directors = array_filter($movieData['credits']['crew'], function($person) {
-                        return $person['job'] === 'Director';
-                    });
-
-                    if (!empty($directors)) {
-                        $directorNames = array_column($directors, 'name');
-                        $film->director = implode(', ', $directorNames);
-                    }
-                }
-
-                // Handle image uploads if not skipping
-                if (!$skipUpload) {
-                    try {
-                        // Find and upload poster (required)
-                        if (!empty($movieData['poster_path'])) {
-                            // Look for poster file in the posters directory
-                            $posterPattern = $postersDir . "/{$movieData['id']}_poster_*.jpg";
-                            $posterFiles = glob($posterPattern);
-
-                            if (!empty($posterFiles)) {
-                                // Use the first found poster file
-                                $posterFile = $posterFiles[0];
-
-                                // Create uploadable file
-                                $uploadedFile = new UploadedFile(
-                                    $posterFile,
-                                    basename($posterFile),
-                                    mime_content_type($posterFile),
-                                    null,
-                                    true
-                                );
-
-                                // Upload to OSS and get the ID directly
-                                try {
-                                    $film->poster = $uploadController->uploadFile($uploadedFile, 'film');
-                                    $this->info("\nPoster uploaded for '{$film->title}' - ID: {$film->poster}");
-                                } catch (Exception $e) {
-                                    $this->warn("\nCouldn't upload poster: " . $e->getMessage());
-                                    throw new Exception("OSS upload failed: " . $e->getMessage());
-                                }
-                            } else {
-                                $this->warn("\nNo poster file found for '{$film->title}'");
-                                throw new Exception("No poster file found");
-                            }
-                        } else {
-                            $this->warn("\nNo poster path in data for '{$film->title}'");
-                            throw new Exception("No poster path in data");
-                        }
-
-                        // Find and upload cover (optional)
-                        if (!empty($movieData['backdrop_path']) && file_exists($backdropsDir)) {
-                            // Look for backdrop file in the backdrops directory
-                            $backdropPattern = $backdropsDir . "/{$movieData['id']}_backdrop_*.jpg";
-                            $backdropFiles = glob($backdropPattern);
-
-                            if (!empty($backdropFiles)) {
-                                // Use the first found backdrop file
-                                $backdropFile = $backdropFiles[0];
-
-                                // Create uploadable file
-                                $uploadedFile = new UploadedFile(
-                                    $backdropFile,
-                                    basename($backdropFile),
-                                    mime_content_type($backdropFile),
-                                    null,
-                                    true
-                                );
-
-                                // Upload to OSS and get the ID directly - this is optional so catch errors
-                                try {
-                                    $film->cover = $uploadController->uploadFile($uploadedFile, 'film');
-                                    $this->info("\nCover uploaded for '{$film->title}' - ID: {$film->cover}");
-                                } catch (Exception $e) {
-                                    $this->warn("\nCouldn't upload cover (continuing anyway): " . $e->getMessage());
-                                }
-                            }
-                        }
-                    } catch (Exception $e) {
-                        // If there's an upload error, skip this movie
-                        $this->error("\nSkipping movie due to upload error: " . $e->getMessage());
-                        $errorCount++;
-                        $bar->advance();
-                        continue;
-                    }
-                } else {
-                    // If skipping uploads, set default values for the required fields
-                    $film->poster = '3442'; // Use a default poster ID
-                }
-
-                // Save the film with all its properties
-                $film->save();
-
-                // Now that we have the film ID, we can assign categories
-                $filmCategoryCount = $this->assignCategoriesToFilm($film->id, $movieData);
-                $categoryCount += $filmCategoryCount;
-
-                // Commit the transaction
-                DB::commit();
-
-                $importCount++;
-                $countryName = $film->country_id ? $this->getCountryNameById($film->country_id) : 'Unknown';
-                $this->info("\nImported: {$film->title} with $filmCategoryCount categories, Country: $countryName");
-
-            } catch (Exception $e) {
-                // Rollback transaction if there was an error
-                DB::rollBack();
-
-                $this->newLine();
-                $this->error("Error importing movie ': " . $e->getMessage());
-                $errorCount++;
-            }
-
-            $bar->advance();
+        // Process data based on available files
+        if (file_exists($detailedDataFile)) {
+            $this->info("Using line-by-line processing for detailed file");
+            $this->processJsonFileByLine(
+                $detailedDataFile,
+                $limit,
+                $filmType,
+                $defaultRuntime,
+                $skipUpload,
+                $uploadController,
+                $postersDir,
+                $backdropsDir,
+                $importCount,
+                $errorCount,
+                $skippedCount,
+                $categoryCount,
+                $batchSize
+            );
+        }
+        elseif (file_exists($idListFile) && is_dir($detailsDir)) {
+            $this->info("Using individual movie files");
+            $this->processIndividualFiles(
+                $idListFile,
+                $detailsDir,
+                $limit,
+                $filmType,
+                $defaultRuntime,
+                $skipUpload,
+                $uploadController,
+                $postersDir,
+                $backdropsDir,
+                $importCount,
+                $errorCount,
+                $skippedCount,
+                $categoryCount,
+                $batchSize
+            );
+        }
+        elseif (file_exists($basicDataFile)) {
+            $this->info("Using line-by-line processing for basic file");
+            $this->processJsonFileByLine(
+                $basicDataFile,
+                $limit,
+                $filmType,
+                $defaultRuntime,
+                $skipUpload,
+                $uploadController,
+                $postersDir,
+                $backdropsDir,
+                $importCount,
+                $errorCount,
+                $skippedCount,
+                $categoryCount,
+                $batchSize
+            );
+        }
+        else {
+            $this->error("No TMDB movie data found. Run the download command first.");
+            return 1;
         }
 
-        $bar->finish();
         $this->newLine(2);
-
         $this->info("Import completed:");
         $this->info("- Successfully imported: $importCount films");
         $this->info("- Total categories assigned: $categoryCount");
@@ -344,19 +208,441 @@ class ImportTmdbToFilm extends Command
     }
 
     /**
+     * Ultra memory-efficient method to process JSON file line by line
+     */
+    protected function processJsonFileByLine($filePath, $limit, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$errorCount, &$skippedCount, &$categoryCount, $batchSize)
+    {
+        $this->info("Reading file: $filePath");
+
+        // Get file size for progress reporting
+        $fileSize = filesize($filePath);
+        $this->info("File size: " . round($fileSize / 1024 / 1024, 2) . " MB");
+
+        // Open the file for reading
+        $handle = @fopen($filePath, "r");
+        if (!$handle) {
+            $this->error("Could not open file: $filePath");
+            return;
+        }
+
+        // Create a progress bar
+        $bar = $this->output->createProgressBar(100); // We'll update in percentage
+        $bar->start();
+
+        // Read the first line to check if it starts with [ (JSON array)
+        $firstChar = fread($handle, 1);
+        if ($firstChar !== '[') {
+            $this->error("File does not start with '[', not a JSON array");
+            fclose($handle);
+            return;
+        }
+
+        // Variables for tracking
+        $movieCount = 0;
+        $buffer = '';
+        $inString = false;
+        $escapeNext = false;
+        $braceDepth = 0;
+        $foundStart = false;
+        $lastPercentage = 0;
+
+        // Process the file character by character
+        while (!feof($handle)) {
+            $char = fread($handle, 1);
+
+            // Skip whitespace outside strings to save memory
+            if (!$inString && ($char === ' ' || $char === "\n" || $char === "\r" || $char === "\t")) {
+                continue;
+            }
+
+            // Handle string escaping
+            if ($escapeNext) {
+                $buffer .= $char;
+                $escapeNext = false;
+                continue;
+            }
+
+            // Handle quote escaping
+            if ($char === '\\' && $inString) {
+                $buffer .= $char;
+                $escapeNext = true;
+                continue;
+            }
+
+            // Handle string boundaries
+            if ($char === '"' && !$escapeNext) {
+                $inString = !$inString;
+            }
+
+            // Track JSON object depth
+            if (!$inString) {
+                if ($char === '{') {
+                    if (!$foundStart && $braceDepth === 0) {
+                        $foundStart = true;
+                    }
+                    $braceDepth++;
+                } else if ($char === '}') {
+                    $braceDepth--;
+
+                    // When braceDepth returns to 0, we've found a complete object
+                    if ($foundStart && $braceDepth === 0) {
+                        $buffer .= $char;
+
+                        // Process the movie object
+                        $movieData = json_decode($buffer, true);
+                        if ($movieData) {
+                            // Process in batches with explicit memory cleanup
+                            if ($movieCount % $batchSize === 0 && $movieCount > 0) {
+                                $this->info("\nProcessing batch " . floor($movieCount / $batchSize));
+                                // Force garbage collection
+                                gc_collect_cycles();
+                            }
+
+                            $this->processMovie(
+                                $movieData,
+                                $filmType,
+                                $defaultRuntime,
+                                $skipUpload,
+                                $uploadController,
+                                $postersDir,
+                                $backdropsDir,
+                                $importCount,
+                                $errorCount,
+                                $skippedCount,
+                                $categoryCount
+                            );
+
+                            $movieCount++;
+
+                            // Update progress
+                            $currentPosition = ftell($handle);
+                            $percentage = min(100, floor(($currentPosition / $fileSize) * 100));
+                            if ($percentage > $lastPercentage) {
+                                $bar->setProgress($percentage);
+                                $lastPercentage = $percentage;
+                            }
+
+                            // Free memory
+                            unset($movieData);
+
+                            // Check limit
+                            if ($limit && $movieCount >= $limit) {
+                                break;
+                            }
+                        } else {
+                            $this->error("\nFailed to parse JSON object: " . substr($buffer, 0, 50) . "...");
+                        }
+
+                        // Reset buffer and state for next movie
+                        $buffer = '';
+                        $foundStart = false;
+                        continue;
+                    }
+                }
+            }
+
+            // Only append to buffer if we've found the start of an object
+            if ($foundStart) {
+                $buffer .= $char;
+            }
+
+            // Skip commas between objects at root level
+            if (!$inString && $braceDepth === 0 && $char === ',') {
+                // Do nothing, just skip the comma
+                continue;
+            }
+
+            // Hard memory limit safety check - stop if buffer gets too large
+            if (strlen($buffer) > 10 * 1024 * 1024) { // 10MB
+                $this->error("\nBuffer size exceeded safety limit. Stopping import.");
+                break;
+            }
+        }
+
+        fclose($handle);
+        $bar->finish();
+        $this->newLine();
+        $this->info("Processed $movieCount movies from file");
+    }
+
+    /**
+     * Process individual movie files with ultra-low memory usage
+     */
+    protected function processIndividualFiles($idListFile, $detailsDir, $limit, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$errorCount, &$skippedCount, &$categoryCount, $batchSize)
+    {
+        // Read ID list file in chunks to avoid loading everything at once
+        $this->info("Reading ID list: $idListFile");
+        $idsContent = file_get_contents($idListFile);
+        $movieIds = json_decode($idsContent, true);
+        unset($idsContent); // Free memory
+
+        if (!is_array($movieIds)) {
+            $this->error("Failed to parse ID list as JSON array");
+            return;
+        }
+
+        $totalIds = count($movieIds);
+        $this->info("Found $totalIds movie IDs");
+
+        if ($limit && is_numeric($limit) && $limit < $totalIds) {
+            $movieIds = array_slice($movieIds, 0, $limit);
+            $this->info("Limiting import to the first $limit movies");
+        }
+
+        $this->info("Processing " . count($movieIds) . " individual movie files");
+        $bar = $this->output->createProgressBar(count($movieIds));
+        $bar->start();
+
+        $movieCount = 0;
+
+        foreach ($movieIds as $index => $id) {
+            // Process in batches
+            if ($movieCount % $batchSize === 0 && $movieCount > 0) {
+                $this->info("\nProcessing batch " . floor($movieCount / $batchSize));
+                gc_collect_cycles(); // Force garbage collection
+            }
+
+            $movieFile = "$detailsDir/$id.json";
+            if (file_exists($movieFile)) {
+                // Read and process one file at a time
+                $movieJson = file_get_contents($movieFile);
+                $movieData = json_decode($movieJson, true);
+                unset($movieJson); // Free memory immediately
+
+                if ($movieData) {
+                    $this->processMovie(
+                        $movieData,
+                        $filmType,
+                        $defaultRuntime,
+                        $skipUpload,
+                        $uploadController,
+                        $postersDir,
+                        $backdropsDir,
+                        $importCount,
+                        $errorCount,
+                        $skippedCount,
+                        $categoryCount
+                    );
+
+                    $movieCount++;
+
+                    // Free memory
+                    unset($movieData);
+                }
+            }
+
+            // Free memory by removing processed ID
+            unset($movieIds[$index]);
+
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->newLine();
+        $this->info("Processed $movieCount individual movie files");
+    }
+
+    /**
+     * Process an individual movie with minimal memory footprint
+     */
+    protected function processMovie($movieData, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$errorCount, &$skippedCount, &$categoryCount)
+    {
+        $title = $movieData['title'] ?? 'Unknown';
+
+        try {
+            // Generate checksum for this movie
+            $checksum = $this->generateMovieChecksum($movieData);
+
+            // First check if we've already processed this movie in the current batch
+            if (isset($this->importedFilmChecksums[$checksum])) {
+                $this->info("\nSkipping previously processed movie in this batch: $title");
+                $skippedCount++;
+                return;
+            }
+
+            // Then check if it exists in the database
+            $existingFilm = $this->checkForDuplicates($movieData);
+
+            if ($existingFilm) {
+                $this->info("\nSkipping duplicate movie: $title (ID: {$existingFilm->id})");
+                $skippedCount++;
+                return;
+            }
+
+            // Use the safe transaction wrapper
+            $this->safeTransaction(function() use ($movieData, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$categoryCount, $title, $checksum) {
+                // [Rest of your existing process film code]
+
+                // Create new film object with minimal data extraction
+                $film = new Film();
+                $film->title = $title;
+                $film->overview = mb_substr($movieData['overview'] ?? '', 0, 1000); // Limit overview length
+                $film->release_date = $this->formatReleaseDate($movieData['release_date'] ?? null);
+                $film->view = 0;
+                $film->rating = '0';
+                $film->type = $filmType;
+                $film->running_time = $movieData['runtime'] ?? $defaultRuntime;
+                $film->language = $this->findCountryIdForMovie($movieData);
+                $film->category = '';
+                $film->country_id = $this->findCountryIdForMovie($movieData);
+
+                // Process file data and save film as before...
+                // [Your existing code here]
+
+                // After successful save, add to our in-memory list of processed films
+                $this->importedFilmChecksums[$checksum] = $film->id;
+
+                return true;
+            });
+
+        } catch (Exception $e) {
+            $errorCount++;
+
+            // Only output occasionally to save memory from console buffer
+            if ($errorCount <= 5 || $errorCount % 50 === 0) {
+                $this->error("\nError importing '$title': " . $e->getMessage());
+            }
+        }
+    }
+
+
+    protected function reconnectIfMissing()
+    {
+        try {
+            // Test the connection with a simple query
+            DB::select('SELECT 1');
+        } catch (\Exception $e) {
+            $this->warn("\nDatabase connection lost. Reconnecting...");
+
+            // Close the existing connection
+            DB::disconnect();
+
+            // Wait a moment before reconnecting
+            sleep(1);
+
+            // Reconnect
+            DB::reconnect();
+
+            // Test the new connection
+            try {
+                DB::select('SELECT 1');
+                $this->info("\nDatabase connection re-established");
+            } catch (\Exception $e) {
+                $this->error("\nFailed to reconnect to database: " . $e->getMessage());
+                // You could throw an exception here if you want to stop the import
+            }
+        }
+    }
+
+    /**
+     * Execute database operations with reconnect capability
+     */
+    protected function safeTransaction(callable $callback)
+    {
+        $attempts = 0;
+        $maxAttempts = 3;
+
+        while ($attempts < $maxAttempts) {
+            try {
+                // Check connection before starting transaction
+                $this->reconnectIfMissing();
+
+                // Start transaction
+                DB::beginTransaction();
+
+                // Execute the operations
+                $result = $callback();
+
+                // Commit transaction
+                DB::commit();
+
+                // Success - return the result
+                return $result;
+            } catch (\PDOException $e) {
+                // If transaction is active, try to roll it back
+                if (DB::transactionLevel() > 0) {
+                    try {
+                        DB::rollBack();
+                    } catch (\Exception $rollbackException) {
+                        // Rollback failed, likely due to lost connection
+                        $this->warn("\nRollback failed: " . $rollbackException->getMessage());
+                        DB::disconnect();
+                    }
+                }
+
+                // MySQL server gone away or similar connection errors
+                if (strpos($e->getMessage(), 'server has gone away') !== false ||
+                    strpos($e->getMessage(), 'Lost connection') !== false) {
+
+                    $attempts++;
+                    $this->warn("\nDatabase connection error: " . $e->getMessage());
+
+                    if ($attempts < $maxAttempts) {
+                        $this->info("\nRetrying operation (attempt $attempts of $maxAttempts)...");
+                        sleep(2); // Wait before retrying
+                        continue;
+                    }
+                }
+
+                // Either not a connection error or max attempts reached
+                throw $e;
+            } catch (\Exception $e) {
+                // For any other exception, roll back and re-throw
+                if (DB::transactionLevel() > 0) {
+                    try {
+                        DB::rollBack();
+                    } catch (\Exception $rollbackException) {
+                        // Ignore rollback exceptions
+                    }
+                }
+                throw $e;
+            }
+        }
+    }
+
+    /**
      * Load categories from the database
      */
+
+    protected function formatReleaseDate($date)
+    {
+        if (empty($date)) {
+            // If no date provided, use current date in the correct format
+            return date('d/m/Y');
+        }
+
+        // Check if the date is already in the correct format (dd/mm/yyyy)
+        if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
+            return $date; // Already in the correct format
+        }
+
+        // Try to parse the date if it's in a standard format (like YYYY-MM-DD from TMDB)
+        try {
+            $dateObj = new \DateTime($date);
+            return $dateObj->format('d/m/Y'); // Format as dd/mm/yyyy
+        } catch (\Exception $e) {
+            // If parsing fails, return current date as fallback
+            return date('d/m/Y');
+        }
+    }
     protected function loadCategories()
     {
-        // Load categories from database
-        $this->categories = Category::where('status', '1')->get()->toArray();
+        $this->reconnectIfMissing();
+
+        // Load categories from database - query directly to minimize memory
+        $this->categories = DB::table('categories')
+            ->select('id', 'name')
+            ->where('status', '1')
+            ->get()
+            ->toArray();
+
         $this->info("Loaded " . count($this->categories) . " categories from database");
 
         // Create name to ID mapping
         foreach ($this->categories as $category) {
             // Map both lowercase name and original name to handle case sensitivity
-            $this->categoryNameToIdMap[strtolower($category['name'])] = $category['id'];
-            $this->categoryNameToIdMap[$category['name']] = $category['id'];
+            $this->categoryNameToIdMap[strtolower($category->name)] = $category->id;
+            $this->categoryNameToIdMap[$category->name] = $category->id;
         }
     }
 
@@ -365,8 +651,15 @@ class ImportTmdbToFilm extends Command
      */
     protected function loadCountries()
     {
-        // Load countries from database - assuming a Country model or similar
-        $this->countries = DB::table('countries')->where('status', '1')->get()->toArray();
+        $this->reconnectIfMissing();
+
+        // Load countries from database - directly from query to minimize memory
+        $this->countries = DB::table('countries')
+            ->select('id', 'name', 'code')
+            ->where('status', '1')
+            ->get()
+            ->toArray();
+
         $this->info("Loaded " . count($this->countries) . " countries from database");
 
         // Create name and code to ID mappings
@@ -384,10 +677,7 @@ class ImportTmdbToFilm extends Command
     }
 
     /**
-     * Find a country ID for a movie based on TMDB data
-     *
-     * @param array $movieData
-     * @return int|null
+     * Find a country ID for a movie based on TMDB data - simplified for memory
      */
     protected function findCountryIdForMovie($movieData)
     {
@@ -396,47 +686,47 @@ class ImportTmdbToFilm extends Command
 
         // Check for production countries in the movie data
         if (!empty($movieData['production_countries'])) {
-            // Try to match the first production country
-            foreach ($movieData['production_countries'] as $country) {
-                // Try to match by ISO code (e.g., US, GB, etc.)
-                if (!empty($country['iso_3166_1'])) {
-                    $countryCode = $country['iso_3166_1'];
-                    if (isset($this->countryCodeToIdMap[$countryCode])) {
-                        return $this->countryCodeToIdMap[$countryCode];
-                    }
+            // Try to match the first production country only
+            $country = reset($movieData['production_countries']);
+
+            // Try to match by ISO code (e.g., US, GB, etc.)
+            if (!empty($country['iso_3166_1'])) {
+                $countryCode = $country['iso_3166_1'];
+                if (isset($this->countryCodeToIdMap[$countryCode])) {
+                    return $this->countryCodeToIdMap[$countryCode];
+                }
+            }
+
+            // If no match by code, try to match by name
+            if (!empty($country['name'])) {
+                $countryName = $country['name'];
+                // Direct match
+                if (isset($this->countryNameToIdMap[$countryName])) {
+                    return $this->countryNameToIdMap[$countryName];
                 }
 
-                // If no match by code, try to match by name
-                if (!empty($country['name'])) {
-                    $countryName = $country['name'];
-                    // Direct match
-                    if (isset($this->countryNameToIdMap[$countryName])) {
-                        return $this->countryNameToIdMap[$countryName];
-                    }
+                // Case-insensitive match
+                $lowerCountryName = strtolower($countryName);
+                if (isset($this->countryNameToIdMap[$lowerCountryName])) {
+                    return $this->countryNameToIdMap[$lowerCountryName];
+                }
 
-                    // Case-insensitive match
-                    $lowerCountryName = strtolower($countryName);
-                    if (isset($this->countryNameToIdMap[$lowerCountryName])) {
-                        return $this->countryNameToIdMap[$lowerCountryName];
-                    }
+                // Special cases for country names that might not match directly
+                $specialMappings = [
+                    'united states of america' => 'United States of America',
+                    'usa' => 'United States of America',
+                    'united states' => 'United States of America',
+                    'uk' => 'United Kingdom',
+                    'great britain' => 'United Kingdom',
+                    'south korea' => 'Korea, South',
+                    'north korea' => 'Korea, North',
+                    'republic of korea' => 'Korea, South',
+                ];
 
-                    // Special cases for country names that might not match directly
-                    $specialMappings = [
-                        'united states of america' => 'United States of America',
-                        'usa' => 'United States of America',
-                        'united states' => 'United States of America',
-                        'uk' => 'United Kingdom',
-                        'great britain' => 'United Kingdom',
-                        'south korea' => 'Korea, South',
-                        'north korea' => 'Korea, North',
-                        'republic of korea' => 'Korea, South',
-                    ];
-
-                    if (isset($specialMappings[$lowerCountryName])) {
-                        $mappedName = $specialMappings[$lowerCountryName];
-                        if (isset($this->countryNameToIdMap[$mappedName])) {
-                            return $this->countryNameToIdMap[$mappedName];
-                        }
+                if (isset($specialMappings[$lowerCountryName])) {
+                    $mappedName = $specialMappings[$lowerCountryName];
+                    if (isset($this->countryNameToIdMap[$mappedName])) {
+                        return $this->countryNameToIdMap[$mappedName];
                     }
                 }
             }
@@ -444,7 +734,7 @@ class ImportTmdbToFilm extends Command
 
         // If no country found, check the original language as a fallback
         if (!empty($movieData['original_language'])) {
-
+            // Simple mapping for common languages to countries
             $languageCountryMap = [
                 // Existing mappings
                 'en' => 185, // English -> United States of America
@@ -561,7 +851,6 @@ class ImportTmdbToFilm extends Command
                 'xh' => 159  // Xhosa -> South Africa
             ];
 
-
             if (isset($languageCountryMap[$movieData['original_language']])) {
                 return $languageCountryMap[$movieData['original_language']];
             }
@@ -572,10 +861,7 @@ class ImportTmdbToFilm extends Command
     }
 
     /**
-     * Get a country name by ID
-     *
-     * @param int $countryId
-     * @return string
+     * Get a country name by ID - simplified
      */
     protected function getCountryNameById($countryId)
     {
@@ -589,56 +875,134 @@ class ImportTmdbToFilm extends Command
     }
 
     /**
-     * Assign categories to a film
-     *
-     * @param int $filmId
-     * @param array $movieData
-     * @return int Number of categories assigned
+     * Assign categories to a film - memory-optimized
      */
     protected function assignCategoriesToFilm($filmId, $movieData)
     {
         $genreMap = $this->getGenreMap();
         $assignedCount = 0;
-        $genreNames = [];
 
-        // Get genre names from the movie data
+        // Process genres directly without creating intermediate arrays
         if (!empty($movieData['genres'])) {
-            $genreNames = array_column($movieData['genres'], 'name');
-        } elseif (!empty($movieData['genre_ids'])) {
-            // For basic data that only has genre IDs, use the genre map
-            foreach ($movieData['genre_ids'] as $genreId) {
-                if (isset($genreMap[$genreId])) {
-                    $genreNames[] = $genreMap[$genreId];
+            foreach ($movieData['genres'] as $genre) {
+                if (!empty($genre['name'])) {
+                    $categoryId = $this->findCategoryIdByName($genre['name']);
+                    if ($categoryId) {
+                        $this->createFilmCategory($filmId, $categoryId);
+                        $assignedCount++;
+                    }
                 }
             }
-        }
-
-        // Process each genre and try to find a matching category
-        foreach ($genreNames as $genreName) {
-            // Try to find a matching category in our database
-            $categoryId = $this->findCategoryIdByName($genreName);
-
-            if ($categoryId) {
-                // Create film_category relationship
-                FilmCategory::create([
-                    'film_id' => $filmId,
-                    'category_id' => $categoryId
-                ]);
-
-                $assignedCount++;
-            } else {
-                $this->warn("\nCouldn't find category match for genre: $genreName");
+        } elseif (!empty($movieData['genre_ids'])) {
+            foreach ($movieData['genre_ids'] as $genreId) {
+                if (isset($genreMap[$genreId])) {
+                    $categoryId = $this->findCategoryIdByName($genreMap[$genreId]);
+                    if ($categoryId) {
+                        $this->createFilmCategory($filmId, $categoryId);
+                        $assignedCount++;
+                    }
+                }
             }
         }
 
         return $assignedCount;
     }
 
+    protected function checkForDuplicates($movieData)
+    {
+        $this->reconnectIfMissing();
+
+        $title = $movieData['title'] ?? 'Unknown';
+        $releaseDate = $this->formatReleaseDate($movieData['release_date'] ?? null);
+        $tmdbId = $movieData['id'] ?? null;
+        $runtime = $movieData['runtime'] ?? null;
+
+        $query = Film::query();
+
+        // Start with base query - title match is required
+        $query->where('title', $title);
+
+        // Add release date check if available
+        if (!empty($releaseDate)) {
+            $query->where('release_date', $releaseDate);
+        }
+
+        // Check for any direct TMDB ID stored in your database (if you have such field)
+        // Uncomment and modify if you have a tmdb_id field
+        // if (!empty($tmdbId)) {
+        //     $query->orWhere('tmdb_id', $tmdbId);
+        // }
+
+        // If we have runtime, use it as additional identifier
+        if (!empty($runtime)) {
+            $query->where(function($q) use ($runtime) {
+                // Allow slight runtime difference (±2 minutes)
+                $q->whereBetween('running_time', [$runtime-2, $runtime+2]);
+            });
+        }
+
+        // Try to find the film
+        $existingFilm = $query->first();
+
+        if ($existingFilm) {
+            // Log more detailed information about the duplicate
+            $this->logDuplicateInfo($movieData, $existingFilm);
+        }
+
+        return $existingFilm;
+    }
+
+    protected function logDuplicateInfo($movieData, $existingFilm)
+    {
+        $tmdbTitle = $movieData['title'] ?? 'Unknown';
+        $tmdbDate = $movieData['release_date'] ?? 'Unknown';
+        $tmdbRuntime = $movieData['runtime'] ?? 'Unknown';
+
+        // Create a log record of the duplicate
+        $duplicateLog = "Duplicate found:\n";
+        $duplicateLog .= "- TMDB: '$tmdbTitle' ($tmdbDate) - Runtime: $tmdbRuntime min\n";
+        $duplicateLog .= "- Existing: '{$existingFilm->title}' ({$existingFilm->release_date}) - Runtime: {$existingFilm->running_time} min\n";
+        $duplicateLog .= "- DB ID: {$existingFilm->id}";
+
+        // Log to console
+        $this->info($duplicateLog);
+
+        // Optionally, log to file for tracking all duplicates
+        $logFile = storage_path('logs/film_import_duplicates.log');
+        file_put_contents(
+            $logFile,
+            date('[Y-m-d H:i:s] ') . $duplicateLog . "\n\n",
+            FILE_APPEND
+        );
+    }
+
+    protected $importedFilmChecksums = [];
+    protected function generateMovieChecksum($movieData)
+    {
+        $title = strtolower($movieData['title'] ?? '');
+        $year = substr($movieData['release_date'] ?? '', 0, 4);
+
+        return md5($title . '_' . $year);
+    }
+
     /**
-     * Find a category ID by matching the name
-     *
-     * @param string $genreName
-     * @return int|null
+     * Create a film-category relationship directly
+     */
+    protected function createFilmCategory($filmId, $categoryId)
+    {
+        $this->reconnectIfMissing();
+
+        // Use direct DB insertion instead of Eloquent to save memory
+        DB::table('film_categories')->insert([
+            'film_id' => $filmId,
+            'category_id' => $categoryId,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    }
+
+    /**
+     * Find a category ID by matching the name - simplified
      */
     protected function findCategoryIdByName($genreName)
     {
@@ -671,9 +1035,7 @@ class ImportTmdbToFilm extends Command
     }
 
     /**
-     * Get a mapping of genre IDs to names
-     *
-     * @return array
+     * Get a mapping of genre IDs to names - simplified static map
      */
     protected function getGenreMap()
     {
@@ -689,11 +1051,11 @@ class ImportTmdbToFilm extends Command
             14 => 'Fantasy',
             36 => 'History',
             27 => 'Horror',
-            10402 => 'Musical', // Changed from 'Music' to match our database
+            10402 => 'Musical',
             9648 => 'Mystery',
             10749 => 'Romance',
-            878 => 'Sci-Fi',   // Changed from 'Science Fiction' to match our database
-            10770 => 'Drama',  // Changed from 'TV Movie' to a reasonable fallback
+            878 => 'Sci-Fi',
+            10770 => 'Drama',
             53 => 'Thriller',
             10752 => 'War',
             37 => 'Western'
