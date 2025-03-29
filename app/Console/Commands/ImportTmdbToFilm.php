@@ -19,7 +19,7 @@ class ImportTmdbToFilm extends Command
      * @var string
      */
     protected $signature = 'import:tmdb-to-film {source_dir=storage/app/tmdb-data}
-                           {--year=2002}
+                           {--year=2003}
                            {--limit=}
                            {--type=1}
                            {--default-runtime=90}
@@ -450,29 +450,19 @@ class ImportTmdbToFilm extends Command
         $title = $movieData['title'] ?? 'Unknown';
 
         try {
-            // Generate checksum for this movie
-            $checksum = $this->generateMovieChecksum($movieData);
-
-            // First check if we've already processed this movie in the current batch
-            if (isset($this->importedFilmChecksums[$checksum])) {
-                $this->info("\nSkipping previously processed movie in this batch: $title");
-                $skippedCount++;
-                return;
-            }
-
-            // Then check if it exists in the database
-            $existingFilm = $this->checkForDuplicates($movieData);
+            // Check if the film already exists to avoid duplicates
+            $this->reconnectIfMissing(); // Check connection before query
+            $existingFilm = Film::where('title', $title)
+                ->where('release_date', $this->formatReleaseDate($movieData['release_date'] ?? null))
+                ->first();
 
             if ($existingFilm) {
-                $this->info("\nSkipping duplicate movie: $title (ID: {$existingFilm->id})");
                 $skippedCount++;
                 return;
             }
 
             // Use the safe transaction wrapper
-            $this->safeTransaction(function() use ($movieData, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$categoryCount, $title, $checksum) {
-                // [Rest of your existing process film code]
-
+            $this->safeTransaction(function() use ($movieData, $filmType, $defaultRuntime, $skipUpload, $uploadController, $postersDir, $backdropsDir, &$importCount, &$categoryCount, $title) {
                 // Create new film object with minimal data extraction
                 $film = new Film();
                 $film->title = $title;
@@ -486,11 +476,150 @@ class ImportTmdbToFilm extends Command
                 $film->category = '';
                 $film->country_id = $this->findCountryIdForMovie($movieData);
 
-                // Process file data and save film as before...
-                // [Your existing code here]
+                // Extract minimal required data, avoiding deep array operations
 
-                // After successful save, add to our in-memory list of processed films
-                $this->importedFilmChecksums[$checksum] = $film->id;
+                // Map keywords to tags - only if they exist
+                if (!empty($movieData['keywords']['keywords'])) {
+                    // Extract just 5 keywords max, with minimal memory operations
+                    $tagArray = [];
+                    $count = 0;
+                    foreach ($movieData['keywords']['keywords'] as $keyword) {
+                        if (isset($keyword['name'])) {
+                            $tagArray[] = $keyword['name'];
+                            $count++;
+                            if ($count >= 5) break;
+                        }
+                    }
+                    $film->tag = implode(', ', $tagArray);
+                    unset($tagArray); // Free memory
+                }
+
+                // Map trailer - only extract first YouTube trailer
+                if (!empty($movieData['videos']['results'])) {
+                    foreach ($movieData['videos']['results'] as $video) {
+                        if (($video['type'] ?? '') === 'Trailer' && ($video['site'] ?? '') === 'YouTube') {
+                            $film->trailer = 'https://www.youtube.com/watch?v=' . $video['key'];
+                            break; // Just get the first one
+                        }
+                    }
+                }
+
+                // Map directors - extract first director only to save memory
+                if (!empty($movieData['credits']['crew'])) {
+                    foreach ($movieData['credits']['crew'] as $person) {
+                        if (($person['job'] ?? '') === 'Director') {
+                            $film->director = $person['name'];
+                            break; // Just get the first one
+                        }
+                    }
+                }
+
+                // Handle image uploads if not skipping
+                if (!$skipUpload) {
+                    $posterUploaded = false;
+
+                    // Find and upload poster (attempt to use TMDB poster first)
+                    if (!empty($movieData['poster_path'])) {
+                        try {
+                            // Look for poster file in the posters directory
+                            $posterPattern = $postersDir . "/{$movieData['id']}_poster_*.jpg";
+                            $posterFiles = glob($posterPattern);
+
+                            if (!empty($posterFiles)) {
+                                // Use the first found poster file
+                                $posterFile = $posterFiles[0];
+
+                                // Create uploadable file
+                                $uploadedFile = new UploadedFile(
+                                    $posterFile,
+                                    basename($posterFile),
+                                    mime_content_type($posterFile),
+                                    null,
+                                    true
+                                );
+
+                                // Upload to OSS and get the ID directly
+                                $film->poster = $uploadController->uploadFile($uploadedFile, 'film');
+                                $posterUploaded = true;
+                            }
+                        } catch (\Exception $e) {
+                            // Log exception but continue with default poster
+                        }
+                    }
+
+                    // If poster upload failed or no poster available, use default poster from assets
+                    if (!$posterUploaded) {
+                        try {
+                            // Path to your default poster in assets
+                            $defaultPosterPath = public_path('assets/images/no_poster.png');
+
+                            if (file_exists($defaultPosterPath)) {
+                                // Create uploadable file from default poster
+                                $uploadedFile = new UploadedFile(
+                                    $defaultPosterPath,
+                                    'no_poster.png',
+                                    mime_content_type($defaultPosterPath),
+                                    null,
+                                    true
+                                );
+
+                                // Upload default poster
+                                $film->poster = $uploadController->uploadFile($uploadedFile, 'film');
+                            } else {
+                                // If even the default poster is missing, use a hardcoded ID
+                                $film->poster = '3442'; // Fallback to hardcoded poster ID
+                            }
+                        } catch (\Exception $e) {
+                            // Last resort - use hardcoded poster ID
+                            $film->poster = '3442'; // Fallback to hardcoded poster ID
+                        }
+                    }
+
+                    // Find and upload cover (optional) - only if memory allows
+                    if (!empty($movieData['backdrop_path']) && file_exists($backdropsDir)) {
+                        try {
+                            // Look for backdrop file in the backdrops directory
+                            $backdropPattern = $backdropsDir . "/{$movieData['id']}_backdrop_*.jpg";
+                            $backdropFiles = glob($backdropPattern);
+
+                            if (!empty($backdropFiles)) {
+                                // Use the first found backdrop file
+                                $backdropFile = $backdropFiles[0];
+
+                                // Create uploadable file
+                                $uploadedFile = new UploadedFile(
+                                    $backdropFile,
+                                    basename($backdropFile),
+                                    mime_content_type($backdropFile),
+                                    null,
+                                    true
+                                );
+
+                                // Try to upload - but don't fail if it doesn't work
+                                $film->cover = $uploadController->uploadFile($uploadedFile, 'film');
+                            }
+                        } catch (\Exception $e) {
+                            // Just ignore cover upload failures
+                        }
+                    }
+                } else {
+                    // If skipping uploads, set default values for the required fields
+                    $film->poster = '3442'; // Use a default poster ID
+                }
+
+                // Save the film with all its properties
+                $film->save();
+
+                // Now that we have the film ID, we can assign categories
+                $filmCategoryCount = $this->assignCategoriesToFilm($film->id, $movieData);
+                $categoryCount += $filmCategoryCount;
+
+                $importCount++;
+
+                // Only output occasionally to save memory from console buffer
+                if ($importCount <= 5 || $importCount % 50 === 0) {
+                    $this->info("\nImported: $title (Film ID: {$film->id})");
+                }
 
                 return true;
             });
