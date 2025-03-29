@@ -19,25 +19,24 @@ class ArtistController extends Controller
             $query = Artist::with('country');
 
             // Add search by name functionality
-            if ($request->has('name') && !empty($request->name)) {
+            if ($request->has('name') && $request->name !== null && $request->name !== '') {
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
 
-            if ($request->has('nationality') && !empty($request->nationality)) {
+            if ($request->has('nationality') && $request->nationality !== null && $request->nationality !== '') {
                 $query->where('nationality', $request->nationality);
             }
 
-            if($request->has('gender') && ! empty($request->gender)){
+            if ($request->has('gender') && $request->gender !== null && $request->gender !== '') {
                 $query->where('gender', $request->gender);
             }
 
-
             // Filter by birth year range if provided
-            if ($request->has('birth_year_from') && !empty($request->birth_year_from)) {
+            if ($request->has('birth_year_from') && $request->birth_year_from !== null && $request->birth_year_from !== '') {
                 $query->whereRaw('YEAR(STR_TO_DATE(birth_date, "%d/%m/%Y")) >= ?', [$request->birth_year_from]);
             }
 
-            if ($request->has('birth_year_to') && !empty($request->birth_year_to)) {
+            if ($request->has('birth_year_to') && $request->birth_year_to !== null && $request->birth_year_to !== '') {
                 $query->whereRaw('YEAR(STR_TO_DATE(birth_date, "%d/%m/%Y")) <= ?', [$request->birth_year_to]);
             }
 
