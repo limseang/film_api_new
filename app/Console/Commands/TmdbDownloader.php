@@ -12,7 +12,7 @@ class TmdbDownloader extends Command
      *
      * @var string
      */
-    protected $signature = 'tmdb:download {year=2024}
+    protected $signature = 'tmdb:download {year=2008}
                            {--output=storage/app/tmdb-data}
                            {--download-images}
                            {--poster-size=w500}
@@ -20,8 +20,8 @@ class TmdbDownloader extends Command
                            {--memory-limit=512M}
                            {--stream-images}';
 
-    /**
-     * The console command description.
+    /**00
+     * The conso   le command description.
      *
      * @var string
      */

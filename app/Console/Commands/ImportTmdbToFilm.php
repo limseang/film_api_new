@@ -19,7 +19,7 @@ class ImportTmdbToFilm extends Command
      * @var string
      */
     protected $signature = 'import:tmdb-to-film {source_dir=storage/app/tmdb-data}
-                           {--year=2003}
+                           {--year=2022}
                            {--limit=}
                            {--type=1}
                            {--default-runtime=90}
