@@ -16,6 +16,7 @@ class CinemBranchController extends Controller
             $uploadController = new UploadController();
             $cinemBranches = CinemBranch::with('cinemas')->get();
             $data = $cinemBranches->map(function ($cinemBranch) use ($uploadController) {
+
                 return [
                     'id' => $cinemBranch->id,
                     'cinema_id' => $cinemBranch->cinema_id,
@@ -24,6 +25,7 @@ class CinemBranchController extends Controller
                     'phone' => $cinemBranch->phone,
                     'image' => $uploadController->getSignedUrl($cinemBranch->image),
                     'cinemaLogo' => $uploadController->getSignedUrl($cinemBranch->cinemas->logo),
+                    'cinema_url' => $cinemBranch->cinemas->url,
                     'status' => $cinemBranch->status,
                     'map_link' => $cinemBranch->map_link,
                     'cinema_name' => $cinemBranch->cinemas->name ?? 'null',
