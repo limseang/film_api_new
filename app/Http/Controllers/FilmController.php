@@ -562,22 +562,28 @@ public function updateFilm(Request $request,$id)
 
         try {
             $uploadController = new UploadController();
-            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
+            $model = Film::with(['languages', 'categories', 'directors', 'tags','genre', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
 
             // Apply title filter if provided
             if ($request->has('title') && !empty($request->title)) {
                 $model->where('title', 'like', '%' . $request->title . '%');
+               //filter also in tag
+                $model->orWhereHas('tags', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->title . '%');
+                });
             }
 
-            // Apply year filter if provided
+           // apply filter by country_id
+            if ($request->has('country_id') && !empty($request->country_id)) {
+                $model->where('language', $request->country_id);
+            }
+
             if ($request->has('year') && !empty($request->year)) {
                 // Filter by year from d/m/Y formatted date strings
                 $model->where(function($query) use ($request) {
                     $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
                 });
             }
-
-            // Apply genre filter if provided
             if ($request->has('genre_id') && !empty($request->genre_id)) {
                 $model->where('genre_id', $request->genre_id);
             }
@@ -627,6 +633,9 @@ public function updateFilm(Request $request,$id)
                     'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
+                    'language' => $film->languages ? $film->languages->name : null,
+                    'genre' => $film->genre ? $film->genre->description : null,
+
                 ];
             });
 
