@@ -550,6 +550,7 @@ public function updateFilm(Request $request,$id)
             'category_id' => 'nullable', // Can be single or multiple
             'page' => 'nullable|integer',
             'watch' => 'nullable|string', // Accept string for mobile compatibility
+            'country' =>'nullable|string',
         ]);
 
         $page = $request->get('page', 1);
@@ -596,16 +597,15 @@ public function updateFilm(Request $request,$id)
                 });
             }
 
-            // Apply watch filter if true
+            // Apply country filter if provided
+            if ($request->has('country') && !empty($request->country)) {
+                $countryId = $request->country;
+                $model->where('language', $countryId);
+            }
 
             // Apply watch filter if true
             if ($watch) {
                 $user = auth('sanctum')->user();
-
-
-                // Debug: You can add logging here to check what's happening
-                // Log::info('Auth user check:', ['user' => $user]);
-
 
                 if ($user === null && $user->user_type == "1" ) {
                     $model->where('type', 5);
