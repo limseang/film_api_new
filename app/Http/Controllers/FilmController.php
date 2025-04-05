@@ -493,7 +493,7 @@ public function updateFilm(Request $request,$id)
 
             // Get the films with related data
             $films = Film::query()->where('type', 10)
-                ->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])
+                ->with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast','genre'])
                 ->get()
                 ->sortBy(function($film) {
                     // Check for valid date before formatting
@@ -525,6 +525,7 @@ public function updateFilm(Request $request,$id)
                         'rating' => (string)$this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
+                        'description' => $film->genre ? $film->genre->description : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'cast' => $film->cast ? $this->getCastResource($film->cast) : null, // Fixed cast case sensitivity
                     ];
