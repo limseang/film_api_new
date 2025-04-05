@@ -525,7 +525,7 @@ public function updateFilm(Request $request,$id)
                         'rating' => (string)$this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
-                        'description' => $film->genre ? $film->genre->description : null,
+                        'genre' => $film->genre ? $film->genre->description : null,
                         'category' => $film->filmCategories ? $this->getCategoryResource($film->filmCategories) : null,
                         'cast' => $film->cast ? $this->getCastResource($film->cast) : null, // Fixed cast case sensitivity
                     ];
