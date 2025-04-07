@@ -302,7 +302,7 @@ class ArticalController extends Controller
                 'film' => $artical->film,
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
-                'created_at' => $artical->created_at->format('d/m/Y'),
+                'created_at' => $artical->created_at,
                 'comment' => $artical->comments->map(function ($comment) use ($uploadController) {
                     if($comment->confess == 1){
                         return [
