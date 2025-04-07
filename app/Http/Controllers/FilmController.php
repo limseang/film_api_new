@@ -927,6 +927,7 @@ public function updateFilm(Request $request,$id)
                         'image' => $uploadController->getSignedUrl($article->image),
                         'description' => Str::limit($description, 60, '.....'),
                         'type' => $article->type ? $article->type->name : '',
+                        'release_date' => $article->created_at,
                     ];
                 })->values()->all();
 
