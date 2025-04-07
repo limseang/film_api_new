@@ -47,6 +47,7 @@ class ArticalController extends Controller
                     'image' => $artical->image,
                     'description' => Str::limit($description, 60, '.....'),
                     'type' => $artical->type ? $artical->type->name : '',
+                    'release_date' => $artical->created_at->format('d/m/Y'),
                 ];
 
             });
