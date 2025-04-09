@@ -1,5 +1,5 @@
 <div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
-    
+
     <?php $currentURL = url()->current(); ?>
     <!-- Sidebar content -->
     <div class="sidebar-content">
@@ -45,7 +45,7 @@
                 <?php $arrRoutePeople = [
                 route('artist.index'),
                 route('artist.create'),
-                request()->is('admin/artist/edit/*'), 
+                request()->is('admin/artist/edit/*'),
                 route('user.index'),
                 route('user.create'),
                 request()->is('admin/user/edit/*')
@@ -135,7 +135,7 @@
                   <?php $arrRouteArtical = [
                     route('artical.index'),
                     route('artical.create'),
-                    request()->is('admin/artical/edit/*'),
+                    request()->is('/edit/*'),
                     route('origin.index'),
                     route('origin.create'),
                     request()->is('admin/origin/edit/*')
@@ -147,7 +147,7 @@
                             <span>{{__('sma.artical')}}</span>
                         </a>
                         <ul class="nav-group-sub collapse  @if(in_array($currentURL, $arrRouteArtical)) show @else '' @endif">
-                            <?php $arrRouteArticalList = [route('artical.index'),route('artical.create'),request()->is('admin/artical/edit/*')]; ?>
+                            <?php $arrRouteArticalList = [route('artical.index'),route('artical.create'),request()->is('/edit/*')]; ?>
                             @if(authorize('can view artical'))
                                 <li class="nav-item">
                                     <a href="{{route('artical.index')}}" class="nav-link  @if(in_array($currentURL, $arrRouteArticalList)) active-side @else '' @endif">
@@ -170,7 +170,7 @@
                 {{-- Film --}}
                 <?php $arrRouteFilm = [
                 route('film.index'),
-                route('film.create'), 
+                route('film.create'),
                 request()->is('admin/film/edit/*'),
                 request()->is('admin/film/show-episode/*'),
                 route('cast.index'),
@@ -222,9 +222,9 @@
                 @endif
                 {{-- End Film --}}
                 <?php $arrRouteSetting = [route('role.index'),
-                route('role.create'), 
-                request()->is('admin/role/edit/*'), 
-                request()->is('admin/role/permission/*'), 
+                route('role.create'),
+                request()->is('admin/role/edit/*'),
+                request()->is('admin/role/permission/*'),
                 route('system_log.index'),
                 route('type.index'),
                 route('type.create'),
@@ -328,5 +328,5 @@
 
     </div>
     <!-- /sidebar content -->
-    
+
 </div>

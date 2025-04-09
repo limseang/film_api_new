@@ -235,7 +235,7 @@ class ArticalController extends Controller
             ];
             return redirect()->back()->withInput()->with($notification);
         }
-         
+
     }
 
     public function destroy($id)

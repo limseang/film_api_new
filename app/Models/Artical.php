@@ -19,7 +19,7 @@ class Artical extends Model
 {
     use HasFactory, SoftDeletes, AlibabaStorage, LogsActivity;
 
-    protected $table ='articals';
+    protected $table = 'articals';
     protected $fillable = [
         'title',
         'description',
@@ -34,20 +34,20 @@ class Artical extends Model
         'view',
         'film_id',
         'tag_id',
-
     ];
 
-    protected $append =[
+    protected $appends = [
         'image_url',
     ];
+
     /**
      * @return BelongsTo
      */
     public function origin(): BelongsTo
     {
         return $this->belongsTo(Origin::class);
-
     }
+
     /**
      * @return BelongsTo
      */
@@ -55,44 +55,69 @@ class Artical extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function likes()
+
+    /**
+     * @return HasMany
+     */
+    public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }
-    public function comments() : HasMany
+
+    /**
+     * @return HasMany
+     */
+    public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class,'item_id','id')->where('type',1);
+        return $this->hasMany(Comment::class, 'item_id', 'id')->where('type', 1);
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
     }
+
+    /**
+     * @return BelongsToMany
+     */
     public function tag(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class,'artical_tag','artical_id','tag_id');
+        return $this->belongsToMany(Tag::class, 'artical_tag', 'artical_id', 'tag_id');
     }
 
-    public function categoryArtical()
+    /**
+     * @return HasMany
+     */
+    public function categoryArtical(): HasMany
     {
         return $this->hasMany(CategoryArtical::class);
     }
 
+    /**
+     * @return HasMany
+     */
     public function BookMark(): HasMany
     {
-        return $this->hasMany(BookMark::class,'post_id','id');
+        return $this->hasMany(BookMark::class, 'post_id', 'id');
     }
 
-    public function getImageUrlAttribute()
+    /**
+     * Get the image URL attribute.
+     *
+     * @return string|null
+     */
+    public function getImageUrlAttribute(): ?string
     {
         return $this->image ? $this->getSignedUrl($this->image) : null;
     }
 
-    
-    
     protected static $logFillable = true;
     protected static $logOnlyDirty = true;
     protected static $dontSubmitEmptyLogs = true;
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -101,12 +126,11 @@ class Artical extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
     public function tapActivity(Activity $activity)
     {
-        $activity->default_field    = "{$this->title}";
-        $activity->log_name         = $this->table;
-        $activity->causer_id        = Auth::user()->id;
+        $activity->default_field = "{$this->title}";
+        $activity->log_name = $this->table;
+        $activity->causer_id = Auth::user()->id ?? null; // Add null check for Auth
     }
-
-
 }

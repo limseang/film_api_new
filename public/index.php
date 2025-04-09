@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '512M'); // Add this line to increase memory limit
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
