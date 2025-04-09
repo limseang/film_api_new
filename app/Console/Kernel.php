@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
 // Other commands...
         \App\Console\Commands\TmdbDownloader::class,
         \App\Console\Commands\ImportTmdbToFilm::class,
+        \App\Console\Commands\NotificationQueueWorker::class,
     ];
 
 }

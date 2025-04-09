@@ -190,4 +190,11 @@
         // Menu System User Log
         const MENU_SYSTEM_USER_LOG = "System User Log";
         const PERMISSION_SYSTEM_USER_LOG_VIEW = "can view system user log";
+        
+        // Menu Request Film
+        const MENU_REQUEST_FILM = "Request Film";
+        const REQUEST_FILM_ICON = "ph-file-search";
+        const PERMISSION_REQUEST_FILM_VIEW = "can view request film";
+        const PERMISSION_REQUEST_FILM_EDIT = "can edit request film";
+        const PERMISSION_REQUEST_FILM_DELETE = "can delete request film";
     }

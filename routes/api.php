@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdMobCallbackController;
 use App\Http\Controllers\AdvertisController;
@@ -46,26 +49,40 @@ use App\Http\Controllers\SubcriptController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
-use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\VersionCheckController;
 use App\Http\Controllers\VideoController;
 use App\Models\ReportComment;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
+// Add the status update route
+Route::post('/update-online-status', function (Request $request) {
+    if (auth()->check()) {
+        $user = auth()->user();
+        $firebaseService = app(\App\Services\FirebaseRealTimeService::class);
+
+        $firebaseService->updateUserStatus($user->id, true, [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role_id,
+            'is_admin' => false,
+            'app_version' => $request->input('app_version', 'unknown'),
+            'device_info' => $request->input('device_info', 'unknown'),
+            'last_url' => $request->input('screen', 'unknown'),
+            'last_ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
+})->middleware('auth:sanctum');
+
+// Original API routes
+// Include your existing API routes below
 /* Check Version */
 Route::get('/version/check', [VersionCheckController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
@@ -347,7 +364,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::post('/film/add/genre', [FilmController::class, 'addGenre']);
         Route::post('/film/add/distributor', [FilmController::class, 'addDistributor']);
 
-/* Episode */
+        /* Episode */
         Route::post('/film/episode/new/', [EpisodeController::class, 'create']);
         Route::delete('/film/episode/delete/{id}', [EpisodeController::class, 'destroy']);
     });
@@ -420,11 +437,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/advertisement', [AdvertisController::class, 'index']);
 Route::get('/advertisement/{id}', [AdvertisController::class, 'showByID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
-   Route::group(['middleware' => ['postpermission']], function () {
-       Route::post('/advertisement/new', [AdvertisController::class, 'create']);
-       Route::delete('/advertisement/delete/{id}', [AdvertisController::class, 'destroy']);
-       Route::post('/advertisement/update/{id}', [AdvertisController::class, 'update']);
-   });
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/advertisement/new', [AdvertisController::class, 'create']);
+        Route::delete('/advertisement/delete/{id}', [AdvertisController::class, 'destroy']);
+        Route::post('/advertisement/update/{id}', [AdvertisController::class, 'update']);
+    });
 });
 
 /* Casting */
@@ -442,11 +459,11 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/casting/role', [CastingRoleModelController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function (){
-   Route::group(['middleware' => ['postpermission']], function () {
-       Route::post('/casting/role/new', [CastingRoleModelController::class, 'create']);
-       Route::delete('/casting/role/delete/{id}', [CastingRoleModelController::class, 'destroy']);
-       Route::post('/casting/role/update/{id}', [CastingRoleModelController::class, 'update']);
-   });
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/casting/role/new', [CastingRoleModelController::class, 'create']);
+        Route::delete('/casting/role/delete/{id}', [CastingRoleModelController::class, 'destroy']);
+        Route::post('/casting/role/update/{id}', [CastingRoleModelController::class, 'update']);
+    });
 });
 
 
@@ -531,22 +548,22 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/video', [VideoController::class, 'index']);
 Route::get('/video/{id}', [VideoController::class, 'detail']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
-   Route::group(['middleware' => ['postpermission']], function () {
-       Route::post('/video/new', [VideoController::class, 'create']);
-       Route::delete('/video/delete/{id}', [VideoController::class, 'destroy']);
-       Route::post('/video/update/{id}', [VideoController::class, 'update']);
-   });
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/video/new', [VideoController::class, 'create']);
+        Route::delete('/video/delete/{id}', [VideoController::class, 'destroy']);
+        Route::post('/video/update/{id}', [VideoController::class, 'update']);
+    });
 });
 
 /* CinemaBranch */
 Route::get('/cinema/branch', [CinemBranchController::class, 'index']);
 Route::get('/cinema/branch/{id}', [CinemBranchController::class, 'branchDetail']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
-   Route::group(['middleware' => ['postpermission']], function () {
-       Route::post('/cinema/branch/new', [CinemBranchController::class, 'create']);
-       Route::delete('/cinema/branchs/delete/{id}', [CinemBranchController::class, 'destroy']);
-       Route::post('/cinema/branch/update/{id}', [CinemBranchController::class, 'update']);
-   });
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/cinema/branch/new', [CinemBranchController::class, 'create']);
+        Route::delete('/cinema/branchs/delete/{id}', [CinemBranchController::class, 'destroy']);
+        Route::post('/cinema/branch/update/{id}', [CinemBranchController::class, 'update']);
+    });
 });
 
 /* Favorite */
@@ -598,10 +615,10 @@ Route::post('/event/package/send', [EventPackageController::class, 'sendSMS']);
 Route::get('/event/package/detail/{id}', [EventPackageController::class, 'packageByEvent']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::group(['middleware' => ['postpermission']], function () {
-       Route::group(['middleware' => ['postpermission']], function () {
-           Route::post('/event/package/create', [EventPackageController::class, 'create']);
-           Route::delete('/event/package/delete/{id}', [EventPackageController::class, 'destroy']);
-       });
+        Route::group(['middleware' => ['postpermission']], function () {
+            Route::post('/event/package/create', [EventPackageController::class, 'create']);
+            Route::delete('/event/package/delete/{id}', [EventPackageController::class, 'destroy']);
+        });
     });
 });
 
@@ -686,12 +703,12 @@ Route::post('/webhook/payment', [UserController::class, 'handlePaymentWebhook'])
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/supplier', [SupplierController::class, 'index']);
     Route::get('/supplier/{id}', [SupplierController::class, 'detail']);
-   Route::group(['middleware' => ['postpermission']], function () {
-       Route::post('/supplier/create', [SupplierController::class, 'create']);
-       Route::get('/supplier', [SupplierController::class, 'index']);
-       Route::delete('/supplier/delete/{id}', [SupplierController::class, 'destroy']);
-       Route::post('/supplier/update/{id}', [SupplierController::class, 'update']);
-   });
+    Route::group(['middleware' => ['postpermission']], function () {
+        Route::post('/supplier/create', [SupplierController::class, 'create']);
+        Route::get('/supplier', [SupplierController::class, 'index']);
+        Route::delete('/supplier/delete/{id}', [SupplierController::class, 'destroy']);
+        Route::post('/supplier/update/{id}', [SupplierController::class, 'update']);
+    });
 });
 
 // subcription
@@ -700,10 +717,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/subscription/{id}', [SubcriptController::class, 'detail']);
     Route::get('/subscription/subscribe/verify/{transactionId}', [SubcriptController::class, 'fetchSubscriptionData']);
     Route::group(['middleware' => ['postpermission']], function () {
-      Route::post('/subscription/create', [SubcriptController::class, 'create']);
-      Route::delete('/subscription/delete/{id}', [SubcriptController::class, 'destroy']);
-      Route::post('/subscription/update/{id}', [SubcriptController::class, 'update']);
-  });
+        Route::post('/subscription/create', [SubcriptController::class, 'create']);
+        Route::delete('/subscription/delete/{id}', [SubcriptController::class, 'destroy']);
+        Route::post('/subscription/update/{id}', [SubcriptController::class, 'update']);
+    });
 });
 
 Route::group(['middleware' => ['apple.jwt']], function () {
@@ -721,47 +738,3 @@ Route::get('/christmas-form/all', [ChristmasFormController::class, 'index']);
 Route::get('/christmas-form/{id}', [ChristmasFormController::class, 'detail']);
 
 // routes/web.php
-
-
-//->middleware('apple.jwt');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

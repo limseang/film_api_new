@@ -30,7 +30,7 @@ class ArticalController extends Controller
     {
         if(!authorize(RolePermissionConstant::PERMISSION_ARTICAL_VIEW)){
             return redirect()->back()->with('error', authorizeMessage());
-         }
+        }
 
         $data['origins'] = Origin::where('status',1)->get();
         $data['categories'] = Category::where('status',1)->get();

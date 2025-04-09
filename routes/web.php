@@ -74,6 +74,7 @@ Route::post('/admin/login',[AuthController::class, 'postLogin']) -> name('admin.
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
+    Route::post('/update-online-status', [DashboardController::class, 'updateOnlineStatus'])->name('update.online.status');
     Route::get('lang/{local}', [UserAdminController::class, 'lang'])->name('lang');
     Route::get('/logout',[AuthController::class, 'logout']) -> name('logout');
 
@@ -307,6 +308,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/edit/{id}', [ReportIncomeExpenseController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [ReportIncomeExpenseController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [ReportIncomeExpenseController::class, 'destroy'])->name('delete');
+        });
+        
+        // Request Film
+        Route::prefix('request_film')->name('request_film.')->group(function(){
+            Route::get('/', [App\Http\Controllers\Admin\RequestFilmController::class, 'index'])->name('index');
+            Route::get('/edit/{id}', [App\Http\Controllers\Admin\RequestFilmController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\Admin\RequestFilmController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [App\Http\Controllers\Admin\RequestFilmController::class, 'destroy'])->name('delete');
         });
     });
 });
