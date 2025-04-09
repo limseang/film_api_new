@@ -382,13 +382,21 @@ class UserController extends Controller
     {
         try {
             // Validate the input
-            $validatedData = $request->validate([
-                'user_id'  => 'required|exists:users,id',
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|exists:users,id',
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+
             // Find the user
             $user = User::find($request->user_id);
+
+            if (!$user) {
+                return $this->sendError('User not found.');
+            }
 
             // Update the password
             $user->password = Hash::make($request->password);
