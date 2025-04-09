@@ -27,7 +27,7 @@ class UserController extends Controller
     public  function  index(){
         try{
             $cloudController = new UploadController();
-           $user = User::all();
+            $user = User::all();
 
             foreach ($user as $item){
                 if(!empty($item['avatar'])){
@@ -212,7 +212,7 @@ class UserController extends Controller
         }
 
     }
- public function socialLogin(Request $request)
+    public function socialLogin(Request $request)
     {
         try{
             $user = new User();
@@ -363,7 +363,7 @@ class UserController extends Controller
                     'message' => 'Old password not match',
                 ], 400);
             }
-           if(Hash::check($request->new_password, $user->password)){
+            if(Hash::check($request->new_password, $user->password)){
                 return response()->json([
                     'message' => 'New password can not be the same as old password',
                 ], 400);
@@ -404,20 +404,20 @@ class UserController extends Controller
 
 
     public function deleteAccount()
-   {
-       try{
-           $user = auth()->user();
-           $user->delete();
-              return $this->sendResponse();
-       }
-       catch (Exception $e){
-              return $this->sendError($e->getMessage());
-       }
+    {
+        try{
+            $user = auth()->user();
+            $user->delete();
+            return $this->sendResponse();
+        }
+        catch (Exception $e){
+            return $this->sendError($e->getMessage());
+        }
 
-   }
+    }
 
 
-   // Todo: Admin
+    // Todo: Admin
     public function AdminLogin(Request $request)
     {
         try{
@@ -652,7 +652,7 @@ class UserController extends Controller
                 $defaultLanguage = 'en'; // Assuming 'en' as default if language is not provided
 
 
-             //check userUUID if exist
+                //check userUUID if exist
                 if(!$data['id']){
                     Log::error('Invalid Telegram data verification failed.', $data);
                     return response()->json(['error' => 'Invalid Telegram login data'], 401);

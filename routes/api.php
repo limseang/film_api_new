@@ -81,8 +81,7 @@ Route::post('/update-online-status', function (Request $request) {
     return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
 })->middleware('auth:sanctum');
 
-// Original API routes
-// Include your existing API routes below
+
 /* Check Version */
 Route::get('/version/check', [VersionCheckController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
