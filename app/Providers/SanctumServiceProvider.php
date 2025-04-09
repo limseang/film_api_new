@@ -5,9 +5,7 @@ namespace App\Providers;
 use App\Auth\SanctumGuard;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Contracts\Auth\Factory;
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\Guard;
 use Laravel\Sanctum\SanctumServiceProvider as LaravelSanctumServiceProvider;
 
 class SanctumServiceProvider extends ServiceProvider
@@ -24,9 +22,12 @@ class SanctumServiceProvider extends ServiceProvider
             $this->app->make(Factory::class)->extend('sanctum', function ($app, $name, array $config) {
                 return new RequestGuard(
                     function ($request) use ($app) {
+                        // Create a new SanctumGuard with the appropriate parameters
+                        // First parameter is the Auth Factory
+                        // Second parameter should be the token expiration time in minutes
                         return (new SanctumGuard(
                             $app->make(Factory::class),
-                            $app->make(Kernel::class)
+                            $config['expiration'] ?? null // Use expiration from config, or null for default
                         ))->__invoke($request);
                     },
                     $app['request'],

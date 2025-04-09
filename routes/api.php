@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdMobCallbackController;
 use App\Http\Controllers\AdvertisController;
@@ -46,25 +49,38 @@ use App\Http\Controllers\SubcriptController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
-use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\VersionCheckController;
 use App\Http\Controllers\VideoController;
 use App\Models\ReportComment;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+
+// Add the status update route
+Route::post('/update-online-status', function (Request $request) {
+    if (auth()->check()) {
+        $user = auth()->user();
+        $firebaseService = app(\App\Services\FirebaseRealTimeService::class);
+
+        $firebaseService->updateUserStatus($user->id, true, [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role_id,
+            'is_admin' => false,
+            'app_version' => $request->input('app_version', 'unknown'),
+            'device_info' => $request->input('device_info', 'unknown'),
+            'last_url' => $request->input('screen', 'unknown'),
+            'last_ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
+})->middleware('auth:sanctum');
+
 
 /* Check Version */
 Route::get('/version/check', [VersionCheckController::class, 'index']);
@@ -721,46 +737,3 @@ Route::get('/christmas-form/all', [ChristmasFormController::class, 'index']);
 Route::get('/christmas-form/{id}', [ChristmasFormController::class, 'detail']);
 
 // routes/web.php
-
-
-//->middleware('apple.jwt');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
