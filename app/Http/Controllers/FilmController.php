@@ -750,35 +750,31 @@ public function updateFilm(Request $request,$id)
 
     public function addGenre(Request $request)
     {
-        try{
+        try {
             $film = Film::find($request->film_id);
-            if(!$film){
+            if (!$film) {
                 return response()->json([
                     'message' => 'Film not found',
                 ], 400);
             }
+
             // validate genre id
             $genre = Genre::find($request->genre_id);
-            if(!$genre){
+            if (!$genre) {
                 return response()->json([
                     'message' => 'Genre not found',
                 ], 400);
             }
-           //1 film has only 1 genre
-            if($film->genre){
-                return response()->json([
-                    'message' => 'Film has already had genre',
-                ], 400);
-            }
-            $film->id = $request->film_id;
+
+            // Instead of checking and returning an error, we'll just update the genre
+            // regardless of whether it already has one or not
             $film->genre_id = $request->genre_id;
             $film->save();
+
             return $this->sendResponse($film);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
-
     }
 
     public function update(Request $request)
