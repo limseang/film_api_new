@@ -565,26 +565,26 @@ public function updateFilm(Request $request,$id)
             $uploadController = new UploadController();
             $model = Film::with(['languages', 'categories', 'directors', 'tags','genre', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
 
-            // Apply title filter if provided
+            // Apply title filter if provided - Use a where closure for proper grouping
             if ($request->has('title') && !empty($request->title)) {
-                $model->where('title', 'like', '%' . $request->title . '%');
-               //filter also in tag
-                $model->orWhereHas('tags', function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->title . '%');
+                $model->where(function($query) use ($request) {
+                    $query->where('title', 'like', '%' . $request->title . '%')
+                        ->orWhereHas('tags', function ($subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%' . $request->title . '%');
+                        });
                 });
             }
 
-           // apply filter by country_id
+            // Apply filter by country_id
             if ($request->has('country_id') && !empty($request->country_id)) {
                 $model->where('language', $request->country_id);
             }
 
             if ($request->has('year') && !empty($request->year)) {
                 // Filter by year from d/m/Y formatted date strings
-                $model->where(function($query) use ($request) {
-                    $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
-                });
+                $model->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
             }
+
             if ($request->has('genre_id') && !empty($request->genre_id)) {
                 $model->where('genre_id', $request->genre_id);
             }
@@ -606,20 +606,19 @@ public function updateFilm(Request $request,$id)
 
             // Apply country filter if provided
             if ($request->has('country') && !empty($request->country)) {
-                $countryId = $request->country;
-                $model->where('language', $countryId);
+                $model->where('language', $request->country);
             }
 
             // Apply watch filter if true
             if ($watch) {
                 $user = auth('sanctum')->user();
 
-                if ($user === null && $user->user_type == "1" ) {
-                    $model->where('type', 5);
-                } else {
+                if ($user === null || $user->user_type != "1") {
                     $model->whereHas('episode', function ($query) {
                         $query->where('id', '>', 0);
                     });
+                } else {
+                    $model->where('type', 5);
                 }
             }
 
@@ -636,7 +635,6 @@ public function updateFilm(Request $request,$id)
                     'type' => $film->types ? $film->types->name : null,
                     'language' => $film->languages ? $film->languages->name : null,
                     'genre' => $film->genre ? $film->genre->description : null,
-
                 ];
             });
 
