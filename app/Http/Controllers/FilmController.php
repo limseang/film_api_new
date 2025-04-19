@@ -561,14 +561,6 @@ public function updateFilm(Request $request,$id)
             ? filter_var($request->get('watch'), FILTER_VALIDATE_BOOLEAN)
             : false;
 
-        // Move user authentication outside the query building process
-        $user = null;
-        $userType = null;
-        if ($watch) {
-            $user = auth('sanctum')->user();
-            $userType = $user ? $user->user_type : null;
-        }
-
         try {
             $uploadController = new UploadController();
 
@@ -640,17 +632,13 @@ public function updateFilm(Request $request,$id)
                 $model->where('language', $request->country);
             }
 
-            // Apply watch filter if true, using the pre-fetched user information
+            // Apply watch filter if true - no need to check user
             if ($watch) {
-                if ($userType != "1") {
-                    // Use a more efficient check for episodes - just check existence
-                    $model->whereHas('episode');
+                // Use a more efficient check for episodes - just check existence
+                $model->whereHas('episode');
 
-                    // Alternatively, consider a subquery if it performs better in your case:
-                    // $model->whereRaw('EXISTS (SELECT 1 FROM episodes WHERE episodes.film_id = films.id)');
-                } else {
-                    $model->where('type', 5);
-                }
+                // Alternatively, consider a subquery if it performs better in your case:
+                // $model->whereRaw('EXISTS (SELECT 1 FROM episodes WHERE episodes.film_id = films.id)');
             }
 
             // Use a smaller page size if performance is still an issue
