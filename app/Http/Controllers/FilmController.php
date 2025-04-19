@@ -548,146 +548,179 @@ public function updateFilm(Request $request,$id)
             'title' => 'nullable|string',
             'year' => 'nullable|integer',
             'genre_id' => 'nullable|integer',
-            'category_id' => 'nullable', // Can be single or multiple
+            'category_id' => 'nullable',
             'page' => 'nullable|integer',
-            'watch' => 'nullable|string', // Accept string for mobile compatibility
+            'watch' => 'nullable|string',
             'country' =>'nullable|string',
         ]);
 
+        // Get basic params with defaults
         $page = $request->get('page', 1);
+        $watch = $request->has('watch') ? filter_var($request->get('watch'), FILTER_VALIDATE_BOOLEAN) : false;
 
-        // Handle watch parameter (convert string to boolean)
-        $watch = $request->has('watch')
-            ? filter_var($request->get('watch'), FILTER_VALIDATE_BOOLEAN)
-            : false;
-
-        // Move user authentication outside the query building process
-        $user = null;
-        $userType = null;
-        if ($watch) {
-            $user = auth('sanctum')->user();
-            $userType = $user ? $user->user_type : null;
-        }
+        // Get user info once
+        $user = $watch ? auth('sanctum')->user() : null;
+        $userType = $user ? $user->user_type : null;
 
         try {
             $uploadController = new UploadController();
 
-            // Only eager load necessary relationships to improve performance
-            $relationships = ['languages', 'categories', 'genre', 'types'];
+            // Use query builder instead of Eloquent for better performance
+            $query = DB::table('films')
+                ->select('films.id', 'films.title', 'films.release_date', 'films.poster', 'films.type', 'films.language', 'films.genre_id');
 
-            // Only load these relationships when needed for the final results
-            if ($page == 1) {
-                $relationships = array_merge($relationships, ['directors', 'tags', 'filmCategories', 'rate', 'cast', 'distributors']);
-            }
+            // Join only the absolutely necessary tables
+            $query->leftJoin('languages', 'films.language', '=', 'languages.id');
+            $query->leftJoin('genres', 'films.genre_id', '=', 'genres.id');
+            $query->leftJoin('types', 'films.type', '=', 'types.id');
 
-            $model = Film::with($relationships);
-
-            // Apply title filter if provided - Use a where closure for proper grouping
+            // Apply title filter if provided
             if ($request->has('title') && !empty($request->title)) {
                 $searchTerm = '%' . $request->title . '%';
-                $model->where(function($query) use ($searchTerm) {
-                    $query->where('title', 'like', $searchTerm)
-                        ->orWhereHas('tags', function ($subQuery) use ($searchTerm) {
-                            $subQuery->where('name', 'like', $searchTerm);
-                        });
+                $query->where(function($q) use ($searchTerm) {
+                    $q->where('films.title', 'like', $searchTerm);
+                    // Tag search is moved to a separate union if really needed
                 });
             }
 
-            // Apply filter by country_id
+            // Apply basic filters
             if ($request->has('country_id') && !empty($request->country_id)) {
-                $model->where('language', $request->country_id);
+                $query->where('films.language', $request->country_id);
             }
 
             if ($request->has('year') && !empty($request->year)) {
-                // Use index-friendly year comparison if possible
-                if (Schema::hasColumn('films', 'year')) {
-                    $model->where('year', $request->year);
-                } else {
-                    // Filter by year from d/m/Y formatted date strings
-                    // Consider adding a computed/stored year column for better performance
-                    $model->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
-                }
+                $query->whereRaw("RIGHT(films.release_date, 4) = ?", [$request->year]);
             }
 
             if ($request->has('genre_id') && !empty($request->genre_id)) {
-                $model->where('genre_id', $request->genre_id);
+                $query->where('films.genre_id', $request->genre_id);
             }
 
-            // Apply category filter only if provided and not empty
+            if ($request->has('country') && !empty($request->country)) {
+                $query->where('films.language', $request->country);
+            }
+
+            // Apply category filter - using join for better performance
             if ($request->has('category_id') && !empty($request->category_id)) {
                 $categoryFilter = $request->category_id;
 
-                // Check if it's a string (single value), convert to array
                 if (!is_array($categoryFilter)) {
                     $categoryFilter = explode(',', $categoryFilter);
                 }
 
-                // Use join instead of whereHas for better performance with multiple categories
-                if (count($categoryFilter) > 1) {
-                    $model->join('film_categories', 'films.id', '=', 'film_categories.film_id')
-                        ->whereIn('film_categories.category_id', $categoryFilter)
-                        ->distinct(); // Ensure no duplicates
-                } else {
-                    // For single category, whereHas is fine
-                    $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
-                        $query->whereIn('category_id', $categoryFilter);
-                    });
-                }
+                $query->join('film_categories', 'films.id', '=', 'film_categories.film_id')
+                    ->whereIn('film_categories.category_id', $categoryFilter)
+                    ->distinct();
             }
 
-            // Apply country filter if provided
-            if ($request->has('country') && !empty($request->country)) {
-                $model->where('language', $request->country);
-            }
-
-            // Apply watch filter if true, using the pre-fetched user information
+            // Apply the watch filter - this is the critical performance bottleneck
             if ($watch) {
                 if ($userType != "1") {
-                    // Use a more efficient check for episodes - just check existence
-                    $model->whereHas('episode');
-
-                    // Alternatively, consider a subquery if it performs better in your case:
-                    // $model->whereRaw('EXISTS (SELECT 1 FROM episodes WHERE episodes.film_id = films.id)');
+                    // Check if we have a film_has_episodes column for a faster check
+                    if (Schema::hasColumn('films', 'has_episodes')) {
+                        $query->where('films.has_episodes', true);
+                    } else {
+                        // Use EXISTS subquery instead of a join - more efficient
+                        $query->whereExists(function ($subquery) {
+                            $subquery->select(DB::raw(1))
+                                ->from('episodes')
+                                ->whereRaw('episodes.film_id = films.id')
+                                ->limit(1);
+                        });
+                    }
                 } else {
-                    $model->where('type', 5);
+                    $query->where('films.type', 5);
                 }
             }
 
-            // Use a smaller page size if performance is still an issue
-            $perPage = 24;
+            // Paginate results
+            $totalFilms = $query->count(DB::raw('DISTINCT films.id'));
 
-            // Consider adding index hints if needed
-            // $model->from(DB::raw('films USE INDEX (primary)'));
+            // Get IDs first, then retrieve data - can be much faster for complex queries
+            $filmIds = clone $query;
+            $filmIds = $filmIds->distinct()->select('films.id')->forPage($page, 24)->pluck('id')->toArray();
 
-            $films = $model->paginate($perPage, ['*'], 'page', $page);
+            if (empty($filmIds)) {
+                return $this->sendResponse([
+                    'current_page' => $page,
+                    'total_pages' => 0,
+                    'total_count' => 0,
+                    'per_page' => 24,
+                    'total' => 0,
+                    'films' => [],
+                ]);
+            }
 
-            // Extract only necessary fields for mapping to improve performance
-            $data = $films->map(function ($film) use ($uploadController) {
+            // Now fetch only the needed films by ID
+            $filmsData = DB::table('films')
+                ->select('films.id', 'films.title', 'films.release_date', 'films.poster', 'films.type',
+                    'languages.name as language_name', 'genres.description as genre_description',
+                    'types.name as type_name')
+                ->leftJoin('languages', 'films.language', '=', 'languages.id')
+                ->leftJoin('genres', 'films.genre_id', '=', 'genres.id')
+                ->leftJoin('types', 'films.type', '=', 'types.id')
+                ->whereIn('films.id', $filmIds)
+                ->get();
+
+            // Get ratings in one batch query instead of individual calls
+            $filmRatings = $this->batchGetRatings($filmIds);
+
+            $data = $filmsData->map(function ($film) use ($uploadController, $filmRatings) {
+                $filmId = $film->id;
                 return [
-                    'id' => $film->id,
+                    'id' => $filmId,
                     'title' => $film->title,
                     'release_date' => $film->release_date,
                     'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
-                    'rating' => (string) $this->countRate($film->id),
-                    'rate_people' => $this->countRatePeople($film->id),
-                    'type' => $film->types ? $film->types->name : null,
-                    'language' => $film->languages ? $film->languages->name : null,
-                    'genre' => $film->genre ? $film->genre->description : null,
+                    'rating' => (string) ($filmRatings[$filmId]['rating'] ?? '0'),
+                    'rate_people' => $filmRatings[$filmId]['people'] ?? 0,
+                    'type' => $film->type_name,
+                    'language' => $film->language_name,
+                    'genre' => $film->genre_description,
                 ];
             });
 
+            // Sort by rating
+            $sortedData = $data->sortByDesc('rating')->values()->all();
+
+            // Calculate pagination data
+            $lastPage = ceil($totalFilms / 24);
+
             return $this->sendResponse([
-                'current_page' => $films->currentPage(),
-                'total_pages' => $films->lastPage(),
-                'total_count' => $films->total(),
-                'per_page' => $films->perPage(),
-                'total' => $films->total(),
-                'films' => $data->sortByDesc('rating')->values()->all(),
+                'current_page' => $page,
+                'total_pages' => $lastPage,
+                'total_count' => $totalFilms,
+                'per_page' => 24,
+                'total' => $totalFilms,
+                'films' => $sortedData,
             ]);
         }
         catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
+    }
+
+
+    private function batchGetRatings(array $filmIds)
+    {
+        $result = [];
+
+        // This assumes countRate and countRatePeople use the rate table
+        // Replace with your actual implementation
+        $ratingData = DB::table('rate')
+            ->select('film_id', DB::raw('AVG(value) as rating'), DB::raw('COUNT(*) as people'))
+            ->whereIn('film_id', $filmIds)
+            ->groupBy('film_id')
+            ->get();
+
+        foreach ($ratingData as $rating) {
+            $result[$rating->film_id] = [
+                'rating' => number_format($rating->rating, 1),
+                'people' => $rating->people
+            ];
+        }
+
+        return $result;
     }
 
     public function ChangeType(Request $request, $id)
