@@ -563,44 +563,28 @@ public function updateFilm(Request $request,$id)
 
         try {
             $uploadController = new UploadController();
+            $model = Film::with(['languages', 'categories', 'directors', 'tags','genre', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
 
-            // Only eager load necessary relationships to improve performance
-            $relationships = ['languages', 'categories', 'genre', 'types'];
-
-            // Only load these relationships when needed for the final results
-            if ($page == 1) {
-                $relationships = array_merge($relationships, ['directors', 'tags', 'filmCategories', 'rate', 'cast', 'distributors']);
-            }
-
-            $model = Film::with($relationships);
-
-            // Apply title filter if provided - Use a where closure for proper grouping
+            // Apply title filter if provided
             if ($request->has('title') && !empty($request->title)) {
-                $searchTerm = '%' . $request->title . '%';
-                $model->where(function($query) use ($searchTerm) {
-                    $query->where('title', 'like', $searchTerm)
-                        ->orWhereHas('tags', function ($subQuery) use ($searchTerm) {
-                            $subQuery->where('name', 'like', $searchTerm);
-                        });
+                $model->where('title', 'like', '%' . $request->title . '%');
+               //filter also in tag
+                $model->orWhereHas('tags', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->title . '%');
                 });
             }
 
-            // Apply filter by country_id
+           // apply filter by country_id
             if ($request->has('country_id') && !empty($request->country_id)) {
                 $model->where('language', $request->country_id);
             }
 
             if ($request->has('year') && !empty($request->year)) {
-                // Use index-friendly year comparison if possible
-                if (Schema::hasColumn('films', 'year')) {
-                    $model->where('year', $request->year);
-                } else {
-                    // Filter by year from d/m/Y formatted date strings
-                    // Consider adding a computed/stored year column for better performance
-                    $model->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
-                }
+                // Filter by year from d/m/Y formatted date strings
+                $model->where(function($query) use ($request) {
+                    $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                });
             }
-
             if ($request->has('genre_id') && !empty($request->genre_id)) {
                 $model->where('genre_id', $request->genre_id);
             }
@@ -614,42 +598,33 @@ public function updateFilm(Request $request,$id)
                     $categoryFilter = explode(',', $categoryFilter);
                 }
 
-                // Use join instead of whereHas for better performance with multiple categories
-                if (count($categoryFilter) > 1) {
-                    $model->join('film_categories', 'films.id', '=', 'film_categories.film_id')
-                        ->whereIn('film_categories.category_id', $categoryFilter)
-                        ->distinct(); // Ensure no duplicates
-                } else {
-                    // For single category, whereHas is fine
-                    $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
-                        $query->whereIn('category_id', $categoryFilter);
-                    });
-                }
+                // Filter films that belong to any of the provided categories
+                $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
+                    $query->whereIn('category_id', $categoryFilter);
+                });
             }
 
             // Apply country filter if provided
             if ($request->has('country') && !empty($request->country)) {
-                $model->where('language', $request->country);
+                $countryId = $request->country;
+                $model->where('language', $countryId);
             }
 
-            // Apply watch filter if true - no need to check user
+            // Apply watch filter if true
             if ($watch) {
-                // Use a more efficient check for episodes - just check existence
-                $model->whereHas('episode');
+                $user = auth('sanctum')->user();
 
-                // Alternatively, consider a subquery if it performs better in your case:
-                // $model->whereRaw('EXISTS (SELECT 1 FROM episodes WHERE episodes.film_id = films.id)');
+                if ($user === null && $user->user_type == "1" ) {
+                    $model->where('type', 5);
+                } else {
+                    $model->whereHas('episode', function ($query) {
+                        $query->where('id', '>', 0);
+                    });
+                }
             }
 
-            // Use a smaller page size if performance is still an issue
-            $perPage = 24;
+            $films = $model->paginate(24, ['*'], 'page', $page);
 
-            // Consider adding index hints if needed
-            // $model->from(DB::raw('films USE INDEX (primary)'));
-
-            $films = $model->paginate($perPage, ['*'], 'page', $page);
-
-            // Extract only necessary fields for mapping to improve performance
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
@@ -661,6 +636,7 @@ public function updateFilm(Request $request,$id)
                     'type' => $film->types ? $film->types->name : null,
                     'language' => $film->languages ? $film->languages->name : null,
                     'genre' => $film->genre ? $film->genre->description : null,
+
                 ];
             });
 
