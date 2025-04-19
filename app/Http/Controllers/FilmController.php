@@ -561,16 +561,34 @@ public function updateFilm(Request $request,$id)
             ? filter_var($request->get('watch'), FILTER_VALIDATE_BOOLEAN)
             : false;
 
+        // Move user authentication outside the query building process
+        $user = null;
+        $userType = null;
+        if ($watch) {
+            $user = auth('sanctum')->user();
+            $userType = $user ? $user->user_type : null;
+        }
+
         try {
             $uploadController = new UploadController();
-            $model = Film::with(['languages', 'categories', 'directors', 'tags','genre', 'types', 'filmCategories', 'rate', 'cast', 'genre', 'distributors']);
+
+            // Only eager load necessary relationships to improve performance
+            $relationships = ['languages', 'categories', 'genre', 'types'];
+
+            // Only load these relationships when needed for the final results
+            if ($page == 1) {
+                $relationships = array_merge($relationships, ['directors', 'tags', 'filmCategories', 'rate', 'cast', 'distributors']);
+            }
+
+            $model = Film::with($relationships);
 
             // Apply title filter if provided - Use a where closure for proper grouping
             if ($request->has('title') && !empty($request->title)) {
-                $model->where(function($query) use ($request) {
-                    $query->where('title', 'like', '%' . $request->title . '%')
-                        ->orWhereHas('tags', function ($subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%' . $request->title . '%');
+                $searchTerm = '%' . $request->title . '%';
+                $model->where(function($query) use ($searchTerm) {
+                    $query->where('title', 'like', $searchTerm)
+                        ->orWhereHas('tags', function ($subQuery) use ($searchTerm) {
+                            $subQuery->where('name', 'like', $searchTerm);
                         });
                 });
             }
@@ -581,8 +599,14 @@ public function updateFilm(Request $request,$id)
             }
 
             if ($request->has('year') && !empty($request->year)) {
-                // Filter by year from d/m/Y formatted date strings
-                $model->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                // Use index-friendly year comparison if possible
+                if (Schema::hasColumn('films', 'year')) {
+                    $model->where('year', $request->year);
+                } else {
+                    // Filter by year from d/m/Y formatted date strings
+                    // Consider adding a computed/stored year column for better performance
+                    $model->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                }
             }
 
             if ($request->has('genre_id') && !empty($request->genre_id)) {
@@ -598,10 +622,17 @@ public function updateFilm(Request $request,$id)
                     $categoryFilter = explode(',', $categoryFilter);
                 }
 
-                // Filter films that belong to any of the provided categories
-                $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
-                    $query->whereIn('category_id', $categoryFilter);
-                });
+                // Use join instead of whereHas for better performance with multiple categories
+                if (count($categoryFilter) > 1) {
+                    $model->join('film_categories', 'films.id', '=', 'film_categories.film_id')
+                        ->whereIn('film_categories.category_id', $categoryFilter)
+                        ->distinct(); // Ensure no duplicates
+                } else {
+                    // For single category, whereHas is fine
+                    $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
+                        $query->whereIn('category_id', $categoryFilter);
+                    });
+                }
             }
 
             // Apply country filter if provided
@@ -609,21 +640,28 @@ public function updateFilm(Request $request,$id)
                 $model->where('language', $request->country);
             }
 
-            // Apply watch filter if true
+            // Apply watch filter if true, using the pre-fetched user information
             if ($watch) {
-                $user = auth('sanctum')->user();
+                if ($userType != "1") {
+                    // Use a more efficient check for episodes - just check existence
+                    $model->whereHas('episode');
 
-                if ($user === null || $user->user_type != "1") {
-                    $model->whereHas('episode', function ($query) {
-                        $query->where('id', '>', 0);
-                    });
+                    // Alternatively, consider a subquery if it performs better in your case:
+                    // $model->whereRaw('EXISTS (SELECT 1 FROM episodes WHERE episodes.film_id = films.id)');
                 } else {
                     $model->where('type', 5);
                 }
             }
 
-            $films = $model->paginate(24, ['*'], 'page', $page);
+            // Use a smaller page size if performance is still an issue
+            $perPage = 24;
 
+            // Consider adding index hints if needed
+            // $model->from(DB::raw('films USE INDEX (primary)'));
+
+            $films = $model->paginate($perPage, ['*'], 'page', $page);
+
+            // Extract only necessary fields for mapping to improve performance
             $data = $films->map(function ($film) use ($uploadController) {
                 return [
                     'id' => $film->id,
