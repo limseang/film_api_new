@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\OnlineStatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -57,29 +58,10 @@ use App\Http\Controllers\VideoController;
 use App\Models\ReportComment;
 
 
-// Add the status update route
-Route::post('/update-online-status', function (Request $request) {
-    if (auth()->check()) {
-        $user = auth()->user();
-        $firebaseService = app(\App\Services\FirebaseRealTimeService::class);
-
-        $firebaseService->updateUserStatus($user->id, true, [
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role_id,
-            'is_admin' => false,
-            'app_version' => $request->input('app_version', 'unknown'),
-            'device_info' => $request->input('device_info', 'unknown'),
-            'last_url' => $request->input('screen', 'unknown'),
-            'last_ip' => $request->ip(),
-            'user_agent' => $request->userAgent()
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
-})->middleware('auth:sanctum');
+// Online status routes with WebSocket implementation
+Route::post('/update-online-status', [OnlineStatusController::class, 'updateStatus'])->middleware('auth:sanctum');
+Route::get('/online-users-count', [OnlineStatusController::class, 'getOnlineCount']);
+Route::post('/logout-status', [OnlineStatusController::class, 'logoutStatus'])->middleware('auth:sanctum');
 
 
 /* Check Version */

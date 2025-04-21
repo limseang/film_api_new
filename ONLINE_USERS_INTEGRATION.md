@@ -1,20 +1,32 @@
 # Online Users Integration Guide
 
-This guide explains how to integrate the online users tracking feature with your mobile app.
+This guide explains how to integrate the online users tracking feature with your Flutter app using WebSockets.
 
 ## Overview
 
-The online users tracking system uses Firebase Realtime Database to track user presence in real-time. This allows the admin dashboard to display which users are currently online, what screens they're viewing, and other useful analytics.
+The online users tracking system uses a custom WebSocket implementation that stores status in the database. This allows the admin dashboard to display which users are currently online, what screens they're viewing, and other useful analytics.
 
-## API Endpoint
+## API Endpoints
 
-Mobile apps should call the following API endpoint periodically to update user online status:
+Mobile apps should call the following API endpoints to manage user online status:
 
 ```
 POST /api/update-online-status
 ```
+- Updates user online status
+- Authorization: Bearer token required (user must be authenticated)
 
-Authorization: Bearer token required (user must be authenticated)
+```
+POST /api/logout-status
+```
+- Marks user as offline when logging out
+- Authorization: Bearer token required (user must be authenticated)
+
+```
+GET /api/online-users-count
+```
+- Gets the current number of online users
+- No authentication required
 
 ### Request Body (optional but recommended)
 
@@ -35,6 +47,165 @@ Authorization: Bearer token required (user must be authenticated)
 ```json
 {
   "success": true
+}
+```
+
+## Flutter Integration
+
+### Setup in your Flutter app
+
+Add the following dependencies to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  web_socket_channel: ^2.4.0
+  http: ^1.1.0
+```
+
+### Sample Implementation
+
+```dart
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class OnlineStatusService {
+  static const String baseUrl = 'https://your-api-domain.com/api';
+  static const Duration heartbeatInterval = Duration(minutes: 2);
+  late String _token;
+  late Timer _heartbeatTimer;
+  
+  // Initialize with user token
+  void initialize(String token) {
+    _token = token;
+    _startHeartbeat();
+  }
+  
+  // Start periodic heartbeat
+  void _startHeartbeat() {
+    // Send initial status update
+    updateOnlineStatus();
+    
+    // Set up periodic timer
+    _heartbeatTimer = Timer.periodic(heartbeatInterval, (timer) {
+      updateOnlineStatus();
+    });
+  }
+  
+  // Update online status
+  Future<void> updateOnlineStatus({String? currentScreen}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/update-online-status'),
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'app_version': '1.0.0', // Replace with your app version
+          'device_info': 'Flutter App', // Replace with device info
+          'screen': currentScreen ?? 'Unknown',
+        }),
+      );
+      
+      if (response.statusCode != 200) {
+        print('Failed to update online status: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating online status: $e');
+    }
+  }
+  
+  // Mark user as offline on logout
+  Future<void> markOffline() async {
+    try {
+      // Cancel heartbeat timer
+      _heartbeatTimer.cancel();
+      
+      // Send offline status
+      await http.post(
+        Uri.parse('$baseUrl/logout-status'),
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (e) {
+      print('Error marking user offline: $e');
+    }
+  }
+  
+  // Clean up resources
+  void dispose() {
+    _heartbeatTimer.cancel();
+  }
+}
+```
+
+### Usage in your app
+
+```dart
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final OnlineStatusService _onlineStatusService = OnlineStatusService();
+  
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    
+    // Initialize with user token
+    _onlineStatusService.initialize('YOUR_USER_TOKEN');
+  }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _onlineStatusService.dispose();
+    super.dispose();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // App came to foreground
+      _onlineStatusService.updateOnlineStatus();
+    } else if (state == AppLifecycleState.paused) {
+      // App went to background
+      _onlineStatusService.updateOnlineStatus(currentScreen: 'background');
+    }
+  }
+  
+  // When navigating to a new screen
+  void _navigateToScreen(String screenName) {
+    // Update current screen
+    _onlineStatusService.updateOnlineStatus(currentScreen: screenName);
+    
+    // Navigate to screen
+    // ...
+  }
+  
+  // When logging out
+  void _logout() {
+    // Mark user as offline
+    _onlineStatusService.markOffline();
+    
+    // Perform logout actions
+    // ...
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    // Build your app UI
+    return MaterialApp(
+      // ...
+    );
+  }
 }
 ```
 
@@ -64,18 +235,10 @@ When the app goes to the background, you can either:
 
 ### Logout Handling
 
-When a user logs out, you should send one final update to mark them as offline:
+When a user logs out, you should send one final request to mark them as offline:
 
 ```
-POST /api/update-online-status
-```
-
-With body:
-
-```json
-{
-  "status": "offline"
-}
+POST /api/logout-status
 ```
 
 ## Benefits
@@ -86,10 +249,6 @@ This integration enables:
 2. Analytics about most active screens and user engagement
 3. Better customer support as admins can see who is currently using the app
 4. Improved targeting for notifications based on active users
-
-## Firebase Configuration
-
-The app already uses the correct Firebase project. No additional configuration is needed for the mobile app to interact with this feature as it uses the existing authentication mechanism.
 
 ## Privacy Considerations
 

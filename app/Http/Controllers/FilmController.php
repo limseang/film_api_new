@@ -951,27 +951,86 @@ public function updateFilm(Request $request,$id)
 
     public function watchmovie(Request $request)
     {
+        // Validate request
+        $request->validate([
+            'title' => 'nullable|string',
+            'year' => 'nullable|integer',
+            'genre_id' => 'nullable|integer',
+            'category_id' => 'nullable', // Can be single or multiple
+            'page' => 'nullable|integer',
+            'short_film' => 'nullable|string', // Accept string for mobile compatibility
+            'country' => 'nullable|string',
+        ]);
+
         $page = $request->get('page', 1);
-        $shortFilm = $request->get('short_film', false);
+
+        // Handle short_film parameter (convert string to boolean)
+        $shortFilm = $request->has('short_film')
+            ? filter_var($request->get('short_film'), FILTER_VALIDATE_BOOLEAN)
+            : false;
 
         try {
             $uploadController = new UploadController();
 
             // Retrieve films with the specified types and exclude those with no episodes.
-            $filmsQuery = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
+            $model = Film::with(['languages', 'categories', 'directors', 'tags', 'genre', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
                 ->whereIn('type', [5, 6, 7, 8])
                 ->whereHas('episode', function ($query) {
                     $query->where('id', '>', 0);
                 }) // Ensuring there are episodes associated
                 ->orderBy('created_at', 'DESC');
 
+            // Apply title filter if provided
+            if ($request->has('title') && !empty($request->title)) {
+                $model->where(function($query) use ($request) {
+                    $query->where('title', 'like', '%' . $request->title . '%')
+                        ->orWhereHas('tags', function ($tagQuery) use ($request) {
+                            $tagQuery->where('name', 'like', '%' . $request->title . '%');
+                        });
+                });
+            }
+
+            // Apply year filter if provided
+            if ($request->has('year') && !empty($request->year)) {
+                // Filter by year from d/m/Y formatted date strings
+                $model->where(function($query) use ($request) {
+                    $query->whereRaw("RIGHT(release_date, 4) = ?", [$request->year]);
+                });
+            }
+
+            // Apply genre filter if provided
+            if ($request->has('genre_id') && !empty($request->genre_id)) {
+                $model->where('genre_id', $request->genre_id);
+            }
+
+            // Apply category filter only if provided and not empty
+            if ($request->has('category_id') && !empty($request->category_id)) {
+                $categoryFilter = $request->category_id;
+
+                // Check if it's a string (single value), convert to array
+                if (!is_array($categoryFilter)) {
+                    $categoryFilter = explode(',', $categoryFilter);
+                }
+
+                // Filter films that belong to any of the provided categories
+                $model->whereHas('filmCategories', function ($query) use ($categoryFilter) {
+                    $query->whereIn('category_id', $categoryFilter);
+                });
+            }
+
+            // Apply country filter if provided
+            if ($request->has('country') && !empty($request->country)) {
+                $countryId = $request->country;
+                $model->where('language', $countryId);
+            }
+
             // Filter for short films if the parameter is set to true
             if ($shortFilm) {
-                $filmsQuery->where('type', 5);
+                $model->where('type', 5);
             }
 
             // Paginate the results
-            $films = $filmsQuery->paginate(21, ['*'], 'page', $page);
+            $films = $model->paginate(21, ['*'], 'page', $page);
 
             // Map the filtered films to your desired structure
             $data = $films->map(function ($film) use ($uploadController) {
@@ -983,6 +1042,8 @@ public function updateFilm(Request $request,$id)
                     'rating' => (string) $this->countRate($film->id),
                     'rate_people' => $this->countRatePeople($film->id),
                     'type' => $film->types ? $film->types->name : null,
+                    'language' => $film->languages ? $film->languages->name : null,
+                    'genre' => $film->genre ? $film->genre->description : null,
                     'total_episode' => $film->episode->count(),
                 ];
             });
@@ -991,10 +1052,9 @@ public function updateFilm(Request $request,$id)
                 'current_page' => $films->currentPage(),
                 'total_pages' => $films->lastPage(),
                 'total_count' => $films->total(),
-                'total' => $films->total(),
                 'per_page' => $films->perPage(),
+                'total' => $films->total(),
                 'films' => $data->values()->all(),
-
             ]);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());

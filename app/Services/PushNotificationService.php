@@ -13,7 +13,7 @@ class PushNotificationService
 {
     /**
      * Send notification to a single device
-     * 
+     *
      * @param array $businessParams Contains token, title, body and other notification data
      * @return void
      */
@@ -26,8 +26,8 @@ class PushNotificationService
     ]): void
     {
         try {
-            // Initialize Firebase Messaging
-            $firebase = (new Factory)->withServiceAccount(__DIR__ . '/firebase_credentials.json');
+            // Initialize Firebase Messaging with correct credentials path
+            $firebase = (new Factory)->withServiceAccount(base_path('firebase_credentials.json'));
             $messaging = $firebase->createMessaging();
 
             // Validate required fields
@@ -44,8 +44,7 @@ class PushNotificationService
             // Create CloudMessage
             $message = CloudMessage::withTarget('token', $businessParams['token'])
                 ->withNotification($notification)
-                ->withData($businessParams['data'] ?? [])
-                ->withSound($businessParams['sound'] ?? 'default');
+                ->withData($businessParams['data'] ?? []);
 
             // Send the Notification
             $messaging->send($message);
@@ -58,7 +57,7 @@ class PushNotificationService
 
     /**
      * Send notifications to multiple devices using queued jobs
-     * 
+     *
      * @param array $businessParams Contains tokens array, title, body and other notification data
      * @return void
      */
@@ -81,14 +80,14 @@ class PushNotificationService
 
             // Chunk tokens into groups of 500 (Firebase's maximum for multicast)
             $tokenChunks = array_chunk($businessParams['token'], 500);
-            
+
             // Process each chunk as a separate queued job
             foreach ($tokenChunks as $tokenChunk) {
                 SendNotificationJob::dispatch($tokenChunk, $businessParams)->onQueue('notifications');
             }
-            
+
             Log::info('Queued ' . count($tokenChunks) . ' notification jobs for ' . count($businessParams['token']) . ' recipients');
-            
+
         } catch (Exception $e) {
             Log::error('Error queueing push notifications: ' . $e->getMessage());
         }

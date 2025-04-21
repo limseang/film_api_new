@@ -57,6 +57,10 @@ class SendNotificationJob implements ShouldQueue
                 Log::error('Firebase credentials file not found at: ' . $credentialsPath);
                 return;
             }
+            
+            // Add detailed logging for debugging
+            Log::info('Sending notification to ' . count($this->fcmTokens) . ' recipients');
+            Log::info('Using credentials at: ' . $credentialsPath);
 
             $firebase = (new Factory)->withServiceAccount($credentialsPath);
             $messaging = $firebase->createMessaging();
