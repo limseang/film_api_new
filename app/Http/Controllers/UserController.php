@@ -214,35 +214,57 @@ class UserController extends Controller
     }
     public function socialLogin(Request $request)
     {
-        try{
-            $user = new User();
-            $userUUID = User::where('userUUID',$request->userUUID)->first();
-            if(!$userUUID){
-                $user->userUUID = $request->userUUID;
-                $user->name = $request->name ?? 'No Name';
-                $user->email = $request->email;
-                $user->phone = $request->phone;
-                $user->avatar = $request->avatar;
-                $user->comeFrom = $request->comeFrom;
+        try {
+            // First check if user exists by userUUID
+            $user = User::where('userUUID', $request->userUUID)->first();
+
+            // If user doesn't exist, we need to check if the email already exists
+            if (!$user) {
+                // Check if email already exists
+                $existingEmail = User::where('email', $request->email)->first();
+
+                if ($existingEmail) {
+                    // If email exists but with different userUUID, update the userUUID
+                    $existingEmail->userUUID = $request->userUUID;
+                    $existingEmail->name = $request->name ?? $existingEmail->name;
+                    $existingEmail->phone = $request->phone ?? $existingEmail->phone;
+                    $existingEmail->avatar = $request->avatar ?? $existingEmail->avatar;
+                    $existingEmail->comeFrom = $request->comeFrom ?? $existingEmail->comeFrom;
+                    $existingEmail->save();
+
+                    $user = $existingEmail;
+                } else {
+                    // Create new user if neither userUUID nor email exists
+                    $user = new User();
+                    $user->userUUID = $request->userUUID;
+                    $user->name = $request->name ?? 'No Name';
+                    $user->email = $request->email;
+                    $user->phone = $request->phone ?? 0;
+                    $user->avatar = $request->avatar;
+                    $user->comeFrom = $request->comeFrom;
+                    $user->save();
+                }
+            } else {
+                // User exists by UUID, update other fields if needed
+                $user->name = $request->name ?? $user->name;
+                $user->email = $request->email ?? $user->email;
+                $user->phone = $request->phone ?? $user->phone;
+                $user->avatar = $request->avatar ?? $user->avatar;
+                $user->comeFrom = $request->comeFrom ?? $user->comeFrom;
                 $user->save();
             }
-            $user = User::where('userUUID',$request->userUUID)->first();
 
+            // Generate token
             $token = $user->createToken('auth_token')->plainTextToken;
-
 
             return response()->json([
                 'token' => $token,
                 'user' => $user->name,
             ]);
-
-
-
         }
-        catch(Exception $e){
+        catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
-
     }
 
 
