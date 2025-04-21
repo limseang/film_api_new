@@ -40,7 +40,7 @@ class UserAdminDataTable extends DataTable
             ->editColumn('point', function($table){
                 return '<span class="'.config('setup.badge_warning').'">'.number_format($table->point) .'</span>';
             })
-            ->editColumn('user_type_name', function($table){
+            ->editColumn('', function($table){
                 return '<span class="'.config('setup.badge_primary').'">'.Str::ucfirst($table->user_type_name) .'</span>';
             })
             ->editColumn('comeFrom', function($table){
@@ -137,7 +137,7 @@ class UserAdminDataTable extends DataTable
         $columns[] = Column::make('comeFrom')->title(trans('sma.comeFrom'))->width(10)->addClass('text-center');
         $columns[] = Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center');
         $columns[] = Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center');
-            
+
         return $columns;
     }
 

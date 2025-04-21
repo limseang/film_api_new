@@ -972,6 +972,10 @@ public function updateFilm(Request $request,$id)
         try {
             $uploadController = new UploadController();
 
+            // Check if user is not logged in or is a starter user
+            $showOnlyShortFilms = !auth()->check() ||
+                (auth()->check() && auth()->user()->user_type_name == 'starter');
+
             // Retrieve films with the specified types and exclude those with no episodes.
             $model = Film::with(['languages', 'categories', 'directors', 'tags', 'genre', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
                 ->whereIn('type', [5, 6, 7, 8])
@@ -979,6 +983,11 @@ public function updateFilm(Request $request,$id)
                     $query->where('id', '>', 0);
                 }) // Ensuring there are episodes associated
                 ->orderBy('created_at', 'DESC');
+
+            // If user is not logged in or is a starter user, show only short films
+            if ($showOnlyShortFilms) {
+                $model->where('type', 5); // 5 is the type for short films
+            }
 
             // Apply title filter if provided
             if ($request->has('title') && !empty($request->title)) {
@@ -1025,6 +1034,7 @@ public function updateFilm(Request $request,$id)
             }
 
             // Filter for short films if the parameter is set to true
+            // This is kept for backward compatibility or explicit short film requests
             if ($shortFilm) {
                 $model->where('type', 5);
             }
