@@ -951,6 +951,16 @@ public function updateFilm(Request $request,$id)
 
     public function watchmovie(Request $request)
     {
+        $user = null;
+
+        if ($request->bearerToken()) {
+            // Try to get user from token
+            $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
+        }
+
+        // Set authentication status
+        $isLoggedIn = !is_null($user);
+
         // Validate request
         $request->validate([
             'title' => 'nullable|string',
@@ -972,9 +982,9 @@ public function updateFilm(Request $request,$id)
         try {
             $uploadController = new UploadController();
 
-            // Check if user is not logged in or is a starter user
-            $showOnlyShortFilms = !auth()->check() ||
-                (auth()->check() && auth()->user()->user_type_name == 'starter');
+
+            $isStarterUser = $isLoggedIn && ($user->user_type == '1' || $user->user_type == 1);
+            $showOnlyShortFilms = !$isLoggedIn || $isStarterUser;
 
             // Retrieve films with the specified types and exclude those with no episodes.
             $model = Film::with(['languages', 'categories', 'directors', 'tags', 'genre', 'types', 'filmCategories', 'rate', 'cast', 'episode'])
