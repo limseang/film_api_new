@@ -439,7 +439,7 @@ public function updateFilm(Request $request,$id)
                                 'user_id' => (string)$comment->user_id,
                                 'rate' => (string)$film->rate->where('user_id', $comment->user_id)->first() ? (string)$film->rate->where('user_id', $comment->user_id)->first()->rate : null,
                                 'user' => 'Anonymous',
-                                'avatar' => 'https://cinemagic.oss-ap-southeast-1.aliyuncs.com/User/398790-PCT3BY-905.jpg?OSSAccessKeyId=LTAI5tE3dUVa8vcQwYcDZJgV&Expires=1725024509&Signature=yaK56QyO8dQDYLpS6sqgp2931P8%3D',
+                                'avatar' => 'https://cinemagic.oss-ap-southeast-1.aliyuncs.com/no_poster.png',
                                 'created_at' => $comment->created_at,
                                 'confess' => $comment->confess,
                             ];
