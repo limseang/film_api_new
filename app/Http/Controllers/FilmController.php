@@ -863,7 +863,7 @@ public function updateFilm(Request $request,$id)
                 })->values()->all();
 
             // Coming Soon Films - Directly query and sort in database
-            $comingSoonQuery = Film::with(['types', 'tags'])
+            $comingSoonQuery = Film::with(['types', 'tags','genre'])
                 ->where('type', 10)
                 ->orderBy('release_date', 'ASC')
                 ->limit(20);
@@ -881,6 +881,7 @@ public function updateFilm(Request $request,$id)
                         'type' => $film->types ? $film->types->name : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
                         'tag' => $film->tags ? $film->tags->name : null,
+                        'genre' => $film->genre ? $film->genre->description : null,
                     ];
                 })->values()->all();
 
