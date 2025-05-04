@@ -844,11 +844,6 @@ public function updateFilm(Request $request,$id)
         try {
             $uploadController = new UploadController();
 
-            // 1. Load only necessary data with eager loading constraints
-            // 2. Apply pagination and limit queries directly in the database
-            // 3. Use specific queries for each section instead of fetching all films/articles
-
-            // Now Showing Films - Limit to 20 records
             $nowShowing = Film::with(['types', 'rate'])
                 ->where('type', 9)
                 ->orderBy('updated_at', 'DESC')
@@ -911,12 +906,13 @@ public function updateFilm(Request $request,$id)
                 })->values()->all();
 
             // Latest Articles - Query directly
-            $articles = Artical::with(['type'])
+            $articles = Artical::with(['type','origin'])
                 ->orderBy('created_at', 'DESC')
                 ->limit(6)
                 ->get()
                 ->map(function ($article) use ($uploadController) {
                     $description = strip_tags(str_replace('&nbsp;', ' ', $article->description));
+
                     return [
                         'id' => $article->id,
                         'title' => $article->title,
@@ -924,6 +920,9 @@ public function updateFilm(Request $request,$id)
                         'description' => Str::limit($description, 60, '.....'),
                         'type' => $article->type ? $article->type->name : '',
                         'release_date' => $article->created_at,
+                        'origin_name' => $article->origin ? $article->origin->name : '',
+                        'origin_logo' => $article->origin ? $uploadController->getSignedUrl($article->origin->logo) : '',
+
                     ];
                 })->values()->all();
 
