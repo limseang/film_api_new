@@ -885,7 +885,7 @@ public function updateFilm(Request $request,$id)
                 })->values()->all();
 
             // Most Watched Films - Query directly
-            $watch = Film::with(['types', 'episode', 'subtitles'])
+            $watch = Film::with(['types', 'episode', 'subtitles','genre'])
                 ->where('type', 5)
                 ->whereHas('episode') // Only films with episodes
                 ->orderBy('updated_at', 'DESC')
@@ -902,6 +902,7 @@ public function updateFilm(Request $request,$id)
                         'subtitle' => $film->subtitles->count() > 0,
                         'type' => $film->types ? $film->types->name : null,
                         'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'genre' => $film->genre ? $film->genre->description : null,
                     ];
                 })->values()->all();
 
