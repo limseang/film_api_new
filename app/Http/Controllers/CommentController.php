@@ -81,21 +81,21 @@ class CommentController extends Controller
                 }
                 else {
                     $user = User::find(auth()->user()->id);
-                    $user->point = $user->point + 0;
+                    $user->point = $user->point + 2;
                     $user->save();
                 }
-                $pushNotificationService = new PushNotificationService();
-                $film = Film::find($request->item_id);
-                $admin = UserLogin::where('role_id', 1,2)->first();
-                $pushNotificationService->pushNotification([
-                    'token' => $admin->fcm_token,
-                    'title' => $film->title,
-                    'body' => $request->comment,
-                    'data' => [
-                        'id' => $comment->id,
-                        'type' => '2',
-                    ]
-                ]);
+//                $pushNotificationService = new PushNotificationService();
+//                $film = Film::find($request->item_id);
+//                $admin = UserLogin::where('role_id', 1,2)->first();
+//                $pushNotificationService->pushNotification([
+//                    'token' => $admin->fcm_token,
+//                    'title' => $film->title,
+//                    'body' => $request->comment,
+//                    'data' => [
+//                        'id' => $comment->id,
+//                        'type' => '2',
+//                    ]
+//                ]);
 
             }
             else if($request->type == 3){

@@ -21,8 +21,8 @@
                                     <label class="form-label" for="character">{{__('sma.character')}}</label>
                                     <input type="text" class="form-control" name="character" value="{{old('character')}}" id="character" placeholder="{{trans('sma.please_input')}}" required>
                                     <span class="invalid-feedback">
-                    The field is required.
-                  </span>
+                                        The field is required.
+                                    </span>
                                 </div>
 
                                 <div class="mb-3">
@@ -33,8 +33,8 @@
                                         <option value="Supporting Role">{{ __('Supporting Role', [], 'en') }}</option>
                                     </select>
                                     <span class="invalid-feedback">
-                    The field is required.
-                  </span>
+                                        The field is required.
+                                    </span>
                                 </div>
 
                                 <div class="mb-3">
@@ -46,8 +46,8 @@
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback">
-                    The field is required.
-                  </span>
+                                        The field is required.
+                                    </span>
                                 </div>
 
                                 <div class="mb-3">
@@ -59,8 +59,8 @@
                                         @endforeach
                                     </select>
                                     <span class="invalid-feedback">
-                    The field is required.
-                  </span>
+                                        The field is required.
+                                    </span>
                                 </div>
 
                                 <div class="mb-3">
@@ -71,8 +71,8 @@
                                         <option value="2" {{old('status') == '2' ? 'selected':''}}>{{ __('global.publish_no') }}</option>
                                     </select>
                                     <span class="invalid-feedback">
-                    The field is required.
-                  </span>
+                                        The field is required.
+                                    </span>
                                 </div>
 
                                 <div class="mb-3">

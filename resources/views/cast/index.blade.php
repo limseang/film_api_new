@@ -37,7 +37,6 @@
                     </div>
                 </div>
 
-
                 <div class="d-flex align-items-center">
                     <button type="submit" class="{{config('setup.button_opacity_success')}}">
                         <i class="ph-magnifying-glass me-2"></i>
@@ -49,23 +48,27 @@
     </div>
     <!-- /search field -->
 
-
     <!-- List Record blocks -->
-            {{-- {{ $data['page_name'] }} --}}
     <div class="card">
-        <div class="car-body">
+        <div class="card-body">
             <div class="m-2">
-            {{ $dataTable->table(['class' => config('setup.card_datatable'), true]) }}
+                {{ $dataTable->table(['class' => config('setup.card_datatable')]) }}
             </div>
         </div>
     </div>
     <!-- /List Record blocks -->
+@endsection
+
 @section('scripts')
-{!! $dataTable->scripts() !!}
+    {!! $dataTable->scripts() !!}
     <script src="{{asset('assets/datatables/datatables_customize_'.app()->getLocale().'.js')}}"></script>
     <script src="{{asset('assets/js/core.js')}}"></script>
-<script>
-
-</script>
-@endsection
+    <script>
+        $(document).ready(function() {
+            $('#filter').on('submit', function(e) {
+                e.preventDefault();
+                window.LaravelDataTables['casts-table'].draw();
+            });
+        });
+    </script>
 @endsection

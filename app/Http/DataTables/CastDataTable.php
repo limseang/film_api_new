@@ -56,6 +56,8 @@ class CastDataTable extends DataTable
     public function query(Cast $model): QueryBuilder
     {
         $model = $model->newQuery();
+        // Eager load relationships to prevent N+1 queries
+        $model->with(['film', 'artists']);
         $model->select([
             'id','character',
             'actor_id',
