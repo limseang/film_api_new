@@ -218,6 +218,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/comment', [CommentController::class, 'index']);
 Route::get('/comment/{id}', [CommentController::class, 'show']);
 Route::get('/comment/reply/{id}', [CommentController::class, 'showReply']);
+Route::get('/comment/show/film/${id}', [CommentController::class, 'showCommentByFilmID']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/comment/create', [CommentController::class, 'create']);
     Route::post('/comment/edit/{id}', [CommentController::class, 'edit']);

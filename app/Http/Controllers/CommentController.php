@@ -130,11 +130,32 @@ class CommentController extends Controller
         }
     }
 
-    public function cmtFilm(Request $request)
-    {
+ public function showCommentByFilmID($id)
+ {
+     try{
+         //validate film_id has or not
+         $film = Film::find($id);
+         if(!$film){
+             return response()->json([
+                 'message' => 'Film not found',
+             ], 404);
+         }
+            $comment = Comment::with(['user', 'films'])->where('item_id', $id)->where('type', 2)->get();
 
-    }
+            //check film id correct or not
 
+            return response()->json([
+                'message' => 'comments retrieved successfully',
+                'comments' => $comment
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'comments retrieved failed',
+                'error' => $e->getMessage()
+            ], 400);
+     }
+
+ }
 
 
     public function edit(Request $request,  $id)

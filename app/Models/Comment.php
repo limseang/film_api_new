@@ -34,4 +34,8 @@ class Comment extends Model
     {
         return $this->hasMany(ReplyComment::class);
     }
+    public function films ()
+    {
+        return $this->belongsTo(Film::class);
+    }
 }
