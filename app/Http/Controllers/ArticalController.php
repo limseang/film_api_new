@@ -273,7 +273,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes','film'])->find($id);
             if(!$artical){
                 // return response()->json([
                 //     'message' => 'not found'

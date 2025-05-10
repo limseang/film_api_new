@@ -51,6 +51,10 @@ class Artical extends Model
     /**
      * @return BelongsTo
      */
+    public function film(): BelongsTo
+    {
+        return $this->belongsTo(Film::class, 'film_id', 'id');
+    }
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
