@@ -187,12 +187,24 @@ class CommentController extends Controller
         }
     }
 
-    public function destroy ($id)
+    public function destroy($id)
     {
-        try{
+        try {
             $comment = Comment::find($id);
-            if($comment->user_id == auth()->user()->id)
-            {
+
+            if (!$comment) {
+                return response()->json([
+                    'message' => 'Comment not found',
+                ], 404);
+            }
+
+            if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2) {
+                $comment->delete();
+                return response()->json([
+                    'message' => 'Comment successfully deleted by admin',
+                ], 200);
+            }
+            else if ($comment->user_id == auth()->user()->id) {
                 $comment->delete();
                 $user = User::find(auth()->user()->id);
                 $user->point = $user->point - 1;
@@ -200,27 +212,18 @@ class CommentController extends Controller
                 return response()->json([
                     'message' => 'Comment successfully deleted',
                 ], 200);
-
             }
-            else if(auth()->user()->role_id == 1 || auth()->user()->role_id == 2){
-                $comment->delete();
+            else {
                 return response()->json([
-                    'message' => 'Comment successfully deleted',
-                ], 200);
-            }
-
-            else{
-                return response()->json([
-                    'message' => 'You are not author',
-                ], 500);
+                    'message' => 'You are not authorized to delete this comment',
+                ], 403);
             }
         }
-        catch(\Exception $e){
+        catch (\Exception $e) {
             return response()->json([
                 'message' => 'Comment failed deleted',
                 'error' => $e->getMessage()
             ], 400);
-
         }
     }
 
