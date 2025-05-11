@@ -198,8 +198,10 @@ Route::get('/article/detail/{id}', [ArticalController::class, 'articalDetail']);
 Route::get('/article/category/{id}', [ArticalController::class, 'showByCategory']);
 Route::get('/article/origin/{id}', [ArticalController::class, 'showByOrigin']);
 Route::group(['middleware' => ['auth:sanctum']], function (){
+    Route::post('/article/record-read/{id}', [ArticalController::class, 'makeReadArtle']);
     Route::group(['middleware' => ['postpermission']], function () {
         Route::post('/article/new', [ArticalController::class, 'create']);
+
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);
         Route::post('/article/update/{id}', [ArticalController::class, 'update']);
         Route::delete('/article/delete/{id}', [ArticalController::class, 'destroy']);

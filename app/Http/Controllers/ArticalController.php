@@ -379,6 +379,29 @@ class ArticalController extends Controller
         }
     }
 
+    public function makeReadArtle($id)
+    {
+        try {
+            $artical = Artical::find($id);
+            if (!$artical) {
+                return response()->json([
+                    'message' => 'not found'
+                ], 404);
+            }
+            $artical->view = $artical->view + 1;
+            $artical->save();
+            return response()->json([
+                'message' => 'successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
     public function shareArtical($id)
     {
         try {
