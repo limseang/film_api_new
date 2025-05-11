@@ -55,6 +55,11 @@ class Artical extends Model
     {
         return $this->belongsTo(Film::class, 'film_id', 'id');
     }
+    public function rate()
+    {
+        return $this->hasMany(Rate::class, 'film_id', 'id');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

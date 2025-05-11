@@ -273,7 +273,7 @@ class ArticalController extends Controller
 
     public function articalDetail($id){
         try{
-            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes','film'])->find($id);
+            $artical = Artical::with(['origin', 'category', 'type','categoryArtical','BookMark','likes','film','rate'])->find($id);
             if(!$artical){
                 // return response()->json([
                 //     'message' => 'not found'
@@ -299,7 +299,18 @@ class ArticalController extends Controller
                 'comment_count' => $this->countCmt($artical->id),
                 'share' => $artical->share,
                 'view' => $artical->view,
-                'film' => $artical->film,
+                'film' => $artical->film ? [
+                    'id' => $artical->film->id,
+                    'title' => $artical->film->title,
+                    'release_date' => $artical->film->release_date,
+                    'poster' => $artical->film->poster ? $uploadController->getSignedUrl($artical->film->poster) : null,
+                    'rating' => $this->countRate($artical->film->id) !== null ? (string) $this->countRate($artical->film->id) : '0',
+
+                    'multiple_category' => $artical->film->filmCategories ? $artical->film->filmCategories->pluck('name')->toArray() : []
+
+
+                ] : [],
+
                 'image' => $artical->image,
                 'bookmark' => $this->countBookmark($artical->id) ?? 0,
                 'created_at' => $artical->created_at,
