@@ -29,28 +29,41 @@ class ArticalController extends Controller
     {
         $page = $request->get('page', 1);
         try {
-            $articals = Artical::with(['origin', 'category', 'type','categoryArtical',])->orderBy('created_at', 'DESC')->paginate(20, ['*'], 'page', $page);
+            // 1. Limit eager loading to only necessary relations
+            // 2. Select only needed columns
+            $articals = Artical::with(['origin:id,name', 'category:id,name', 'type:id,name', 'categoryArtical:id,name'])
+                ->select(['id', 'title', 'image',  'created_at'])
+                ->orderBy('created_at', 'DESC')
+                ->paginate(20, ['*'], 'page', $page);
+                
+            // 3. Process image URLs in a more efficient way
             $uploadController = new UploadController();
-            foreach ($articals as $artical) {
-                if ($artical->image != null) {
-                    $artical->image = $uploadController->getSignedUrl($artical->image);
-                } else {
-                    $artical->image = null;
+            
+            // 4. Use collection transformation methods more efficiently
+            $data = $articals->map(function ($artical) use ($uploadController) {
+                // 5. Process the image conditionally
+                $imageUrl = $artical->image ? $uploadController->getSignedUrl($artical->image) : null;
+                
+                // 6. More efficient text processing
+                $description = '';
+                if ($artical->description) {
+                    $description = Str::limit(
+                        strip_tags(str_replace('&nbsp;', ' ', $artical->description)), 
+                        60, 
+                        '.....'
+                    );
                 }
-            }
-
-            $data = $articals->map(function ($artical) {
-                $description = strip_tags(str_replace('&nbsp;', ' ', $artical->description));
+                
                 return [
                     'id' => $artical->id,
                     'title' => $artical->title,
-                    'image' => $artical->image,
-                    'description' => Str::limit($description, 60, '.....'),
+                    'image' => $imageUrl,
+                    'description' => $description,
                     'type' => $artical->type ? $artical->type->name : '',
                     'release_date' => $artical->created_at,
                 ];
-
             });
+            
             return $this->sendResponse([
                 'current_page' => $articals->currentPage(),
                 'last_page' => $articals->lastPage(),
@@ -58,10 +71,12 @@ class ArticalController extends Controller
                 'total' => $articals->total(),
                 'articles' => $data,
             ]);
-
-
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage());
+            // 7. Add more debugging information in development environment
+            if (config('app.debug')) {
+                return $this->sendError($e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            }
+            return $this->sendError('An error occurred while fetching articles.');
         }
     }
 

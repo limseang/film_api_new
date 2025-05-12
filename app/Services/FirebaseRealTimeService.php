@@ -15,7 +15,7 @@ class FirebaseRealTimeService
         try {
             $firebase = (new Factory)
                 ->withServiceAccount(base_path('firebase_credentials.json'))
-                ->withDatabaseUri('https://popcornnews-31b43-default-rtdb.firebaseio.com/');
+                ->withDatabaseUri('https://popcornnews-31b43-default-rtdb.asia-southeast1.firebasedatabase.app');
                 
             $this->database = $firebase->createDatabase();
         } catch (Exception $e) {
