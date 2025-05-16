@@ -51,6 +51,7 @@ class ArtistController extends Controller
                         'name' => $result->name,
                         'nationality' => $result->country ? $result->country->nationality : '',
                         'nationality_logo' => $result->country ? $result->country->flag : '',
+                        'biography' => $result->biography,
                         'profile' => $result->profile ? $uploadController->getSignedUrl($result->profile) : null,
                         'status' => $result->status,
                         'birth_date' => $result->birth_date, // Include birth date in response
