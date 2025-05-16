@@ -54,6 +54,7 @@ class ArtistController extends Controller
                         'biography' => $result->biography,
                         'profile' => $result->profile ? $uploadController->getSignedUrl($result->profile) : null,
                         'status' => $result->status,
+                        'know_for' => $result->known_for,
                         'birth_date' => $result->birth_date, // Include birth date in response
                     ];
                 }
