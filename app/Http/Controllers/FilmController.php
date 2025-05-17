@@ -950,6 +950,36 @@ public function updateFilm(Request $request,$id)
         }
     }
 
+    public function nowShowingFilm()
+    {
+        try{
+            $uploadController = new UploadController();
+            $films = Film::with(['languages', 'categories', 'directors', 'tags', 'types', 'filmCategories', 'rate', 'cast'])
+                ->where('type', 9)
+                ->orderBy('updated_at', 'DESC')
+                ->limit(20)
+                ->get()
+                ->map(function ($film) use ($uploadController) {
+                    return [
+                        'id' => $film->id,
+                        'title' => $film->title,
+                        'release_date' => $film->release_date,
+                        'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : null,
+                        'rating' => (string) $this->countRate($film->id),
+                        'rate_people' => $this->countRatePeople($film->id),
+                        'type' => $film->types ? $film->types->name : null,
+                    ];
+                });
+
+            return $this->sendResponse($films);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+
+    }
+
+
+
     public function watchmovie(Request $request)
     {
         $user = null;

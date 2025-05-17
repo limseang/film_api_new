@@ -318,6 +318,7 @@ Route::group(['middleware' => ['auth:sanctum']], function (){
 Route::get('/ep/detail/{id}', [EpisodeController::class, 'episodeDetail']);
 Route::get('/film', [FilmController::class, 'index']);
 Route::get('/film/for/home', [FilmController::class, 'homeScreen']);
+Route::get('/film/now/showing', [FilmController::class, 'nowShowingFilm']);
 Route::get('/film/coming/soon', [FilmController::class, 'FilmComingSoon']);
 Route::get('/film/episode', [EpisodeController::class, 'index']);
 Route::get('/film/episodes/{id}', [EpisodeController::class, 'getFilm']);
