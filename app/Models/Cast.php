@@ -24,11 +24,11 @@ class Cast extends Model
         'status'
     ];
 
-    protected $appends = [
-        'image_url',
-        'film_name',
-        'actor_name'
-    ];
+    // protected $appends = [
+    //     'image_url',
+    //     'film_name',
+    //     'actor_name'
+    // ];
 
     public function films()
     {
@@ -44,20 +44,20 @@ class Cast extends Model
         return $this->belongsTo(Artist::class,'actor_id','id');
     }
 
-    public function getImageUrlAttribute()
-    {
-        return $this->image ? $this->getSignedUrl($this->image) : null;
-    }
+    // public function getImageUrlAttribute()
+    // {
+    //     return $this->image ? $this->getSignedUrl($this->image) : null;
+    // }
 
-    public function getFilmNameAttribute()
-    {
-        return $this->film ? $this->film->title : null;
-    }
+    // public function getFilmNameAttribute()
+    // {
+    //     return $this->film ? $this->film->title : null;
+    // }
 
-    public function getActorNameAttribute()
-    {
-        return $this->artists ? $this->artists->name : null;
-    }
+    // public function getActorNameAttribute()
+    // {
+    //     return $this->artists ? $this->artists->name : null;
+    // }
     protected static $logFillable = true;
     protected static $logOnlyDirty = true;
     protected static $dontSubmitEmptyLogs = true;

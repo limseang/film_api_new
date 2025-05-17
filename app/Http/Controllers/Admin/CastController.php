@@ -36,11 +36,26 @@ class CastController extends Controller
             return redirect()->back()->with('error', authorizeMessage());
         }
         $data['artist'] = Artist::where('status', 1)->get();
-        $data['film'] = Film::get();
+        // $data['film'] = Film::get();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => route('film.index'), 'page' => __('sma.film')], ['link' => '#', 'page' => __('sma.add')]];
         return view('cast.create', $data);
     }
 
+
+    public function getFilmCastData(request $request){
+         $search = $request->input('search');
+        $limit = $request->input('limit', 5); // default to 10 if not provided
+
+        $query = Film::query()->select('id', 'title');
+
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $films = $query->limit($limit)->get();
+
+        return response()->json(['data'=>$films]);
+    }
     public function store(Request $request)
     {
         if(!authorize(RolePermissionConstant::PERMISSION_CAST_CREATE)){
@@ -106,7 +121,7 @@ class CastController extends Controller
         }
         $data['artist'] = Artist::where('status', 1)->get();
         $data['image'] = $this->getSignUrlNameSize($data['cast']->image);
-        $data['film'] = Film::all();
+        // $data['film'] = Film::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' => __('global.icon_home')], ['link' => route('cast.index'), 'page' => __('sma.cast')], ['link' => '#', 'page' => __('sma.edit')]];
         return view('cast.edit', $data);
     }
@@ -182,7 +197,7 @@ class CastController extends Controller
                 ];
                 return redirect()->route('cast.index')->with($notification);
             }
-            $cast->delete(); 
+            $cast->delete();
             $notification = [
                 'type' => 'success',
                 'icon' => trans('global.icon_success'),

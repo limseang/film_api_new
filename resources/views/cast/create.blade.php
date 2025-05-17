@@ -54,9 +54,6 @@
                                     <label class="form-label" for="film_id">{{ trans('sma.film') }}</label>
                                     <select id="film_id" class="{{ config('setup.input_select2') }}" name="film_id" required>
                                         <option value="">{{ __('global.please_select') }}</option>
-                                        @foreach($film as $value)
-                                            <option value="{{ $value->id }}" {{old('film_id') == $value->id ? 'selected':''}} >{{$value->title }}</option>
-                                        @endforeach
                                     </select>
                                     <span class="invalid-feedback">
                                         The field is required.
@@ -91,4 +88,61 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#actor_id').select2({
+                placeholder: "{{ __('global.please_select') }}",
+                allowClear: true,
+                width: '100%'
+            });
+
+        $('#film_id').select2({
+            allowClear: true,
+            placeholder: "{{ __('global.please_select') }}",
+            // translate
+            language: {
+                noResults: function () {
+                return 'មិនមានទិន្នន័យដែលបានរកឃើញ';
+                },
+                searching: function() {
+                    return "កំពុងស្វែងរក...";
+                }
+            },
+            ajax: {
+                url: "{{route('cast.get_film_cast')}}",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term, // Search term
+                        page: params.page || 1, // Pagination page
+                    };
+                },
+                processResults: function(data, params) {
+                    let results = $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.title
+                        };
+                    });
+
+                    // If no results found, create a new selectable option
+                    if (results.length === 0 && params.term) {
+                        results.push({
+                            id: params.term, // Temporary ID
+                            text: params.term,
+                        });
+                    }
+
+                    return {
+                        results: results
+                    };
+                },
+                //
+            },
+        });
+        });
+    </script>
 @endsection

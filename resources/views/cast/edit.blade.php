@@ -11,12 +11,12 @@
             <i class="fas fa-edit"></i>
               &nbsp;  &nbsp;<span>{{__('sma.edit_cast')}}</span>
           </h6>
-        
+
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-12 col-lg-8 p-10">
-            
+
               <form action="{{route('cast.update', $cast->id)}}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                 @csrf
                 @csrf
@@ -52,9 +52,9 @@
                     <label class="form-label" for="film_id">{{ trans('sma.film') }}</label>
                     <select id="film_id" class="{{ config('setup.input_select2') }}" name="film_id" required>
                         <option value="">{{ __('global.please_select') }}</option>
-                        @foreach($film as $value)
-                        <option value="{{ $value->id }}" {{$cast->film_id == $value->id ? 'selected':''}} >{{$value->title }}</option>
-                        @endforeach
+                     @if(!empty($cast->film))
+                        <option value="{{ $cast->film->id }}" selected>{{ $cast->film->title }}</option>
+                    @endif
                     </select>
                     <span class="invalid-feedback">
                       The field is required.
@@ -147,7 +147,56 @@
             showUpload: false,
             showRemove: false,
         });
+
+
+         $('#film_id').select2({
+            allowClear: true,
+            placeholder: "{{ __('global.please_select') }}",
+            // translate
+            language: {
+                noResults: function () {
+                return 'មិនមានទិន្នន័យដែលបានរកឃើញ';
+                },
+                searching: function() {
+                    return "កំពុងស្វែងរក...";
+                }
+            },
+            ajax: {
+                url: "{{route('cast.get_film_cast')}}",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term, // Search term
+                        page: params.page || 1, // Pagination page
+                    };
+                },
+                processResults: function(data, params) {
+                    let results = $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.title
+                        };
+                    });
+
+                    // If no results found, create a new selectable option
+                    if (results.length === 0 && params.term) {
+                        results.push({
+                            id: params.term, // Temporary ID
+                            text: params.term,
+                        });
+                    }
+
+                    return {
+                        results: results
+                    };
+                },
+                //
+            },
+        });
     });
+
+
   </script>
   @endsection
   @endsection
