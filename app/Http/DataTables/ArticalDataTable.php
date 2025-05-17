@@ -33,7 +33,7 @@ class ArticalDataTable extends DataTable
                 return dateTimeFormat($table->created_at);
             })
             ->editColumn('multiple_tag', function ($table) {
-                // 
+                //
                 $ul = '<ul>';
                 $tags = $table->tag ?? [];
                 if (count($tags) == 0) {
@@ -45,33 +45,36 @@ class ArticalDataTable extends DataTable
                 $ul .= '</ul>';
                 return $ul;
             })
-            ->editColumn('total_like', function ($table) {
-                return '<span class="'.config('setup.badge_info').'">'.$table->likes->count().'</span>';
-            })
-            ->editColumn('total_comment', function($table){
-                return '<span class="'.config('setup.badge_info').'">'.$table->comments->count().'</span>';
-            })
+            // ->editColumn('total_like', function ($table) {
+            //     return '<span class="'.config('setup.badge_info').'">'.$table->likes->count().'</span>';
+            // })
+            // ->editColumn('total_comment', function($table){
+            //     return '<span class="'.config('setup.badge_info').'">'.$table->comments->count().'</span>';
+            // })
             ->editColumn('origin_name', function ($table) {
-                return '<span class="'.config('setup.badge_info').'">'.$table->origin->name ?? ''.'</span>';
+                return '<span class="'.config('setup.badge_info').'">'.$table->origin_name ?? ''.'</span>';
             })
             ->editColumn('category_name',function($table){
-                return '<span class="'.config('setup.badge_secondary').'">'.$table->category->name ?? ''.'</span>';
+                return '<span class="'.config('setup.badge_secondary').'">'.$table->category_name ?? ''.'</span>';
             })
             ->editColumn('view', function ($table) {
                 return  '<span class="'.config('setup.badge_success').'">'.$table->view.'</span>';
             })
             ->editColumn('type_name', function($table){
-                return '<span class="'.config('setup.badge_info').'">'.$table->type->name.'</span>';
+                return '<span class="'.config('setup.badge_info').'">'.$table->type_name.'</span>';
             })
-            ->editColumn('image_url', function ($table) {
-                $pic = $table->image_url ?? '';
+             ->editColumn('image_url', function ($table) {
+                $pic = $table->image ?? '';
+                if ($pic) {
+                    $pic = getSignedUrl($pic);
+                }
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
-            ->rawColumns(['image_url','view','origin_name','category_name','type_name','multiple_tag','running_time','total_like','total_comment','status']) #allowed for using html code here
+            ->rawColumns(['image_url','view','origin_name','category_name','type_name','multiple_tag','running_time','status']) #allowed for using html code here
         ;
     }
 
@@ -82,23 +85,29 @@ class ArticalDataTable extends DataTable
     {
         $model = $model->newQuery();
         $model->select([
-            'id','title',
+            'articals.id','articals.title',
             'origin_id',
-            'image',
+            'articals.image',
             'category_id',
-            'type_id',
-            'like',
-            'comment',
-            'share',
-            'tag_id',
-            'view',
-            'film_id',
-            'status',	
-            'created_at',
-            'deleted_at',
-            'updated_at'
+            'categories.name as category_name',
+            'types.name as type_name',
+            'origins.name as origin_name',
+            'articals.type_id',
+            'articals.like',
+            'articals.comment',
+            'articals.share',
+            'articals.tag_id',
+            'articals.view',
+            'articals.film_id',
+            'articals.status',
+            'articals.created_at',
+            'articals.deleted_at',
+            'articals.updated_at'
          ]);
-        $model->with(['category','type','origin','tag','likes','comments']);
+         $model->join('categories', 'categories.id', '=', 'articals.category_id');
+        $model->join('origins', 'origins.id', '=', 'articals.origin_id');
+        $model->join('types', 'types.id', '=', 'articals.type_id');
+        // $model->with(['category','type','origin','tag','likes','comments']);
         if (request('name')) {
             $model->where('title', 'like', '%' . request('name') . '%');
         }
@@ -147,7 +156,7 @@ class ArticalDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        
+
         if(authorize(RolePermissionConstant::PERMISSION_ARTICAL_EDIT) || authorize(RolePermissionConstant::PERMISSION_ARTICAL_DELETE)){
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
@@ -159,8 +168,8 @@ class ArticalDataTable extends DataTable
         $columns[] = Column::make('type_name')->title(trans('sma.type_name'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('multiple_tag')->title(trans('sma.tag'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('view')->title(trans('sma.total_view'))->width(10)->addClass('text-center');
-        $columns[] = Column::make('total_like')->title(trans('sma.total_like'))->width(10)->addClass('text-center')->orderable(false);
-        $columns[] = Column::make('total_comment')->title(trans('sma.total_comment'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('total_like')->title(trans('sma.total_like'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('total_comment')->title(trans('sma.total_comment'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
         $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
         return $columns;
