@@ -32,19 +32,19 @@ class ArticalDataTable extends DataTable
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->created_at);
             })
-            ->editColumn('multiple_tag', function ($table) {
-                //
-                $ul = '<ul>';
-                $tags = $table->tag ?? [];
-                if (count($tags) == 0) {
-                    return '';
-                }
-                foreach ($tags as $value) {
-                    $ul .= '<li class="'.config('setup.badge_warning').' ms-2">'.$value->name.'</li><br>';
-                }
-                $ul .= '</ul>';
-                return $ul;
-            })
+            // ->editColumn('multiple_tag', function ($table) {
+            //     //
+            //     $ul = '<ul>';
+            //     $tags = $table->tag ?? [];
+            //     if (count($tags) == 0) {
+            //         return '';
+            //     }
+            //     foreach ($tags as $value) {
+            //         $ul .= '<li class="'.config('setup.badge_warning').' ms-2">'.$value->name.'</li><br>';
+            //     }
+            //     $ul .= '</ul>';
+            //     return $ul;
+            // })
             // ->editColumn('total_like', function ($table) {
             //     return '<span class="'.config('setup.badge_info').'">'.$table->likes->count().'</span>';
             // })
@@ -166,7 +166,7 @@ class ArticalDataTable extends DataTable
         $columns[] = Column::make('origin_name')->title(trans('sma.origin'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('category_name')->title(trans('sma.category'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('type_name')->title(trans('sma.type_name'))->width(10)->addClass('text-center')->orderable(false);
-        $columns[] = Column::make('multiple_tag')->title(trans('sma.tag'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('multiple_tag')->title(trans('sma.tag'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('view')->title(trans('sma.total_view'))->width(10)->addClass('text-center');
         // $columns[] = Column::make('total_like')->title(trans('sma.total_like'))->width(10)->addClass('text-center')->orderable(false);
         // $columns[] = Column::make('total_comment')->title(trans('sma.total_comment'))->width(10)->addClass('text-center')->orderable(false);
