@@ -10,6 +10,7 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use App\Constant\RolePermissionConstant;
+use App\Traits\AlibabaStorage;
 
 class CastDataTable extends DataTable
 {
@@ -39,7 +40,10 @@ class CastDataTable extends DataTable
                 return '<span class="'.config('setup.badge_warning').'">'.$table->actor_name.'</span>';
             })
             ->editColumn('image_url', function ($table) {
-                $pic = $table->image_url ?? '';
+                $pic = $table->image ?? '';
+                if ($pic) {
+                    $pic = getSignedUrl($pic);
+                }
                 return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
             })
             ->editColumn('status', function ($table) {
@@ -57,15 +61,18 @@ class CastDataTable extends DataTable
     {
         $model = $model->newQuery();
         // Eager load relationships to prevent N+1 queries
-        $model->with(['film', 'artists']);
         $model->select([
-            'id','character',
+            'casts.id','casts.character',
             'actor_id',
             'film_id',
             'position',
-            'image',
-            'status',
-            'created_at','deleted_at' ]);
+            'casts.image',
+            'casts.status',
+            'films.title as film_name',
+            'artists.name as actor_name',
+            'casts.created_at','casts.deleted_at','casts.updated_at' ]);
+        $model->join('films', 'films.id', '=', 'casts.film_id');
+        $model->join('artists', 'artists.id', '=', 'casts.actor_id');
         if (request('name')) {
             $model->where(function ($query) {
                 $query->orWhere('character', 'like', '%' . request('name') . '%');

@@ -200,6 +200,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/delete/{id}', [CastController::class, 'destroy'])->name('delete');
             Route::get('/status/{id}', [CastController::class, 'status'])->name('status');
             Route::get('/restore/{id}', [CastController::class, 'restore'])->name('restore');
+            Route::get('/get_film-cast', [CastController::class, 'getFilmCastData'])->name('get_film_cast');
         });
         // artical
         Route::prefix('artical')->name('artical.')->group(function(){
@@ -309,7 +310,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{id}', [ReportIncomeExpenseController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [ReportIncomeExpenseController::class, 'destroy'])->name('delete');
         });
-        
+
         // Request Film
         Route::prefix('request_film')->name('request_film.')->group(function(){
             Route::get('/', [App\Http\Controllers\Admin\RequestFilmController::class, 'index'])->name('index');

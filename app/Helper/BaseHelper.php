@@ -4,6 +4,10 @@ use Carbon\Carbon;
 use App\Constant\UserConstant;
 use App\Models\Permission;
 use App\Models\RolePermission;
+use App\Models\Storages;
+use Illuminate\Support\Facades\Log;
+use OSS\OssClient;
+use OSS\Core\OssException;
 
 if(!function_exists('isOwner')){
     function isOwner(){
@@ -24,7 +28,7 @@ if(!function_exists('authorize')){
               return false;
          }
         return true;
-       
+
     }
 }
 
@@ -182,6 +186,35 @@ if (!function_exists('spacesForNumber')) {
                 return '';
             }
             return Carbon::parse($date)->setTimezone(config('app.timezone'))->format(config('setup.date_format'));
+        }
+    }
+}
+
+if (!function_exists('getSignedUrl')) {
+    /**
+     * @param $id
+     * @return string
+     */
+   function getSignedUrl($id): string
+    {
+        try {
+            $accessKeyId = env("ALIBABA_OSS_ACCESS_KEY");
+            $accessKeySecret = env("ALIBABA_OSS_SECRET_KEY");
+            $endpoint = env("ALIBABA_OSS_ENDPOINT");
+            $bucket = env("ALIBABA_OSS_BUCKET");
+
+            $storage = Storages::query()->find($id);
+            $timeout = 3600;
+
+            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+            if(empty($storage)){
+                return '';
+            }
+            $signedUrl = $ossClient->signUrl($bucket,$storage->path,3600,"GET",null);
+
+            return $signedUrl ?? '';
+        } catch (OssException $e) {
+            return $e->getMessage();
         }
     }
 }
