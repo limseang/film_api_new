@@ -407,7 +407,7 @@ public function updateFilm(Request $request,$id)
                 'title' => $film->title ?? null,
                 'overview' => $film->overview ?? null,
                 'release_date' => $film->release_date ?? null,
-                'category' => $this->getCategoryResource($film->filmCategories) ?? null,
+
                 'tag' => $film->tags->name ?? '',
                 'tag_id' => $film->tag ?? 'N/A',
                 'distributors' => $film->distributors->name ?? 'N/A',
@@ -418,7 +418,6 @@ public function updateFilm(Request $request,$id)
                 'type' => $film->types->name ?? null,
                 'type_id' => $film->type ?? null,
                 'running_time' => $film->running_time,
-                'country' => $film->languages->name ?? null,
                 'language' => $film->languages->language ?? null,
                 'language_id' => $film->language ?? null,
                 'rating' => (string)$this->countRate($film->id),
@@ -428,7 +427,9 @@ public function updateFilm(Request $request,$id)
                 'cast' => $this->filmCast($film->id),
                 'episode' => $this->getEpisode($film->id) ?? null,
                 'cover' => $film->cover ? $uploadController->getSignedUrl($film->cover) : null,
+                'country' => $film->languages->name ?? null,
                 'genre' => $film->genre->description ?? null,
+                'category' => $this->getCategoryResource($film->filmCategories) ?? null,
                 'genre_id' => $film->genre->id ?? null,
                 'director' => $film->directors ?? null,
                 'comment' => $film->filmComment->map(function ($comment) use ($film, $uploadController) {
@@ -968,6 +969,9 @@ public function updateFilm(Request $request,$id)
                         'rating' => (string) $this->countRate($film->id),
                         'rate_people' => $this->countRatePeople($film->id),
                         'type' => $film->types ? $film->types->name : null,
+                        'country' => $film->languages->name ?? null,
+                        'genre' => $film->genre->description ?? null,
+                        'category' => $this->getCategoryResource($film->filmCategories) ?? null,
                     ];
                 });
 
