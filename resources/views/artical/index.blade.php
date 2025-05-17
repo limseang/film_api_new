@@ -57,10 +57,10 @@
                     <div class="col-lg-4">
                         <label class="form-label">{{trans('sma.film')}}</label>
                         <select id="film" class="{{ config('setup.input_select2') }}" name="film" >
-                            <option value="">{{ __('global.please_select') }}</option>
+                            {{-- <option value="">{{ __('global.please_select') }}</option>
                             @foreach($film as $value)
                             <option value="{{ $value->id }}">{{$value->title }}</option>
-                            @endforeach
+                            @endforeach --}}
                         </select>
                 </div>
                 </div>
@@ -93,6 +93,54 @@
     <script src="{{asset('assets/datatables/datatables_customize_'.app()->getLocale().'.js')}}"></script>
     <script src="{{asset('assets/js/core.js')}}"></script>
 <script>
+  $(document).ready(function(){
+    $('#film').select2({
+    allowClear: true,
+    placeholder: "{{ __('global.please_select') }}",
+    // translate
+    language: {
+        noResults: function () {
+        return 'មិនមានទិន្នន័យដែលបានរកឃើញ';
+        },
+        searching: function() {
+            return "កំពុងស្វែងរក...";
+        }
+    },
+    ajax: {
+        url: "{{route('cast.get_film_cast')}}",
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+            return {
+                search: params.term, // Search term
+                page: params.page || 1, // Pagination page
+            };
+        },
+        processResults: function(data, params) {
+            let results = $.map(data.data, function(item) {
+                return {
+                    id: item.id,
+                    text: item.title
+                };
+            });
+
+            // If no results found, create a new selectable option
+            if (results.length === 0 && params.term) {
+                results.push({
+                    id: params.term, // Temporary ID
+                    text: params.term,
+                });
+            }
+
+            return {
+                results: results
+            };
+        },
+        //
+    },
+});
+
+  });
 
 </script>
 @endsection

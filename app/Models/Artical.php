@@ -36,9 +36,9 @@ class Artical extends Model
         'tag_id',
     ];
 
-    protected $appends = [
-        'image_url',
-    ];
+    // protected $appends = [
+    //     'image_url',
+    // ];
 
     /**
      * @return BelongsTo
@@ -113,15 +113,15 @@ class Artical extends Model
         return $this->hasMany(BookMark::class, 'post_id', 'id');
     }
 
-    /**
-     * Get the image URL attribute.
-     *
-     * @return string|null
-     */
-    public function getImageUrlAttribute(): ?string
-    {
-        return $this->image ? $this->getSignedUrl($this->image) : null;
-    }
+    // /**
+    //  * Get the image URL attribute.
+    //  *
+    //  * @return string|null
+    //  */
+    // public function getImageUrlAttribute(): ?string
+    // {
+    //     return $this->image ? $this->getSignedUrl($this->image) : null;
+    // }
 
     protected static $logFillable = true;
     protected static $logOnlyDirty = true;

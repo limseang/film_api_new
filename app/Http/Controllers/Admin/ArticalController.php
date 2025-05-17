@@ -35,7 +35,7 @@ class ArticalController extends Controller
         $data['origins'] = Origin::where('status',1)->get();
         $data['categories'] = Category::where('status',1)->get();
         $data['type'] = Type::where('status',1)->get();
-        $data['film'] = Film::all();
+        // $data['film'] = Film::all();
         $data['bc']   = [['link' => route('dashboard'), 'page' =>__('global.icon_home')], ['link' => '#', 'page' => __('sma.artical')]];
         return $dataTable->render('artical.index', $data);
     }
