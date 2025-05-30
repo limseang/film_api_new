@@ -325,6 +325,7 @@ class ContinueToWatchController extends Controller
                 $data = [
                     'id' => $episode->id,
                     'films' => $episode->film->title ?? '',
+                    'film_id' => $episode->film->id ?? '',
                     'episodes' => $episode->episode,
                     'url' => $uploadController->getSignedUrl($episode->file),
                     'video_720' => $episode->video_720 != null ? $uploadController->getSignedUrl($episode->video_720) : null,

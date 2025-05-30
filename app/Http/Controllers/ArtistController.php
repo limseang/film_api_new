@@ -150,12 +150,14 @@ class ArtistController extends Controller
 
    public function getFilmResource($data)
    {
+
        $uploadController = new UploadController();
        $response = [];
          foreach ($data as $item) {
                  $response[] = [
                      'id' => $item->id,
                      'title' => $item->title,
+                     'character' => $item->character,
                      'poster' => $item->poster ? $uploadController->getSignedUrl($item->poster) : null,
                  ];
          }
