@@ -237,6 +237,7 @@ class FilmController extends Controller
                 'available' => null,
                 'url' => null,
                 'logo' => null,
+
             ];
             return $data;
         }
@@ -248,6 +249,7 @@ class FilmController extends Controller
                 'available' =>$available->availables->name,
                 'url' => $available->url ?? $available->availables->url,
                 'logo' => $available->availables->logo ? $uploadController->getSignedUrl($available->availables->logo) : null,
+                'type' => $available->availables->type ?? null,
 
             ];
         }
