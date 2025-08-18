@@ -22,23 +22,30 @@ class Localization
         // Get the language from the request header
         $locale = $request->header('Accept-Language');
 
-        // user language
-        if(!$locale){
-            // Take the default local language
+        // If no language in header, use default
+        if (!$locale) {
             $locale = config('app.locale');
         }
 
-        if(!is_null(Auth::user())){
+        // Check if user is authenticated
+        if (Auth::check()) {
             $user = DB::table('users')->find(Auth::user()->id);
-            $locale = $user->language;
+
+            // Check if user exists and has language property
+            if ($user && property_exists($user, 'language') && !empty($user->language)) {
+                $locale = $user->language;
+            }
         }
-        App::setlocale($locale);
-        // get the language from the request header done
-        $response= $next($request);
 
-        // set Content Language header to the language
-        //  $response->headers->set('Accept-Language', $locale);
+        // Set the application locale
+        App::setLocale($locale);
 
-         return $response;
+        // Process the request
+        $response = $next($request);
+
+        // Optionally set Content-Language header
+        // $response->headers->set('Content-Language', $locale);
+
+        return $response;
     }
 }
