@@ -37,17 +37,17 @@ class GiftDataTable extends DataTable
                 // convert date to string format after using dateTimeFormat() function
                 $dateExpired = date('d-m-Y h:i:s', strtotime($table->expired_date));
                 return $dateExpired;
-            })  
+            })
             ->editColumn('code', function($table){
                 return '<span class="'.config('setup.badge_info').'">'.$table->code ?? ''.'</span>';
             })
             ->editColumn('point', function($table){
                 return '<span class="'.config('setup.badge_primary').'">'.$table->point ?? ''.'</span>';
             })
-            ->editColumn('image_url', function ($table) {
-                $pic = $table->image_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('image_url', function ($table) {
+            //     $pic = $table->image_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -124,7 +124,7 @@ class GiftDataTable extends DataTable
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] = Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center');
         $columns[] = Column::make('code', 'code')->title(trans('sma.code'))->addClass('text-center');
         $columns[] = Column::make('point', 'point')->title(trans('sma.point'))->addClass('text-center');

@@ -33,10 +33,10 @@ class ReportIncomeExpenseDataTable extends DataTable
             ->editColumn('created_at', function ($table) {
                 return dateTimeFormat($table->date_at);
             })
-            ->editColumn('attachment_url', function ($table) {
-                $pic = $table->attachment_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('attachment_url', function ($table) {
+            //     $pic = $table->attachment_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('amount', function($table){
                 return number_format($table->amount, 2);
             })
@@ -125,7 +125,7 @@ class ReportIncomeExpenseDataTable extends DataTable
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
         $columns[] = Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
-        $columns[] = Column::make('attachment_url')->title(trans('sma.attachment_url'))->width(20)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('attachment_url')->title(trans('sma.attachment_url'))->width(20)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('name')->title(trans('sma.name'))->width(10);
         $columns[] = Column::make('type', 'code')->title(trans('sma.type'))->addClass('text-center');
         $columns[] = Column::make('reference', 'reference')->title(trans('sma.reference'))->orderable(false);

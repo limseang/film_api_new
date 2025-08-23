@@ -63,13 +63,13 @@ class ArticalDataTable extends DataTable
             ->editColumn('type_name', function($table){
                 return '<span class="'.config('setup.badge_info').'">'.$table->type_name.'</span>';
             })
-             ->editColumn('image_url', function ($table) {
-                $pic = $table->image ?? '';
-                if ($pic) {
-                    $pic = getSignedUrl($pic);
-                }
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            //  ->editColumn('image_url', function ($table) {
+            //     $pic = $table->image ?? '';
+            //     if ($pic) {
+            //         $pic = getSignedUrl($pic);
+            //     }
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -161,7 +161,7 @@ class ArticalDataTable extends DataTable
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] = Column::make('image_url')->title(trans('sma.image'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('image_url')->title(trans('sma.image'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('title', 'title')->title(trans('sma.title'))->addClass('text-right');
         $columns[] = Column::make('origin_name')->title(trans('sma.origin'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('category_name')->title(trans('sma.category'))->width(10)->addClass('text-center')->orderable(false);
