@@ -35,10 +35,10 @@ class AvailableInDataTable extends DataTable
             ->editColumn('url', function ($table) {
                 return '<a class="'.config('setup.badge_primary').'" href="'.$table->url.'" target="_blank">'.$table->url.'</a>';
             })
-            ->editColumn('icon', function ($table) {
-                $pic = $table->image_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('icon', function ($table) {
+            //     $pic = $table->image_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->rawColumns([ 'icon','url']) #allowed for using html code here
         ;
     }
@@ -92,7 +92,7 @@ class AvailableInDataTable extends DataTable
     public function getColumns(): array
     {
         $columns[] = Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center');
-        $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('name', 'name')->title(trans('sma.name'));
         $columns[] = Column::make('url')->title(trans('URL'))->width(10)->addClass('text-center');
         $columns[] = Column::make('type')->title(trans('sma.type'))->width(10)->addClass('text-center');
