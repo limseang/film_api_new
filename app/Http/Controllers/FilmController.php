@@ -415,7 +415,7 @@ public function updateFilm(Request $request,$id)
                 'distributors' => $film->distributors->name ?? 'N/A',
                 'distributor_id' => $film->distributor ?? '',
                 'poster' => $film->poster ? $uploadController->getSignedUrl($film->poster) : '',
-                'trailer' => $film->trailer ?? null,
+                'trailer' => (!empty($film->trailer) && $film->trailer !== '') ? $film->trailer : null,
                 'view' => $film->view ?? 0,
                 'type' => $film->types->name ?? null,
                 'type_id' => $film->type ?? null,
