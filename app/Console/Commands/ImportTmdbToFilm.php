@@ -19,9 +19,9 @@ class ImportTmdbToFilm extends Command
      * @var string
      */
     protected $signature = 'import:tmdb-to-film {source_dir=storage/app/tmdb-data}
-                           {--year=2022}
+                           {--year=2001}
                            {--limit=}
-                           {--type=1}
+                           {--type=1 : Content type (1=film will be saved as type 7, 2=series will be saved as type 8)}
                            {--default-runtime=90}
                            {--skip-upload}
                            {--memory=512M}
@@ -32,7 +32,7 @@ class ImportTmdbToFilm extends Command
      *
      * @var string
      */
-    protected $description = 'Import TMDB movie data to Film model with OSS image upload, FilmCategory mapping, and country mapping';
+    protected $description = 'Import TMDB movie data to Film model with OSS image upload, FilmCategory mapping, and country mapping. Type 1=film(saved as 7), 2=series(saved as 8)';
 
     /**
      * Categories from the database
@@ -470,11 +470,19 @@ class ImportTmdbToFilm extends Command
                 $film->release_date = $this->formatReleaseDate($movieData['release_date'] ?? null);
                 $film->view = 0;
                 $film->rating = '0';
-                $film->type = $filmType;
+                // Set type: 7 for films, 8 for series
+                $film->type = (in_array($filmType, [1, '1'])) ? 7 : 8;
                 $film->running_time = $movieData['runtime'] ?? $defaultRuntime;
                 $film->language = $this->findCountryIdForMovie($movieData);
                 $film->category = '';
-                $film->country_id = $this->findCountryIdForMovie($movieData);
+                $film->tag = ''; // Set default empty value for tag
+                // trailer is optional, no need to set default empty value
+                $film->director = ''; // Set default empty value for director
+                $film->cast = ''; // Set default empty value for cast
+                $film->genre_id = null; // Set default null value for genre_id
+                $film->distributor_id = null; // Set default null value for distributor_id
+                // Note: country_id is not a column in the films table
+                // The country information is stored in the 'language' field
 
                 // Extract minimal required data, avoiding deep array operations
 
@@ -494,7 +502,7 @@ class ImportTmdbToFilm extends Command
                     unset($tagArray); // Free memory
                 }
 
-                // Map trailer - only extract first YouTube trailer
+                // Map trailer - only extract first YouTube trailer if available
                 if (!empty($movieData['videos']['results'])) {
                     foreach ($movieData['videos']['results'] as $video) {
                         if (($video['type'] ?? '') === 'Trailer' && ($video['site'] ?? '') === 'YouTube') {
@@ -503,6 +511,7 @@ class ImportTmdbToFilm extends Command
                         }
                     }
                 }
+                // No need to set trailer if not found - it's optional
 
                 // Map directors - extract first director only to save memory
                 if (!empty($movieData['credits']['crew'])) {
@@ -605,6 +614,11 @@ class ImportTmdbToFilm extends Command
                 } else {
                     // If skipping uploads, set default values for the required fields
                     $film->poster = '3442'; // Use a default poster ID
+                }
+
+                // Ensure cover has a default value if not set
+                if (empty($film->cover)) {
+                    $film->cover = '3442'; // Use a default cover ID (same as poster for now)
                 }
 
                 // Save the film with all its properties
