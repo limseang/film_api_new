@@ -44,10 +44,10 @@ class OriginDataTable extends DataTable
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
-            ->editColumn('icon', function ($table) {
-                $pic = $table->image_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('icon', function ($table) {
+            //     $pic = $table->image_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->rawColumns(['status', 'icon','description','page_url']) #allowed for using html code here
         ;
     }
@@ -107,14 +107,14 @@ class OriginDataTable extends DataTable
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] =Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] =Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] =Column::make('name', 'name')->title(trans('sma.name'));
         $columns[] =Column::make('description')->title(trans('global.description'))->width(10)->addClass('text-center');
         $columns[] =Column::make('page_url')->title(trans('sma.page_url'))->width(10)->addClass('text-center');
         $columns[] =Column::make('status')->title(trans('sma.status'))->width(10)->addClass('text-center');
         $columns[] =Column::make('created_at')->title(trans('global.created_at'))->width(10)->addClass('text-center');
         return $columns;
-        
+
     }
 
     /**

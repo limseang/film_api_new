@@ -38,10 +38,10 @@ class ArtistDataTable extends DataTable
             ->editColumn('death_date', function ($table) {
                 return $table->death_date;
             })
-            ->editColumn('icon', function ($table) {
-                $pic =  $table->avatar_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('icon', function ($table) {
+            //     $pic =  $table->avatar_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -134,7 +134,7 @@ class ArtistDataTable extends DataTable
             $columns [] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns [] =  Column::make('icon')->title(trans('sma.avatar_artist'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns [] =  Column::make('icon')->title(trans('sma.avatar_artist'))->width(10)->addClass('text-center')->orderable(false);
         $columns [] =  Column::make('name', 'name')->title(trans('sma.artist_name'))->width(30);
         $columns [] =  Column::make('known_for')->title(trans('sma.know_for'))->width(10)->addClass('text-center');
         $columns [] =  Column::make('nationality_name')->title(trans('sma.national_name'))->width(10)->addClass('text-center')->orderable(false);

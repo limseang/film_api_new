@@ -49,15 +49,15 @@ class UserAdminDataTable extends DataTable
             ->editColumn('email', function ($table) {
                 return hiddenPrivacy($table->email);
             })
-            ->editColumn('icon', function ($table) {
-                $pic = $table->avatar_url;
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('icon', function ($table) {
+            //     $pic = $table->avatar_url;
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
             })
-            ->rawColumns(['status', 'icon','role_name','point','user_type_name','comeFrom']) #allowed for using html code here
+            ->rawColumns(['status', 'icon','role_name','point','comeFrom']) #allowed for using html code here
         ;
     }
 
@@ -127,13 +127,13 @@ class UserAdminDataTable extends DataTable
                 Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center')
             ];
         }
-        $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center');
+        // $columns[] = Column::make('icon')->title(trans('sma.icon'))->width(10)->addClass('text-center');
         $columns[] = Column::make('name', 'name')->title(trans('sma.name'))->width(30);
         $columns[] = Column::make('email')->title(trans('sma.email'))->width(10)->addClass('text-center');
         $columns[] = Column::make('phone')->title(trans('sma.phone'))->width(10)->addClass('text-center');
         $columns[] = Column::make('role_name')->title(trans('sma.role_name'))->width(10)->addClass('text-center');
         $columns[] = Column::make('point')->title(trans('sma.point'))->width(10)->addClass('text-center');
-        $columns[] = Column::make('user_type_name')->title(trans('sma.user_type_name'))->width(10)->addClass('text-center');
+        // $columns[] = Column::make('user_type_name')->title(trans('sma.user_type_name'))->width(10)->addClass('text-center');
         $columns[] = Column::make('comeFrom')->title(trans('sma.comeFrom'))->width(10)->addClass('text-center');
         $columns[] = Column::make('status', 'status')->title(trans('sma.status'))->width(10)->addClass('text-center');
         $columns[] = Column::make('created_at')->title(trans('sma.created_at'))->width(10)->addClass('text-center');

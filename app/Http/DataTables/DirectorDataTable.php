@@ -42,10 +42,10 @@ class DirectorDataTable extends DataTable
                 $biography = strlen($table->biography) > 50 ? substr($table->biography, 0, 50) . '...' : $table->biography;
                 return '<blockquote class="blockquote text-center py-2 mb-0">'.$biography.'</blockquote>';
             })
-            ->editColumn('icon', function ($table) {
-                $pic = ($table->avatar_url) ? $table->avatar_url : 'default.png';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('icon', function ($table) {
+            //     $pic = ($table->avatar_url) ? $table->avatar_url : 'default.png';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -109,9 +109,9 @@ class DirectorDataTable extends DataTable
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
        }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] = Column::make('icon')->title(trans('sma.avatar_director'))->width(10)->addClass('text-center')->orderable(false);
+        // $columns[] = Column::make('icon')->title(trans('sma.avatar_director'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('name', 'name')->title(trans('sma.director_name'))->width(30);
-        $columns[] = Column::make('know_for')->title(trans('sma.know_for'))->width(10)->addClass('text-center');	
+        $columns[] = Column::make('know_for')->title(trans('sma.know_for'))->width(10)->addClass('text-center');
         $columns[] = Column::make('nationality_name')->title(trans('sma.national_name'))->width(10)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('birth_date')->title(trans('sma.birth_date'))->width(10)->addClass('text-center');
         $columns[] = Column::make('death_date')->title(trans('sma.death_date'))->width(10)->addClass('text-center');

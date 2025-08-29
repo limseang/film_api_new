@@ -41,10 +41,10 @@ class CinemaBranchDataTable extends DataTable
             ->editColumn('show_type', function($table){
                 return '<span class="'.config('setup.badge_primary').'">'.$table->show_type ?? ''.'</span>';
             })
-            ->editColumn('image_url', function ($table) {
-                $pic = $table->image_url ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('image_url', function ($table) {
+            //     $pic = $table->image_url ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->editColumn('status', function ($table) {
                 $publish_status = ($table->status == '1') ? '<span class="'.config('setup.badge_success').'">'.trans('sma.publish_yes').'</span>' : '<span class="'.config('setup.badge_danger').'">'.trans('sma.publish_no').'</span>';
                 return $publish_status;
@@ -118,12 +118,12 @@ class CinemaBranchDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        
+
         if(authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_DELETE) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_EDIT) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_VIEW_DETAIL) || authorize(RolePermissionConstant::PERMISSION_CINEMA_BRANCH_DELETE)){
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] =     Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
+        // $columns[] =     Column::make('image_url')->title(trans('sma.image'))->width(20)->addClass('text-center')->orderable(false);
         $columns[] = Column::make('name')->title(trans('sma.name'))->width(10)->addClass('text-center');
         $columns[] = Column::make('cinema_name', 'cinema_name')->title(trans('sma.cinema_name'))->addClass('text-center');
         $columns[] = Column::make('ticket_price', 'ticket_price')->title(trans('sma.ticket_price'))->addClass('text-center');

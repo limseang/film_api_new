@@ -37,7 +37,7 @@ class FilmDataTable extends DataTable
                 return dateFormat($date);
             })
             ->editColumn('multiple_category', function ($table) {
-                // 
+                //
                 $ul = '<ul>';
                 $categories = $table->multiple_category ?? [];
                 if (count($categories) == 0) {
@@ -64,14 +64,14 @@ class FilmDataTable extends DataTable
             ->editColumn('director_name', function($table){
                 return '<span class="'.config('setup.badge_warning').'">'.$table->director_name.'</span>';
             })
-            ->editColumn('poster_image', function ($table) {
-                $pic = $table->poster_image ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
-            ->editColumn('cover_image', function ($table) {
-                $pic = $table->cover_image ?? '';
-                return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
-            })
+            // ->editColumn('poster_image', function ($table) {
+            //     $pic = $table->poster_image ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
+            // ->editColumn('cover_image', function ($table) {
+            //     $pic = $table->cover_image ?? '';
+            //     return '<img src="'.$pic.'" class="img-preview rounded" style="cursor:pointer" onclick="showImage(this)">';
+            // })
             ->rawColumns(['poster_image','view','multiple_category','genre_name','tag_name','running_time','cover_image','director_name']) #allowed for using html code here
         ;
     }
@@ -152,14 +152,14 @@ class FilmDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        
+
         if(authorize(RolePermissionConstant::PERMISSION_FILM_EDIT) || authorize(RolePermissionConstant::PERMISSION_FILM_DELETE)
             || authorize(RolePermissionConstant::PERMISSION_FILM_ADD_EPISODE) || authorize(RolePermissionConstant::PERMISSION_FILM_ASSIGN_AVAILABLE_IN)){
             $columns[] = Column::computed('action', trans('global.action'))->exportable(false)->printable(false)->width(50)->addClass('text-center');
         }
             // Column::computed('DT_RowIndex', trans('global.n_o'))->width(50)->addClass('text-center'),
-        $columns[] = Column::make('poster_image')->title(trans('sma.poster'))->width(10)->orderable(false);
-        $columns[] = Column::make('cover_image')->title(trans('sma.cover'))->width(10)->orderable(false);
+        // $columns[] = Column::make('poster_image')->title(trans('sma.poster'))->width(10)->orderable(false);
+        // $columns[] = Column::make('cover_image')->title(trans('sma.cover'))->width(10)->orderable(false);
         $columns[] = Column::make('title', 'title')->title(trans('sma.title'))->width(20);
         $columns[] = Column::make('multiple_category')->title(trans('sma.film_category_name'))->width(10)->orderable(false);
         $columns[] = Column::make('genre_name')->title(trans('sma.genre_name'))->width(10)->orderable(false);
