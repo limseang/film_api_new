@@ -25,7 +25,7 @@ class ImportTmdbToFilm extends Command
                             {--skip-existing : Skip items that already exist in database}
                             {--update-existing : Update existing items with new data}
                             {--year=2024 : Year of data to process}
-                            {--film-type=1 : Film type (1=movie, 2=series)}
+                            {--film-type=7 : Film type (7=movie, 8=series)}
                             {--default-runtime=90 : Default runtime for movies without runtime}
                             {--skip-duplicates : Skip duplicate checking for speed}
                             {--bulk-insert : Use bulk database operations}
@@ -383,7 +383,6 @@ class ImportTmdbToFilm extends Command
                     'language' => $this->findCountryIdForMovie($movieData),
                     'category' => '',
                     'tag' => $this->extractTags($movieData),
-                    'trailer' => $this->extractTrailer($movieData),
                     'director' => $this->extractDirector($movieData),
                     'cast' => '',
                     'genre_id' => null,
@@ -393,6 +392,12 @@ class ImportTmdbToFilm extends Command
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+
+                // Only add trailer if it exists
+                $trailer = $this->extractTrailer($movieData);
+                if ($trailer !== null) {
+                    $filmData['trailer'] = $trailer;
+                }
 
                 // Handle images if not skipping
                 if (!$skipUpload && $uploadController) {
@@ -591,7 +596,6 @@ class ImportTmdbToFilm extends Command
                     'language' => $this->findCountryIdForMovie($movieData),
                     'category' => '',
                     'tag' => $this->extractTags($movieData),
-                    'trailer' => $this->extractTrailer($movieData),
                     'director' => $this->extractDirector($movieData),
                     'cast' => '',
                     'genre_id' => null,
@@ -601,6 +605,12 @@ class ImportTmdbToFilm extends Command
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+
+                // Only add trailer if it exists
+                $trailer = $this->extractTrailer($movieData);
+                if ($trailer !== null) {
+                    $filmData['trailer'] = $trailer;
+                }
 
                 $filmsToInsert[] = $filmData;
 
@@ -1051,7 +1061,6 @@ class ImportTmdbToFilm extends Command
             'language' => $this->findCountryIdForMovie($movieData),
             'category' => '',
             'tag' => $this->extractTags($movieData),
-            'trailer' => $this->extractTrailer($movieData),
             'director' => $this->extractDirector($movieData),
             'cast' => '',
             'genre_id' => null,
@@ -1061,6 +1070,12 @@ class ImportTmdbToFilm extends Command
             'created_at' => now(),
             'updated_at' => now()
         ];
+
+        // Only add trailer if it exists
+        $trailer = $this->extractTrailer($movieData);
+        if ($trailer !== null) {
+            $filmData['trailer'] = $trailer;
+        }
 
         // Handle image uploads only if not skipping
         if (!$skipUpload && $uploadController) {
@@ -1103,11 +1118,16 @@ class ImportTmdbToFilm extends Command
         $film->language = $this->findCountryIdForMovie($movieData);
         $film->category = '';
         $film->tag = $this->extractTags($movieData);
-        $film->trailer = $this->extractTrailer($movieData);
         $film->director = $this->extractDirector($movieData);
         $film->cast = '';
         $film->genre_id = null;
         $film->distributor_id = null;
+
+        // Only set trailer if it exists
+        $trailer = $this->extractTrailer($movieData);
+        if ($trailer !== null) {
+            $film->trailer = $trailer;
+        }
 
         // Handle image uploads
         $this->handleImageUploads($film, $movieData, $skipUpload, $uploadController, $postersDir, $backdropsDir);
@@ -1145,7 +1165,7 @@ class ImportTmdbToFilm extends Command
     protected function extractTrailer($movieData)
     {
         if (empty($movieData['videos']['results'])) {
-            return '';
+            return null;
         }
 
         foreach ($movieData['videos']['results'] as $video) {
@@ -1153,7 +1173,7 @@ class ImportTmdbToFilm extends Command
                 return 'https://www.youtube.com/watch?v=' . $video['key'];
             }
         }
-        return '';
+        return null;
     }
 
     protected function extractDirector($movieData)
